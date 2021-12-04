@@ -1,0 +1,81 @@
+﻿<UserControl
+    x:Class="LiteCall.Views.Pages.ServerPV"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LiteCall.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:serverPages="clr-namespace:LiteCall.ViewModels.ServerPages"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+
+
+    <UserControl.DataContext>
+        <serverPages:ServerVMD />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:VisibilityConverter x:Key="VisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="235" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+        <!--  Список комнат на сервере  -->
+
+        <Grid Background="{DynamicResource Background2(Solid)}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{Binding test}" />
+
+            <ListView
+                Grid.Row="1"
+                ItemsSource="{Binding Users}"
+                Style="{StaticResource RoomUserList}">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Width="36"
+                            Height="36"
+                            BorderBrush="White"
+                            BorderThickness="1"
+                            CornerRadius="18">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding Login}" />
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+
+            </ListView>
+        </Grid>
+
+        <!--  Информация о комнате  -->
+        <Grid
+            Background="{DynamicResource Background4(Solid)}"
+            Column="2"
+            RowSpan="2" />
+    </Grid>
+</UserControl>

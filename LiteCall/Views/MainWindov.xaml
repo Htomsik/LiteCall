@@ -1,0 +1,89 @@
+﻿<Window
+    x:Class="LiteCall.Views.MainWindov"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:commands="clr-namespace:LiteCall.Infrastructure.Commands"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LiteCall.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="clr-namespace:LiteCall.Views.Pages"
+    xmlns:viewModel="clr-namespace:LiteCall.ViewModels.Pages"
+    Width="800"
+    Height="450"
+    MinWidth="300"
+    MinHeight="300"
+    d:DesignHeight="400"
+    d:DesignWidth="400"
+    ResizeMode="CanResizeWithGrip"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="0"
+            CornerRadius="2"
+            GlassFrameThickness="0,0,0,1"
+            NonClientFrameEdges="None"
+            ResizeBorderThickness="3" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <commands:CloseAppCommand x:Key="CloseAppComm" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border BorderBrush="White" BorderThickness="1">
+        <Grid Background="{StaticResource Background(Solid)}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+
+            <Grid.Resources>
+
+                <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
+                    <pages:MainPV />
+                </DataTemplate>
+
+            </Grid.Resources>
+
+
+
+            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}" />
+            <!--  Верхняя панель  -->
+            <DockPanel Background="{DynamicResource Background(Solid)}" MouseLeftButtonDown="DragPanel">
+
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+
+                    <Label
+                        FontFamily="{StaticResource OswaldRegular}"
+                        FontSize="13"
+                        Foreground="{StaticResource Fonts(Solid)}">
+                        LiteCall
+                    </Label>
+
+                </StackPanel>
+
+                <StackPanel
+                    DockPanel.Dock="Right"
+                    FlowDirection="RightToLeft"
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="5,0,0,0"
+                        Command="{StaticResource CloseAppComm}"
+                        Style="{DynamicResource IMGButton}">
+                        <Button.Resources>
+                            <StaticResource x:Key="Img" ResourceKey="ClosePath" />
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+
+            </DockPanel>
+
+
+        </Grid>
+    </Border>
+</Window>

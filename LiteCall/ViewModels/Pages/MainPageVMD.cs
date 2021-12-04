@@ -17,8 +17,6 @@ namespace LiteCall.ViewModels.Pages
     {
         public MainPageVMD()
         {
-
-
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
         }
 
