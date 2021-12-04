@@ -15,7 +15,7 @@ namespace LiteCall.Stores
             get => _MainWindowCurrentViewModel;
             set
             {
-                _MainWindowCurrentViewModel?.Dispose();
+               
                 _MainWindowCurrentViewModel = value;
                 OnCurrentViewModelChanged();
             }
@@ -27,5 +27,8 @@ namespace LiteCall.Stores
         {
             CurrentViewModelChanged?.Invoke();
         }
+
+
+        
     }
 }

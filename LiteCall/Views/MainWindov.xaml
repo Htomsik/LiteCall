@@ -11,7 +11,7 @@
     Width="800"
     Height="450"
     MinWidth="300"
-    MinHeight="300"
+    MinHeight="350"
     d:DesignHeight="400"
     d:DesignWidth="400"
     ResizeMode="CanResizeWithGrip"
@@ -37,33 +37,32 @@
     <Border BorderBrush="White" BorderThickness="1">
         <Grid Background="{StaticResource Background(Solid)}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="24" />
+                <RowDefinition Height="26" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
 
-            <Grid.Resources>
-
-                <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
-                    <pages:MainPV />
-                </DataTemplate>
-
-            </Grid.Resources>
 
 
 
-            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}" />
+
+            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
+                        <pages:MainPV />
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type viewModel:AuthorisationPageVMD}">
+                        <pages:AuthorisationPV />
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
             <!--  Верхняя панель  -->
             <DockPanel Background="{DynamicResource Background(Solid)}" MouseLeftButtonDown="DragPanel">
 
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
-                    <Label
-                        FontFamily="{StaticResource OswaldRegular}"
-                        FontSize="13"
-                        Foreground="{StaticResource Fonts(Solid)}">
-                        LiteCall
-                    </Label>
+                    <TextBlock Margin="5,0,0,0" Text="LiteCall" />
 
                 </StackPanel>
 

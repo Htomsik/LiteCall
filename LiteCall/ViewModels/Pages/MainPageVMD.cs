@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
+using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.ViewModels.Pages

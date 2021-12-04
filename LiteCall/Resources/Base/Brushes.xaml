@@ -2,6 +2,7 @@
 
 
 
+    <!--  Из за багов лучге не  указывать цвет в солиде  -->
 
     <SolidColorBrush x:Key="Background(Solid)" Color="#202020" />
 
@@ -16,6 +17,13 @@
     <SolidColorBrush x:Key="Dangerous(Solid)" Color="#E74C3C" />
 
     <SolidColorBrush x:Key="Important(Solid)" Color="#FFE019" />
+
+    <SolidColorBrush x:Key="Button(Solid)" Color="#969696" />
+
+    <SolidColorBrush x:Key="Button2(Solid)" Color="#767676" />
+
+
+
 
 
 
@@ -33,4 +41,8 @@
     <Color x:Key="Dangerous(Color)">#E74C3C</Color>
 
     <Color x:Key="Important(Color)">#FFE019</Color>
+
+    <Color x:Key="Button(Color)">#969696</Color>
+
+    <Color x:Key="Button2(Color)">#767676</Color>
 </ResourceDictionary>

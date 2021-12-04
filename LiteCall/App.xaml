@@ -7,10 +7,11 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/TextBox.xaml" />
+                <ResourceDictionary Source="Resources/Styles/TextBlock.xaml" />
                 <ResourceDictionary Source="Resources/Base/Fonts.xaml" />
                 <ResourceDictionary Source="Resources/Base/Brushes.xaml" />
                 <ResourceDictionary Source="Resources/Base/AppIcons.xaml" />
-
                 <ResourceDictionary Source="Resources/Styles/Buttons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

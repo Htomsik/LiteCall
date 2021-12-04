@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace LiteCall.ViewModels.Base
 {
-    internal abstract class BaseVMD:INotifyPropertyChanged,IDisposable
+    internal abstract class BaseVMD:INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -38,17 +38,6 @@ namespace LiteCall.ViewModels.Base
         }
 
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        private bool _Disposed;
-
-        protected virtual void Dispose(bool Disposing)
-        {
-            if (!Disposing || _Disposed) return;
-            _Disposed = true;
-        }
+       
     }
 }

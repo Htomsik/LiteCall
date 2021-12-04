@@ -1,0 +1,55 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+
+    <!--  Текстбоксы  -->
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Fonts(Solid)}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="{DynamicResource OswaldRegular}" />
+        <Setter Property="VerticalContentAlignment" Value="Bottom" />
+
+
+
+        <Style.Triggers>
+
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Foreground" Value="White" />
+            </Trigger>
+
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Text" Value=" " />
+            </Trigger>
+
+        </Style.Triggers>
+
+
+
+    </Style>
+
+    <!--  Важные  -->
+    <Style
+        x:Key="BigTextBox"
+        BasedOn="{StaticResource {x:Type TextBox}}"
+        TargetType="{x:Type TextBox}">
+
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontFamily" Value="{DynamicResource OswaldBold}" />
+    </Style>
+
+    <!--  Логин и пароль на странице авторизации  -->
+    <Style
+        x:Key="LogPassTextBox"
+        BasedOn="{StaticResource BigTextBox}"
+        TargetType="{x:Type TextBox}">
+
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+
+
+    </Style>
+
+
+
+</ResourceDictionary>

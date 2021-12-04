@@ -18,24 +18,21 @@ namespace LiteCall
     public partial class App : Application
     {
 
+        
         protected override void OnStartup(StartupEventArgs e)
         {
-
             NavigationStore navigationStore = new NavigationStore();
 
-            navigationStore.MainWindowCurrentViewModel = new MainPageVMD();
-
-
+            navigationStore.MainWindowCurrentViewModel = new AuthorisationPageVMD(navigationStore);
 
             MainWindow = new MainWindov()
             {
+                
                 DataContext = new MainWindowVMD(navigationStore)
             };
-
             MainWindow.Show();
 
             base.OnStartup(e);
-
         }
     }
 
