@@ -1,0 +1,149 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--  База  -->
+
+    <!--  Для кнопок c  image  -->
+    <Style x:Key="IMGButton" TargetType="{x:Type Button}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+
+                    <Border HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Path x:Name="Image" Style="{DynamicResource ResourceKey=Img}">
+
+                            <Path.RenderTransform>
+
+                                <ScaleTransform CenterX="12" CenterY="12" />
+
+                            </Path.RenderTransform>
+
+                        </Path>
+
+                    </Border>
+
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseOver" Value="true">
+
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="0.8"
+                                            Duration="0:0:0.25" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="0.8"
+                                            Duration="0:0:0.25" />
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1"
+                                            Duration="0:0:0.25" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1"
+                                            Duration="0:0:0.25" />
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+
+
+
+                        </Trigger>
+
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+    <!--  Для кнопок c  image  -->
+    <Style
+        x:Key="IMGBu2tton"
+        BasedOn="{StaticResource ResourceKey={x:Type Button}}"
+        TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+
+                    <Border Width="40" Height="40">
+                        <Image
+                            x:Name="Image"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="{DynamicResource ResourceKey=Img}" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseOver" Value="true">
+
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="Width"
+                                            To="25"
+                                            Duration="0:0:0.25" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="Height"
+                                            To="25"
+                                            Duration="0:0:0.25" />
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="Width"
+                                            To="30"
+                                            Duration="0:0:0.25" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Image"
+                                            Storyboard.TargetProperty="Height"
+                                            To="30"
+                                            Duration="0:0:0.25" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+
+    </Style>
+</ResourceDictionary>
