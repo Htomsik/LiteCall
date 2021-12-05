@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
+using LiteCall.Services;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 using LiteCall.Views.Pages;
@@ -17,14 +18,16 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(NavigationStore navigationStore, Account account)
+        public MainPageVMD(AccountStore AccountStore)
         {
-            _Account = account;
+            _Account = AccountStore.CurrentAccount;
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
         }
 
-
-       
+        public MainPageVMD(NavigationStore navigationStore)
+        {
+            this.navigationStore = navigationStore;
+        }
 
         private Account _Account;
 
@@ -66,6 +69,8 @@ namespace LiteCall.ViewModels.Pages
 
 
         private UserControl _selectedViewModel = new ServerPV();
+        private NavigationStore navigationStore;
+
         public UserControl selectedViewModel
         {
             get => _selectedViewModel;

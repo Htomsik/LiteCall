@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiteCall.Infrastructure.Commands.Base;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Stores;
 using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.Infrastructure.Commands
@@ -14,12 +15,14 @@ namespace LiteCall.Infrastructure.Commands
     {
 
         private readonly AuthorisationPageVMD _AuthVMD;
-        private readonly ParametrNavigationServices<Account,MainPageVMD> _NavigationServices;
+        private readonly NavigationServices<MainPageVMD> _NavigationServices;
+        private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
-        public AuthCommand(AuthorisationPageVMD authVmd, ParametrNavigationServices<Account,MainPageVMD> navigationServices, Func<object, bool> canExecute=null)
+        public AuthCommand(AuthorisationPageVMD AuthVMD, NavigationServices<MainPageVMD> navigationServices, AccountStore accountStore, Func<object, bool> canExecute=null)
         {
-            _AuthVMD = authVmd;
+            _AuthVMD = AuthVMD;
             _NavigationServices = navigationServices;
+            _AccountStore = accountStore;
             _CanExecute = canExecute;
         }
         public override bool CanExecute(object parameter)
@@ -39,7 +42,8 @@ namespace LiteCall.Infrastructure.Commands
                Type = _AuthVMD.CheckStatus
             };
 
-            _NavigationServices.Navigate(newAccount);
+            _AccountStore.CurrentAccount = newAccount;
+            _NavigationServices.Navigate();
         }
     }
 }
