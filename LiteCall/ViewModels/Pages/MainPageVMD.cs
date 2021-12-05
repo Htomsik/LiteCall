@@ -16,7 +16,7 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD()
+        public MainPageVMD(NavigationStore navigationStore)
         {
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
         }

@@ -17,7 +17,7 @@ namespace LiteCall.ViewModels.Pages
         {
             _NavigationStore = navigationStore;
 
-            // AuthCommand = new NavigationCommand<MainPageVMD>(navigationStore, () => new MainPageVMD());
+             AuthCommand = new NavigationCommand<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore));
         }
         private readonly NavigationStore _NavigationStore;
 
