@@ -11,15 +11,30 @@ using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
+using LiteCall.Views.Pages;
 
 namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(NavigationStore navigationStore)
+        public MainPageVMD(NavigationStore navigationStore, Account account)
         {
+            _Account = account;
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
         }
+
+
+       
+
+        private Account _Account;
+
+        public Account Account
+        {
+            get => _Account;
+            set => Set(ref _Account, value);
+        }
+
+
 
         #region Данные с окна
 
@@ -50,7 +65,7 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private UserControl _selectedViewModel;
+        private UserControl _selectedViewModel = new ServerPV();
         public UserControl selectedViewModel
         {
             get => _selectedViewModel;

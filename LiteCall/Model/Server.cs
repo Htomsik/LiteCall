@@ -83,9 +83,9 @@ namespace LiteCall.Model
         }
 
 
-        private ICollection<User> _Users;
+        private ICollection<ServerUser> _Users;
 
-        public ICollection<User> Users
+        public ICollection<ServerUser> Users
         {
             get => _Users;
             set => Set(ref _Users, value);

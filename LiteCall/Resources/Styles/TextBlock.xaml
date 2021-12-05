@@ -10,7 +10,7 @@
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontFamily" Value="{DynamicResource OswaldRegular}" />
         <Setter Property="Foreground" Value="{DynamicResource Fonts(Solid)}" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="18" />
     </Style>
 
     <!--  Важный текст (названия)  -->
@@ -19,7 +19,7 @@
         BasedOn="{StaticResource {x:Type TextBlock}}"
         TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="{DynamicResource OswaldBold}" />
-        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontSize" Value="24" />
     </Style>
 
 

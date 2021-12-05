@@ -23,6 +23,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -88,6 +89,8 @@
 
             <Button
                 HorizontalAlignment="Center"
+                Command="{Binding VisibilitySwitchCommand}"
+                CommandParameter="0"
                 Style="{StaticResource IMGButton}"
                 Visibility="{Binding VisibilitiStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
@@ -99,7 +102,7 @@
         </Grid>
 
 
-      
+
 
 
 
@@ -108,6 +111,23 @@
             Grid.Row="1"
             Grid.ColumnSpan="2"
             Background="{StaticResource Background3(Solid)}" />
+
+        <Grid Column="1" Row="1">
+            <StackPanel Orientation="Horizontal">
+
+                <Border
+                    Width="40"
+                    Margin="5,0,0,0"
+                    BorderBrush="{DynamicResource Fonts(Solid)}"
+                    BorderThickness="1"
+                    CornerRadius="20" />
+
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding Account.Login}" />
+            </StackPanel>
+        </Grid>
 
 
     </Grid>

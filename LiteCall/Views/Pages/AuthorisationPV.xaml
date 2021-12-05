@@ -12,7 +12,7 @@
     mc:Ignorable="d">
 
 
-   
+
     <UserControl.Resources>
         <converters:Boolinverter x:Key="Boolinvert" />
     </UserControl.Resources>
@@ -53,9 +53,9 @@
                 <TextBlock
                     Margin="5,0,0,0"
                     HorizontalAlignment="Center"
-                    FontSize="22"
                     Style="{DynamicResource Bigtext}"
                     Text="LOGIN" />
+
                 <TextBlock
                     Grid.Row="1"
                     Margin="5,0,0,8"
@@ -63,7 +63,8 @@
                     Text="USERNAME">
 
                     <TextBlock.Style>
-                        <Style BasedOn="{StaticResource 'Bigtext'}" TargetType="{x:Type TextBlock}">
+                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Text, ElementName=UsernameTB}" Value="">
@@ -81,7 +82,7 @@
                     Text="PASSWORD">
 
                     <TextBlock.Style>
-                        <Style BasedOn="{StaticResource 'Bigtext'}" TargetType="{x:Type TextBlock}">
+                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
 
@@ -103,7 +104,7 @@
                     Grid.Row="1"
                     Margin="20,8"
                     Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding Login}" />
+                    Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" />
 
                 <TextBox
                     x:Name="PasswordTB"
@@ -111,7 +112,7 @@
                     Margin="20,8"
                     IsEnabled="{Binding CheckStatus, Converter={StaticResource Boolinvert}}"
                     Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding Password}" />
+                    Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Border
                     Grid.Row="1"
@@ -154,7 +155,7 @@
             MaxWidth="235"
             MaxHeight="40"
             Margin="15"
-            Command="{Binding AuthCommand}">
+            Command="{Binding AuthCommand, UpdateSourceTrigger=PropertyChanged}">
             <TextBlock Style="{DynamicResource Bigtext}" Text="LOGIN" />
         </Button>
 

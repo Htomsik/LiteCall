@@ -6,8 +6,18 @@ using System.Threading.Tasks;
 
 namespace LiteCall.Model
 {
-    public class User
+    public class Account
     {
-        
+        public string Login { get; set; }
+
+        public string Password { get; set; }
+
+        public bool Type { get; set; }
+
+    }
+
+    public class ServerUser
+    {
+        public string Login;
     }
 }

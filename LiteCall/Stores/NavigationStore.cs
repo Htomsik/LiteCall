@@ -7,7 +7,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores
 {
-    internal class NavigationStore:BaseVMD
+    internal class NavigationStore
     {
         private BaseVMD _MainWindowCurrentViewModel;
         public BaseVMD MainWindowCurrentViewModel

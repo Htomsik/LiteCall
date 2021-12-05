@@ -37,7 +37,7 @@ namespace LiteCall.ViewModels.ServerPages
                 test = 0;
             }
 
-            server.Join("jj");
+           // server.Join("jj");
 
 
 
@@ -51,7 +51,7 @@ namespace LiteCall.ViewModels.ServerPages
         NetTcpBinding netTcpBinding = new NetTcpBinding();
 
 
-        public ObservableCollection<User> Users { get; }
+        public ObservableCollection<ServerUser> Users { get; }
 
 
 

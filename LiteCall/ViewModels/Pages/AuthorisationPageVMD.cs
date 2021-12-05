@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
+using LiteCall.Model;
+using LiteCall.Services;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 
@@ -17,7 +19,16 @@ namespace LiteCall.ViewModels.Pages
         {
             _NavigationStore = navigationStore;
 
-             AuthCommand = new NavigationCommand<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore));
+            // AuthCommand = new NavigationCommand<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore));
+
+
+            //  AuthoCommand = new AuthCommand(new NavigationServices<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore)));
+
+
+            AuthCommand = new AuthCommand(this, new ParametrNavigationServices<Account, MainPageVMD>(
+                navigationStore, (account) => new MainPageVMD(navigationStore, account)),CanAuthExecute);
+
+
         }
         private readonly NavigationStore _NavigationStore;
 
@@ -39,7 +50,6 @@ namespace LiteCall.ViewModels.Pages
 
 
         }
-
 
         #endregion
 
