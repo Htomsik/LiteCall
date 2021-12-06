@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels;
 using LiteCall.ViewModels.Pages;
@@ -31,7 +32,7 @@ namespace LiteCall
         {
 
 
-            NavigationServices<AuthorisationPageVMD> AuthPageNavigationService = CreateAutPageNavigationServices();
+            INavigatonService<AuthorisationPageVMD> AuthPageNavigationService = CreateAutPageNavigationServices();
             AuthPageNavigationService.Navigate();
 
             MainWindow = new MainWindov()
@@ -44,12 +45,12 @@ namespace LiteCall
             base.OnStartup(e);
         }
 
-        private NavigationServices<AuthorisationPageVMD> CreateAutPageNavigationServices()
+        private INavigatonService<AuthorisationPageVMD> CreateAutPageNavigationServices()
         {
             return new NavigationServices<AuthorisationPageVMD>(_NavigationStore, () => new AuthorisationPageVMD(_AccountStore, CreateMainPageNavigationServices()));
         }
 
-        private NavigationServices<MainPageVMD> CreateMainPageNavigationServices()
+        private INavigatonService<MainPageVMD> CreateMainPageNavigationServices()
         {
             return new NavigationServices<MainPageVMD>(_NavigationStore, () => new MainPageVMD(_AccountStore));
         }

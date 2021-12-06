@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteCall.Infrastructure.Commands.Base;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 
@@ -16,11 +17,11 @@ namespace LiteCall.Infrastructure.Commands
             where TViewModel : BaseVMD
         {
 
-            private readonly NavigationServices<TViewModel> _NavigationService;
+            private readonly INavigatonService<TViewModel> _NavigationService;
 
 
 
-            public NavigationCommand(NavigationServices<TViewModel> navigationService)
+            public NavigationCommand(INavigatonService<TViewModel> navigationService)
             {
                 _NavigationService = navigationService;
             }

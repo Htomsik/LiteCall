@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
+using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services
 {
-    internal class NavigationServices<TViewModel>
-        where TViewModel : BaseVMD
+    internal class NavigationServices<TViewModel> : INavigatonService<TViewModel> where TViewModel : BaseVMD
+
     {
         private readonly NavigationStore _NavigationStore;
         private readonly Func<TViewModel> _CreateViewModel;

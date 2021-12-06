@@ -49,7 +49,7 @@
 
                             <Path.RenderTransform>
 
-                                <ScaleTransform CenterX="12" CenterY="12" />
+                                <ScaleTransform CenterX="13" CenterY="13" ScaleX="{DynamicResource ResourceKey=Scale}" ScaleY="{DynamicResource ResourceKey=Scale}" />
 
                             </Path.RenderTransform>
 
@@ -58,7 +58,7 @@
                     </Border>
 
 
-                    <ControlTemplate.Triggers>
+                    <!--        <ControlTemplate.Triggers>
 
                         <Trigger Property="IsMouseOver" Value="true">
 
@@ -67,7 +67,7 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetName="Image"
-                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            Storyboard.TargetProperty="Fill"
                                             To="0.8"
                                             Duration="0:0:0.25" />
                                         <DoubleAnimation
@@ -98,13 +98,12 @@
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
 
-
-
                         </Trigger>
 
 
-                    </ControlTemplate.Triggers>
+                    </ControlTemplate.Triggers>-->
                 </ControlTemplate>
+
 
 
             </Setter.Value>

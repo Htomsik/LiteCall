@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiteCall.Infrastructure.Commands.Base;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Pages;
 
@@ -15,10 +16,10 @@ namespace LiteCall.Infrastructure.Commands
     {
 
         private readonly AuthorisationPageVMD _AuthVMD;
-        private readonly NavigationServices<MainPageVMD> _NavigationServices;
+        private readonly INavigatonService<MainPageVMD> _NavigationServices;
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
-        public AuthCommand(AuthorisationPageVMD AuthVMD, NavigationServices<MainPageVMD> navigationServices, AccountStore accountStore, Func<object, bool> canExecute=null)
+        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigatonService<MainPageVMD> navigationServices, AccountStore accountStore, Func<object, bool> canExecute=null)
         {
             _AuthVMD = AuthVMD;
             _NavigationServices = navigationServices;

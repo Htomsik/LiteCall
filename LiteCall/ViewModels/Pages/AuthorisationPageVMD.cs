@@ -7,6 +7,7 @@ using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 
@@ -14,7 +15,7 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class AuthorisationPageVMD:BaseVMD
     {
-        public AuthorisationPageVMD(AccountStore AccountStore,NavigationServices<MainPageVMD> MainPageNavigationServices)
+        public AuthorisationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices)
 
         {
             
@@ -28,7 +29,7 @@ namespace LiteCall.ViewModels.Pages
            // AuthCommand = new AuthCommand(this, new ParametrNavigationServices<Account, MainPageVMD>(
              //   navigationStore, (account) => new MainPageVMD(navigationStore, account)),CanAuthExecute);
 
-             AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore);
+             AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore,CanAuthExecute);
 
 
 

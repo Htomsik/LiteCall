@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.ViewModels.Pages"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -20,6 +21,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
+            <system:Double x:Key="PlusScale">2</system:Double>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -94,7 +96,9 @@
                 Style="{StaticResource IMGButton}"
                 Visibility="{Binding VisibilitiStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
-                    <StaticResource x:Key="Img" ResourceKey="ClosePath" />
+                    <StaticResource x:Key="Img" ResourceKey="PlusPath" />
+                    <StaticResource x:Key="Scale" ResourceKey="PlusScale" />
+
 
                 </Button.Resources>
             </Button>
