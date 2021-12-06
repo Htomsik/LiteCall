@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 using LiteCall.Views.Pages;
@@ -22,12 +24,65 @@ namespace LiteCall.ViewModels.Pages
         {
             _Account = AccountStore.CurrentAccount;
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
+            OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
+            ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted,CanConnectServerExecute);
         }
 
-        public MainPageVMD(NavigationStore navigationStore)
+
+        #region Команды
+
+        public ICommand VisibilitySwitchCommand { get; }
+        private void OnVisibilitySwitchExecuted(object p)
         {
-            this.navigationStore = navigationStore;
+            if (Convert.ToInt32(p) == 1)
+            {
+
+                VisibilitiStatus = Visibility.Collapsed;
+               
+            }
+            else
+            {
+                VisibilitiStatus = Visibility.Visible;
+                
+            }
+               
         }
+
+
+        public ICommand OpenModalCommaCommand { get; }
+        private void OnOpenModalCommaExecuted(object p)
+        {
+            ModalStatus = true;
+            
+        }
+
+
+        public ICommand ConnectServerCommand { get; }
+
+        private bool CanConnectServerExecute(object p) => true;
+
+        private void OnConnectServerExecuted(object p)
+        {
+            ModalStatus = CheckServerStatus(ServerAdress);
+        }
+
+
+
+        #endregion
+
+
+
+        #region Данные с окна
+
+
+        private bool _ModalStatus;
+
+        public bool ModalStatus
+        {
+            get => _ModalStatus;
+            set => Set(ref _ModalStatus, value);
+        }
+
 
         private Account _Account;
 
@@ -38,16 +93,12 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
+        private string _ServerAdress;
 
-        #region Данные с окна
-
-        public ICommand VisibilitySwitchCommand { get; }
-        private void OnVisibilitySwitchExecuted(object p)
+        public string ServerAdress
         {
-            if (Convert.ToInt32(p) == 1)
-                VisibilitiStatus = Visibility.Collapsed;
-            else
-                VisibilitiStatus = Visibility.Visible;
+            get => _ServerAdress;
+            set => Set(ref _ServerAdress, value);
         }
 
 
@@ -68,9 +119,7 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private UserControl _selectedViewModel = new ServerPV();
-        private NavigationStore navigationStore;
-
+        private UserControl _selectedViewModel;
         public UserControl selectedViewModel
         {
             get => _selectedViewModel;
@@ -78,6 +127,25 @@ namespace LiteCall.ViewModels.Pages
         }
 
         #endregion
+
+
+        bool CheckServerStatus(string serverAdress)
+        {
+            string path = "http://"+ serverAdress + "/WPFHost/";
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(path);
+            request.Timeout = 1000;
+
+            try
+            {
+                request.GetResponse();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
 
     }
 }

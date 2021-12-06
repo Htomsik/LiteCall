@@ -7,6 +7,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:pages="clr-namespace:LiteCall.ViewModels.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     d:DesignHeight="450"
@@ -91,7 +92,7 @@
 
             <Button
                 HorizontalAlignment="Center"
-                Command="{Binding VisibilitySwitchCommand}"
+                Command="{Binding OpenModalCommaCommand}"
                 CommandParameter="0"
                 Style="{StaticResource IMGButton}"
                 Visibility="{Binding VisibilitiStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
@@ -133,6 +134,84 @@
             </StackPanel>
         </Grid>
 
+        <modalCutom:ModalCustom
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="3"
+            IsOpen="{Binding ModalStatus}">
+
+
+
+            <Grid
+                MinWidth="250"
+                MinHeight="200"
+                Background="{DynamicResource Background2(Solid)}">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Style="{DynamicResource Bigtext}"
+                    Text="CONNECT" />
+
+
+
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="5,0,0,8"
+                    HorizontalAlignment="Center"
+                    Text="IP ADRESS">
+
+                    <TextBlock.Style>
+                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+
+                                <DataTrigger Binding="{Binding Text, ElementName=Iptb}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding IsEnabled, ElementName=PasswordTB}" Value="False">
+                                    <Setter Property="Foreground" Value="{DynamicResource Button2(Solid)}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+
+                </TextBlock>
+
+                <TextBox
+                    x:Name="Iptb"
+                    Grid.Row="1"
+                    Margin="20,8"
+                    MaxLength="17"
+                    Style="{StaticResource LogPassTextBox}"
+                    Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Border
+                    Grid.Row="1"
+                    Height="2"
+                    Margin="20,8"
+                    VerticalAlignment="Bottom"
+                    Background="{DynamicResource Fonts(Solid)}" />
+
+                <Button
+                    Grid.Row="2"
+                    MaxWidth="125"
+                    MaxHeight="40"
+                    Margin="15"
+                    Command="{Binding ConnectServerCommand}">
+                    <TextBlock Text="OK" />
+                </Button>
+
+            </Grid>
+
+
+
+        </modalCutom:ModalCustom>
 
     </Grid>
 </UserControl>

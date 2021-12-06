@@ -8,14 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using AudioLib;
 using LiteCall.Model;
+using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.ViewModels.ServerPages
 {
     internal class ServerVMD:BaseVMD
     {
-        public ServerVMD()
+        public ServerVMD(AccountStore AccountStore,string ServerAdress)
         {
+            _Account = AccountStore.CurrentAccount;
 
 
             netTcpBinding.Security.Mode = SecurityMode.None;
@@ -37,11 +39,19 @@ namespace LiteCall.ViewModels.ServerPages
                 test = 0;
             }
 
-           // server.Join("jj");
+           
 
 
 
 
+        }
+
+        private Account _Account;
+
+        public Account Account
+        {
+            get => _Account;
+            set => Set(ref _Account, value);
         }
 
 

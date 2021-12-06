@@ -4,19 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores
 {
-    public class AccountStore
+    internal class AccountStore:BaseVMD
     {
+      
+
+
         private Account _CurrentAccount;
+
         public Account CurrentAccount
         {
             get => _CurrentAccount;
-            set
-            {
-                _CurrentAccount = value;
-            }
+            set => Set(ref _CurrentAccount, value);
+        }
+
+
+        public void Logout()
+        {
+            _CurrentAccount=null;
         }
     }
 }
