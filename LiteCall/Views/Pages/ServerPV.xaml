@@ -13,9 +13,6 @@
 
 
 
-    <UserControl.DataContext>
-        <serverPages:ServerVMD />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -45,7 +42,14 @@
                 <RowDefinition Height="72" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBlock Text="{Binding test}" />
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding }"></TextBlock>
+            </Grid>
 
             <ListView
                 Grid.Row="1"
@@ -75,7 +79,8 @@
         <!--  Информация о комнате  -->
         <Grid
             Background="{DynamicResource Background4(Solid)}"
-            Column="2"
+            Column="1"
             RowSpan="2" />
+
     </Grid>
 </UserControl>

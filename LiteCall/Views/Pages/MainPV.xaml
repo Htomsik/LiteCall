@@ -8,10 +8,11 @@
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
-    xmlns:pages="clr-namespace:LiteCall.ViewModels.Pages"
+    xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:viewModel="clr-namespace:LiteCall.ViewModels.ServerPages"
     d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignWidth="400"
     mc:Ignorable="d">
 
 
@@ -22,7 +23,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
-            <system:Double x:Key="PlusScale">2</system:Double>
+            <system:Double x:Key="PlusScale">1.61</system:Double>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -40,6 +41,33 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
+        <Grid
+            Background="{DynamicResource Background4(Solid)}"
+            Column="1"
+            ColumnSpan="2">
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Path
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{DynamicResource Sun}">
+                <Path.RenderTransform>
+
+                    <ScaleTransform CenterX="12" CenterY="12" ScaleX="9" ScaleY="9" />
+
+                </Path.RenderTransform>
+            </Path>
+
+
+
+
+        </Grid>
 
         <!--  Меню серверов  -->
         <Grid Background="{StaticResource Background(Solid)}">
@@ -83,11 +111,25 @@
                 BorderThickness="1"
                 CornerRadius="27"
                 Visibility="{Binding VisibilitiStatus, UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock
+
+                <!-- <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="White"
-                    Text="{Binding CurrentServer.Name}" />
+                    Text="{Binding CurrentServer.Name}" />-->
+
+                <Path
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Fill="{DynamicResource Important(Solid)}"
+                    Style="{DynamicResource Anonimous}">
+                    <Path.RenderTransform>
+
+                        <ScaleTransform CenterX="14" CenterY="11" ScaleX="1.8" ScaleY="1.9" />
+
+                    </Path.RenderTransform>
+                </Path>
+
             </Border>
 
             <Button
@@ -99,8 +141,6 @@
                 <Button.Resources>
                     <StaticResource x:Key="Img" ResourceKey="PlusPath" />
                     <StaticResource x:Key="Scale" ResourceKey="PlusScale" />
-
-
                 </Button.Resources>
             </Button>
 
@@ -108,31 +148,55 @@
 
 
 
-
-
-
-        <!--  Панель настроек и юзера  -->
-        <Grid
+        <Border
             Grid.Row="1"
+            Grid.Column="0"
             Grid.ColumnSpan="2"
-            Background="{StaticResource Background3(Solid)}" />
-
-        <Grid Column="1" Row="1">
+            Background="{StaticResource Background3(Solid)}"
+            CornerRadius="0 20 20 0">
             <StackPanel Orientation="Horizontal">
 
                 <Border
                     Width="40"
-                    Margin="5,0,0,0"
+                    Background="{DynamicResource Background4(Solid)}"
                     BorderBrush="{DynamicResource Fonts(Solid)}"
                     BorderThickness="1"
-                    CornerRadius="20" />
+                    CornerRadius="20">
+
+                    <Path
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{DynamicResource Anonimous}">
+                        <Path.RenderTransform>
+
+                            <ScaleTransform CenterX="14" CenterY="10" ScaleX="1.6" ScaleY="1.6" />
+
+                        </Path.RenderTransform>
+                    </Path>
+
+                </Border>
 
                 <TextBlock
                     Margin="5,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Account.Login}" />
+                    Text="{Binding AccountStore.CurrentAccount.Login}" />
             </StackPanel>
-        </Grid>
+        </Border>
+
+
+        <ContentControl
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Content="{Binding selectedViewModel}">
+
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewModel:ServerVMD}">
+                    <pages:ServerPV />
+                </DataTemplate>
+            </ContentControl.Resources>
+
+        </ContentControl>
 
         <modalCutom:ModalCustom
             Grid.RowSpan="2"

@@ -4,6 +4,7 @@
 
     <!--  Текстбоксы  -->
     <Style TargetType="{x:Type TextBox}">
+        <Setter Property="MaxLength" Value="15" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource Fonts(Solid)}" />
         <Setter Property="BorderThickness" Value="0" />

@@ -14,6 +14,7 @@ using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
+using LiteCall.ViewModels.ServerPages;
 using LiteCall.Views.Pages;
 
 namespace LiteCall.ViewModels.Pages
@@ -22,7 +23,7 @@ namespace LiteCall.ViewModels.Pages
     {
         public MainPageVMD(AccountStore AccountStore)
         {
-            _Account = AccountStore.CurrentAccount;
+            this.AccountStore = AccountStore;
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
             ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted,CanConnectServerExecute);
@@ -59,18 +60,27 @@ namespace LiteCall.ViewModels.Pages
 
         public ICommand ConnectServerCommand { get; }
 
-        private bool CanConnectServerExecute(object p) => true;
+        private bool CanConnectServerExecute(object p) => ServerAdress?.Length != 17;
+       
 
         private void OnConnectServerExecuted(object p)
         {
-            ModalStatus = CheckServerStatus(ServerAdress);
+           if (CheckServerStatus(ServerAdress))
+           {
+               ModalStatus = false;
+               selectedViewModel = new ServerVMD(AccountStore, ServerAdress);
+           }
+           else
+           {
+               ServerAdress = "fail";
+           }
+
+            
         }
 
 
 
         #endregion
-
-
 
         #region Данные с окна
 
@@ -84,12 +94,12 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private Account _Account;
+        private AccountStore _AccountStore;
 
-        public Account Account
+        public AccountStore AccountStore
         {
-            get => _Account;
-            set => Set(ref _Account, value);
+            get => _AccountStore;
+            set => Set(ref _AccountStore, value);
         }
 
 
@@ -119,21 +129,37 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private UserControl _selectedViewModel;
-        public UserControl selectedViewModel
+        private BaseVMD _selectedViewModel;
+        public BaseVMD selectedViewModel
         {
             get => _selectedViewModel;
             set => Set(ref _selectedViewModel, value);
         }
+
+
+       
 
         #endregion
 
 
         bool CheckServerStatus(string serverAdress)
         {
+
             string path = "http://"+ serverAdress + "/WPFHost/";
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(path);
-            request.Timeout = 1000;
+
+            HttpWebRequest request;
+
+            try
+            {
+                request = (HttpWebRequest) WebRequest.Create(path);
+            }
+            catch (UriFormatException e)
+            {
+                return false;
+            }
+            
+            
+                request.Timeout = 5000;
 
             try
             {

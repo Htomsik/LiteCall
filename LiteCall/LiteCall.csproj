@@ -10,6 +10,7 @@
   <ItemGroup>
     <None Remove="Resources\Assets\Fonts\Oswald-Bold.ttf" />
     <None Remove="Resources\Assets\Fonts\Oswald-Regular.ttf" />
+    <None Remove="Resources\Assets\Icons\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,12 @@
     <Content Include="Resources\Assets\Fonts\Oswald-Regular.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Assets\Icons\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

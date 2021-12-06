@@ -22,29 +22,27 @@ namespace LiteCall.ViewModels.ServerPages
 
             netTcpBinding.Security.Mode = SecurityMode.None;
             netTcpBinding.Security.Transport.SslProtocols = System.Security.Authentication.SslProtocols.None;
-            factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://51.12.240.57:7998/WPFChat");
+            factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://"+ServerAdress+"/WPFChat");
             server = factory.CreateChannel();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://51.12.240.57:7997/WPFHost/");
-
-            request.Timeout = 1000;
-
-            try
-            {
-                request.GetResponse();
-                test = 1;
-            }
-            catch (Exception e)
-            {
-                test = 0;
-            }
-
-           
-
-
-
-
+            server.Join(Account.Login);
+            
         }
+
+        public override void Dispose()
+        {
+            server.Disconect();
+            base.Dispose();
+        }
+
+        #region Данные с формы
+
+        public ObservableCollection<ServerUser> Users { get; }
+
+        #endregion
+
+
+        #region Хранилища
 
         private Account _Account;
 
@@ -54,24 +52,26 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _Account, value);
         }
 
+        #endregion
+
+
+
+        #region То что относится к серверу
 
         public static InstanceContext context = new InstanceContext(new MyCallback());
         public static DuplexChannelFactory<IChatService> factory;
         public static IChatService server;
         NetTcpBinding netTcpBinding = new NetTcpBinding();
 
-
-        public ObservableCollection<ServerUser> Users { get; }
-
+        #endregion
 
 
-        private int _test;
 
-        public int test
-        {
-            get => _test;
-            set => Set(ref _test, value);
-        }
+
+
+
+
+
     }
 
     class MyCallback : IChatClient

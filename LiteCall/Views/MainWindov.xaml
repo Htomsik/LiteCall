@@ -35,9 +35,9 @@
     </Window.Resources>
 
     <Border BorderBrush="White" BorderThickness="1">
-        <Grid Background="{StaticResource Background(Solid)}">
+        <Grid Background="{StaticResource Background4(Solid)}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="26" />
+                <RowDefinition Height="35" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -62,7 +62,14 @@
 
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
-                    <TextBlock Margin="5,0,0,0" Text="LiteCall" />
+                    <Image
+                        Width="30"
+                        Margin="5,0,0,0"
+                        Source="pack://application:,,,/Resources/Assets/Icons/logo.png" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="LiteCall" />
 
                 </StackPanel>
 
