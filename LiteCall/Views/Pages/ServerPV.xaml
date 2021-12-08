@@ -82,6 +82,8 @@
                         Height="30"
                         Margin="0,0,5,0"
                         HorizontalAlignment="Right"
+                        Command="{Binding OpenModalCommand}"
+                        CommandParameter="1"
                         Style="{DynamicResource IMGButton}">
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="PlusPath" />
@@ -96,6 +98,7 @@
                         Height="30"
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
+                        Command="{Binding ReloadServerCommand}"
                         Style="{DynamicResource IMGButton}">
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="Refresh" />
@@ -290,7 +293,7 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
-            IsOpen="True">
+            IsOpen="{Binding ModalStatus}">
 
 
 
@@ -346,7 +349,7 @@
                         Margin="20,8"
                         MaxLength="17"
                         Style="{StaticResource LogPassTextBox}"
-                        Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding NewRoomName, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Border
                         Grid.Row="1"
@@ -366,7 +369,7 @@
                             MaxHeight="40"
                             Margin="15"
                             BorderBrush="{DynamicResource Green(Solid)}"
-                            Command="{Binding ConnectServerCommand}">
+                            Command="{Binding CreateNewRoomCommand}">
                             <TextBlock Text="OK" />
                         </Button>
 
@@ -376,7 +379,8 @@
                             MaxHeight="40"
                             Margin="15"
                             BorderBrush="{DynamicResource Dangerous(Solid)}"
-                            Command="{Binding ConnectServerCommand}">
+                            Command="{Binding OpenModalCommand}"
+                            CommandParameter="0">
                             <TextBlock Text="EXIT" />
                         </Button>
                     </Grid>
