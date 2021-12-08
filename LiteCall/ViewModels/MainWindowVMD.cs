@@ -17,8 +17,6 @@ namespace LiteCall.ViewModels
             _NavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
 
-
-
         private readonly NavigationStore _NavigationStore;
 
         public BaseVMD CurrentViewModel => _NavigationStore.MainWindowCurrentViewModel;

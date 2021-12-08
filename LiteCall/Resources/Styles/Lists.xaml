@@ -8,6 +8,17 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+
+
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True" />
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type ListViewItem}">
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True" />
+        </Style.Triggers>
     </Style>
 
     <!--  стиль для листвью меню  -->

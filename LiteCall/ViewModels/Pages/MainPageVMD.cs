@@ -27,6 +27,8 @@ namespace LiteCall.ViewModels.Pages
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
             ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted,CanConnectServerExecute);
+            _CurrentServer = new Server();
+
         }
 
 
@@ -60,7 +62,7 @@ namespace LiteCall.ViewModels.Pages
 
         public ICommand ConnectServerCommand { get; }
 
-        private bool CanConnectServerExecute(object p) => ServerAdress?.Length != 17;
+        private bool CanConnectServerExecute(object p) => true;
        
 
         private void OnConnectServerExecuted(object p)
@@ -68,7 +70,7 @@ namespace LiteCall.ViewModels.Pages
            if (CheckServerStatus(ServerAdress))
            {
                ModalStatus = false;
-               selectedViewModel = new ServerVMD(AccountStore, ServerAdress);
+               selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
            }
            else
            {
@@ -83,6 +85,17 @@ namespace LiteCall.ViewModels.Pages
         #endregion
 
         #region Данные с окна
+
+
+
+        private Server _CurrentServer;
+
+        public Server CurrentServer
+        {
+            get => _CurrentServer;
+            set => Set(ref _CurrentServer, value);
+        }
+
 
 
         private bool _ModalStatus;
@@ -112,15 +125,6 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        public ObservableCollection<Server> ServersMark { get; }
-        private Server _CurrentServer;
-        public Server CurrentServer
-        {
-            get => _CurrentServer;
-            set => Set(ref _CurrentServer, value);
-        }
-
-
         private Visibility _VisibilitiStatus = Visibility.Collapsed;
         public Visibility VisibilitiStatus
         {
@@ -136,16 +140,14 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _selectedViewModel, value);
         }
 
-
-       
-
+    
         #endregion
 
 
         bool CheckServerStatus(string serverAdress)
         {
 
-            string path = "http://"+ serverAdress + "/WPFHost/";
+            string path = "http://"+ serverAdress + ":7999/ServerHost/";
 
             HttpWebRequest request;
 
@@ -159,11 +161,12 @@ namespace LiteCall.ViewModels.Pages
             }
             
             
-                request.Timeout = 5000;
+            request.Timeout = 5000;
 
             try
             {
                 request.GetResponse();
+                _CurrentServer.IP = ServerAdress;
                 return true;
             }
             catch (Exception e)

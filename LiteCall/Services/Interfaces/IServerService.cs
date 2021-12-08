@@ -11,9 +11,9 @@ namespace AudioLib
     [ServiceContract(CallbackContract = typeof(IChatClient))]
     public interface IChatService
     {
-        [OperationContract(IsOneWay = true)]
-        void Join(string username);
-        
+        [OperationContract]
+        bool Join(string username, string password, bool reg);
+
         [OperationContract(IsOneWay = true)]
         void Disconect();
         [OperationContract(IsOneWay = true)]
@@ -27,17 +27,23 @@ namespace AudioLib
         [OperationContract]
         string CreateRoom(string name);
 
+        [OperationContract]
+        List<string> ServerInfo();
+
 
     }
     [ServiceContract]
     public interface IChatClient
     {
         [OperationContract(IsOneWay = true)]
-        void RecievAudio(string user, byte[] message);
-       
+        void RecievAudio(string user, byte[] message, bool type);
+
         [OperationContract(IsOneWay = true)]
-        void RecievMessage(string user, string message);
+        void RecievMessage(string user, string message, bool type);
+        [OperationContract(IsOneWay = true)]
+        void Refresh();
     }
+
     [ServiceContract(CallbackContract = typeof(ICreateRoom))]
     public interface ICreateRoomService
     {

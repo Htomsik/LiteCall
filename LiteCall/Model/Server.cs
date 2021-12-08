@@ -10,61 +10,40 @@ namespace LiteCall.Model
 {
     internal class Server:BaseVMD
     {
-        private IPAddress _IP;
-        /// <summary>
-        /// Ip сервера
-        /// </summary>
-        public IPAddress IP
+        private string _IP;
+        public string IP
         {
             get => _IP;
             set => Set(ref _IP, value);
         }
 
         private string _Name;
-        /// <summary>
-        /// Имя сервера
-        /// </summary>
         public string Name
         {
             get => _Name;
             set => Set(ref _Name, value);
         }
 
-        private int _MaxUsers;
-        /// <summary>
-        /// Максимальное еоличество пользователей сервера
-        /// </summary>
-        public int MaxUsers
-        {
-            get => _MaxUsers;
-            set => Set(ref _MaxUsers, value);
-        }
+    
 
         private int _CurrentUsers;
-        /// <summary>
-        /// Сколько пользователей на данный момент
-        /// </summary>
         public int CurrentUsers
         {
             get => _CurrentUsers;
             set => Set(ref _CurrentUsers, value);
         }
 
-        private ICollection<ServerRooms> _Rooms;
-        /// <summary>
-        /// Комнаты на сервере
-        /// </summary>
-        public ICollection<ServerRooms> Rooms
+
+        private int _MaxUsers;
+
+        public int MaxUsers
         {
-            get => _Rooms;
-            set => Set(ref _Rooms, value);
+            get => _MaxUsers;
+            set => Set(ref _MaxUsers, value);
         }
 
 
         private bool _Status;
-        /// <summary>
-        /// Статус сервера (вкл/выкл)
-        /// </summary>
         public bool Status
         {
             get => _Status;

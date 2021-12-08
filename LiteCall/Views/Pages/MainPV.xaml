@@ -153,7 +153,7 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Background="{StaticResource Background3(Solid)}"
-            CornerRadius="0 20 20 0">
+            CornerRadius="0 0 20 0">
             <StackPanel Orientation="Horizontal">
 
                 <Border
@@ -195,7 +195,6 @@
                     <pages:ServerPV />
                 </DataTemplate>
             </ContentControl.Resources>
-
         </ContentControl>
 
         <modalCutom:ModalCustom

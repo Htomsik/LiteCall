@@ -12,9 +12,15 @@
 
     <SolidColorBrush x:Key="Background4(Solid)" Color="#555655" />
 
+    <SolidColorBrush x:Key="Background5(Solid)" Color="#7E7E7E" />
+
+    <SolidColorBrush x:Key="Background6(Solid)" Color="#3D3E3D" />
+
     <SolidColorBrush x:Key="Fonts(Solid)" Color="#D6D6D6" />
 
     <SolidColorBrush x:Key="Dangerous(Solid)" Color="#E74C3C" />
+
+    <SolidColorBrush x:Key="Green(Solid)" Color="#7DA300" />
 
     <SolidColorBrush x:Key="Important(Solid)" Color="#FFE019" />
 
@@ -35,6 +41,10 @@
     <Color x:Key="Background3(Color)">#252625</Color>
 
     <Color x:Key="Background4(Color)">#555655</Color>
+
+    <Color x:Key="Background5(Color)">#7E7E7E</Color>
+
+    <Color x:Key="Background6(Color)">#3D3E3D</Color>
 
     <Color x:Key="Fonts(Color)">#D6D6D6</Color>
 
