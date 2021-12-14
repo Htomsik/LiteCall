@@ -113,8 +113,14 @@
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
-                ItemsSource="{Binding ServerRooms}">
+                ItemsSource="{Binding ServerRooms}"
+                SelectedItem="{Binding SelRooms}">
 
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Connect" Command="{Binding ConnectCommand}" CommandParameter="{Binding SelRooms}"></MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
@@ -143,7 +149,15 @@
                                 ItemsSource="{Binding Users}">
 
 
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                                
                                 <ListView.ItemTemplate>
+                                    
+                                    
                                     <DataTemplate>
 
 
@@ -168,10 +182,7 @@
 
 
 
-                                            <TextBlock
-                                                Grid.Column="2"
-                                                Margin="5,0,0,0"
-                                                Text="{Binding Login}" />
+                                         
                                         </Grid>
 
 

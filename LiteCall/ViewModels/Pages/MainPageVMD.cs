@@ -55,8 +55,18 @@ namespace LiteCall.ViewModels.Pages
         public ICommand OpenModalCommaCommand { get; }
         private void OnOpenModalCommaExecuted(object p)
         {
-            ModalStatus = true;
-            
+            if ((string)p == "1")
+            {
+                ErrorHeight = 0;
+                ModalStatus = true;
+            }
+            else
+            {
+                ModalStatus = false;
+                ServerAdress = String.Empty;
+
+            }
+
         }
 
 
@@ -71,10 +81,12 @@ namespace LiteCall.ViewModels.Pages
            {
                ModalStatus = false;
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
+               ServerAdress = String.Empty;
+               VisibilitiStatus=Visibility.Visible;
            }
            else
            {
-               ServerAdress = "fail";
+               ErrorHeight = 40;
            }
 
             
@@ -85,6 +97,18 @@ namespace LiteCall.ViewModels.Pages
         #endregion
 
         #region Данные с окна
+
+
+
+
+
+        private double _ErrorHeight = 0;
+
+        public double ErrorHeight
+        {
+            get => _ErrorHeight;
+            set => Set(ref _ErrorHeight, value);
+        }
 
 
 

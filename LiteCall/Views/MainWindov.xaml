@@ -65,7 +65,7 @@
                     <Image
                         Width="30"
                         Margin="5,0,0,0"
-                        Source="pack://application:,,,/Resources/Assets/Icons/logo.png" />
+                        Source="../Resources/Assets/Icons/AppIcon.png" />
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"

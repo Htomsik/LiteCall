@@ -135,7 +135,7 @@
             <Button
                 HorizontalAlignment="Center"
                 Command="{Binding OpenModalCommaCommand}"
-                CommandParameter="0"
+                CommandParameter="1"
                 Style="{StaticResource IMGButton}"
                 Visibility="{Binding VisibilitiStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
@@ -204,18 +204,33 @@
 
 
 
+
             <Grid
                 MinWidth="250"
                 MinHeight="200"
                 Background="{DynamicResource Background2(Solid)}">
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding ErrorHeight}" />
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
+                <Border
+                    Width="200"
+                    BorderBrush="{DynamicResource Dangerous(Solid)}"
+                    BorderThickness="2"
+                    CornerRadius="20">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource Dangerous(Solid)}"
+                        Style="{DynamicResource Bigtext}"
+                        Text="Connection failed" />
+                </Border>
                 <TextBlock
+                    Grid.Row="1"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="CONNECT" />
@@ -223,7 +238,7 @@
 
 
                 <TextBlock
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="5,0,0,8"
                     HorizontalAlignment="Center"
                     Text="IP ADRESS">
@@ -248,27 +263,46 @@
 
                 <TextBox
                     x:Name="Iptb"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="20,8"
                     MaxLength="17"
                     Style="{StaticResource LogPassTextBox}"
                     Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Border
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Height="2"
                     Margin="20,8"
                     VerticalAlignment="Bottom"
                     Background="{DynamicResource Fonts(Solid)}" />
 
-                <Button
-                    Grid.Row="2"
-                    MaxWidth="125"
-                    MaxHeight="40"
-                    Margin="15"
-                    Command="{Binding ConnectServerCommand}">
-                    <TextBlock Text="OK" />
-                </Button>
+
+
+                <Grid Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        MaxWidth="125"
+                        MaxHeight="40"
+                        Margin="15"
+                        BorderBrush="{DynamicResource Green(Solid)}"
+                        Command="{Binding ConnectServerCommand}">
+                        <TextBlock Text="OK" />
+                    </Button>
+
+                    <Button
+                        Grid.Column="1"
+                        MaxWidth="125"
+                        MaxHeight="40"
+                        Margin="15"
+                        BorderBrush="{DynamicResource Dangerous(Solid)}"
+                        Command="{Binding OpenModalCommaCommand}"
+                        CommandParameter="0">
+                        <TextBlock Text="EXIT" />
+                    </Button>
+                </Grid>
 
             </Grid>
 
