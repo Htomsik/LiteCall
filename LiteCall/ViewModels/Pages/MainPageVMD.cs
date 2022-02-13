@@ -98,12 +98,7 @@ namespace LiteCall.ViewModels.Pages
 
         #region Данные с окна
 
-
-
-
-
         private double _ErrorHeight = 0;
-
         public double ErrorHeight
         {
             get => _ErrorHeight;

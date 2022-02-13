@@ -34,29 +34,38 @@ namespace LiteCall.ViewModels.ServerPages
 
           
 
-                         context = new InstanceContext(new MyCallback(output,bufferStream));
-                     netTcpBinding = new NetTcpBinding(SecurityMode.None, true);
+                    context = new InstanceContext(new MyCallback(output,bufferStream));
 
-                      factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + this.CurrentServer.IP + ":7998/ServerHost/Chat");
+                     netTcpBinding = new NetTcpBinding(SecurityMode.Transport, true);
+
+                    factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + this.CurrentServer.IP + ":7998/ServerHost/Chat");
 
                      factory.Open();
 
-                   server = factory.CreateChannel();
+                     server = factory.CreateChannel();
+
+                    
 
 
 
-                     if (server.GetRoomList().Count == 0)
-                     {
-                         server.CreateRoom("Chat1");
-                         server.CreateRoom("Chat2");
-                       }
-
-
-                       Reload();
-                       GetServerInfo();
-
-
+                
+               
+                    
+                
             
+
+
+                    Reload();
+
+                 //   server.CreateRoom("Chat3");
+                  //  server.CreateRoom("Chat4");
+
+         
+
+            //     GetServerInfo();
+
+
+
 
 
 
@@ -242,16 +251,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private void Reload()
         {
-
-
-    
-
-
-
             ServerRooms = GetServerRooms(server.GetRoomList());
-          
-           
-
         }
 
         #endregion
@@ -267,7 +267,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         void ConnectRoom( string RoomName)
         {
-            factory.Close();
+            
             factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + CurrentServer.IP + ":7998/ServerHost/Chat/"+RoomName);
             factory.Open();
             server = factory.CreateChannel();
@@ -285,7 +285,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             server.Join(Account.Login, Account.Password, false);
 
-
+         //   server.Join("Jess"," ", false);
 
             input.StartRecording();
         }
@@ -356,16 +356,7 @@ namespace LiteCall.ViewModels.ServerPages
         void GetServerInfo()
         {
 
-
-            factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + this.CurrentServer.IP + ":7998/ServerHost/Chat");
-
-            factory.Open();
-
-            server = factory.CreateChannel();
-
             var ServerInfo = server.ServerInfo();
-
-            
 
             CurrentServer.Name = ServerInfo[0];
 

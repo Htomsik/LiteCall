@@ -10,7 +10,7 @@
   <Class Name="LiteCall.ViewModels.Pages.MainPageVMD">
     <Position X="4.75" Y="2.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAFAAUAoAAAAEAAABIQAABAAEABACAEAACgEAAAAA=</HashCode>
+      <HashCode>QAAAFACUAoAAAAEAAABIQAABAAEABACAEAACgEAAAAA=</HashCode>
       <FileName>ViewModels\Pages\MainPageVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -123,7 +123,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.Infrastructure.Converters.Boolinverter">
-    <Position X="4.5" Y="8" Width="1.25" />
+    <Position X="4" Y="9" Width="1.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Infrastructure\Converters\Boolinverter.cs</FileName>
@@ -131,7 +131,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="LiteCall.Infrastructure.Converters.VisibilityConverter">
-    <Position X="6" Y="8" Width="1.25" />
+    <Position X="5.75" Y="9" Width="1.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Infrastructure\Converters\VisibilityConverter.cs</FileName>
@@ -146,35 +146,35 @@
     </TypeIdentifier>
   </Class>
   <Interface Name="LiteCall.Services.Interfaces.INavigatonService&lt;TViewModel&gt;">
-    <Position X="4" Y="9.5" Width="1.5" />
+    <Position X="2.75" Y="11" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Services\Interfaces\INavigatonService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="AudioLib.IChatService">
-    <Position X="2.5" Y="9.5" Width="1.25" />
+    <Position X="1.25" Y="11" Width="1.25" />
     <TypeIdentifier>
       <HashCode>AAAAAIIAAAAIAAgAACAAAAAAAAAAAAgQAAAAAAAAEAA=</HashCode>
       <FileName>Services\Interfaces\IServerService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="AudioLib.IChatClient">
-    <Position X="5.75" Y="9.5" Width="1.5" />
+    <Position X="4.5" Y="11" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Services\Interfaces\IServerService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="AudioLib.ICreateRoomService">
-    <Position X="5.75" Y="11.25" Width="1.5" />
+    <Position X="4.5" Y="12.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Interfaces\IServerService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="AudioLib.ICreateRoom">
-    <Position X="4" Y="10.75" Width="1.5" />
+    <Position X="2.75" Y="12.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Interfaces\IServerService.cs</FileName>

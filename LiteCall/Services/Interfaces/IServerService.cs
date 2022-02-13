@@ -17,7 +17,7 @@ namespace AudioLib
         [OperationContract(IsOneWay = true)]
         void Disconect();
         [OperationContract(IsOneWay = true)]
-        void SendMessage(string message,string name);
+        void SendMessage(string message, string name);
         [OperationContract(IsOneWay = true)]
         void SendAudo(byte[] audio, string name);
         [OperationContract]
@@ -26,9 +26,9 @@ namespace AudioLib
         List<string> GetRoomList();
         [OperationContract]
         string CreateRoom(string name);
-
         [OperationContract]
         List<string> ServerInfo();
+
 
 
     }
@@ -42,8 +42,8 @@ namespace AudioLib
         void RecievMessage(string user, string message, bool type);
         [OperationContract(IsOneWay = true)]
         void Refresh();
-    }
 
+    }
     [ServiceContract(CallbackContract = typeof(ICreateRoom))]
     public interface ICreateRoomService
     {
@@ -51,7 +51,7 @@ namespace AudioLib
         [OperationContract]
         void ServerJoin(string username);
     }
-    
+
     [ServiceContract]
     public interface ICreateRoom
     {

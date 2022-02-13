@@ -197,13 +197,11 @@
             </ContentControl.Resources>
         </ContentControl>
 
+        <!--  IsOpen="{Binding ModalStatus}"  -->
         <modalCutom:ModalCustom
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
-            IsOpen="{Binding ModalStatus}">
-
-
-
+            IsOpen="True">
 
             <Grid
                 MinWidth="250"
@@ -219,6 +217,7 @@
 
                 <Border
                     Width="200"
+                    Height="40"
                     BorderBrush="{DynamicResource Dangerous(Solid)}"
                     BorderThickness="2"
                     CornerRadius="20">
@@ -305,8 +304,6 @@
                 </Grid>
 
             </Grid>
-
-
 
         </modalCutom:ModalCustom>
 
