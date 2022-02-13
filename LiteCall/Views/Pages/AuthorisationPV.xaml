@@ -12,8 +12,6 @@
     mc:Ignorable="d">
 
 
-
-    <UserControl.Resources>
         <converters:Boolinverter x:Key="Boolinvert" />
     </UserControl.Resources>
 
