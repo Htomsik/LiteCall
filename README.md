@@ -8,7 +8,7 @@
 ## __Оглавление__
 
 - [Описание](#Описание)
-- [Как использовать](#Как-использовать)
+- [Возможности приложения](##Что-может-делать-приложение?)
 - [Ссылки на авторов](#Ссылки-на-авторов)
 
 ---
@@ -33,7 +33,7 @@
 
 ![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/ServerRoom1.png)
 
-### __Диаграмма классов приложения__
+### __Диаграмма классов клиента__
 
 ![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/ClassDiagram1.png)
 
