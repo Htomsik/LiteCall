@@ -53,6 +53,11 @@
 
 ### nuget пакеты клиента
 - NAudio
+- System.ServiceModel.Duplex
+- System.ServiceModel.Http
+- System.ServiceModel.NetTcp
+- System.ServiceModel.Primitives
+- System.ServiceModel.Security
 - System.Windows.Interactivity.WPF
 
 ---
