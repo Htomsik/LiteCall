@@ -29,6 +29,16 @@
 
 ![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/Main.png)
 
+### __Страница сервера__
+
+![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/ServerRoom.png)
+
+### __Диаграмма классов приложения__
+
+![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/ClassDiagram.png)
+
+
+
 ### __Окно сервера__
 
 #### Технологии
@@ -65,7 +75,8 @@
 - Невозможность подключения больше чем 2 человек в голосовой чат
 - Отсутсвие нормального отключения пользователя от сервера
 - Отсуствие нормальной валидации
-- Отсуствие всевозможных проверок на
+- В силу неопытности неизвестно правильно ли были реализованны отдельные компоненты
+- Отсуствие нормального тестирования
 ---
 ## __Ссылки на авторов__
 
