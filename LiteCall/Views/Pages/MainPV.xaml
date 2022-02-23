@@ -201,7 +201,7 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
-            IsOpen="True">
+            IsOpen="{Binding ModalStatus}">
 
             <Grid
                 MinWidth="250"

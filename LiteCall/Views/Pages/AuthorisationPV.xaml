@@ -11,8 +11,10 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-
-        <converters:Boolinverter x:Key="Boolinvert" />
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:Boolinverter x:Key="Boolinvert" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{StaticResource Background(Solid)}">
@@ -161,4 +163,4 @@
 
     </Grid>
 
-</UserControl>
+    </UserControl>
