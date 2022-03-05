@@ -1,107 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AudioLib;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.VisualBasic.ApplicationServices;
 using NAudio.Wave;
+using SignalRServ;
 
 namespace LiteCall.ViewModels.ServerPages
 {
     internal class ServerVMD:BaseVMD
     {
-        public ServerVMD(AccountStore AccountStore, Server CurrentServer)
+        public ServerVMD(AccountStore _AccountStore, Server _CurrentServer)
         {
-            
-            _Account = AccountStore.CurrentAccount;
 
-          this.CurrentServer= CurrentServer;
+            Account = _AccountStore.CurrentAccount;
 
-          MessagesColCollection = new ObservableCollection<Message>();
-
-          MessageBus.Bus += Receive;
+            CurrentServer = _CurrentServer;
 
 
-          
+            #region Шины сообщений
 
-                    context = new InstanceContext(new MyCallback(output,bufferStream));
+            //Сообщения
+            MessageBus.Bus += Receive;
 
-                     netTcpBinding = new NetTcpBinding(SecurityMode.Transport, true);
+            //Обновение комнат
+            ReloadServerRooms.Reloader += GetServerRoomsAsync;
 
-                    factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + this.CurrentServer.IP + ":7998/ServerHost/Chat");
-
-                     factory.Open();
-
-                     server = factory.CreateChannel();
-
-                    
+            #endregion
 
 
-
-                
-               
-                    
-                
-            
+            MessagesColCollection = new ObservableCollection<Message>();
 
 
-                    Reload();
-
-                 //   server.CreateRoom("Chat3");
-                  //  server.CreateRoom("Chat4");
-
-         
-
-            //     GetServerInfo();
+            //Инициализация подлючения
+            InitSignalRConnection(CurrentServer);
 
 
+           var NewName =  ServerService.hubConnection.InvokeAsync<string>("SetName", _Account.Login);
 
-
-
-
-
-            /*    var Serv = new ObservableCollection<ServerRooms>();
-            Random rnd = new Random();
-
-            for (int i = 0; i < rnd.Next(2,5); i++)
-            {
-                ServerRooms NewServerRooms = new ServerRooms
-                {
-                    Name = "Room"+i,
-                    Users = new ObservableCollection<ServerUser>()
-                };
-                for (int j = 0; j < rnd.Next(0,7); j++)
-                {
-                    ServerUser newUser = new ServerUser
-                    {
-                        Login = "Test"
-                    };
-                    NewServerRooms.Users.Add(newUser);
-                }
-
-                Serv.Add(NewServerRooms);
-                    
-            }
-
-            this.ServerRooms = Serv;
-
-            CurrentServer.Name = "TestServer"; */
-
-
-
-
-
-
+           
             #region команды
 
             SendMessageCommand = new LambdaCommand(OnSendMessageExecuted,CanSendMessageExecuted);
@@ -109,8 +58,6 @@ namespace LiteCall.ViewModels.ServerPages
             OpenModalCommand = new LambdaCommand(OnOpenModalCommandExecuted);
 
             CreateNewRoomCommand = new LambdaCommand(OnCreateNewRoomExecuted, CanCreateNewRoomExecute);
-
-            ReloadServerCommand =new LambdaCommand(OnReloadServerExecuted);
 
             ConnectCommand = new LambdaCommand(OnConnectExecuted,CanConnectExecute);
 
@@ -120,41 +67,71 @@ namespace LiteCall.ViewModels.ServerPages
 
         #region То что относится к серверу
 
-        static InstanceContext context;
-        static DuplexChannelFactory<IChatService> factory;
-        static IChatService server;
-        NetTcpBinding netTcpBinding;
+
+
+        /// <summary>
+        /// Инициализация соединения
+        /// </summary>
+        private static void InitSignalRConnection(Server CurrentServer)
+        {
+            
+            ServerService.ConnectionHub($"http://{CurrentServer.IP}:5000/LiteCall");
+        }
+
+
+
+
+        /// <summary>
+        /// Информация о комнатах и пользователях на сервере
+        /// </summary>
+        private async void GetServerRoomsAsync()
+        {
+
+            var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
+
+
+          ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+
+
+        }
+
+
+
 
 
         #endregion
 
-   
+        
 
 
 
-
-        public ICommand ReloadServerCommand { get; }
-
-        private void OnReloadServerExecuted(object p)
-        {
-            Reload();
-        }
 
 
         public ICommand CreateNewRoomCommand { get; }
 
-        private bool CanCreateNewRoomExecute(object p) => NewRoomName?.Length>3 ;
+        private bool CanCreateNewRoomExecute(object p) => Convert.ToString(p)?.Length >=3;
 
         private void OnCreateNewRoomExecuted(object p)
         {
-            server.CreateRoom(NewRoomName);
+
+            AsyncCreateRoom((string)p);
             NewRoomName = string.Empty;
             ModalStatus = false;
            
 
         }
 
+        private async void AsyncCreateRoom(string RoomName)
+        {
+            await ServerService.hubConnection.InvokeAsync("GroupCreate", RoomName);
+        }
+
+
+
+
         public ICommand OpenModalCommand { get; }
+
+       
         private void OnOpenModalCommandExecuted(object p)
         {
 
@@ -182,7 +159,7 @@ namespace LiteCall.ViewModels.ServerPages
         {
             ServerRooms sr = (ServerRooms)p;
 
-            ConnectRoom(sr.Name);
+          //  ConnectRoom(sr.Name);
         }
 
 
@@ -199,17 +176,21 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
 
+
+
+
+
         public ICommand SendMessageCommand { get; }
 
         private void OnSendMessageExecuted(object p)
         {
             try
             {
-                server.SendMessage(CurrentMessage, Account.Login);
+             
                 Message newMessage = new Message
                 {
-                    Date = DateTime.Now,
-                    Info = CurrentMessage,
+                    DateSend = DateTime.Now,
+                    text = CurrentMessage,
                     User = Account.Login,
                     Type = false
                 };
@@ -239,20 +220,13 @@ namespace LiteCall.ViewModels.ServerPages
         private void Receive(Message lastmessage)
         {
 
-            App.Current.Dispatcher.Invoke((Action)delegate
+          /*  App.Current.Dispatcher.Invoke((Action)delegate
             {
                 MessagesColCollection.Add(lastmessage);
             });
-
+          */
         }
 
-
-      
-
-        private void Reload()
-        {
-            ServerRooms = GetServerRooms(server.GetRoomList());
-        }
 
         #endregion
 
@@ -268,11 +242,6 @@ namespace LiteCall.ViewModels.ServerPages
         void ConnectRoom( string RoomName)
         {
             
-            factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + CurrentServer.IP + ":7998/ServerHost/Chat/"+RoomName);
-            factory.Open();
-            server = factory.CreateChannel();
-
-
             input = new WaveIn();
             input.DeviceNumber = 0;
             
@@ -283,9 +252,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             output.Init(bufferStream);
 
-            server.Join(Account.Login, Account.Password, false);
-
-         //   server.Join("Jess"," ", false);
 
             input.StartRecording();
         }
@@ -295,81 +261,18 @@ namespace LiteCall.ViewModels.ServerPages
         {
             
 
-                server.SendAudo(e.Buffer, _Account.Login);
           
         }
 
 
-        ObservableCollection<ServerRooms> GetServerRooms(List<string> serverRooms)
-        {
-
-           
-            var ServerRooms = new ObservableCollection<ServerRooms>();
-
-            foreach (var _RoomName in serverRooms)
-            {
-                ServerRooms NewServerRooms = new ServerRooms
-                {
-                    Name = _RoomName,
-                    Users = GetUserInRooms(_RoomName)
-                };
-                ServerRooms.Add(NewServerRooms);
-            }
-
-
-            return ServerRooms;
-        }
-
-
-        ObservableCollection<ServerUser> GetUserInRooms(string RoomName)
-        {
-
-            DuplexChannelFactory<IChatService> factory;
-
-            var Users = new ObservableCollection<ServerUser>();
-            List<string> ListUser;
-
-
-            factory = new DuplexChannelFactory<IChatService>(context, netTcpBinding, "net.tcp://" + CurrentServer.IP + ":7998/ServerHost/Chat/" + RoomName);
-
-            factory.Open();
-
-            server = factory.CreateChannel();
-
-            ListUser = server.GetUserList();
-
-            foreach (var _UserName in ListUser)
-            {
-                ServerUser newUser = new ServerUser
-                {
-                    Login = _UserName
-                };
-                Users.Add(newUser);
-            }
-
-            factory.Close();
-
-            return Users;
-        }
-
-
-        void GetServerInfo()
-        {
-
-            var ServerInfo = server.ServerInfo();
-
-            CurrentServer.Name = ServerInfo[0];
-
-            CurrentServer.MaxUsers = Convert.ToInt16(ServerInfo[1]);
-
-        }
 
 
         public override void Dispose()
         {
             MessageBus.Bus -= Receive;
-          
-            
+
+            ReloadServerRooms.Reloader -= GetServerRoomsAsync;
+
             base.Dispose();
         }
 
@@ -414,9 +317,17 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
 
-        public  ObservableCollection<ServerRooms> ServerRooms { get; set; }
 
-      
+        private ObservableCollection<ServerRooms> _ServerRooms;
+
+        public ObservableCollection<ServerRooms> ServerRooms
+        {
+            get => _ServerRooms;
+            set => Set(ref _ServerRooms, value);
+        }
+
+
+
 
         #endregion
 
@@ -439,46 +350,5 @@ namespace LiteCall.ViewModels.ServerPages
 
     }
 
-     class MyCallback : IChatClient
-     {
-
-         public MyCallback(WaveOut output1, BufferedWaveProvider bufferStream1)
-         {
-            output=output1;
-            bufferStream=bufferStream1;
-         }
-
-
-         public static WaveOut output = new WaveOut();
-        
-        public static BufferedWaveProvider bufferStream;
-
-        
-        public void RecievAudio(string user, byte[] message, bool type)
-        {
-            output.Play();
-            int received = message.Length;
-            bufferStream.AddSamples(message, 0, received);
-        }
-
-        public void RecievMessage(string user, string message, bool type)
-        {
-            Message newMessage = new Message
-            {
-                Date = DateTime.Now,
-                Info = message,
-                User = user,
-                Type = type
-            };
-
-            MessageBus.Send(newMessage);
-
-        }
-
-        public void Refresh()
-        {
-        // ReloadServer.Reload();
-
-        }
-    }
+    
 }

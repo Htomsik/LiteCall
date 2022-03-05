@@ -77,7 +77,12 @@ namespace LiteCall.ViewModels.Pages
 
         private void OnConnectServerExecuted(object p)
         {
-           if (CheckServerStatus(ServerAdress))
+
+
+            
+
+           
+            if (CheckServerStatus(ServerAdress))
            {
                ModalStatus = false;
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
@@ -88,8 +93,9 @@ namespace LiteCall.ViewModels.Pages
            {
                ErrorHeight = 40;
            }
+          
 
-            
+
         }
 
 
@@ -165,8 +171,7 @@ namespace LiteCall.ViewModels.Pages
 
         bool CheckServerStatus(string serverAdress)
         {
-
-            string path = "http://"+ serverAdress + ":7999/ServerHost/";
+            string path = "https://"+ serverAdress + ":5001";
 
             HttpWebRequest request;
 

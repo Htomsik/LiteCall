@@ -14,7 +14,11 @@ namespace LiteCall.Services
 
         public static void Send(Message data) => Bus?.Invoke(data);
     }
-    internal static class ReloadServer
+
+
+
+
+    internal static class ReloadServerRooms
     {
         public static event Action Reloader;
 

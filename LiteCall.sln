@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteCall", "LiteCall\LiteCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModalCutom", "ModalCutom\ModalCutom.csproj", "{59E17B05-B0F8-4CBF-881B-BE75B89AF7A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignlR", "SignlR\SignlR.csproj", "{01677F1F-5760-4095-B411-2CD7E36424BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{59E17B05-B0F8-4CBF-881B-BE75B89AF7A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59E17B05-B0F8-4CBF-881B-BE75B89AF7A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59E17B05-B0F8-4CBF-881B-BE75B89AF7A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01677F1F-5760-4095-B411-2CD7E36424BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01677F1F-5760-4095-B411-2CD7E36424BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01677F1F-5760-4095-B411-2CD7E36424BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01677F1F-5760-4095-B411-2CD7E36424BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
