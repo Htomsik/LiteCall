@@ -33,10 +33,10 @@ namespace LiteCall.ViewModels.ServerPages
             #region Шины сообщений
 
             //Сообщения
-            MessageBus.Bus += Receive;
+            MessageBus.Bus += AsyncGetMessage;
 
             //Обновение комнат
-            ReloadServerRooms.Reloader += GetServerRoomsAsync;
+            ReloadServerRooms.Reloader += AsynGetServerRooms;
 
             #endregion
 
@@ -61,48 +61,38 @@ namespace LiteCall.ViewModels.ServerPages
 
             ConnectCommand = new LambdaCommand(OnConnectExecuted,CanConnectExecute);
 
+            DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted, CanDisconectGroupExecute);
+
             #endregion
 
         }
 
         #region То что относится к серверу
 
-
-
+        
         /// <summary>
         /// Инициализация соединения
         /// </summary>
         private static void InitSignalRConnection(Server CurrentServer)
         {
-            
             ServerService.ConnectionHub($"http://{CurrentServer.IP}:5000/LiteCall");
         }
 
 
-
-
-        /// <summary>
-        /// Информация о комнатах и пользователях на сервере
-        /// </summary>
-        private async void GetServerRoomsAsync()
-        {
-
-            var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
-
-
-          ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
-
-
-        }
-
-
-
-
-
         #endregion
 
-        
 
+
+
+
+        public ICommand DisconectGroupCommand { get; }
+
+        private bool CanDisconectGroupExecute(object p) => true;
+
+        private void OnDisconectGroupExecuted(object p)
+        {
+            AsyncGroupDisconect();
+        }
 
 
 
@@ -113,25 +103,24 @@ namespace LiteCall.ViewModels.ServerPages
 
         private void OnCreateNewRoomExecuted(object p)
         {
-
-            AsyncCreateRoom((string)p);
-            NewRoomName = string.Empty;
-            ModalStatus = false;
+            try
+            {
+                AsyncCreateRoom((string)p);
+                NewRoomName = string.Empty;
+                ModalStatus = false;
+            }
+            catch (Exception e)
+            {
+                
+            }
+          
            
 
         }
 
-        private async void AsyncCreateRoom(string RoomName)
-        {
-            await ServerService.hubConnection.InvokeAsync("GroupCreate", RoomName);
-        }
-
-
-
-
+        
         public ICommand OpenModalCommand { get; }
 
-       
         private void OnOpenModalCommandExecuted(object p)
         {
 
@@ -149,66 +138,48 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
 
-
-
         public ICommand ConnectCommand { get; }
 
-        private bool CanConnectExecute(object p) => p is  ServerRooms;
+        private bool CanConnectExecute(object p) => p is ServerRooms;
 
         private void OnConnectExecuted(object p)
         {
-            ServerRooms sr = (ServerRooms)p;
 
-          //  ConnectRoom(sr.Name);
+            AsyncConnectGroup((ServerRooms)p);
         }
 
 
 
-
-
-
-        private ServerRooms _SelRooms;
-
-        public ServerRooms SelRooms
-        {
-            get => _SelRooms;
-            set => Set(ref _SelRooms, value);
-        }
-
-
-
-
-
+        #region Отправка сообщений
 
         public ICommand SendMessageCommand { get; }
 
         private void OnSendMessageExecuted(object p)
         {
-            try
-            {
-             
+          
+
                 Message newMessage = new Message
                 {
                     DateSend = DateTime.Now,
-                    text = CurrentMessage,
-                    User = Account.Login,
-                    Type = false
+                    Text = CurrentMessage,
+                    Sender = Account.Login,
                 };
+
+                AsyncSendMessage(newMessage);
 
                 MessagesColCollection.Add(newMessage);
 
                 CurrentMessage = string.Empty;
-                
 
-            }
-            catch (Exception e)
-            {
-               
-            }
+
            
-        }   
+
+        }
 
         private bool CanSendMessageExecuted(object p) => true;
+
+        #endregion
+
 
 
 
@@ -217,14 +188,37 @@ namespace LiteCall.ViewModels.ServerPages
 
         #region Подписки
 
-        private void Receive(Message lastmessage)
+
+        /// <summary>
+        /// Приём сообщений
+        /// </summary>
+        /// <param name=""></param>
+        private void AsyncGetMessage(Message newMessage )
         {
 
-          /*  App.Current.Dispatcher.Invoke((Action)delegate
-            {
-                MessagesColCollection.Add(lastmessage);
-            });
-          */
+            MessagesColCollection.Add(newMessage);
+
+
+        }
+
+        private async void AsyncGroupDisconect()
+        {
+            await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
+        }
+
+        private void AsyncServerDisconnect()
+        {
+
+        }
+
+
+        /// <summary>
+        /// Информация о комнатах и пользователях на сервере
+        /// </summary>
+        private async void AsynGetServerRooms()
+        {
+            var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
+            ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
         }
 
 
@@ -232,12 +226,70 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
+        /// <summary>
+        /// Создание комнаты
+        /// </summary>
+        /// <param name="RoomName"></param>
+        private async void AsyncCreateRoom(string _RoomName)
+        {
+            try
+            {
+              var GroupStatus =  await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", _RoomName);
+
+
+              if (GroupStatus)
+              {
+
+                  CurrentGroup = new ServerRooms
+                  {
+                      RoomName = _RoomName,
+                      Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", _RoomName)
+                  };
+                 
+              }
+
+
+              
+            }
+            catch (Exception e)
+            {
+              
+              
+            }
+           
+        }
+
+        /// <summary>
+        /// Отправка сообщений
+        /// </summary>
+        /// <param name="RoomName"></param>
+        private async void AsyncSendMessage(Message NewMessage)
+        {
+            await ServerService.hubConnection.InvokeAsync("SendMessage", NewMessage);
+        }
+
+        private async void AsyncConnectGroup(ServerRooms ConnectedGroup)
+        {
+          var ConnetGroupStatus =  await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect",$"{ConnectedGroup.RoomName}");
+
+          if (ConnetGroupStatus)
+              CurrentGroup = ConnectedGroup;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         public static WaveOut output = new WaveOut();
         public static WaveIn input;
-        public static BufferedWaveProvider bufferStream = new BufferedWaveProvider(new WaveFormat(8000, 16, 1)); 
-
-
-
+        public static BufferedWaveProvider bufferStream = new BufferedWaveProvider(new WaveFormat(8000, 16, 1));
 
         void ConnectRoom( string RoomName)
         {
@@ -260,8 +312,6 @@ namespace LiteCall.ViewModels.ServerPages
         private  void Voice_Input(object sender, WaveInEventArgs e)
         {
             
-
-          
         }
 
 
@@ -269,9 +319,9 @@ namespace LiteCall.ViewModels.ServerPages
 
         public override void Dispose()
         {
-            MessageBus.Bus -= Receive;
+            MessageBus.Bus -= AsyncGetMessage;
 
-            ReloadServerRooms.Reloader -= GetServerRoomsAsync;
+            ReloadServerRooms.Reloader -= AsynGetServerRooms;
 
             base.Dispose();
         }
@@ -280,7 +330,14 @@ namespace LiteCall.ViewModels.ServerPages
 
 
         #region Данные с формы
-        public ObservableCollection<Message> MessagesColCollection { get; set; }
+        private ObservableCollection<Message> _MessagesColCollection;
+
+        public ObservableCollection<Message> MessagesColCollection
+        {
+            get => _MessagesColCollection;
+            set => Set(ref _MessagesColCollection, value);
+        }
+
 
         private Server _CurrentServer;
 
@@ -316,6 +373,13 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _NewRoomName, value);
         }
 
+        private ServerRooms _SelRooms;
+
+        public ServerRooms SelRooms
+        {
+            get => _SelRooms;
+            set => Set(ref _SelRooms, value);
+        }
 
 
         private ObservableCollection<ServerRooms> _ServerRooms;
@@ -325,6 +389,18 @@ namespace LiteCall.ViewModels.ServerPages
             get => _ServerRooms;
             set => Set(ref _ServerRooms, value);
         }
+
+
+
+        private ServerRooms _CurrentGroup;
+
+        public ServerRooms CurrentGroup
+        {
+            get => _CurrentGroup;
+            set => Set(ref _CurrentGroup, value);
+        }
+
+
 
 
 

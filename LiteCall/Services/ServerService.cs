@@ -19,12 +19,14 @@ namespace SignalRServ
                  .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.Zero, 
                      TimeSpan.Zero,TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(10),TimeSpan.FromSeconds(15),TimeSpan.FromSeconds(50)})
                  .Build();
-            
+
+            hubConnection.ServerTimeout = TimeSpan.FromSeconds(1800);
             hubConnection.On<Message>("Send", message => 
-            {                                         
-                
-                
-               
+            {
+
+                MessageBus.Send(message);
+                return Task.CompletedTask;
+
             });
             hubConnection.On("UpdateRooms", () =>
             {
@@ -34,17 +36,22 @@ namespace SignalRServ
 
             });
 
+
+            //если соединение закрыто
             hubConnection.Closed += error =>
             {
                 Console.WriteLine($"Connection closed {error.Message}");
                 return Task.CompletedTask;
             };
 
+            //возникает когда получается обратно подключится
             hubConnection.Reconnected += id =>
             {
                 Console.WriteLine($"Connection reconected with id {id}");
                 return Task.CompletedTask;
             };
+
+            //возникает в момент переподключения
             hubConnection.Reconnecting += error =>
             {
                 Console.WriteLine($"Connection reconecting {error.Message}");
