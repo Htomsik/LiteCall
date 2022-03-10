@@ -272,7 +272,7 @@
                     Margin="20,8"
                     MaxLength="17"
                     Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding ServerName, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Border
                     Grid.Row="2"

@@ -3,52 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Model
 {
-    internal class Server:BaseVMD
+    internal class Server
     {
-        private string _IP;
-        public string IP
-        {
-            get => _IP;
-            set => Set(ref _IP, value);
-        }
 
-        private string _Name;
-        public string Name
-        {
-            get => _Name;
-            set => Set(ref _Name, value);
-        }
+        [JsonPropertyName("ip")]
+        public string Ip { get; set; }
 
-    
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
 
-        private int _CurrentUsers;
-        public int CurrentUsers
-        {
-            get => _CurrentUsers;
-            set => Set(ref _CurrentUsers, value);
-        }
+        [JsonPropertyName("tittle")]
+        public string Title { get; set; }
 
+        [JsonPropertyName("country")]
+        public string Country { get; set; }
 
-        private int _MaxUsers;
+        [JsonPropertyName("city")]
+        public string City { get; set; }
 
-        public int MaxUsers
-        {
-            get => _MaxUsers;
-            set => Set(ref _MaxUsers, value);
-        }
-
-
-        private bool _Status;
-        public bool Status
-        {
-            get => _Status;
-            set => Set(ref _Status, value);
-        }
     }
 
 
@@ -61,4 +39,6 @@ namespace LiteCall.Model
      
 
     }
+
+    
 }

@@ -60,7 +60,35 @@ namespace LiteCall.Services
             }
         }
 
-            private static string GetHashSha1(this string content)
+
+
+
+        internal static async Task<Server> ServerGetInfo(string ServerName)
+        {
+            using var httpClient = new HttpClient();
+
+            var json = JsonSerializer.Serialize(ServerName);
+
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            var response = await httpClient.PostAsync("http://localhost:57785/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+
+                var a = response.Content.ReadAsStringAsync().Result;
+
+                var str = JsonSerializer.Deserialize<Server>(a);
+
+                return str;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private static string GetHashSha1(this string content)
             {
 
                 using var sha1 = new SHA1Managed();

@@ -120,7 +120,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// </summary>
         private static void InitSignalRConnection(Server CurrentServer)
         {
-            ServerService.ConnectionHub($"http://{CurrentServer.IP}:5000/LiteCall");
+            ServerService.ConnectionHub($"http://{CurrentServer.Ip}:5000/LiteCall");
 
         }
 

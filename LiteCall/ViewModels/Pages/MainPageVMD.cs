@@ -51,7 +51,7 @@ namespace LiteCall.ViewModels.Pages
         private void OnDisconnectServerExecuted(object p)
         {
             selectedViewModel = null;
-            _CurrentServer.IP = ServerAdress;
+            _CurrentServer.Ip = string.Empty;
             VisibilitiStatus = Visibility.Collapsed;
             ServerService.hubConnection.StopAsync();
 
@@ -86,7 +86,7 @@ namespace LiteCall.ViewModels.Pages
             else
             {
                 ModalStatus = false;
-                ServerAdress = String.Empty;
+                ServerName = String.Empty;
 
             }
 
@@ -101,13 +101,15 @@ namespace LiteCall.ViewModels.Pages
         private void OnConnectServerExecuted(object p)
         {
 
+            Server newServer = DataBaseService.ServerGetInfo(ServerName).Result;
 
-           
-            if (CheckServerStatus(ServerAdress))
+
+
+            if (CheckServerStatus(newServer.Ip))
            {
                ModalStatus = false;
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
-               ServerAdress = String.Empty;
+               ServerName = String.Empty;
                VisibilitiStatus=Visibility.Visible;
               
             }
@@ -163,13 +165,17 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private string _ServerAdress;
 
-        public string ServerAdress
+
+
+        private string _ServerName;
+
+        public string ServerName
         {
-            get => _ServerAdress;
-            set => Set(ref _ServerAdress, value);
+            get => _ServerName;
+            set => Set(ref _ServerName, value);
         }
+
 
 
         private Visibility _VisibilitiStatus = Visibility.Collapsed;
@@ -212,7 +218,7 @@ namespace LiteCall.ViewModels.Pages
             try
             {
                 request.GetResponse();
-                _CurrentServer.IP = ServerAdress;
+                _CurrentServer.Ip = serverAdress;
                 return true;
             }
             catch (Exception e)
