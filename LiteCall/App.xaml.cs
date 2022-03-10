@@ -30,11 +30,11 @@ namespace LiteCall
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-
+            
 
             INavigatonService<AuthorisationPageVMD> AuthPageNavigationService = CreateAutPageNavigationServices();
             AuthPageNavigationService.Navigate();
-
+                
             MainWindow = new MainWindov()
             {
                 

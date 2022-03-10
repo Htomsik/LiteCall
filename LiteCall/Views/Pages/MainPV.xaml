@@ -130,6 +130,12 @@
                     </Path.RenderTransform>
                 </Path>
 
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding DisconnectServerCommand}" Header="Server Disconnect" />
+                    </ContextMenu>
+                </Border.ContextMenu>
+
             </Border>
 
             <Button

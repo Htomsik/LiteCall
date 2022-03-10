@@ -16,6 +16,7 @@ using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 using LiteCall.ViewModels.ServerPages;
 using LiteCall.Views.Pages;
+using SignalRServ;
 
 namespace LiteCall.ViewModels.Pages
 {
@@ -24,15 +25,37 @@ namespace LiteCall.ViewModels.Pages
         public MainPageVMD(AccountStore AccountStore)
         {
             this.AccountStore = AccountStore;
+
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
+
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
+
             ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted,CanConnectServerExecute);
+
+            DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
+
             _CurrentServer = new Server();
 
         }
 
 
         #region Команды
+
+
+
+
+        public ICommand DisconnectServerCommand { get; }
+
+        private bool CanDisconnectServerExecute(object p) => true;
+
+        private void OnDisconnectServerExecuted(object p)
+        {
+            selectedViewModel = null;
+            _CurrentServer.IP = ServerAdress;
+            VisibilitiStatus = Visibility.Collapsed;
+            ServerService.hubConnection.StopAsync();
+
+        }
 
         public ICommand VisibilitySwitchCommand { get; }
         private void OnVisibilitySwitchExecuted(object p)
@@ -79,8 +102,6 @@ namespace LiteCall.ViewModels.Pages
         {
 
 
-            
-
            
             if (CheckServerStatus(ServerAdress))
            {
@@ -88,7 +109,8 @@ namespace LiteCall.ViewModels.Pages
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
                ServerAdress = String.Empty;
                VisibilitiStatus=Visibility.Visible;
-           }
+              
+            }
            else
            {
                ErrorHeight = 40;

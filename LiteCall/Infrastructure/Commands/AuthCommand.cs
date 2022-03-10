@@ -33,6 +33,8 @@ namespace LiteCall.Infrastructure.Commands
 
         public override void Execute(object parameter)
         {
+            
+
             if (!CanExecute(parameter)) return;
 
 
@@ -40,10 +42,13 @@ namespace LiteCall.Infrastructure.Commands
             {
                Login = _AuthVMD.Login,
                Password = _AuthVMD.Password,
-               Type = _AuthVMD.CheckStatus
+               Type = _AuthVMD.CheckStatus,
             };
 
             _AccountStore.CurrentAccount = newAccount;
+
+            _AccountStore.CurrentAccount.Token = TokenService.GetToken(_AccountStore).Result;
+
             _NavigationServices.Navigate();
         }
     }

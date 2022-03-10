@@ -10,8 +10,7 @@ namespace LiteCall.Stores
 {
     internal class AccountStore:BaseVMD
     {
-      
-
+        
 
         private Account _CurrentAccount;
 

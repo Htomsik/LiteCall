@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Net;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
@@ -27,16 +29,23 @@ namespace LiteCall.ViewModels.ServerPages
 
             Account = _AccountStore.CurrentAccount;
 
+            ServerService._AccountStore = _AccountStore;
+
+
+
+
             CurrentServer = _CurrentServer;
 
 
             #region Шины сообщений
 
             //Сообщения
-            MessageBus.Bus += AsyncGetMessage;
+            MessageBus.Bus += AsyncGetMessageBUS;
 
             //Обновение комнат
-            ReloadServerRooms.Reloader += AsynGetServerRooms;
+            ReloadServerRooms.Reloader += AsynGetServerRoomsBUS;
+
+            VoiceMessageBus.Bus += AsyncGetAudioBUS;
 
             #endregion
 
@@ -63,6 +72,42 @@ namespace LiteCall.ViewModels.ServerPages
 
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted, CanDisconectGroupExecute);
 
+
+
+            #region Настройка Naduio
+
+            input = new WaveIn();
+            input.DeviceNumber = 0;
+
+            input.WaveFormat = new WaveFormat(8000, 16, 1);
+
+            input.DataAvailable += Voice_Input;
+
+
+            output.Init(bufferStream);
+            output.DesiredLatency = 100;
+
+
+
+
+
+
+
+
+            var wave16ToFloatProvider = new Wave16ToFloatProvider(bufferStream);
+
+            _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+
+        
+
+            #endregion
+
+
+
+
+
+
+
             #endregion
 
         }
@@ -76,6 +121,7 @@ namespace LiteCall.ViewModels.ServerPages
         private static void InitSignalRConnection(Server CurrentServer)
         {
             ServerService.ConnectionHub($"http://{CurrentServer.IP}:5000/LiteCall");
+
         }
 
 
@@ -193,7 +239,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// Приём сообщений
         /// </summary>
         /// <param name=""></param>
-        private void AsyncGetMessage(Message newMessage )
+        private void AsyncGetMessageBUS(Message newMessage )
         {
 
             MessagesColCollection.Add(newMessage);
@@ -201,21 +247,43 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-        private async void AsyncGroupDisconect()
+        /// <summary>
+        /// Получение звука
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="message"></param>
+        public  void AsyncGetAudioBUS(VoiceMessage newVoiceMes)
         {
-            await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
+
+
+
+
+            bufferStream.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+
+            Thread.Sleep(0);
+            output.Play();
+            
+
         }
 
-        private void AsyncServerDisconnect()
-        {
 
-        }
+        private  MixingWaveProvider32 _mixingWaveProvider32 = new MixingWaveProvider32();
+      
+
+
+        public static WaveOut output = new WaveOut();
+        public static WaveIn input;
+        public static BufferedWaveProvider bufferStream = new BufferedWaveProvider(new WaveFormat(8000, 16, 1));
+
+
+      
+
 
 
         /// <summary>
         /// Информация о комнатах и пользователях на сервере
         /// </summary>
-        private async void AsynGetServerRooms()
+        private async void AsynGetServerRoomsBUS()
         {
             var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
             ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
@@ -225,6 +293,15 @@ namespace LiteCall.ViewModels.ServerPages
         #endregion
 
 
+
+
+
+
+        private async void AsyncGroupDisconect()
+        {
+            await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
+            input.StopRecording();
+        }
 
         /// <summary>
         /// Создание комнаты
@@ -245,9 +322,10 @@ namespace LiteCall.ViewModels.ServerPages
                       RoomName = _RoomName,
                       Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", _RoomName)
                   };
+
+                  input.StartRecording();
                  
               }
-
 
               
             }
@@ -268,63 +346,57 @@ namespace LiteCall.ViewModels.ServerPages
             await ServerService.hubConnection.InvokeAsync("SendMessage", NewMessage);
         }
 
+        /// <summary>
+        /// Присоединение к комнате
+        /// </summary>
+        /// <param name="ConnectedGroup"></param>
         private async void AsyncConnectGroup(ServerRooms ConnectedGroup)
         {
           var ConnetGroupStatus =  await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect",$"{ConnectedGroup.RoomName}");
 
           if (ConnetGroupStatus)
+          {
+              input.StartRecording();
               CurrentGroup = ConnectedGroup;
+            }
+             
+
+
+
         }
 
 
 
-
-
-
-
-
-
-
-
-
-        public static WaveOut output = new WaveOut();
-        public static WaveIn input;
-        public static BufferedWaveProvider bufferStream = new BufferedWaveProvider(new WaveFormat(8000, 16, 1));
-
-        void ConnectRoom( string RoomName)
+        
+        private async void Voice_Input(object sender, WaveInEventArgs e)
         {
-            
-            input = new WaveIn();
-            input.DeviceNumber = 0;
-            
-            input.WaveFormat = new WaveFormat(8000, 16, 1);
-          
-            input.DataAvailable += Voice_Input;
-
-
-            output.Init(bufferStream);
-
-
-            input.StartRecording();
+            try
+            {
+               await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+            }
+            catch (Exception ex)
+            {
+               
+            }
         }
 
+       
 
-        private  void Voice_Input(object sender, WaveInEventArgs e)
+
+
+        protected override void Dispose()
         {
-            
-        }
+            MessageBus.Bus -= AsyncGetMessageBUS;
 
+            ReloadServerRooms.Reloader -= AsynGetServerRoomsBUS;
 
-
-
-        public override void Dispose()
-        {
-            MessageBus.Bus -= AsyncGetMessage;
-
-            ReloadServerRooms.Reloader -= AsynGetServerRooms;
+            VoiceMessageBus.Bus -= AsyncGetAudioBUS;
 
             base.Dispose();
         }
+
+
+       
 
         #endregion
 
@@ -421,7 +493,7 @@ namespace LiteCall.ViewModels.ServerPages
         #endregion
 
 
-
+         
        
 
     }

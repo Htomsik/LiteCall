@@ -16,18 +16,12 @@ namespace LiteCall.ViewModels.Pages
     internal class AuthorisationPageVMD:BaseVMD
     {
         public AuthorisationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices)
-
         {
             
-
             // AuthCommand = new NavigationCommand<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore));
-
-
             //  AuthoCommand = new AuthCommand(new NavigationServices<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore)));
-
-
-           // AuthCommand = new AuthCommand(this, new ParametrNavigationServices<Account, MainPageVMD>(
-             //   navigationStore, (account) => new MainPageVMD(navigationStore, account)),CanAuthExecute);
+            // AuthCommand = new AuthCommand(this, new ParametrNavigationServices<Account, MainPageVMD>(
+            //   navigationStore, (account) => new MainPageVMD(navigationStore, account)),CanAuthExecute);
 
              AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore,CanAuthExecute);
 
@@ -40,8 +34,6 @@ namespace LiteCall.ViewModels.Pages
 
 
         public ICommand AuthCommand { get; }
-
-       
 
         private bool CanAuthExecute(object p)
         {
