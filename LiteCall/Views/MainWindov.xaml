@@ -55,6 +55,11 @@
                     <DataTemplate DataType="{x:Type viewModel:AuthorisationPageVMD}">
                         <pages:AuthorisationPV />
                     </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type viewModel:RegistrationPageVMD}">
+                        <pages:RegistrationPV />
+                    </DataTemplate>
+
                 </ContentControl.Resources>
             </ContentControl>
             <!--  Верхняя панель  -->

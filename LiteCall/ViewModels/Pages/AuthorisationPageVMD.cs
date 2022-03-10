@@ -15,17 +15,18 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class AuthorisationPageVMD:BaseVMD
     {
-        public AuthorisationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices)
+
+
+        private readonly INavigatonService<RegistrationPageVMD> _RegistrationNavigationServices;
+
+        public AuthorisationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices, INavigatonService<RegistrationPageVMD> RegistrationPageNavigationServices)
         {
-            
-            // AuthCommand = new NavigationCommand<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore));
-            //  AuthoCommand = new AuthCommand(new NavigationServices<MainPageVMD>(navigationStore, () => new MainPageVMD(navigationStore)));
-            // AuthCommand = new AuthCommand(this, new ParametrNavigationServices<Account, MainPageVMD>(
-            //   navigationStore, (account) => new MainPageVMD(navigationStore, account)),CanAuthExecute);
 
-             AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore,CanAuthExecute);
+            _RegistrationNavigationServices = RegistrationPageNavigationServices;
 
+            AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore,CanAuthExecute);
 
+            OpenRegistrationPageCommand = new NavigationCommand<RegistrationPageVMD>(RegistrationPageNavigationServices);
 
         }
         private readonly NavigationStore _NavigationStore;
@@ -37,15 +38,28 @@ namespace LiteCall.ViewModels.Pages
 
         private bool CanAuthExecute(object p)
         {
-            if (CheckStatus == true && !string.IsNullOrEmpty(Login))
+
+            var param = (Tuple<object, object>)p;
+
+         var logintb = !Convert.ToBoolean(param.Item1);
+         var passtb = !Convert.ToBoolean(param.Item2);
+
+
+
+            if (CheckStatus == true && logintb)
             {
                 return true;
             }
 
-            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
+            return logintb && passtb;
 
 
         }
+        /// <summary>
+        /// Открыть окно регистрации
+        /// </summary>
+        public ICommand OpenRegistrationPageCommand { get; }
+       
 
         #endregion
 

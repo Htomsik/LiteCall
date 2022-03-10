@@ -47,7 +47,12 @@ namespace LiteCall
 
         private INavigatonService<AuthorisationPageVMD> CreateAutPageNavigationServices()
         {
-            return new NavigationServices<AuthorisationPageVMD>(_NavigationStore, () => new AuthorisationPageVMD(_AccountStore, CreateMainPageNavigationServices()));
+            return new NavigationServices<AuthorisationPageVMD>(_NavigationStore, () => new AuthorisationPageVMD(_AccountStore, CreateMainPageNavigationServices(), CreateRegistrationPageNavigationServices()));
+        }
+
+        private INavigatonService<RegistrationPageVMD> CreateRegistrationPageNavigationServices()
+        {
+            return new NavigationServices<RegistrationPageVMD>(_NavigationStore, () => new RegistrationPageVMD(_AccountStore, CreateMainPageNavigationServices(),CreateAutPageNavigationServices()));
         }
 
         private INavigatonService<MainPageVMD> CreateMainPageNavigationServices()

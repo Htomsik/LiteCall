@@ -11,67 +11,63 @@ using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Pages;
 
-
 namespace LiteCall.Infrastructure.Commands
 {
-    internal class AuthCommand : BaseCommand
+    internal class RegistrationCommand : BaseCommand
     {
-
-        private readonly AuthorisationPageVMD _AuthVMD;
+        private readonly RegistrationPageVMD _RegVMD;
         private readonly INavigatonService<MainPageVMD> _NavigationServices;
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
-        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigatonService<MainPageVMD> navigationServices, AccountStore accountStore, Func<object, bool> canExecute=null)
+
+        public RegistrationCommand(RegistrationPageVMD RegVMD, INavigatonService<MainPageVMD> navigationServices,
+            AccountStore accountStore, Func<object, bool> canExecute = null)
         {
-            _AuthVMD = AuthVMD;
+            _RegVMD = RegVMD;
             _NavigationServices = navigationServices;
             _AccountStore = accountStore;
             _CanExecute = canExecute;
         }
+
         public override bool CanExecute(object parameter)
         {
-          return  _CanExecute?.Invoke(parameter) ?? true;
+            return _CanExecute?.Invoke(parameter) ?? true;
         }
 
         public override void Execute(object parameter)
         {
-            
+
 
             if (!CanExecute(parameter)) return;
 
 
             Account newAccount = new Account()
             {
-               Login = _AuthVMD.Login,
-               Password = _AuthVMD.Password,
-               IsAuthorise = !_AuthVMD.CheckStatus,
+                Login = _RegVMD.Login,
+                Password = _RegVMD.Password,
             };
 
-            if (newAccount.IsAuthorise)
-            {
-                newAccount.Token = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
-                if (!string.IsNullOrEmpty(newAccount.Token))
-                {
-                    _NavigationServices.Navigate();
-                }
-                else
-                {
-                    var result = MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account ", "Сообщение", MessageBoxButtons.OK);
 
-                }
-            }
-            else
+            newAccount.Token = DataBaseService.Registration(newAccount).Result;
+
+            if (!string.IsNullOrEmpty(newAccount.Token))
             {
                 _NavigationServices.Navigate();
             }
-            
+            else
+            {
+                MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account", "Сообщение", MessageBoxButtons.OK);
+
+            }
+
 
             _AccountStore.CurrentAccount = newAccount;
 
-            
 
-            
+
+
         }
+
     }
 }

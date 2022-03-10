@@ -7,29 +7,31 @@
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.ViewModels.Pages"
+    xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     d:DesignHeight="400"
     d:DesignWidth="400"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:Boolinverter x:Key="Boolinvert" />
+            <converters:Boolinverter x:Key="Boolinverter" />
+            <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{StaticResource Background(Solid)}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="235" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="Auto" MaxWidth="400" />
+            <ColumnDefinition Width="1*" />
 
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition MinHeight="235" />
-            <RowDefinition MinHeight="70" />
-            <RowDefinition />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" MinHeight="235" />
+            <RowDefinition Height="Auto" MinHeight="70" />
+            <RowDefinition Height="1*" />
 
         </Grid.RowDefinitions>
 
@@ -42,16 +44,15 @@
             <Grid>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-
-
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.6*" />
+                    <RowDefinition Height="1.6*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
 
                 <TextBlock
-                    Margin="5,0,0,0"
+                    Margin="5,10,0,0"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="LOGIN" />
@@ -79,6 +80,7 @@
                     Grid.Row="2"
                     Margin="5,0,0,8"
                     HorizontalAlignment="Center"
+                    IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
                     Text="PASSWORD">
 
                     <TextBlock.Style>
@@ -103,16 +105,36 @@
                     x:Name="UsernameTB"
                     Grid.Row="1"
                     Margin="20,8"
-                    Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" />
+                    Style="{StaticResource LogPassTextBox}">
+                    <TextBox.Text>
+                        <Binding
+                            Mode="TwoWay"
+                            Path="Login"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <validationRule:UsernameValidator />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
 
                 <TextBox
                     x:Name="PasswordTB"
                     Grid.Row="2"
                     Margin="20,8"
-                    IsEnabled="{Binding CheckStatus, Converter={StaticResource Boolinvert}}"
-                    Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+                    IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
+                    Style="{StaticResource LogPassTextBox}">
+                    <TextBox.Text>
+                        <Binding
+                            Mode="TwoWay"
+                            Path="Password"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <validationRule:PasswordValidator />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
 
                 <Border
                     Grid.Row="1"
@@ -130,8 +152,8 @@
 
                 <StackPanel
                     Grid.Row="3"
-                    Margin="15,0,0,0"
-                    HorizontalAlignment="Left"
+                    Margin="15,0,15,0"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
 
@@ -145,8 +167,47 @@
                     </TextBlock>
 
                 </StackPanel>
-            </Grid>
 
+                <StackPanel
+                    Grid.Row="4"
+                    Margin="10,0,10,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal">
+
+                    <TextBlock>
+                        don't have account?
+                    </TextBlock>
+
+                    <TextBlock Margin="5,0,5,0">
+                        Registration
+                        <TextBlock.Style>
+
+                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
+                                <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
+
+
+                                <Style.Triggers>
+
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="TextDecorations" Value="UnderLine" />
+                                    </Trigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+                        </TextBlock.Style>
+
+                        <TextBlock.InputBindings>
+                            <MouseBinding
+                                Command="{Binding OpenRegistrationPageCommand}"
+                                CommandParameter="2"
+                                MouseAction="LeftClick" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <Button
@@ -157,10 +218,17 @@
             Margin="15"
             Command="{Binding AuthCommand, UpdateSourceTrigger=PropertyChanged}">
             <TextBlock Style="{DynamicResource Bigtext}" Text="LOGIN" />
+
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
+                    <Binding ElementName="UsernameTB" Path="(Validation.HasError)" />
+                    <Binding ElementName="PasswordTB" Path="(Validation.HasError)" />
+                </MultiBinding>
+            </Button.CommandParameter>
         </Button>
 
 
 
     </Grid>
 
-    </UserControl>
+</UserControl>
