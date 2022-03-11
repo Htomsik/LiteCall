@@ -23,6 +23,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
             <system:Double x:Key="SendMassegeButtonScale">1.0</system:Double>
+            <system:Double x:Key="MicrophoneButtonscale">0.8</system:Double>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -31,12 +32,13 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="235" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" MinWidth="235" />
+            <ColumnDefinition Width="*" MinWidth="50" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition />
+            <RowDefinition Height="40" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
@@ -57,7 +59,7 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
-                    Text="{Binding CurrentGroup.RoomName}" />
+                    Text="{Binding CurrentServer.Title}" />
 
                 <Border
                     Height="1"
@@ -83,10 +85,10 @@
                         HorizontalAlignment="Right"
                         Command="{Binding OpenModalCommand}"
                         CommandParameter="1"
-                        Style="{DynamicResource IMGButton}">
+                        Style="{DynamicResource IMGButton}"
+                        ToolTip="Create new group">
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="PlusPath" />
-
                         </Button.Resources>
 
                     </Button>
@@ -98,7 +100,8 @@
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         Command="{Binding DisconectGroupCommand}"
-                        Style="{DynamicResource IMGButton}">
+                        Style="{DynamicResource IMGButton}"
+                        ToolTip="Disconnect from group">
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="Close" />
 
@@ -115,7 +118,7 @@
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
                 ItemsSource="{Binding ServerRooms}"
-                SelectedItem="{Binding SelRooms}">
+                SelectedItem="{Binding SelRooms, UpdateSourceTrigger=PropertyChanged}">
 
                 <ListView.ContextMenu>
                     <ContextMenu>
@@ -125,9 +128,9 @@
                             Header="Connect" />
                     </ContextMenu>
                 </ListView.ContextMenu>
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
-
                         <Grid Margin="0,0,0,5">
 
                             <Grid.RowDefinitions>
@@ -210,11 +213,33 @@
             </ListView>
         </Grid>
 
+        <!--  Управление звуком  -->
+        <StackPanel
+            Grid.Row="1"
+            Background="{DynamicResource Background23(Solid)}"
+            Orientation="Horizontal">
+            <ToggleButton
+                Width="35"
+                Height="35"
+                Margin="5"
+                Command="{Binding VoiceInputCommand}"
+                CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                Style="{DynamicResource ImgToggleButton}">
+
+                <ToggleButton.Resources>
+                    <StaticResource x:Key="Img" ResourceKey="Microphone" />
+                    <StaticResource x:Key="Img2" ResourceKey="MicrophoneMute" />
+                    <StaticResource x:Key="Scale" ResourceKey="MicrophoneButtonscale" />
+                </ToggleButton.Resources>
+
+            </ToggleButton>
+        </StackPanel>
+
         <!--  Информация о комнате  -->
         <Grid
             Background="{DynamicResource Background4(Solid)}"
             Column="1"
-            RowSpan="2">
+            RowSpan="3">
 
 
 
@@ -242,10 +267,12 @@
 
                                         <TextBlock
                                             Margin="0,0,2,0"
+                                            HorizontalAlignment="Left"
                                             DockPanel.Dock="Left"
                                             Text="{Binding DateSend, StringFormat=HH:mm}" />
                                         <TextBlock
                                             Margin="0,0,2,0"
+                                            HorizontalAlignment="Left"
                                             DockPanel.Dock="Left"
                                             Text="{Binding Sender}" />
                                         <TextBlock DockPanel.Dock="Left" Text="{Binding Text, StringFormat=: {0}}" />
@@ -258,6 +285,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </Border>
+
 
 
 
@@ -409,9 +437,6 @@
 
 
         </modalCutom:ModalCustom>
-
-
-
 
     </Grid>
 </UserControl>

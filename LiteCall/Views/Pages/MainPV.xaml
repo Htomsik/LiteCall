@@ -246,7 +246,7 @@
                     Grid.Row="2"
                     Margin="5,0,0,8"
                     HorizontalAlignment="Center"
-                    Text="IP ADRESS">
+                    Text="SERVER NAME">
 
                     <TextBlock.Style>
                         <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">

@@ -30,12 +30,22 @@ namespace LiteCall.ViewModels.Pages
         private bool CanRegistrationExecute(object p)
         {
 
+
+            var param = (Tuple<object, object>)p;
+
+            var logintb = !Convert.ToBoolean(param?.Item1);
+            var passtb = !Convert.ToBoolean(param?.Item2);
+
+
+
             if (Password != ConfirmPassword)
             {
                 return false;
             }
 
-            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
+
+            return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword);
+
         }
 
 

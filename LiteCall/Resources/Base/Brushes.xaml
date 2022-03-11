@@ -8,6 +8,9 @@
 
     <SolidColorBrush x:Key="Background2(Solid)" Color="#2A2B2A" />
 
+    <SolidColorBrush x:Key="Background23(Solid)" Color="#262726" />
+
+
     <SolidColorBrush x:Key="Background3(Solid)" Color="#252625" />
 
     <SolidColorBrush x:Key="Background4(Solid)" Color="#555655" />
@@ -37,6 +40,8 @@
     <Color x:Key="Background(Color)">#202020</Color>
 
     <Color x:Key="Background2(Color)">#2A2B2A</Color>
+
+    <Color x:Key="Background23(Color)">#262726</Color>
 
     <Color x:Key="Background3(Color)">#252625</Color>
 

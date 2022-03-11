@@ -51,7 +51,7 @@ namespace LiteCall.ViewModels.Pages
                 return true;
             }
 
-            return logintb && passtb;
+            return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
 
 
         }

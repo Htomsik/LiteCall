@@ -9,6 +9,47 @@
 
     </Style>
 
+
+    <Style x:Key="Microphone" TargetType="{x:Type Path}">
+
+        <Setter Property="Data">
+            <Setter.Value>
+
+                <PathGeometry Figures="M32 35c2.209 0 4-1.791 4-4v-9c0-2.209-1.791-4-4-4s-4 1.791-4 4v9C28 33.209 29.791 35 32 35z M32 0      C14.327 0 0 14.327 0 32s14.327 32 32 32s32-14.327 32-32S49.673 0 32 0z M26 22c0-3.313 2.687-6 6-6c3.312 0 6 2.687 6 6v9      c0 3.312-2.688 6-6 6c-3.313 0-6-2.688-6-6V22z M33 40.949V46h3c0.553 0 1 0.448 1 1c0 0.553-0.447 1-1 1h-8      c-0.553 0-1-0.447-1-1c0-0.552 0.447-1 1-1h3v-5.051c-5.053-0.502-9-4.764-9-9.949c0-0.553 0.447-1 1-1s1 0.447 1 1      c0 4.418 3.582 8 8 8s8-3.582 8-8c0-0.553 0.447-1 1-1s1 0.447 1 1C42 36.186 38.053 40.447 33 40.949z" FillRule="NonZero" />
+
+            </Setter.Value>
+        </Setter>
+
+
+        <Setter Property="Fill" Value="{StaticResource Green(Solid)}" />
+
+    </Style>
+
+    <Style x:Key="MicrophoneMute" TargetType="{x:Type Path}">
+
+        <Setter Property="Data">
+            <Setter.Value>
+
+                <PathGeometry Figures="M32 35c2.209 0 4-1.791 4-4v-9c0-2.209-1.791-4-4-4s-4 1.791-4 4v9C28 33.209 29.791 35 32 35z M32 0      C14.327 0 0 14.327 0 32s14.327 32 32 32s32-14.327 32-32S49.673 0 32 0z M26 22c0-3.313 2.687-6 6-6c3.312 0 6 2.687 6 6v9      c0 3.312-2.688 6-6 6c-3.313 0-6-2.688-6-6V22z M33 40.949V46h3c0.553 0 1 0.448 1 1c0 0.553-0.447 1-1 1h-8      c-0.553 0-1-0.447-1-1c0-0.552 0.447-1 1-1h3v-5.051c-5.053-0.502-9-4.764-9-9.949c0-0.553 0.447-1 1-1s1 0.447 1 1      c0 4.418 3.582 8 8 8s8-3.582 8-8c0-0.553 0.447-1 1-1s1 0.447 1 1C42 36.186 38.053 40.447 33 40.949z" FillRule="NonZero" />
+
+            </Setter.Value>
+        </Setter>
+
+
+        <Setter Property="Fill" Value="{StaticResource Dangerous(Solid)}" />
+
+    </Style>
+
+
+
+    <Style x:Key="micro" TargetType="{x:Type Path}">
+
+
+
+        <Setter Property="Fill" Value="{StaticResource Dangerous(Solid)}" />
+
+    </Style>
+
     <Style x:Key="Close" TargetType="{x:Type Path}">
 
         <Setter Property="Data" Value="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2z M17 15.59L15.59 17L12 13.41L8.41 17L7 15.59 L10.59 12L7 8.41L8.41 7L12 10.59L15.59 7L17 8.41L13.41 12L17 15.59z" />

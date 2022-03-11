@@ -144,8 +144,16 @@
                     x:Name="PasswordTB"
                     Grid.Row="2"
                     Margin="20,8"
-                    Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+                    Style="{StaticResource LogPassTextBox}">
+                    <Binding
+                        Mode="TwoWay"
+                        Path="Password"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <validationRule:PasswordValidator />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox>
 
                 <TextBox
                     x:Name="PasswordConfirmTB"

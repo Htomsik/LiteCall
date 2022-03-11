@@ -18,7 +18,7 @@ namespace LiteCall.Model
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("tittle")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
         [JsonPropertyName("country")]

@@ -50,6 +50,7 @@ namespace LiteCall.ViewModels.Pages
 
         private void OnDisconnectServerExecuted(object p)
         {
+            selectedViewModel.Dispose();
             selectedViewModel = null;
             _CurrentServer.Ip = string.Empty;
             VisibilitiStatus = Visibility.Collapsed;
@@ -103,10 +104,9 @@ namespace LiteCall.ViewModels.Pages
 
             Server newServer = DataBaseService.ServerGetInfo(ServerName).Result;
 
-
-
-            if (CheckServerStatus(newServer.Ip))
-           {
+            
+            if (newServer is not null && CheckServerStatus(newServer.Ip))
+            {
                ModalStatus = false;
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
                ServerName = String.Empty;

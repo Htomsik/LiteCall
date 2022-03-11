@@ -37,7 +37,7 @@ namespace LiteCall.ViewModels.Base
             return true;
         }
 
-        protected virtual void Dispose() { }
+        public virtual void Dispose() { }
 
 
     }
