@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LiteCall.Infrastructure.Commands.Base;
@@ -10,6 +11,7 @@ using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Pages;
+using Microsoft.AspNetCore.WebUtilities;
 
 
 namespace LiteCall.Infrastructure.Commands
@@ -33,6 +35,13 @@ namespace LiteCall.Infrastructure.Commands
           return  _CanExecute?.Invoke(parameter) ?? true;
         }
 
+
+        private  bool IsAuthorize(string token)
+        {
+            dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
+            return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role%22"] != "Anonymous"? true:false;
+        }
+
         public override void Execute(object parameter)
         {
             
@@ -40,38 +49,75 @@ namespace LiteCall.Infrastructure.Commands
             if (!CanExecute(parameter)) return;
 
 
+
             Account newAccount = new Account()
             {
-               Login = _AuthVMD.Login,
-               Password = _AuthVMD.Password,
-               IsAuthorise = !_AuthVMD.CheckStatus,
+                Login = _AuthVMD.Login,
+                Password = _AuthVMD.Password,
             };
 
-            if (newAccount.IsAuthorise)
-            {
-                newAccount.Token = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
-                if (!string.IsNullOrEmpty(newAccount.Token))
+
+            if (!_AuthVMD.CheckStatus)
+            {
+                
+                try
                 {
+                    newAccount.Token = DataBaseService.GetAuthorizeToken(newAccount).Result;
+
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+
+                if (string.IsNullOrEmpty(newAccount.Token))
+                {
+                    MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account ", "Сообщение", MessageBoxButtons.OK);
+                }
+                else if (IsAuthorize(newAccount.Token))
+                {
+                    newAccount.IsAuthorise = true;
                     _NavigationServices.Navigate();
                 }
                 else
                 {
-                    var result = MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account ", "Сообщение", MessageBoxButtons.OK);
-
+                    MessageBox.Show("This account doesn't exist", "Сообщение", MessageBoxButtons.OK);
                 }
+
+               
             }
             else
             {
-                _NavigationServices.Navigate();
+                newAccount.IsAuthorise = false;
+                newAccount.Password = "";
+
+                try
+                {
+                    newAccount.Token = DataBaseService.GetAuthorizeToken(newAccount).Result;
+
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                if (string.IsNullOrEmpty(newAccount.Token))
+                {
+                    MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account ", "Сообщение", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    _NavigationServices.Navigate();
+                }
+
+
+
             }
-            
+
+
 
             _AccountStore.CurrentAccount = newAccount;
 
-            
-
-            
         }
     }
 }

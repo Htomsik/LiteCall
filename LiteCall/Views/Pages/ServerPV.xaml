@@ -10,7 +10,7 @@
     xmlns:serverPages="clr-namespace:LiteCall.ViewModels.ServerPages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignWidth="1200"
     mc:Ignorable="d">
 
 
@@ -243,42 +243,49 @@
 
 
 
-            <Border
-                Height="1"
-                VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource Fonts(Solid)}"
-                BorderThickness="1" />
-
             <Grid Grid.Row="1">
 
                 <Grid.RowDefinitions>
+                    <RowDefinition
+                        Height="0.2*"
+                        MinHeight="100"
+                        MaxHeight="150" />
                     <RowDefinition />
                     <RowDefinition Height="40" />
                 </Grid.RowDefinitions>
 
 
-                <Border Grid.RowSpan="2" Background="{DynamicResource Background6(Solid)}">
-                    <ListView Grid.Row="0" ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
+                <!--  Информация о сервере  -->
+                <Grid Background="{DynamicResource Background7(Solid)}" />
+
+
+                <!--  Сообщеия  -->
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Background="{DynamicResource Background6(Solid)}">
+                    <ListView
+                        Grid.Row="0"
+                        ItemContainerStyle="{DynamicResource MessageListItems}"
+                        ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
+
+
+
+
                         <ListView.ItemTemplate>
                             <DataTemplate>
+                                <StackPanel
+                                    HorizontalAlignment="Left"
+                                    Background="Transparent"
+                                    Orientation="Horizontal">
 
-                                <Border HorizontalAlignment="Left">
-                                    <DockPanel HorizontalAlignment="Left">
 
-                                        <TextBlock
-                                            Margin="0,0,2,0"
-                                            HorizontalAlignment="Left"
-                                            DockPanel.Dock="Left"
-                                            Text="{Binding DateSend, StringFormat=HH:mm}" />
-                                        <TextBlock
-                                            Margin="0,0,2,0"
-                                            HorizontalAlignment="Left"
-                                            DockPanel.Dock="Left"
-                                            Text="{Binding Sender}" />
-                                        <TextBlock DockPanel.Dock="Left" Text="{Binding Text, StringFormat=: {0}}" />
+                                    <TextBlock Margin="0,0,2,0" Text="{Binding DateSend, StringFormat=HH:mm}" />
+                                    <TextBlock Margin="0,0,2,0" Text="{Binding Sender}" />
+                                    <TextBlock Text="{Binding Text, StringFormat=: {0}}" />
 
-                                    </DockPanel>
-                                </Border>
+
+                                </StackPanel>
 
 
                             </DataTemplate>
@@ -286,18 +293,18 @@
                     </ListView>
                 </Border>
 
-
-
-
-
-                <Grid Row="1">
+                <!--  Отправка сообщений  -->
+                <Grid Row="2">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="45" />
+                        <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.6*" MaxWidth="500"/>
+                        <ColumnDefinition Width="0.2*" />
                     </Grid.ColumnDefinitions>
 
                     <Button
+                        Grid.Column="2"
+                        HorizontalAlignment="Left"
                         Width="40"
                         Height="40"
                         Margin="0,0,5,0"
@@ -307,11 +314,12 @@
                             <StaticResource x:Key="Img" ResourceKey="Pointer" />
                             <StaticResource x:Key="Scale" ResourceKey="SendMassegeButtonScale" />
                         </Button.Resources>
-                        <Grid.Column>1</Grid.Column>
+                        
                     </Button>
 
 
                     <Border
+                        Grid.Column="1"
                         MinWidth="100"
                         MaxWidth="500"
                         Margin="15,5"

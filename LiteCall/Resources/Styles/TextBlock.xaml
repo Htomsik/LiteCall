@@ -11,6 +11,7 @@
         <Setter Property="FontFamily" Value="{DynamicResource OswaldRegular}" />
         <Setter Property="Foreground" Value="{DynamicResource Fonts(Solid)}" />
         <Setter Property="FontSize" Value="18" />
+
     </Style>
 
     <!--  Важный текст (названия)  -->
@@ -20,6 +21,8 @@
         TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="{DynamicResource OswaldBold}" />
         <Setter Property="FontSize" Value="24" />
+
+
     </Style>
 
 

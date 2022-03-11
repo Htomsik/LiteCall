@@ -30,7 +30,7 @@ namespace LiteCall.ViewModels.Pages
 
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
 
-            ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted,CanConnectServerExecute);
+            ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted);
 
             DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
 
@@ -96,9 +96,6 @@ namespace LiteCall.ViewModels.Pages
 
         public ICommand ConnectServerCommand { get; }
 
-        private bool CanConnectServerExecute(object p) => true;
-       
-
         private void OnConnectServerExecuted(object p)
         {
 
@@ -107,6 +104,7 @@ namespace LiteCall.ViewModels.Pages
             
             if (newServer is not null && CheckServerStatus(newServer.Ip))
             {
+                CurrentServer = newServer;
                ModalStatus = false;
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
                ServerName = String.Empty;

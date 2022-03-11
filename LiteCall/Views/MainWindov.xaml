@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:LiteCall.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:LiteCall.ViewModels.Pages"
     Width="800"
     Height="450"
@@ -31,6 +32,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <commands:CloseAppCommand x:Key="CloseAppComm" />
+
         </ResourceDictionary>
     </Window.Resources>
 
@@ -40,11 +42,6 @@
                 <RowDefinition Height="35" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
-
-
-
-
 
             <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}">
                 <ContentControl.Resources>
@@ -79,17 +76,53 @@
                 </StackPanel>
 
                 <StackPanel
+                    VerticalAlignment="Center"
                     DockPanel.Dock="Right"
                     FlowDirection="RightToLeft"
                     Orientation="Horizontal">
+
+
                     <Button
+                        Width="25"
+                        Height="25"
                         Margin="5,0,0,0"
+                        VerticalAlignment="Top"
                         Command="{StaticResource CloseAppComm}"
                         Style="{DynamicResource IMGButton}">
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="ClosePath" />
                         </Button.Resources>
                     </Button>
+
+                    <Button
+                        Width="25"
+                        Height="25"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Top"
+                        VerticalContentAlignment="Center"
+                        Click="MaxButton_OnClick"
+                        Style="{DynamicResource IMGButton}">
+                        <Button.Resources>
+
+                            <StaticResource x:Key="Img" ResourceKey="MaxPath" />
+                        </Button.Resources>
+                    </Button>
+
+                    <Button
+                        Width="25"
+                        Height="25"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Top"
+                        VerticalContentAlignment="Center"
+                        Click="MinButton_OnClick"
+                        Style="{DynamicResource IMGButton}">
+                        <Button.Resources>
+
+                            <StaticResource x:Key="Img" ResourceKey="MinPath" />
+                        </Button.Resources>
+                    </Button>
+
+
                 </StackPanel>
 
             </DockPanel>

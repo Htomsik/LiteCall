@@ -235,29 +235,31 @@ namespace LiteCall.ViewModels.ServerPages
 
         public ICommand SendMessageCommand { get; }
 
+        public bool CanSendMessageExecuted(object p) => CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
+
         private void OnSendMessageExecuted(object p)
         {
           
 
-                Message newMessage = new Message
-                {
-                    DateSend = DateTime.Now,
-                    Text = CurrentMessage,
-                    Sender = Account.Login,
-                };
+            Message newMessage = new Message
+            {
+                DateSend = DateTime.Now,
+                Text = CurrentMessage,
+                Sender = Account.Login,
+            };
 
-                AsyncSendMessage(newMessage);
+            AsyncSendMessage(newMessage);
 
-                MessagesColCollection.Add(newMessage);
+            MessagesColCollection.Add(newMessage);
 
-                CurrentMessage = string.Empty;
+            CurrentMessage = string.Empty;
 
 
            
 
         }
 
-        private bool CanSendMessageExecuted(object p) => true;
+   
 
         #endregion
 

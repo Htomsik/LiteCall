@@ -19,7 +19,15 @@
 
     <SolidColorBrush x:Key="Background6(Solid)" Color="#3D3E3D" />
 
+
+    <SolidColorBrush x:Key="Background7(Solid)" Color="#343534" />
+
+
     <SolidColorBrush x:Key="Fonts(Solid)" Color="#D6D6D6" />
+
+
+
+
 
     <SolidColorBrush x:Key="Dangerous(Solid)" Color="#E74C3C" />
 
@@ -27,10 +35,13 @@
 
     <SolidColorBrush x:Key="Important(Solid)" Color="#FFE019" />
 
+
+
+
+
     <SolidColorBrush x:Key="Button(Solid)" Color="#969696" />
 
     <SolidColorBrush x:Key="Button2(Solid)" Color="#767676" />
-
 
 
 
@@ -51,11 +62,22 @@
 
     <Color x:Key="Background6(Color)">#3D3E3D</Color>
 
+    <Color x:Key="Background7(Color)">#343534</Color>
+
+
+
+
     <Color x:Key="Fonts(Color)">#D6D6D6</Color>
+
+
+
 
     <Color x:Key="Dangerous(Color)">#E74C3C</Color>
 
     <Color x:Key="Important(Color)">#FFE019</Color>
+
+
+
 
     <Color x:Key="Button(Color)">#969696</Color>
 
