@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using LiteCall.Model;
 using LiteCall.Stores;
 
@@ -25,17 +26,32 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = await httpClient.PostAsync("http://localhost:57785/api/auth/token", content).ConfigureAwait(false);
+            var response = new HttpResponseMessage();
 
+            try
+            {
+                response = await httpClient.PostAsync("http://localhost:57785/api/auth/token", content).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return "No Connect";
+            }
+
+            
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return await response.Content.ReadAsStringAsync();
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                return "Invalid Data";
+            }
             else
             {
                 return string.Empty;
-
             }
+
         }
 
         internal static async Task<string> Registration(Account newAcc)
@@ -89,16 +105,16 @@ namespace LiteCall.Services
         }
 
         private static string GetHashSha1(this string content)
-            {
+        {
+            if (string.IsNullOrEmpty(content)) return "X";
+            using var sha1 = new SHA1Managed();
 
-                using var sha1 = new SHA1Managed();
+            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
 
-                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
-
-                return string.Concat(hash.Select(b => b.ToString("x2")));
-            }
+            return string.Concat(hash.Select(b => b.ToString("x2")));
+        }
 
 
-        
+
     }
 }

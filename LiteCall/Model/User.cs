@@ -15,6 +15,14 @@ namespace LiteCall.Model
     public class Account:ServerUser
     {
 
+
+        public Account()
+        {
+            CurrentServerLogin = Login;
+        }
+
+        public string CurrentServerLogin { get; set; }
+
         public string Password { get; set; }
 
         public string Token { get; set; }

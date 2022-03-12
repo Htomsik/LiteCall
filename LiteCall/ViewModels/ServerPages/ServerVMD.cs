@@ -43,13 +43,13 @@ namespace LiteCall.ViewModels.ServerPages
             //Инициализация подлючения
             InitSignalRConnection(CurrentServer);
 
-            //Установка имени на сервере
-           var NewName =  ServerService.hubConnection.InvokeAsync<string>("SetName", _Account.Login);
+            //Проверка на имя
+            AsyncGetUserServerName();
 
            #region Шины сообщений
 
-           //Сообщения
-           MessageBus.Bus += AsyncGetMessageBUS;
+            //Сообщения
+            MessageBus.Bus += AsyncGetMessageBUS;
 
            //Обновение комнат
            ReloadServerRooms.Reloader += AsynGetServerRoomsBUS;
@@ -245,7 +245,7 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 DateSend = DateTime.Now,
                 Text = CurrentMessage,
-                Sender = Account.Login,
+                Sender = Account.CurrentServerLogin
             };
 
             AsyncSendMessage(newMessage);
@@ -421,6 +421,29 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 MessageBox.Show($"Error:{e.Message}");
             }
+
+        }
+
+
+        private async void AsyncGetUserServerName()
+        {
+            var NewName = string.Empty;
+            try
+            {
+                NewName = await ServerService.hubConnection.InvokeAsync<string>("SetName", _Account.Login).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+            //Если пришедшее имя содержит имя пользователя на клиенте то задаем его
+            if (!string.IsNullOrEmpty(NewName) && NewName.Contains(Account.Login))
+            {
+                _Account.CurrentServerLogin = NewName;
+            }
+          
+      
 
         }
 

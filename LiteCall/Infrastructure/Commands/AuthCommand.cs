@@ -36,19 +36,27 @@ namespace LiteCall.Infrastructure.Commands
         }
 
 
-        private  bool IsAuthorize(string token)
+        private bool IsAuthorize(string token)
         {
-            dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
-            return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role%22"] != "Anonymous"? true:false;
+
+            try
+            {
+                dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
+                return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] != "Anonymous" ? true : false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
+
+          
         }
 
         public override void Execute(object parameter)
         {
-            
 
-            if (!CanExecute(parameter)) return;
-
-
+        
 
             Account newAccount = new Account()
             {
@@ -61,60 +69,58 @@ namespace LiteCall.Infrastructure.Commands
             if (!_AuthVMD.CheckStatus)
             {
                 
-                try
-                {
-                    newAccount.Token = DataBaseService.GetAuthorizeToken(newAccount).Result;
+                var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
-                }
-                catch (Exception e)
+                if (Response == "No Connect")
                 {
-                    MessageBox.Show(e.Message);
+                   return;
+                }
+                else if (Response == "Invalid Data")
+                {
+                    MessageBox.Show("Invalid login or password", "Сообщение", MessageBoxButtons.OK);
+                    return;
                 }
 
-                if (string.IsNullOrEmpty(newAccount.Token))
-                {
-                    MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account ", "Сообщение", MessageBoxButtons.OK);
-                }
-                else if (IsAuthorize(newAccount.Token))
+
+                newAccount.Token = Response;
+
+                if (IsAuthorize(Response))
                 {
                     newAccount.IsAuthorise = true;
                     _NavigationServices.Navigate();
                 }
-                else
+                else 
                 {
-                    MessageBox.Show("This account doesn't exist", "Сообщение", MessageBoxButtons.OK);
+                    MessageBox.Show("Invalid login or password", "Сообщение", MessageBoxButtons.OK);
+                    return;
                 }
 
-               
             }
             else
             {
                 newAccount.IsAuthorise = false;
                 newAccount.Password = "";
 
-                try
-                {
-                    newAccount.Token = DataBaseService.GetAuthorizeToken(newAccount).Result;
+                var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
-                }
-                catch (Exception e)
+                if (Response == "No Connect")
                 {
-                    MessageBox.Show(e.Message);
+                    return;
                 }
-                if (string.IsNullOrEmpty(newAccount.Token))
+
+                //Проверка на токен
+                if (!IsAuthorize(Response))
                 {
-                    MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account ", "Сообщение", MessageBoxButtons.OK);
+                    newAccount.Token = Response;
+                    _NavigationServices.Navigate();
                 }
                 else
                 {
-                    _NavigationServices.Navigate();
+                    MessageBox.Show("Unknown Error: 0f2ffeb6", "Сообщение", MessageBoxButtons.OK);
+                    return;
                 }
 
-
-
             }
-
-
 
             _AccountStore.CurrentAccount = newAccount;
 

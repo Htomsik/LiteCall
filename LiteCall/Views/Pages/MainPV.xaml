@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
+            <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
             <system:Double x:Key="PlusScale">1.61</system:Double>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -186,6 +187,15 @@
                     Margin="5,0,0,0"
                     VerticalAlignment="Center"
                     Text="{Binding AccountStore.CurrentAccount.Login}" />
+
+                <TextBlock
+                    Margin="5,5,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="10"
+                    Foreground="{DynamicResource Dangerous(Solid)}"
+                    Text="[NA]" 
+                    Visibility="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}"/>
+
             </StackPanel>
         </Border>
 
@@ -234,13 +244,12 @@
                         Style="{DynamicResource Bigtext}"
                         Text="Connection failed" />
                 </Border>
+
                 <TextBlock
                     Grid.Row="1"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="CONNECT" />
-
-
 
                 <TextBlock
                     Grid.Row="2"

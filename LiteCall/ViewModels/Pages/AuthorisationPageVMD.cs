@@ -46,7 +46,7 @@ namespace LiteCall.ViewModels.Pages
 
 
 
-            if (CheckStatus == true && logintb)
+            if (CheckStatus && logintb)
             {
                 return true;
             }
