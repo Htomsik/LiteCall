@@ -6,10 +6,12 @@ using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
 using LiteCall.Model;
 using LiteCall.Stores;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace LiteCall.Services
 {
@@ -112,6 +114,26 @@ namespace LiteCall.Services
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
 
             return string.Concat(hash.Select(b => b.ToString("x2")));
+        }
+
+
+
+        public static bool IsAuthorize(string token)
+        {
+
+            if (string.IsNullOrEmpty(token)) return false;
+            try
+            {
+                dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
+                return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] != "Anonymous" ? true : false;
+            }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message);
+                return false;
+            }
+
+
         }
 
 

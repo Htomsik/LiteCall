@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using LiteCall.Infrastructure.Commands.Base;
 using LiteCall.Model;
@@ -49,11 +50,17 @@ namespace LiteCall.Infrastructure.Commands
 
 
 
-            newAccount.Token = DataBaseService.Registration(newAccount).Result;
+            var Response = DataBaseService.Registration(newAccount).Result;
 
-            if (!string.IsNullOrEmpty(newAccount.Token))
+
+            if(  !string.IsNullOrEmpty(newAccount.Token) || DataBaseService.IsAuthorize(Response) )
             {
+                
+                newAccount.Token = Response;
+                newAccount.IsAuthorise = true;
                 _NavigationServices.Navigate();
+                
+             
             }
             else
             {

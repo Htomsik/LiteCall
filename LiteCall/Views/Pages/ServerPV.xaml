@@ -270,22 +270,28 @@
                         ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
 
 
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
 
 
                         <ListView.ItemTemplate>
+
                             <DataTemplate>
-                                <StackPanel
+
+                                <VirtualizingStackPanel
                                     HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
                                     Background="Transparent"
                                     Orientation="Horizontal">
-
-
                                     <TextBlock Margin="0,0,2,0" Text="{Binding DateSend, StringFormat=HH:mm}" />
                                     <TextBlock Margin="0,0,2,0" Text="{Binding Sender}" />
                                     <TextBlock Text="{Binding Text, StringFormat=: {0}}" />
 
+                                </VirtualizingStackPanel>
 
-                                </StackPanel>
 
 
                             </DataTemplate>
@@ -297,24 +303,24 @@
                 <Grid Row="2">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.2*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.6*" MaxWidth="500"/>
+                        <ColumnDefinition Width="0.2*" />
+                        <ColumnDefinition Width="0.6*" MaxWidth="500" />
                         <ColumnDefinition Width="0.2*" />
                     </Grid.ColumnDefinitions>
 
                     <Button
                         Grid.Column="2"
-                        HorizontalAlignment="Left"
                         Width="40"
                         Height="40"
                         Margin="0,0,5,0"
+                        HorizontalAlignment="Left"
                         Command="{Binding SendMessageCommand}"
                         Style="{DynamicResource IMGButton}">
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="Pointer" />
                             <StaticResource x:Key="Scale" ResourceKey="SendMassegeButtonScale" />
                         </Button.Resources>
-                        
+
                     </Button>
 
 

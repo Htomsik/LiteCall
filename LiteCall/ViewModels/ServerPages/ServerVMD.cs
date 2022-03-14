@@ -23,7 +23,22 @@ using SignalRServ;
 
 namespace LiteCall.ViewModels.ServerPages
 {
-    internal class ServerVMD:BaseVMD
+
+    class DummyWaveProvider : IWaveProvider
+    {
+        public DummyWaveProvider(WaveFormat waveFormat)
+        {
+            WaveFormat = waveFormat;
+        }
+
+        public int Read(byte[] buffer, int offset, int count)
+        {
+            return 0;
+        }
+
+        public WaveFormat WaveFormat { get; }
+    }
+    internal class ServerVMD : BaseVMD
     {
         public ServerVMD(AccountStore _AccountStore, Server _CurrentServer)
         {
@@ -46,27 +61,27 @@ namespace LiteCall.ViewModels.ServerPages
             //Проверка на имя
             AsyncGetUserServerName();
 
-           #region Шины сообщений
+            #region Шины сообщений
 
             //Сообщения
             MessageBus.Bus += AsyncGetMessageBUS;
 
-           //Обновение комнат
-           ReloadServerRooms.Reloader += AsynGetServerRoomsBUS;
+            //Обновение комнат
+            ReloadServerRooms.Reloader += AsynGetServerRoomsBUS;
 
-           VoiceMessageBus.Bus += AsyncGetAudioBUS;
+            VoiceMessageBus.Bus += AsyncGetAudioBus;
 
-           #endregion
+            #endregion
 
             #region команды
 
-            SendMessageCommand = new LambdaCommand(OnSendMessageExecuted,CanSendMessageExecuted);
+            SendMessageCommand = new LambdaCommand(OnSendMessageExecuted, CanSendMessageExecuted);
 
             OpenModalCommand = new LambdaCommand(OnOpenModalCommandExecuted);
 
             CreateNewRoomCommand = new LambdaCommand(OnCreateNewRoomExecuted, CanCreateNewRoomExecute);
 
-            ConnectCommand = new LambdaCommand(OnConnectExecuted,CanConnectExecute);
+            ConnectCommand = new LambdaCommand(OnConnectExecuted, CanConnectExecute);
 
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
 
@@ -83,20 +98,52 @@ namespace LiteCall.ViewModels.ServerPages
             input.DataAvailable += Voice_Input;
 
 
-            output.Init(bufferStream);
-            output.DesiredLatency = 100;
 
 
 
-            var wave16ToFloatProvider = new Wave16ToFloatProvider(bufferStream);
+            bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat(8000, 16, 1)) { ReadFully = false };
 
-            _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+            wave16ToFloatProvider = new Wave16ToFloatProvider(bufferedWaveProvider);
+
+            _mixingWaveProvider32 = new MixingWaveProvider32(new[] { new DummyWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1)), });
+
+
+         _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+
+            _output = new WaveFloatTo16Provider(_mixingWaveProvider32);
+
+            _waveOutEvent = new WaveOut();
+
+            _waveOutEvent.Init(_output);
+
+
+
+
+
 
 
 
             #endregion
 
         }
+
+
+        private BufferedWaveProvider bufferedWaveProvider;
+
+        private Wave16ToFloatProvider wave16ToFloatProvider;
+
+        private WaveOut _waveOutEvent;
+
+        private MixingWaveProvider32 _mixingWaveProvider32;
+
+
+        private WaveFloatTo16Provider _output;
+
+
+
+
+        private WaveIn input = new WaveIn();
+
 
         #region Подключение к серверу
 
@@ -130,9 +177,9 @@ namespace LiteCall.ViewModels.ServerPages
                 }
                 catch (Exception e)
                 {
-                   
+
                 }
-                
+
             }
             else
             {
@@ -144,7 +191,7 @@ namespace LiteCall.ViewModels.ServerPages
                 {
 
                 }
-              
+
             }
         }
 
@@ -165,7 +212,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         public ICommand CreateNewRoomCommand { get; }
 
-        private bool CanCreateNewRoomExecute(object p) => Convert.ToString(p)?.Length >=3;
+        private bool CanCreateNewRoomExecute(object p) => Convert.ToString(p)?.Length >= 3;
 
         private void OnCreateNewRoomExecuted(object p)
         {
@@ -179,12 +226,12 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 MessageBox.Show(e.Message);
             }
-          
-           
+
+
 
         }
 
-        
+
         public ICommand OpenModalCommand { get; }
 
         private void OnOpenModalCommandExecuted(object p)
@@ -197,9 +244,9 @@ namespace LiteCall.ViewModels.ServerPages
             else
             {
                 ModalStatus = false;
-                NewRoomName=string.Empty;
+                NewRoomName = string.Empty;
             }
-            
+
 
         }
 
@@ -209,7 +256,7 @@ namespace LiteCall.ViewModels.ServerPages
         private bool CanConnectExecute(object p)
         {
 
-            if(CurrentGroup is null) return true;
+            if (CurrentGroup is null) return true;
 
             if (p is ServerRooms)
             {
@@ -222,12 +269,12 @@ namespace LiteCall.ViewModels.ServerPages
             }
             return false;
 
-         
+
         }
 
         private void OnConnectExecuted(object p)
         {
-            
+
             AsyncConnectGroup((ServerRooms)p);
         }
 
@@ -239,7 +286,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private void OnSendMessageExecuted(object p)
         {
-          
+
 
             Message newMessage = new Message
             {
@@ -255,11 +302,11 @@ namespace LiteCall.ViewModels.ServerPages
             CurrentMessage = string.Empty;
 
 
-           
+
 
         }
 
-   
+
 
         #endregion
 
@@ -272,7 +319,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// Приём сообщений
         /// </summary>
         /// <param name=""></param>
-        private void AsyncGetMessageBUS(Message newMessage )
+        private void AsyncGetMessageBUS(Message newMessage)
         {
 
             MessagesColCollection.Add(newMessage);
@@ -280,40 +327,81 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-        /// <summary>
-        /// Получение звука
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="message"></param>
-        public  void AsyncGetAudioBUS(VoiceMessage newVoiceMes)
+
+
+        public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
-            try
+
+            if (bufferedWaveProvider.BufferedBytes < 3200)
             {
-                bufferStream.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
-            }
-            catch (Exception e)
-            {
-              
+                await Task.Factory.StartNew(() =>
+                {
+                    AsyncGetAudio(newVoiceMes);
+                });
             }
 
-         
+            MessagesColCollection.Add(new Message
+            {
+                Text = bufferedWaveProvider.BufferedBytes.ToString()
+            });
 
-            Thread.Sleep(0);
-            output.Play();
-            
+           
+
 
         }
 
 
-        private   MixingWaveProvider32 _mixingWaveProvider32 = new MixingWaveProvider32();
-        
-        private  WaveOut output = new WaveOut();
-        private WaveIn input = new WaveIn();
-        private BufferedWaveProvider bufferStream = new BufferedWaveProvider(new WaveFormat(8000, 16, 1));
+        public void AsyncGetAudio(VoiceMessage newVoiceMes)
+        {
+              //   _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+
+              var memoryStreamReader = new MemoryStream(newVoiceMes.AudioByteArray);
+
+                byte[] buffer = new byte[1600];
 
 
-      
+                var l = bufferedWaveProvider.BufferedBytes.ToString();
+
+
+                bool readCompleted = false;
+
+                while (!readCompleted)
+                {
+
+                    if (bufferedWaveProvider.BufferedBytes <= bufferedWaveProvider.BufferLength - buffer.Length*2)
+                    {
+                        int read = memoryStreamReader.Read(buffer, 0, buffer.Length);
+
+
+                        if (read > 0)
+                        {
+
+                            bufferedWaveProvider.AddSamples(buffer, 0, read);
+                            Thread.Sleep(0);
+                            _waveOutEvent.Play();
+
+                        }
+                        else
+                        {
+                            readCompleted = true;
+                        }
+                    }
+
+                    
+            
+
+          
+
+                }
+           
+
+     //        _mixingWaveProvider32.RemoveInputStream(wave16ToFloatProvider);
+
+       
+
+        }
+
 
 
 
@@ -339,13 +427,13 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
                 input.StopRecording();
-                output.Stop();
+                _waveOutEvent.Stop();
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Error:{e.Message}");
             }
-           
+
         }
 
         /// <summary>
@@ -356,30 +444,30 @@ namespace LiteCall.ViewModels.ServerPages
         {
             try
             {
-              var GroupStatus =  await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", _RoomName);
+                var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", _RoomName);
 
 
-              if (GroupStatus)
-              {
+                if (GroupStatus)
+                {
 
-                  CurrentGroup = new ServerRooms
-                  {
-                      RoomName = _RoomName,
-                      Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", _RoomName)
-                  };
+                    CurrentGroup = new ServerRooms
+                    {
+                        RoomName = _RoomName,
+                        Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", _RoomName)
+                    };
 
-                  input.StartRecording();
-                 
-              }
+                    input.StartRecording();
 
-              
+                }
+
+
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Error:{e.Message}");
 
             }
-           
+
         }
 
         /// <summary>
@@ -397,7 +485,7 @@ namespace LiteCall.ViewModels.ServerPages
                 MessageBox.Show($"Error:{e.Message}");
             }
 
-            
+
         }
 
         /// <summary>
@@ -434,7 +522,7 @@ namespace LiteCall.ViewModels.ServerPages
             }
             catch (Exception e)
             {
-                
+
             }
 
             //Если пришедшее имя содержит имя пользователя на клиенте то задаем его
@@ -442,8 +530,8 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 _Account.CurrentServerLogin = NewName;
             }
-          
-      
+
+
 
         }
 
@@ -451,26 +539,26 @@ namespace LiteCall.ViewModels.ServerPages
         {
             try
             {
-               await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+                await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
             }
             catch (Exception ex)
             {
-               
+
             }
         }
 
-        
+
         public override void Dispose()
         {
             MessageBus.Bus -= AsyncGetMessageBUS;
 
             ReloadServerRooms.Reloader -= AsynGetServerRoomsBUS;
 
-            VoiceMessageBus.Bus -= AsyncGetAudioBUS;
+            VoiceMessageBus.Bus -= AsyncGetAudioBus;
 
             input.StopRecording();
 
-            output.Stop();
+            _waveOutEvent.Stop();
 
             base.Dispose();
         }
@@ -571,10 +659,10 @@ namespace LiteCall.ViewModels.ServerPages
         #endregion
 
 
-         
-       
+
+
 
     }
 
-    
+
 }

@@ -26,7 +26,7 @@ namespace LiteCall
         public App()
         {
             _NavigationStore = new NavigationStore();
-            _AccountStore = new AccountStore();
+            _AccountStore = new AccountStore(CreateAutPageNavigationServices());
         }
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -45,7 +45,7 @@ namespace LiteCall
             base.OnStartup(e);
         }
 
-        private INavigatonService<AuthorisationPageVMD> CreateAutPageNavigationServices()
+        internal INavigatonService<AuthorisationPageVMD> CreateAutPageNavigationServices()
         {
             return new NavigationServices<AuthorisationPageVMD>(_NavigationStore, () => new AuthorisationPageVMD(_AccountStore, CreateMainPageNavigationServices(), CreateRegistrationPageNavigationServices()));
         }

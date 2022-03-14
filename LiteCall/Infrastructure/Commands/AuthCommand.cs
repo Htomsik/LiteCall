@@ -36,23 +36,6 @@ namespace LiteCall.Infrastructure.Commands
         }
 
 
-        private bool IsAuthorize(string token)
-        {
-
-            try
-            {
-                dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
-                return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] != "Anonymous" ? true : false;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return false;
-            }
-
-          
-        }
-
         public override void Execute(object parameter)
         {
 
@@ -84,7 +67,7 @@ namespace LiteCall.Infrastructure.Commands
 
                 newAccount.Token = Response;
 
-                if (IsAuthorize(Response))
+                if (DataBaseService.IsAuthorize(Response))
                 {
                     newAccount.IsAuthorise = true;
                     _NavigationServices.Navigate();
@@ -107,9 +90,10 @@ namespace LiteCall.Infrastructure.Commands
                 {
                     return;
                 }
+             
 
                 //Проверка на токен
-                if (!IsAuthorize(Response))
+                if (!DataBaseService.IsAuthorize(Response))
                 {
                     newAccount.Token = Response;
                     _NavigationServices.Navigate();

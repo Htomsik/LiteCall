@@ -34,7 +34,10 @@ namespace LiteCall.ViewModels.Pages
 
             DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
 
-            _CurrentServer = new Server();
+            AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted,CanAccountLogoutExecute);
+
+
+            CurrentServer = new Server();
 
         }
 
@@ -52,7 +55,7 @@ namespace LiteCall.ViewModels.Pages
         {
             selectedViewModel.Dispose();
             selectedViewModel = null;
-            _CurrentServer.Ip = string.Empty;
+            CurrentServer.Ip = string.Empty;
             VisibilitiStatus = Visibility.Collapsed;
             ServerService.hubConnection.StopAsync();
 
@@ -92,6 +95,27 @@ namespace LiteCall.ViewModels.Pages
             }
 
         }
+
+
+
+        public ICommand AccountLogoutCommand { get; }
+
+        private bool CanAccountLogoutExecute(object p) => true;
+
+        private void OnAccountLogoutExecuted(object p)
+        {
+            if (selectedViewModel!=null)
+            {
+                selectedViewModel.Dispose();
+                selectedViewModel = null;
+            }
+            
+            CurrentServer.Ip = string.Empty;
+            VisibilitiStatus = Visibility.Collapsed;
+            this.AccountStore.Logout();
+        }
+
+      
 
 
         public ICommand ConnectServerCommand { get; }

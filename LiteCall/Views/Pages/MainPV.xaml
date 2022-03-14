@@ -108,28 +108,18 @@
             <Border
                 Width="45"
                 Height="45"
+                Background="Transparent"
                 BorderBrush="{StaticResource Important(Solid)}"
                 BorderThickness="1"
-                CornerRadius="27"
+                CornerRadius="25"
                 Visibility="{Binding VisibilitiStatus, UpdateSourceTrigger=PropertyChanged}">
 
-                <!-- <TextBlock
+                <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Foreground="White"
-                    Text="{Binding CurrentServer.Name}" />-->
-
-                <Path
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Fill="{DynamicResource Important(Solid)}"
-                    Style="{DynamicResource Anonimous}">
-                    <Path.RenderTransform>
-
-                        <ScaleTransform CenterX="14" CenterY="11" ScaleX="1.8" ScaleY="1.9" />
-
-                    </Path.RenderTransform>
-                </Path>
+                    FontSize="20"
+                    Foreground="{DynamicResource Important(Solid)}"
+                    Text="{Binding CurrentServer.Title[0]}" />
 
                 <Border.ContextMenu>
                     <ContextMenu>
@@ -151,6 +141,8 @@
                 </Button.Resources>
             </Button>
 
+
+
         </Grid>
 
 
@@ -170,16 +162,24 @@
                     BorderThickness="1"
                     CornerRadius="20">
 
+                    <Border.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="{Binding AccountLogoutCommand}" Header="Account Logout" />
+                        </ContextMenu>
+                    </Border.ContextMenu>
+
                     <Path
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Style="{DynamicResource Anonimous}">
+                        Style="{DynamicResource Person}">
                         <Path.RenderTransform>
 
-                            <ScaleTransform CenterX="14" CenterY="10" ScaleX="1.6" ScaleY="1.6" />
+                            <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
 
                         </Path.RenderTransform>
                     </Path>
+
+
 
                 </Border>
 
@@ -193,8 +193,8 @@
                     VerticalAlignment="Top"
                     FontSize="10"
                     Foreground="{DynamicResource Dangerous(Solid)}"
-                    Text="[NA]" 
-                    Visibility="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}"/>
+                    Text="[NA]"
+                    Visibility="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
             </StackPanel>
         </Border>
