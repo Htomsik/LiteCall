@@ -39,17 +39,20 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
 
-
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
 
                     <Border HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Path x:Name="Image" Style="{DynamicResource ResourceKey=Img}">
+                        <Path
+                            x:Name="Path"
+                            Fill="{DynamicResource ResourceKey=Fill}"
+                            RenderTransformOrigin="0.5, 0.5"
+                            Style="{DynamicResource ResourceKey=Img}">
 
                             <Path.RenderTransform>
 
-                                <ScaleTransform CenterX="13" CenterY="13" ScaleX="{DynamicResource ResourceKey=Scale}" ScaleY="{DynamicResource ResourceKey=Scale}" />
+                                <ScaleTransform CenterX="0" CenterY="0" ScaleX="{DynamicResource ResourceKey=Scale}" ScaleY="{DynamicResource ResourceKey=Scale}" />
 
                             </Path.RenderTransform>
 
@@ -58,12 +61,21 @@
                     </Border>
 
 
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseCaptured" Value="True">
+                            <Setter TargetName="Path" Property="Fill" Value="{StaticResource Button2(Solid)}" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+
                 </ControlTemplate>
-
-
 
             </Setter.Value>
         </Setter>
+
+
     </Style>
 
 

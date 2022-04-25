@@ -24,7 +24,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
             <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
-            <system:Double x:Key="PlusScale">1.61</system:Double>
+            <system:Double x:Key="PlusScale">1.5</system:Double>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -171,10 +171,12 @@
                     <Path
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
+                        Fill="{DynamicResource Fonts(Solid)}"
+                        RenderTransformOrigin="0.5, 0.5"
                         Style="{DynamicResource Person}">
                         <Path.RenderTransform>
 
-                            <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
+                            <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.1" ScaleY="1.1" />
 
                         </Path.RenderTransform>
                     </Path>

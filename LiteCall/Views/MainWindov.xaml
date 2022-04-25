@@ -36,7 +36,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border BorderBrush="White" BorderThickness="1">
+    <Border BorderBrush="Transparent" BorderThickness="1">
         <Grid Background="{StaticResource Background4(Solid)}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="35" />

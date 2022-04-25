@@ -46,7 +46,7 @@
 
         <Grid Background="{DynamicResource Background2(Solid)}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="72" />
+                <RowDefinition Height="72" MaxHeight="72" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
@@ -100,11 +100,11 @@
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         Command="{Binding DisconectGroupCommand}"
-                        Style="{DynamicResource IMGButton}"
+                        Style="{StaticResource IMGButton}"
                         ToolTip="Disconnect from group">
                         <Button.Resources>
-                            <StaticResource x:Key="Img" ResourceKey="Close" />
-
+                            <StaticResource x:Key="Fill" ResourceKey="Fonts(Solid)" />
+                            <StaticResource x:Key="Img" ResourceKey="ClosePath" />
                         </Button.Resources>
 
                     </Button>
@@ -179,10 +179,10 @@
                                                 Grid.Column="0"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Style="{DynamicResource Anonimous}">
+                                                Style="{DynamicResource Person}">
                                                 <Path.RenderTransform>
 
-                                                    <ScaleTransform CenterX="14" CenterY="10" ScaleX="1" ScaleY="1" />
+                                                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
 
                                                 </Path.RenderTransform>
                                             </Path>
@@ -272,7 +272,7 @@
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                                <VirtualizingStackPanel VerticalAlignment="Bottom" />
                             </ItemsPanelTemplate>
                         </ListView.ItemsPanel>
 
@@ -317,6 +317,7 @@
                         Command="{Binding SendMessageCommand}"
                         Style="{DynamicResource IMGButton}">
                         <Button.Resources>
+                            <StaticResource x:Key="Fill" ResourceKey="Fonts(Solid)" />
                             <StaticResource x:Key="Img" ResourceKey="Pointer" />
                             <StaticResource x:Key="Scale" ResourceKey="SendMassegeButtonScale" />
                         </Button.Resources>
@@ -348,7 +349,7 @@
         </Grid>
 
         <modalCutom:ModalCustom
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.ColumnSpan="3"
             IsOpen="{Binding ModalStatus}">
 

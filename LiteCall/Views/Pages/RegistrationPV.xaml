@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -14,6 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:Boolinverter x:Key="Boolinvert" />
+            <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -74,6 +76,7 @@
                     </TextBlock.Style>
 
                 </TextBlock>
+
                 <TextBlock
                     Grid.Row="2"
                     Margin="5,0,0,8"
@@ -236,11 +239,148 @@
             MaxWidth="235"
             MaxHeight="40"
             Margin="15"
-            Command="{Binding RegistrationCommand, UpdateSourceTrigger=PropertyChanged}">
+            Command="{Binding OpenModalCommand}">
             <TextBlock Style="{DynamicResource Bigtext}" Text="REGITRATION" />
+
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
+                    <Binding ElementName="UsernameTB" Path="(Validation.HasError)" />
+                    <Binding ElementName="PasswordTB" Path="(Validation.HasError)" />
+                </MultiBinding>
+            </Button.CommandParameter>
         </Button>
 
+        <!--  IsOpen="{Binding ModalStatus}">  -->
+
+        <modalCutom:ModalCustom
+            Grid.RowSpan="4"
+            Grid.ColumnSpan="3"
+            IsOpen="{Binding ModalStatus}">
+
+            <Grid
+               
+                Background="{DynamicResource Background2(Solid)}">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding ErrorHeight}" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="0.4*" />
+                    <RowDefinition Height="0.3*" MinHeight="60" />
+                </Grid.RowDefinitions>
+
+                <Border
+                    Width="200"
+                    Height="40"
+                    Margin="5"
+                    BorderBrush="{DynamicResource Dangerous(Solid)}"
+                    BorderThickness="2"
+                    CornerRadius="20">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource Dangerous(Solid)}"
+                        Style="{DynamicResource Bigtext}"
+                        Text="Invalid Captcha" />
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Width="120"
+                    Height="60"
+                    Margin="5"
+                    BorderBrush="{DynamicResource Fonts(Solid)}"
+                    BorderThickness="2"
+                    CornerRadius="5">
+                    <Image Source="{Binding Capthca}" Stretch="Fill" />
+                </Border>
 
 
+                <TextBlock
+                    Grid.Row="2"
+                    Margin="5,0,0,8"
+                    HorizontalAlignment="Center"
+                    Text="CAPTCHA">
+
+                    <TextBlock.Style>
+                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+
+                                <DataTrigger Binding="{Binding Text, ElementName=CapthcaTB}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+
+                </TextBlock>
+
+                <TextBox
+                    x:Name="CapthcaTB"
+                    Grid.Row="2"
+                    Margin="20,8"
+                    MaxLength="17"
+                    Style="{StaticResource LogPassTextBox}">
+
+                    <TextBox.Text>
+                        <Binding
+                            Mode="TwoWay"
+                            Path="CapthcaString"
+                            UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <validationRule:CaptchaValidation />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <Border
+                    Grid.Row="2"
+                    Height="2"
+                    Margin="20,8"
+                    VerticalAlignment="Bottom"
+                    Background="{DynamicResource Fonts(Solid)}" />
+
+
+
+                <Grid Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        MaxWidth="125"
+                        MaxHeight="40"
+                        Margin="15"
+                        BorderBrush="{DynamicResource Green(Solid)}"
+                        Command="{Binding RegistrationCommand,UpdateSourceTrigger=PropertyChanged}">
+
+
+                        <Button.CommandParameter>
+                            <Binding ElementName="CapthcaTB" Path="(Validation.HasError)" />
+                        </Button.CommandParameter>
+
+                        <TextBlock Text="OK" />
+
+
+
+                    </Button>
+
+                    <Button
+                        Grid.Column="1"
+                        MaxWidth="125"
+                        MaxHeight="40"
+                        Margin="15"
+                        BorderBrush="{DynamicResource Dangerous(Solid)}"
+                        Command="{Binding OpenModalCommaCommand}"
+                        CommandParameter="0">
+                        <TextBlock Text="EXIT" />
+                    </Button>
+                </Grid>
+
+            </Grid>
+        </modalCutom:ModalCustom>
     </Grid>
 </UserControl>

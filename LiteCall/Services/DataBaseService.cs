@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
@@ -9,6 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using LiteCall.Model;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
@@ -17,12 +19,15 @@ namespace LiteCall.Services
 {
     internal static class DataBaseService
     {
+
+
+       private static Guid ProgramCaptchaID = Guid.NewGuid();
         internal static async Task<string> GetAuthorizeToken(Account newAcc)
         {
             using var httpClient = new HttpClient();
 
 
-            var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1() };
+            var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1(),Guid = ProgramCaptchaID };
 
             var json = JsonSerializer.Serialize(authModel);
 
@@ -49,6 +54,10 @@ namespace LiteCall.Services
             {
                 return "Invalid Data";
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return "Invalid Data";
+            }
             else
             {
                 return string.Empty;
@@ -56,11 +65,11 @@ namespace LiteCall.Services
 
         }
 
-        internal static async Task<string> Registration(Account newAcc)
+        internal static async Task<string> Registration(Account newAcc, string capthca)
         {
             using var httpClient = new HttpClient();
 
-            var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1() };
+            var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1(),Guid = ProgramCaptchaID,Captcha = capthca };
 
             var json = JsonSerializer.Serialize(authModel);
 
@@ -106,6 +115,31 @@ namespace LiteCall.Services
             }
         }
 
+
+
+
+        public static async Task<ImagePacket> GetCaptcha()
+        {
+            var httpClient = new HttpClient();
+
+            //var authModel = new { Login = login, Password = GetHashSha1(password) };
+
+            var json = JsonSerializer.Serialize(ProgramCaptchaID.ToString());
+
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            var response = await httpClient.PostAsync("http://localhost:57785/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return JsonSerializer.Deserialize<ImagePacket>(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private static string GetHashSha1(this string content)
         {
             if (string.IsNullOrEmpty(content)) return "X";
@@ -114,6 +148,24 @@ namespace LiteCall.Services
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
 
             return string.Concat(hash.Select(b => b.ToString("x2")));
+        }
+
+        public static BitmapSource GetImageStream(System.Drawing.Image myImage)
+        {
+            var bitmap = new Bitmap(myImage);
+            IntPtr bmpPt = bitmap.GetHbitmap();
+            BitmapSource bitmapSource =
+                System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                    bmpPt,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+
+            //freeze bitmapSource and clear memory to avoid memory leaks
+            bitmapSource.Freeze();
+            //DeleteObject(bmpPt);
+
+            return bitmapSource;
         }
 
 

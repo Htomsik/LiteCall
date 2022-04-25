@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
@@ -108,11 +109,13 @@ namespace LiteCall.ViewModels.ServerPages
             _mixingWaveProvider32 = new MixingWaveProvider32(new[] { new DummyWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1)), });
 
 
-         _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+             _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
 
             _output = new WaveFloatTo16Provider(_mixingWaveProvider32);
-
+            
             _waveOutEvent = new WaveOut();
+            
+            
 
             _waveOutEvent.Init(_output);
 
@@ -329,9 +332,22 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
+
+
+
+        List<string> users = new List<string>();
         public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
+            /*
+            if (!users.Contains(newVoiceMes.Name))
+            {
+                _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+                users.Add(newVoiceMes.Name);
+            }
+          */
+
+            //_mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
 
             if (bufferedWaveProvider.BufferedBytes < 3200)
             {
@@ -354,14 +370,11 @@ namespace LiteCall.ViewModels.ServerPages
 
         public void AsyncGetAudio(VoiceMessage newVoiceMes)
         {
-              //   _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+          //   _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
 
               var memoryStreamReader = new MemoryStream(newVoiceMes.AudioByteArray);
 
-                byte[] buffer = new byte[1600];
-
-
-                var l = bufferedWaveProvider.BufferedBytes.ToString();
+                byte[] buffer = new byte[100];
 
 
                 bool readCompleted = false;
@@ -396,7 +409,7 @@ namespace LiteCall.ViewModels.ServerPages
                 }
            
 
-     //        _mixingWaveProvider32.RemoveInputStream(wave16ToFloatProvider);
+      //   _mixingWaveProvider32.RemoveInputStream(wave16ToFloatProvider);
 
        
 
@@ -537,15 +550,56 @@ namespace LiteCall.ViewModels.ServerPages
 
         private async void Voice_Input(object sender, WaveInEventArgs e)
         {
+
+
+           
+           
+           
             try
             {
-                await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+
+                 if (ProcessData(e))
+                 {
+                    await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+                 }
+               
             }
             catch (Exception ex)
             {
 
             }
+
+
+
+            
         }
+
+        private bool ProcessData(WaveInEventArgs e)
+        {
+
+            double porog = 0.01;
+            bool result = false;
+            bool Tr = false;
+            double Sum2 = 0;
+            int Count = e.BytesRecorded / 2;
+
+
+            for (int index = 0; index < e.BytesRecorded; index += 2)
+            {
+                double Tmp = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
+                Tmp /= 32768.0;
+                Sum2 += Tmp * Tmp;
+                if (Tmp > porog)
+                    Tr = true;
+            }
+            Sum2 /= Count;
+            if (Tr || Sum2 > porog)
+            { result = true; }
+            else
+            { result = false; }
+            return result;
+        }
+
 
 
         public override void Dispose()

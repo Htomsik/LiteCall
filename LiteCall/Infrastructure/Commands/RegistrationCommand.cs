@@ -20,10 +20,12 @@ namespace LiteCall.Infrastructure.Commands
         private readonly INavigatonService<MainPageVMD> _NavigationServices;
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
+       
 
-        public RegistrationCommand(RegistrationPageVMD RegVMD, INavigatonService<MainPageVMD> navigationServices,
-            AccountStore accountStore, Func<object, bool> canExecute = null)
+        public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD, INavigatonService<MainPageVMD> navigationServices,
+            AccountStore accountStore, Func<object, bool> canExecute = null )
         {
+           
             _RegVMD = RegVMD;
             _NavigationServices = navigationServices;
             _AccountStore = accountStore;
@@ -50,7 +52,7 @@ namespace LiteCall.Infrastructure.Commands
 
 
 
-            var Response = DataBaseService.Registration(newAccount).Result;
+            var Response = DataBaseService.Registration(newAccount, _RegVMD.CapthcaString).Result;
 
 
             if(  !string.IsNullOrEmpty(newAccount.Token) || DataBaseService.IsAuthorize(Response) )
