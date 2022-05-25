@@ -45,19 +45,20 @@ namespace LiteCall.ViewModels.Pages
             if (ModalStatus == false)
             {
 
-
                 byte[] receive_bytes = DataBaseService.GetCaptcha().Result.GetRawData();
 
-                var Capthca1 = ImageBox.BytesToImage(receive_bytes);
+                var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes);
 
-                Capthca = DataBaseService.GetImageStream(Capthca1);
+                Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
 
                 ErrorHeight = 0;
+
                 ModalStatus = true;
             }
             else
             {
                 ModalStatus = false;
+
                 CapthcaString = string.Empty;
 
             }

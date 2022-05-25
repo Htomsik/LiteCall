@@ -233,6 +233,8 @@
 
         </Border>
 
+        <!--  Кнопка регистрации  -->
+
         <Button
             Grid.Row="2"
             Grid.Column="1"
@@ -255,11 +257,9 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="4"
             Grid.ColumnSpan="3"
-            IsOpen="{Binding ModalStatus}">
+            IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
-            <Grid
-               
-                Background="{DynamicResource Background2(Solid)}">
+            <Grid Background="{DynamicResource Background2(Solid)}">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="{Binding ErrorHeight}" />
@@ -291,7 +291,7 @@
                     BorderBrush="{DynamicResource Fonts(Solid)}"
                     BorderThickness="2"
                     CornerRadius="5">
-                    <Image Source="{Binding Capthca}" Stretch="Fill" />
+                    <Image Source="{Binding Capthca, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
                 </Border>
 
 
@@ -355,7 +355,7 @@
                         MaxHeight="40"
                         Margin="15"
                         BorderBrush="{DynamicResource Green(Solid)}"
-                        Command="{Binding RegistrationCommand,UpdateSourceTrigger=PropertyChanged}">
+                        Command="{Binding RegistrationCommand, UpdateSourceTrigger=PropertyChanged}">
 
 
                         <Button.CommandParameter>
@@ -363,8 +363,6 @@
                         </Button.CommandParameter>
 
                         <TextBlock Text="OK" />
-
-
 
                     </Button>
 
@@ -374,10 +372,10 @@
                         MaxHeight="40"
                         Margin="15"
                         BorderBrush="{DynamicResource Dangerous(Solid)}"
-                        Command="{Binding OpenModalCommaCommand}"
-                        CommandParameter="0">
+                        Command="{Binding OpenModalCommand}">
                         <TextBlock Text="EXIT" />
                     </Button>
+
                 </Grid>
 
             </Grid>

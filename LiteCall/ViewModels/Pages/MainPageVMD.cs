@@ -36,9 +36,14 @@ namespace LiteCall.ViewModels.Pages
 
             AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted,CanAccountLogoutExecute);
 
-
             CurrentServer = new Server();
 
+
+
+            _savedServerCollection = new ObservableCollection<Server>
+            {
+                new Server{Title = "LC"}
+            };
         }
 
 
@@ -149,6 +154,19 @@ namespace LiteCall.ViewModels.Pages
         #endregion
 
         #region Данные с окна
+
+
+
+
+        private ObservableCollection<Server> _savedServerCollection;
+
+        public ObservableCollection<Server> savedServerCollection
+        {
+            get => _savedServerCollection;
+            set => Set(ref _savedServerCollection, value);
+        }
+
+
 
         private double _ErrorHeight = 0;
         public double ErrorHeight

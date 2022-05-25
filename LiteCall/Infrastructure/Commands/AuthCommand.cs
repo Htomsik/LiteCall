@@ -23,7 +23,8 @@ namespace LiteCall.Infrastructure.Commands
         private readonly INavigatonService<MainPageVMD> _NavigationServices;
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
-        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigatonService<MainPageVMD> navigationServices, AccountStore accountStore, Func<object, bool> canExecute=null)
+        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigatonService<MainPageVMD> navigationServices,
+            AccountStore accountStore, Func<object, bool> canExecute=null)
         {
             _AuthVMD = AuthVMD;
             _NavigationServices = navigationServices;
@@ -35,11 +36,8 @@ namespace LiteCall.Infrastructure.Commands
           return  _CanExecute?.Invoke(parameter) ?? true;
         }
 
-
         public override void Execute(object parameter)
         {
-
-        
 
             Account newAccount = new Account()
             {
@@ -47,52 +45,53 @@ namespace LiteCall.Infrastructure.Commands
                 Password = _AuthVMD.Password,
             };
 
-
-
+                //Если авторизирован
             if (!_AuthVMD.CheckStatus)
             {
-                
                 var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
-                if (Response == "No Connect")
+                //Если ты ебаный инвалид то пошел отсюда
+                if (Response == "Invalid")
                 {
                    return;
                 }
-                else if (Response == "Invalid Data")
-                {
-                    MessageBox.Show("Invalid login or password", "Сообщение", MessageBoxButtons.OK);
-                    return;
-                }
-
-
+                
                 newAccount.Token = Response;
+                newAccount.IsAuthorise = true;
+                _NavigationServices.Navigate();
 
-                if (DataBaseService.IsAuthorize(Response))
-                {
-                    newAccount.IsAuthorise = true;
-                    _NavigationServices.Navigate();
-                }
-                else 
-                {
-                    MessageBox.Show("Invalid login or password", "Сообщение", MessageBoxButtons.OK);
-                    return;
-                }
 
+                /*
+                                if (DataBaseService.IsAuthorize(Response))
+                                {
+                                    newAccount.IsAuthorise = true;
+                                    _NavigationServices.Navigate();
+                                }
+                                else 
+                                {
+                                    MessageBox.Show("Invalid login or password", "Сообщение", MessageBoxButtons.OK);
+                                    return;
+
+                                }
+                */
             }
             else
             {
+
+
                 newAccount.IsAuthorise = false;
                 newAccount.Password = "";
+                newAccount.Token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiQW5vbnltb3VzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQW5vbnltb3VzIiwiaXNzIjoiTGl0ZUNhbGwiLCJhdWQiOiJDbGllbnRMaXRlQ2FsbCJ9.qk3A9sj0K7ColqaEmKV7Mk0ux-up9KxUE_V_o0GoM5Z93QJgB16kx_5DlyDbEhjzjyZzW1MikQCoUDMhwv6Q9WWFR_U9uUPV1XPYusGUy7bPyRT_x3AWBoxYzVFllUpmiQyUvUlyUflgNBSzyxugfN9X-0EBZ32PaTfmBMzugtZrvFTyXvJCzt3Rn-OSEc9JWlkfazYVWHEs5gxdpa8NqE4lQZK5iSWTU8GgfbHaji1N7tE87YoZgjUNHWxUo-7fnrR-aRvVBu06t8cdZdsKvvuXuOUUS0hqwwDSENDSGR0tPLWuWHZ3jWr-qelTss2G9fGOhJVXmgPvqf6-9VE9PA";
+                _NavigationServices.Navigate();
 
                 var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
+                /*
                 if (Response == "No Connect")
                 {
                     return;
                 }
-             
-
-                //Проверка на токен
+                
                 if (!DataBaseService.IsAuthorize(Response))
                 {
                     newAccount.Token = Response;
@@ -103,6 +102,7 @@ namespace LiteCall.Infrastructure.Commands
                     MessageBox.Show("Unknown Error: 0f2ffeb6", "Сообщение", MessageBoxButtons.OK);
                     return;
                 }
+                */
 
             }
 

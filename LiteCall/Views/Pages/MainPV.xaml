@@ -79,7 +79,7 @@
 
             <ListView
                 Grid.Row="1"
-                ItemsSource="{Binding ServersMark}"
+                ItemsSource="{Binding savedServerCollection}"
                 SelectedItem="{Binding CurrentServer}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -93,7 +93,7 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Foreground="White"
-                                Text="{Binding Name}" />
+                                Text="{Binding Title}" />
                             <!--  Тригер для переключения видимости  -->
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseLeftButtonDown">
@@ -144,8 +144,6 @@
 
 
         </Grid>
-
-
 
         <Border
             Grid.Row="1"

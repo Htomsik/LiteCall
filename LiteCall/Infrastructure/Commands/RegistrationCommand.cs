@@ -67,6 +67,7 @@ namespace LiteCall.Infrastructure.Commands
             else
             {
                 MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account", "Сообщение", MessageBoxButtons.OK);
+                
 
             }
 

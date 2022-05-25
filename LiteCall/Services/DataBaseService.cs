@@ -10,10 +10,12 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using LiteCall.Model;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
+using MessageBox = System.Windows.MessageBox;
 
 namespace LiteCall.Services
 {
@@ -37,7 +39,7 @@ namespace LiteCall.Services
 
             try
             {
-                response = await httpClient.PostAsync("http://localhost:57785/api/auth/token", content).ConfigureAwait(false);
+                response = await httpClient.PostAsync("http://localhost:5000/api/Auth/Authorization", content).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -50,17 +52,12 @@ namespace LiteCall.Services
             {
                 return await response.Content.ReadAsStringAsync();
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                return "Invalid Data";
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return "Invalid Data";
-            }
             else
             {
-                return string.Empty;
+
+                System.Windows.Forms.MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Сообщение", MessageBoxButtons.OK);
+
+                return "invalid";
             }
 
         }
@@ -75,7 +72,7 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = await httpClient.PostAsync("http://localhost:57785/api/auth/Registration", content).ConfigureAwait(false);
+            var response = await httpClient.PostAsync("http://localhost:5000/api/auth/Registration", content).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -98,7 +95,7 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = await httpClient.PostAsync("http://localhost:57785/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+            var response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -128,7 +125,7 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = await httpClient.PostAsync("http://localhost:57785/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
+            var response = await httpClient.PostAsync("http://localhost:5000/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
