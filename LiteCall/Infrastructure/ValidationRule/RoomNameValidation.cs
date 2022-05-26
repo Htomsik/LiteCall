@@ -9,36 +9,24 @@ using System.Windows.Controls;
 
 namespace LiteCall.Infrastructure.ValidationRule
 {
-    public class UsernameValidator : System.Windows.Controls.ValidationRule
+    internal class RoomNameValidation : System.Windows.Controls.ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
 
-           
-            
+
+
             var StringArray = value.ToString().ToArray();
-
-
 
             if (StringArray.Length == 0)
             {
                 return new ValidationResult(true, null);
             }
-
-            var Count = Regex.Matches(value.ToString(), @"[!#@_|]", RegexOptions.IgnoreCase).Count;
-
-
-           
-            if (StringArray.Length < 4)
+            else if (StringArray.Length < 3)
             {
-                return new ValidationResult(false, "Nickname can`t be less than 4");
+                return new ValidationResult(false, "RoomName can`t be less than 3");
             }
-            else if (Count>0)
-            {
-                return new ValidationResult(false, "Nickname cannot contain the following characters:!#@_|");
-            }
-           
-
+            
             return new ValidationResult(true, null);
         }
     }

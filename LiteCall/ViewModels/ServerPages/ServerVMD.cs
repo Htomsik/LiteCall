@@ -139,11 +139,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private MixingWaveProvider32 _mixingWaveProvider32;
 
-
         private WaveFloatTo16Provider _output;
-
-
-
 
         private WaveIn input = new WaveIn();
 
@@ -156,7 +152,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// </summary>
         private static void InitSignalRConnection(Server CurrentServer)
         {
-            ServerService.ConnectionHub($"http://{CurrentServer.Ip}:5000/LiteCall");
+            ServerService.ConnectionHub($"http://{CurrentServer.Ip}/LiteCall");
 
         }
 
@@ -215,13 +211,13 @@ namespace LiteCall.ViewModels.ServerPages
 
         public ICommand CreateNewRoomCommand { get; }
 
-        private bool CanCreateNewRoomExecute(object p) => Convert.ToString(p)?.Length >= 3;
+        private bool CanCreateNewRoomExecute(object p) => !Convert.ToBoolean(p) && !string.IsNullOrEmpty(NewRoomName);
 
         private void OnCreateNewRoomExecuted(object p)
         {
             try
             {
-                AsyncCreateRoom((string)p);
+                AsyncCreateRoom(NewRoomName);
                 NewRoomName = string.Empty;
                 ModalStatus = false;
             }
@@ -630,6 +626,12 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _MessagesColCollection, value);
         }
 
+
+
+
+      
+
+        
 
         private Server _CurrentServer;
 

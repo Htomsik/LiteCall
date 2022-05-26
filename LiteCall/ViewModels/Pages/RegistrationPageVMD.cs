@@ -45,11 +45,7 @@ namespace LiteCall.ViewModels.Pages
             if (ModalStatus == false)
             {
 
-                byte[] receive_bytes = DataBaseService.GetCaptcha().Result.GetRawData();
-
-                var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes);
-
-                Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
+               GetCaptcha();
 
                 ErrorHeight = 0;
 
@@ -64,6 +60,22 @@ namespace LiteCall.ViewModels.Pages
             }
 
         }
+
+
+
+        public void GetCaptcha()
+        {
+            byte[] receive_bytes = DataBaseService.GetCaptcha().Result.GetRawData();
+
+            var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes);
+
+            Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
+        }
+
+
+
+
+
 
         private bool CanOpenModalCommamdExecute(object p)
         {
@@ -85,6 +97,9 @@ namespace LiteCall.ViewModels.Pages
             return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword);
 
         }
+
+
+
 
 
         /// <summary>

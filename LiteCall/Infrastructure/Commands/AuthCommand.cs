@@ -50,8 +50,8 @@ namespace LiteCall.Infrastructure.Commands
             {
                 var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
 
-                //Если ты ебаный инвалид то пошел отсюда
-                if (Response == "Invalid")
+                //Если появился msbox то откат всего
+                if (Response == "invalid")
                 {
                    return;
                 }
@@ -60,20 +60,6 @@ namespace LiteCall.Infrastructure.Commands
                 newAccount.IsAuthorise = true;
                 _NavigationServices.Navigate();
 
-
-                /*
-                                if (DataBaseService.IsAuthorize(Response))
-                                {
-                                    newAccount.IsAuthorise = true;
-                                    _NavigationServices.Navigate();
-                                }
-                                else 
-                                {
-                                    MessageBox.Show("Invalid login or password", "Сообщение", MessageBoxButtons.OK);
-                                    return;
-
-                                }
-                */
             }
             else
             {
@@ -83,26 +69,6 @@ namespace LiteCall.Infrastructure.Commands
                 newAccount.Password = "";
                 newAccount.Token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiQW5vbnltb3VzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQW5vbnltb3VzIiwiaXNzIjoiTGl0ZUNhbGwiLCJhdWQiOiJDbGllbnRMaXRlQ2FsbCJ9.qk3A9sj0K7ColqaEmKV7Mk0ux-up9KxUE_V_o0GoM5Z93QJgB16kx_5DlyDbEhjzjyZzW1MikQCoUDMhwv6Q9WWFR_U9uUPV1XPYusGUy7bPyRT_x3AWBoxYzVFllUpmiQyUvUlyUflgNBSzyxugfN9X-0EBZ32PaTfmBMzugtZrvFTyXvJCzt3Rn-OSEc9JWlkfazYVWHEs5gxdpa8NqE4lQZK5iSWTU8GgfbHaji1N7tE87YoZgjUNHWxUo-7fnrR-aRvVBu06t8cdZdsKvvuXuOUUS0hqwwDSENDSGR0tPLWuWHZ3jWr-qelTss2G9fGOhJVXmgPvqf6-9VE9PA";
                 _NavigationServices.Navigate();
-
-                var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
-
-                /*
-                if (Response == "No Connect")
-                {
-                    return;
-                }
-                
-                if (!DataBaseService.IsAuthorize(Response))
-                {
-                    newAccount.Token = Response;
-                    _NavigationServices.Navigate();
-                }
-                else
-                {
-                    MessageBox.Show("Unknown Error: 0f2ffeb6", "Сообщение", MessageBoxButtons.OK);
-                    return;
-                }
-                */
 
             }
 

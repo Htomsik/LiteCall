@@ -40,18 +40,14 @@ namespace LiteCall.ViewModels.Pages
         {
 
             var param = (Tuple<object, object>)p;
+            var logintbValidator = !Convert.ToBoolean(param.Item1);
+            var passtbValidator = !Convert.ToBoolean(param.Item2);
 
-         var logintb = !Convert.ToBoolean(param.Item1);
-         var passtb = !Convert.ToBoolean(param.Item2);
-
-
-
-            if (CheckStatus && logintb)
+            if (CheckStatus && logintbValidator && !string.IsNullOrEmpty(Login))
             {
                 return true;
             }
-
-            return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
+            return logintbValidator && passtbValidator && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
 
 
         }

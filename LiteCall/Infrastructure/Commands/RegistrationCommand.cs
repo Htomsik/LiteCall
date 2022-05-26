@@ -54,24 +54,24 @@ namespace LiteCall.Infrastructure.Commands
 
             var Response = DataBaseService.Registration(newAccount, _RegVMD.CapthcaString).Result;
 
+           
 
-            if(  !string.IsNullOrEmpty(newAccount.Token) || DataBaseService.IsAuthorize(Response) )
+            if (Response.Replace(" ","") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
-                
-                newAccount.Token = Response;
-                newAccount.IsAuthorise = true;
-                _NavigationServices.Navigate();
-                
-             
+                _RegVMD.GetCaptcha();
+                return;
             }
-            else
+            else if (Response == System.Net.HttpStatusCode.Conflict.ToString())
             {
-                MessageBox.Show("\r\ncould`t get response from server, please check login or password or continue without an account", "Сообщение", MessageBoxButtons.OK);
-                
+               _RegVMD.ModalStatus = false;
 
+               _RegVMD.CapthcaString = string.Empty;
+               return;
             }
-
-
+            
+            newAccount.Token = Response;
+            newAccount.IsAuthorise = true;
+            _NavigationServices.Navigate();
             _AccountStore.CurrentAccount = newAccount;
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,18 +40,14 @@ namespace LiteCall.ViewModels.Pages
             CurrentServer = new Server();
 
 
-
             _savedServerCollection = new ObservableCollection<Server>
             {
-                new Server{Title = "LC"}
+              
             };
         }
 
 
         #region Команды
-
-
-
 
         public ICommand DisconnectServerCommand { get; }
 
@@ -95,7 +92,7 @@ namespace LiteCall.ViewModels.Pages
             else
             {
                 ModalStatus = false;
-                ServerName = String.Empty;
+                ServernameOrIp = String.Empty;
 
             }
 
@@ -128,21 +125,28 @@ namespace LiteCall.ViewModels.Pages
         private void OnConnectServerExecuted(object p)
         {
 
-            Server newServer = DataBaseService.ServerGetInfo(ServerName).Result;
 
+            Server newServer = new Server{Ip = ServernameOrIp};
+
+            
+            //по имени на сервере
+            if (!CheckStatus)
+            {
+                newServer = DataBaseService.ServerGetInfo(ServernameOrIp).Result;
+            }
             
             if (newServer is not null && CheckServerStatus(newServer.Ip))
             {
                 CurrentServer = newServer;
                ModalStatus = false;
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
-               ServerName = String.Empty;
+               ServernameOrIp = String.Empty;
                VisibilitiStatus=Visibility.Visible;
               
             }
            else
            {
-               ErrorHeight = 40;
+               ErrorHeight = 50;
            }
           
 
@@ -175,7 +179,12 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _ErrorHeight, value);
         }
 
-
+        private bool _CheckStatus;
+        public bool CheckStatus
+        {
+            get => _CheckStatus;
+            set => Set(ref _CheckStatus, value);
+        }
 
         private Server _CurrentServer;
 
@@ -208,12 +217,12 @@ namespace LiteCall.ViewModels.Pages
 
 
 
-        private string _ServerName;
+        private string _servernameOrIp;
 
-        public string ServerName
+        public string ServernameOrIp
         {
-            get => _ServerName;
-            set => Set(ref _ServerName, value);
+            get => _servernameOrIp;
+            set => Set(ref _servernameOrIp, value);
         }
 
 
@@ -239,34 +248,22 @@ namespace LiteCall.ViewModels.Pages
 
         bool CheckServerStatus(string serverAdress)
         {
-            string path = "https://"+ serverAdress + ":5001";
 
-            HttpWebRequest request;
-
-            try
-            {
-                request = (HttpWebRequest) WebRequest.Create(path);
-            }
-            catch (UriFormatException e)
-            {
-                return false;
-            }
-            
-            
-            request.Timeout = 5000;
+            string[] ServerAddresArray = serverAdress.Split(':');
 
             try
             {
-                request.GetResponse();
-                _CurrentServer.Ip = serverAdress;
-                return true;
+                using (var client = new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
+                    return true;
             }
-            catch (Exception e)
+            catch (SocketException ex)
             {
                 return false;
             }
 
         }
+
+
 
     }
 }

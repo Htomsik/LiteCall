@@ -55,7 +55,7 @@ namespace LiteCall.Services
             else
             {
 
-                System.Windows.Forms.MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Сообщение", MessageBoxButtons.OK);
+               MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Сообщение");
 
                 return "invalid";
             }
@@ -80,7 +80,9 @@ namespace LiteCall.Services
             }
             else
             {
-                return string.Empty;
+                MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Сообщение");
+
+                return response.ReasonPhrase;
             }
         }
 
@@ -92,6 +94,32 @@ namespace LiteCall.Services
             using var httpClient = new HttpClient();
 
             var json = JsonSerializer.Serialize(ServerName);
+
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            var response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+
+                var a = response.Content.ReadAsStringAsync().Result;
+
+                var str = JsonSerializer.Deserialize<Server>(a);
+
+                return str;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        internal static async Task<Server> ServerGetInfo(Server server)
+        {
+            using var httpClient = new HttpClient();
+
+            var json = JsonSerializer.Serialize(server.Ip);
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 

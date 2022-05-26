@@ -37,7 +37,7 @@
                             <Setter TargetName="Image" Property="Style" Value="{DynamicResource ResourceKey=Img2}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
-                    
+
 
 
                 </ControlTemplate>
@@ -47,7 +47,7 @@
             </Setter.Value>
         </Setter>
 
-      
+
 
     </Style>
 </ResourceDictionary>

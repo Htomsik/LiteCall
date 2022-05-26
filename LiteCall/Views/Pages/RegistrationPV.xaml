@@ -320,7 +320,7 @@
                     x:Name="CapthcaTB"
                     Grid.Row="2"
                     Margin="20,8"
-                    MaxLength="17"
+                    MaxLength="4"
                     Style="{StaticResource LogPassTextBox}">
 
                     <TextBox.Text>

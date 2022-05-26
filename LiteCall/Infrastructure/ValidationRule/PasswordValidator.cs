@@ -15,6 +15,12 @@ namespace LiteCall.Infrastructure.ValidationRule
         {
             var StringArray = value.ToString().ToArray();
 
+
+            if (StringArray.Length == 0)
+            {
+                return new ValidationResult(true, null);
+            }
+
             var HaveAnyBigLetter = StringArray.Any(item => char.IsUpper(item));
 
             if (StringArray.Length < 6)

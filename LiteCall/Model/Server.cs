@@ -9,6 +9,13 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Model
 {
+
+
+
+
+
+
+
     internal class Server
     {
 
@@ -26,6 +33,9 @@ namespace LiteCall.Model
 
         [JsonPropertyName("city")]
         public string City { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
 
     }
 

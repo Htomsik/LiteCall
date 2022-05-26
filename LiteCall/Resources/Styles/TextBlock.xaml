@@ -14,6 +14,14 @@
 
     </Style>
 
+    <!--  Обычный текст по центру  -->
+    <Style
+        x:Key="CenterDefaultText"
+        BasedOn="{StaticResource {x:Type TextBlock}}"
+        TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <!--  Важный текст (названия)  -->
     <Style
         x:Key="Bigtext"
@@ -21,8 +29,6 @@
         TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="{DynamicResource OswaldBold}" />
         <Setter Property="FontSize" Value="24" />
-
-
     </Style>
 
 
