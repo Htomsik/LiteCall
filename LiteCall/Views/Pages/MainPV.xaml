@@ -25,6 +25,7 @@
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
             <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
             <system:Double x:Key="PlusScale">1.6</system:Double>
+            <system:String x:Key="tittleOrIpText">SERVER NAME OR IP</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -214,7 +215,7 @@
             </ContentControl.Resources>
         </ContentControl>
 
-        <!--  IsOpen="{Binding ModalStatus}"  -->
+        <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
         <modalCutom:ModalCustom
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
@@ -236,6 +237,7 @@
                 <Border
                     Width="200"
                     Height="35"
+                    Margin="5"
                     BorderBrush="{DynamicResource Dangerous(Solid)}"
                     BorderThickness="2"
                     CornerRadius="15">
@@ -253,45 +255,19 @@
                     Style="{DynamicResource Bigtext}"
                     Text="CONNECT" />
 
-                <TextBlock
-                    Grid.Row="2"
-                    Margin="5,0,0,8"
-                    HorizontalAlignment="Center"
-                    Text="SERVER NAME OR IP">
-
-                    <TextBlock.Style>
-                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-
-                                <DataTrigger Binding="{Binding Text, ElementName=Iptb}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsEnabled, ElementName=PasswordTB}" Value="False">
-                                    <Setter Property="Foreground" Value="{DynamicResource Button2(Solid)}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-
-                </TextBlock>
-
                 <TextBox
                     x:Name="Iptb"
                     Grid.Row="2"
-                    Margin="20,8"
+                    Margin="5"
                     MaxLength="17"
                     Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}">
 
-                <Border
-                    Grid.Row="2"
-                    Height="2"
-                    Margin="20,8"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource Fonts(Solid)}" />
+                    <TextBox.Resources>
+                        <StaticResource x:Key="BackText" ResourceKey="tittleOrIpText" />
+                    </TextBox.Resources>
 
+                </TextBox>
 
                 <StackPanel
                     Grid.Row="3"
@@ -318,6 +294,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Button
+                        MinHeight="35"
                         MaxWidth="125"
                         MaxHeight="40"
                         Margin="5"
@@ -329,6 +306,7 @@
 
                     <Button
                         Grid.Column="1"
+                        MinHeight="35"
                         MaxWidth="125"
                         MaxHeight="40"
                         Margin="5"

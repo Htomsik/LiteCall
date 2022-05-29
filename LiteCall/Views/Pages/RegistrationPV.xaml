@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -16,6 +17,9 @@
         <ResourceDictionary>
             <converters:Boolinverter x:Key="Boolinvert" />
             <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
+            <system:String x:Key="UsernameText">USERNAME</system:String>
+            <system:String x:Key="PasswordText">PASSWORD</system:String>
+            <system:String x:Key="PasswordConfirmText">PASSWORD CONFIRM</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -55,74 +59,7 @@
                     Margin="5,10,0,0"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
-                    Text="Registrarion" />
-
-                <TextBlock
-                    Grid.Row="1"
-                    Margin="5,0,0,8"
-                    HorizontalAlignment="Center"
-                    Text="USERNAME">
-
-                    <TextBlock.Style>
-                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=UsernameTB}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-
-                </TextBlock>
-
-                <TextBlock
-                    Grid.Row="2"
-                    Margin="5,0,0,8"
-                    HorizontalAlignment="Center"
-                    Text="PASSWORD">
-
-                    <TextBlock.Style>
-                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-
-                                <DataTrigger Binding="{Binding Text, ElementName=PasswordTB}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsEnabled, ElementName=PasswordTB}" Value="False">
-                                    <Setter Property="Foreground" Value="{DynamicResource Button2(Solid)}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-
-                </TextBlock>
-                <TextBlock
-                    Grid.Row="3"
-                    Margin="5,0,0,8"
-                    HorizontalAlignment="Center"
-                    Text="CONFIRM PASSWORD">
-
-                    <TextBlock.Style>
-                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-
-                                <DataTrigger Binding="{Binding Text, ElementName=PasswordConfirmTB}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsEnabled, ElementName=PasswordConfirmTB}" Value="False">
-                                    <Setter Property="Foreground" Value="{DynamicResource Button2(Solid)}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-
-                </TextBlock>
+                    Text="REGISTRATION" />
 
                 <TextBox
                     x:Name="UsernameTB"
@@ -141,6 +78,10 @@
                         </Binding>
                     </TextBox.Text>
 
+                    <TextBox.Resources>
+                        <StaticResource x:Key="BackText" ResourceKey="UsernameText" />
+                    </TextBox.Resources>
+
                 </TextBox>
 
                 <TextBox
@@ -156,6 +97,10 @@
                             <validationRule:PasswordValidator />
                         </Binding.ValidationRules>
                     </Binding>
+
+                    <TextBox.Resources>
+                        <StaticResource x:Key="BackText" ResourceKey="PasswordText" />
+                    </TextBox.Resources>
                 </TextBox>
 
                 <TextBox
@@ -163,32 +108,17 @@
                     Grid.Row="3"
                     Margin="20,8"
                     Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}">
 
-                <Border
-                    Grid.Row="1"
-                    Height="2"
-                    Margin="20,8"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource Fonts(Solid)}" />
+                    <TextBox.Resources>
+                        <StaticResource x:Key="BackText" ResourceKey="PasswordConfirmText" />
+                    </TextBox.Resources>
 
-                <Border
-                    Grid.Row="2"
-                    Height="2"
-                    Margin="20,8"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource Fonts(Solid)}" />
-
-
-                <Border
-                    Grid.Row="3"
-                    Height="2"
-                    Margin="20,8"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource Fonts(Solid)}" />
+                </TextBox>
 
 
 
+                <!--  Переход на логин  -->
                 <StackPanel
                     Grid.Row="4"
                     Margin="5"

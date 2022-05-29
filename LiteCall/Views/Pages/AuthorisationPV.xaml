@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.ViewModels.Pages"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     d:DesignHeight="400"
     d:DesignWidth="400"
@@ -16,6 +17,8 @@
         <ResourceDictionary>
             <converters:Boolinverter x:Key="Boolinverter" />
             <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
+            <system:String x:Key="UsernameText">USERNAME</system:String>
+            <system:String x:Key="PasswordText">PASSWORD</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -57,56 +60,10 @@
                     Style="{DynamicResource Bigtext}"
                     Text="LOGIN" />
 
-                <TextBlock
-                    Grid.Row="1"
-                    Margin="5,0,0,8"
-                    HorizontalAlignment="Center"
-                    Text="USERNAME">
-
-                    <TextBlock.Style>
-                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=UsernameTB}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-
-                </TextBlock>
-
-                <TextBlock
-                    Grid.Row="2"
-                    Margin="5,0,0,8"
-                    HorizontalAlignment="Center"
-                    IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
-                    Text="PASSWORD">
-
-                    <TextBlock.Style>
-                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-
-                                <DataTrigger Binding="{Binding Text, ElementName=PasswordTB}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsEnabled, ElementName=PasswordTB}" Value="False">
-                                    <Setter Property="Foreground" Value="{DynamicResource Button2(Solid)}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-
-                </TextBlock>
-
-
 
 
                 <TextBox
-                    x:Name="UsernameTB"
+                    x:Name="USERNAME"
                     Grid.Row="1"
                     Margin="20,8"
                     Style="{StaticResource LogPassTextBox}">
@@ -122,10 +79,13 @@
                         </Binding>
                     </TextBox.Text>
 
+                    <TextBox.Resources>
+                        <StaticResource x:Key="BackText" ResourceKey="UsernameText" />
+                    </TextBox.Resources>
                 </TextBox>
 
                 <TextBox
-                    x:Name="PasswordTB"
+                    x:Name="PASSWORD"
                     Grid.Row="2"
                     Margin="20,8"
                     IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
@@ -140,21 +100,12 @@
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
+
+                    <TextBox.Resources>
+                        <StaticResource x:Key="BackText" ResourceKey="PasswordText" />
+                    </TextBox.Resources>
                 </TextBox>
 
-                <Border
-                    Grid.Row="1"
-                    Height="2"
-                    Margin="20,8"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource Fonts(Solid)}" />
-
-                <Border
-                    Grid.Row="2"
-                    Height="2"
-                    Margin="20,8"
-                    VerticalAlignment="Bottom"
-                    Background="{DynamicResource Fonts(Solid)}" />
 
                 <StackPanel
                     Grid.Row="3"
@@ -227,8 +178,8 @@
 
             <Button.CommandParameter>
                 <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
-                    <Binding ElementName="UsernameTB" Path="(Validation.HasError)" />
-                    <Binding ElementName="PasswordTB" Path="(Validation.HasError)" />
+                    <Binding ElementName="USERNAME" Path="(Validation.HasError)" />
+                    <Binding ElementName="PASSWORD" Path="(Validation.HasError)" />
                 </MultiBinding>
             </Button.CommandParameter>
         </Button>

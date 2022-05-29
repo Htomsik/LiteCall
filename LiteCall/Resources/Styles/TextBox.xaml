@@ -29,7 +29,7 @@
     <!--  Важные  -->
     <Style
         x:Key="BigTextBox"
-        TargetType="{x:Type TextBox}">
+        TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="FontSize" Value="24" />
         <Setter Property="FontFamily" Value="{DynamicResource OswaldBold}" />
 
@@ -40,18 +40,44 @@
         x:Key="LogPassTextBox"
         BasedOn="{StaticResource BigTextBox}"
         TargetType="{x:Type TextBox}">
-
         <Setter Property="HorizontalContentAlignment" Value="Center" />
-
         <Setter Property="Template">
             <Setter.Value>
-
                 <ControlTemplate TargetType="{x:Type TextBox}">
 
-                    <Border Name="Border" BorderThickness="1">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
+                    <Grid>
 
-                    </Border>
+                        <Border
+                            VerticalAlignment="Bottom"
+                            Background="Transparent"
+                            BorderBrush="{DynamicResource Fonts(Solid)}"
+                            BorderThickness="1"
+                            IsHitTestVisible="False" />
+
+                        <TextBlock 
+                            FontSize="20"
+                            x:Name="Block"
+                            Visibility="Collapsed"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Center"
+                            Text="{DynamicResource ResourceKey=BackText}">
+                        </TextBlock>
+
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
+                     
+
+                      
+                    </Grid>
+                   
+                    <ControlTemplate.Triggers>
+                        <DataTrigger  Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="" >
+
+                            <Setter TargetName="Block" Property="Visibility" Value="Visible" ></Setter>
+
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+
+
 
                 </ControlTemplate>
             </Setter.Value>
@@ -116,6 +142,9 @@
             </Trigger>
 
         </Style.Triggers>
+
+
+     
 
 
 
