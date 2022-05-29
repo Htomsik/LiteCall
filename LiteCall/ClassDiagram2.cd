@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LiteCall.Infrastructure.Commands.Base.BaseCommand" Collapsed="true">
+    <Position X="25.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Commands\Base\BaseCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LiteCall.Infrastructure.Commands.AuthCommand">
+    <Position X="28.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAEQAAEAAAAAAAAAABAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Commands\AuthCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Infrastructure.Commands.CloseAppCommand">
+    <Position X="21.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Commands\CloseAppCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Infrastructure.Commands.LambdaCommand">
+    <Position X="23.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQCAAAAAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Commands\LambdaCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Infrastructure.Commands.NavigationCommand&lt;TViewModel&gt;">
+    <Position X="25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Commands\NavigationCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Infrastructure.Commands.RegistrationCommand">
+    <Position X="26.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAEQABEAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Commands\RegistrationCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Stores.AccountStore">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAIAAQAAAIAAAAAAAAA=</HashCode>
+      <FileName>Stores\AccountStore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.ViewModels.Base.BaseVMD" Collapsed="true">
+    <Position X="3" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAABAAAIAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Base\BaseVMD.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LiteCall.ViewModels.Pages.AuthorisationPageVMD">
+    <Position X="1" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAEAAABAAAEABAAEAoAACAAAQAAIAAAA=</HashCode>
+      <FileName>ViewModels\Pages\AuthorisationPageVMD.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.ViewModels.Pages.MainPageVMD">
+    <Position X="4.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAACFACUAIkAAAEAABJIAACBAQEABACAEAACgGAAEgE=</HashCode>
+      <FileName>ViewModels\Pages\MainPageVMD.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.ViewModels.Pages.RegistrationPageVMD">
+    <Position X="6.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QIAAAESQAqAAAEAAAAAAAAAQABAAAAQjAACQAAAAIIA=</HashCode>
+      <FileName>ViewModels\Pages\RegistrationPageVMD.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.ViewModels.ServerPages.ServerVMD">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MYMAAKDYAKCAQAcAAQCRAkDIABQFURAoBGACBEAIhGQ=</HashCode>
+      <FileName>ViewModels\ServerPages\ServerVMD.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.ViewModels.MainWindowVMD">
+    <Position X="1" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIEAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\MainWindowVMD.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.ImagePacket">
+    <Position X="23.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAACAAAAAEAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Model\ImagePacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.ImageBox">
+    <Position X="23.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAgAgACAAgAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Model\ImagePacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.Message">
+    <Position X="27" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAACAAIAAA=</HashCode>
+      <FileName>Model\Message.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.Server">
+    <Position X="21.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAEAIAAAAAAAAAAIAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Model\Server.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.ServerRooms">
+    <Position X="21.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Model\Server.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.ServerUser">
+    <Position X="25.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Model\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.Account">
+    <Position X="25.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQCAAABAAABAAA=</HashCode>
+      <FileName>Model\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Model.VoiceMessage">
+    <Position X="25.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\VoiceMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Stores.NavigationStore">
+    <Position X="16" Y="0.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAIAAAAABAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Stores\NavigationStore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SignalRServ.ServerService">
+    <Position X="10.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAABAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Services\ServerService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Services.NavigationServices&lt;TViewModel&gt;">
+    <Position X="12.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAEAAAAA=</HashCode>
+      <FileName>Services\NavigationServices.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LiteCall.Services.DataBaseService" Collapsed="true">
+    <Position X="17" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAGAACAAAAAQAEBEA=</HashCode>
+      <FileName>Services\DataBaseService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Services.MessageBus">
+    <Position X="10.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Bus\MessageBus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Services.VoiceMessageBus">
+    <Position X="10.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Bus\MessageBus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LiteCall.Services.ReloadServerRooms">
+    <Position X="12.5" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\Bus\MessageBus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

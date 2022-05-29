@@ -35,45 +35,35 @@ namespace LiteCall.Infrastructure.Commands
         {
           return  _CanExecute?.Invoke(parameter) ?? true;
         }
-
         public override void Execute(object parameter)
         {
-
             Account newAccount = new Account()
             {
                 Login = _AuthVMD.Login,
                 Password = _AuthVMD.Password,
             };
-
-                //Если авторизирован
+            //Если авторизирован
             if (!_AuthVMD.CheckStatus)
             {
                 var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
-
                 //Если появился msbox то откат всего
                 if (Response == "invalid")
                 {
                    return;
                 }
-                
                 newAccount.Token = Response;
                 newAccount.IsAuthorise = true;
                 _NavigationServices.Navigate();
-
             }
             else
             {
-
-
                 newAccount.IsAuthorise = false;
                 newAccount.Password = "";
                 newAccount.Token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiQW5vbnltb3VzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQW5vbnltb3VzIiwiaXNzIjoiTGl0ZUNhbGwiLCJhdWQiOiJDbGllbnRMaXRlQ2FsbCJ9.qk3A9sj0K7ColqaEmKV7Mk0ux-up9KxUE_V_o0GoM5Z93QJgB16kx_5DlyDbEhjzjyZzW1MikQCoUDMhwv6Q9WWFR_U9uUPV1XPYusGUy7bPyRT_x3AWBoxYzVFllUpmiQyUvUlyUflgNBSzyxugfN9X-0EBZ32PaTfmBMzugtZrvFTyXvJCzt3Rn-OSEc9JWlkfazYVWHEs5gxdpa8NqE4lQZK5iSWTU8GgfbHaji1N7tE87YoZgjUNHWxUo-7fnrR-aRvVBu06t8cdZdsKvvuXuOUUS0hqwwDSENDSGR0tPLWuWHZ3jWr-qelTss2G9fGOhJVXmgPvqf6-9VE9PA";
                 _NavigationServices.Navigate();
 
             }
-
             _AccountStore.CurrentAccount = newAccount;
-
         }
     }
 }

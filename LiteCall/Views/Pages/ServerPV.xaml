@@ -169,7 +169,7 @@
                                     <DataTemplate>
 
 
-                                        <Grid>
+                                        <Grid ToolTip="{Binding Login}">
 
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -354,10 +354,7 @@
 
 
                 <!--  Сообщеия  -->
-                <Border
-                    Grid.Row="1"
-                    Grid.RowSpan="2"
-                    Background="{DynamicResource Background6(Solid)}">
+                <Border Grid.Row="1" Background="{DynamicResource Background6(Solid)}">
                     <ListView
                         Grid.Row="0"
                         ItemContainerStyle="{DynamicResource MessageListItems}"

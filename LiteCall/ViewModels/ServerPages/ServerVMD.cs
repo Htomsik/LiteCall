@@ -547,9 +547,6 @@ namespace LiteCall.ViewModels.ServerPages
         private async void Voice_Input(object sender, WaveInEventArgs e)
         {
 
-
-           
-           
            
             try
             {
@@ -564,8 +561,6 @@ namespace LiteCall.ViewModels.ServerPages
             {
 
             }
-
-
 
             
         }

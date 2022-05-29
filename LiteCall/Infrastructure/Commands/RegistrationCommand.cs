@@ -31,30 +31,21 @@ namespace LiteCall.Infrastructure.Commands
             _AccountStore = accountStore;
             _CanExecute = canExecute;
         }
-
         public override bool CanExecute(object parameter)
         {
             return _CanExecute?.Invoke(parameter) ?? true;
         }
-
         public override void Execute(object parameter)
         {
 
-
             if (!CanExecute(parameter)) return;
-
-
             Account newAccount = new Account()
             {
                 Login = _RegVMD.Login,
                 Password = _RegVMD.Password,
             };
 
-
-
             var Response = DataBaseService.Registration(newAccount, _RegVMD.CapthcaString).Result;
-
-           
 
             if (Response.Replace(" ","") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
@@ -68,7 +59,6 @@ namespace LiteCall.Infrastructure.Commands
                _RegVMD.CapthcaString = string.Empty;
                return;
             }
-            
             newAccount.Token = Response;
             newAccount.IsAuthorise = true;
             _NavigationServices.Navigate();
