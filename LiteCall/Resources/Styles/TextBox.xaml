@@ -11,9 +11,6 @@
         <Setter Property="FontFamily" Value="{DynamicResource OswaldRegular}" />
         <Setter Property="VerticalContentAlignment" Value="Bottom" />
 
-
-
-
         <Style.Triggers>
 
             <Trigger Property="IsFocused" Value="True">
@@ -25,7 +22,6 @@
             </Trigger>
 
         </Style.Triggers>
-
     </Style>
 
 

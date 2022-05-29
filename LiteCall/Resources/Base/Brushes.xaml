@@ -81,5 +81,7 @@
 
     <Color x:Key="Button(Color)">#969696</Color>
 
-    <Color x:Key="Button2(Color)">#767676</Color>
+    <Color x:Key="Button2(Color)">#525252</Color>
+
+    <Color x:Key="ButtonPressed(Color)">#666666</Color>
 </ResourceDictionary>

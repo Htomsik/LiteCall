@@ -37,7 +37,6 @@
 
 
         <Border
-         
             Grid.Row="1"
             Grid.Column="1"
             Background="{StaticResource Background2(Solid)}"
@@ -103,7 +102,6 @@
                 </TextBlock>
 
                 <TextBox
-                    
                     x:Name="UsernameTB"
                     Grid.Row="1"
                     Margin="20,8"

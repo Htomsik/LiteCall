@@ -15,22 +15,67 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border
-                        Background="{TemplateBinding Background}"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="10">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Border.Background>
+                            <SolidColorBrush x:Name="BorderColor" Color="{TemplateBinding Background}" />
+                        </Border.Background>
+
+                        <ContentControl
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Content="{TemplateBinding Content}" />
+
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="BorderColor"
+                                            Storyboard.TargetProperty="Color"
+                                            To="{DynamicResource Button2(Color)}"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+
+                                <VisualState Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="BorderColor"
+                                            Storyboard.TargetProperty="Color"
+                                            To="{DynamicResource ButtonPressed(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="BorderColor"
+                                            Storyboard.TargetProperty="Color"
+                                            To="{TemplateBinding Background}"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Border>
                 </ControlTemplate>
 
             </Setter.Value>
         </Setter>
 
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Button2(Solid)}" />
-            </Trigger>
-        </Style.Triggers>
+
 
     </Style>
 
@@ -60,7 +105,6 @@
 
                     </Border>
 
-
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="IsMouseCaptured" Value="True">
@@ -77,9 +121,6 @@
 
 
     </Style>
-
-
-
 
 
 
