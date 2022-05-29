@@ -76,6 +76,7 @@
                     </TextBlock.Style>
 
                 </TextBlock>
+
                 <TextBlock
                     Grid.Row="2"
                     Margin="5,0,0,8"
@@ -101,6 +102,9 @@
 
                 </TextBlock>
 
+
+
+
                 <TextBox
                     x:Name="UsernameTB"
                     Grid.Row="1"
@@ -108,16 +112,13 @@
                     Style="{StaticResource LogPassTextBox}">
 
                     <TextBox.Text>
-
                         <Binding
                             Mode="TwoWay"
                             Path="Login"
                             UpdateSourceTrigger="PropertyChanged">
-
                             <Binding.ValidationRules>
                                 <validationRule:UsernameValidator />
                             </Binding.ValidationRules>
-
                         </Binding>
                     </TextBox.Text>
 

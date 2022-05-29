@@ -41,7 +41,11 @@
 
     <SolidColorBrush x:Key="Button(Solid)" Color="#969696" />
 
-    <SolidColorBrush x:Key="Button2(Solid)" Color="#767676" />
+    <SolidColorBrush x:Key="Button2(Solid)" Color="#525252" />
+
+    <SolidColorBrush x:Key="ButtonPressed(Solid)" Color="#666666" />
+
+
 
 
 
@@ -84,4 +88,6 @@
     <Color x:Key="Button2(Color)">#525252</Color>
 
     <Color x:Key="ButtonPressed(Color)">#666666</Color>
+
+
 </ResourceDictionary>
