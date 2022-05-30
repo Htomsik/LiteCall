@@ -102,13 +102,18 @@
 
                         <AdornedElementPlaceholder x:Name="placeholder" />
 
+
+                        <!--  IsOpen="{Binding ElementName=placeholder, Path=AdornedElement.IsMouseOver, Mode=OneWay}"  -->
                         <Popup
+                            Name="Popup"
                             HorizontalAlignment="Right"
                             AllowsTransparency="True"
                             HorizontalOffset="0"
-                            IsOpen="{Binding ElementName=placeholder, Path=AdornedElement.IsFocused, Mode=OneWay}"
                             Placement="Right"
                             VerticalOffset="0">
+
+
+
                             <StackPanel Orientation="Horizontal">
 
                                 <Polygon
@@ -135,6 +140,19 @@
                             </StackPanel>
                         </Popup>
                     </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <DataTrigger Binding="{Binding ElementName=placeholder, Path=AdornedElement.IsMouseOver, Mode=OneWay}" Value="True">
+                            <Setter TargetName="Popup" Property="IsOpen" Value="True" />
+                        </DataTrigger>
+
+
+                        <DataTrigger Binding="{Binding ElementName=placeholder, Path=AdornedElement.IsKeyboardFocusWithin, Mode=OneWay}" Value="True">
+                            <Setter TargetName="Popup" Property="IsOpen" Value="True" />
+                        </DataTrigger>
+
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

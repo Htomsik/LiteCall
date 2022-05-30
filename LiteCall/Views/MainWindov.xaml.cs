@@ -28,6 +28,7 @@ namespace LiteCall.Views
         {
             try
             {
+                Keyboard.ClearFocus();
                 DragMove();
             }
             catch (Exception exception)
@@ -45,6 +46,14 @@ namespace LiteCall.Views
         private void MinButton_OnClick(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+      
+
+
+        private void LostFocus(object sender, RoutedEventArgs e)
+        {
+            Keyboard.ClearFocus();
         }
     }
 }

@@ -43,7 +43,10 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}">
+            <ContentControl
+                Grid.Row="1"
+                Content="{Binding CurrentViewModel}"
+                LostFocus="LostFocus">
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
                         <pages:MainPV />
