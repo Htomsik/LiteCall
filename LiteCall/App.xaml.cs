@@ -37,7 +37,6 @@ namespace LiteCall
                 
             MainWindow = new MainWindov()
             {
-                
                 DataContext = new MainWindowVMD(_NavigationStore)
             };
             MainWindow.Show();

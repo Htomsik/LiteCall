@@ -89,7 +89,7 @@
                     Grid.Row="2"
                     Margin="20,8"
                     IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
-                    Style="{StaticResource LogPassTextBox}">
+                    Style="{StaticResource PassTextBox}">
                     <TextBox.Text>
                         <Binding
                             Mode="TwoWay"

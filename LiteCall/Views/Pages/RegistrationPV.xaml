@@ -88,7 +88,7 @@
                     x:Name="PasswordTB"
                     Grid.Row="2"
                     Margin="20,8"
-                    Style="{StaticResource LogPassTextBox}">
+                    Style="{StaticResource PassTextBox}">
                     <Binding
                         Mode="TwoWay"
                         Path="Password"
@@ -107,7 +107,7 @@
                     x:Name="PasswordConfirmTB"
                     Grid.Row="3"
                     Margin="20,8"
-                    Style="{StaticResource LogPassTextBox}"
+                    Style="{StaticResource PassTextBox}"
                     Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}">
 
                     <TextBox.Resources>
