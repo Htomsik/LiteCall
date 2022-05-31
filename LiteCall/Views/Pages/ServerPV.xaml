@@ -408,7 +408,6 @@
                         Command="{Binding SendMessageCommand}"
                         Style="{DynamicResource IMGButton}">
                         <Button.Resources>
-                            <StaticResource x:Key="Fill" ResourceKey="Fonts(Solid)" />
                             <StaticResource x:Key="Img" ResourceKey="Pointer" />
                             <StaticResource x:Key="Scale" ResourceKey="SendMassegeButtonScale" />
                         </Button.Resources>

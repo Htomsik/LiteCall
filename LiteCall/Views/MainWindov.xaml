@@ -104,9 +104,9 @@
                         VerticalAlignment="Top"
                         VerticalContentAlignment="Center"
                         Click="MaxButton_OnClick"
-                        Style="{DynamicResource IMGButton}">
-                        <Button.Resources>
+                        Style="{DynamicResource IMGStrokeButton}">
 
+                        <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="MaxPath" />
                         </Button.Resources>
                     </Button>
@@ -118,7 +118,7 @@
                         VerticalAlignment="Top"
                         VerticalContentAlignment="Center"
                         Click="MinButton_OnClick"
-                        Style="{DynamicResource IMGButton}">
+                        Style="{DynamicResource IMGStrokeButton}">
                         <Button.Resources>
 
                             <StaticResource x:Key="Img" ResourceKey="MinPath" />

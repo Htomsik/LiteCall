@@ -33,9 +33,11 @@
 
 
                     <ControlTemplate.Triggers>
+
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="Image" Property="Style" Value="{DynamicResource ResourceKey=Img2}" />
                         </Trigger>
+
                     </ControlTemplate.Triggers>
 
 

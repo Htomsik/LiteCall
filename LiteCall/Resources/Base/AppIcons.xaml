@@ -33,7 +33,6 @@
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Stroke" Value="{DynamicResource Fonts(Solid)}" />
 
-
     </Style>
 
 
@@ -138,6 +137,7 @@
             </Setter.Value>
         </Setter>
 
+        <Setter Property="Fill" Value="{StaticResource Fonts(Solid)}" />
     </Style>
 
 

@@ -76,7 +76,7 @@
 
     </Style>
 
-    <!--  Для кнопок c  image  -->
+    <!--  Для кнопок image с stroke  -->
     <Style x:Key="IMGButton" TargetType="{x:Type Button}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -85,13 +85,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
 
-                    <Border HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent">
                         <Path
                             x:Name="Path"
-                            Fill="{DynamicResource ResourceKey=Fill}"
+                            Fill="{DynamicResource Fill}"
                             RenderTransformOrigin="0.5, 0.5"
                             Style="{DynamicResource ResourceKey=Img}">
-
                             <Path.RenderTransform>
 
                                 <ScaleTransform CenterX="0" CenterY="0" ScaleX="{DynamicResource ResourceKey=Scale}" ScaleY="{DynamicResource ResourceKey=Scale}" />
@@ -100,16 +102,42 @@
 
                         </Path>
 
+
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+
+
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Fill.Color"
+                                            To="{DynamicResource Button(Color)}"
+                                            Duration="0:0:0.1" />
+
+                                    </Storyboard>
+                                </VisualState>
+
+
+                                <VisualState Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Fill.Color"
+                                            To="{DynamicResource ButtonPressed(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState Name="Normal" />
+
+
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Border>
-
-                    <ControlTemplate.Triggers>
-
-                        <Trigger Property="IsMouseCaptured" Value="True">
-                            <Setter TargetName="Path" Property="Fill" Value="{StaticResource Button2(Solid)}" />
-                        </Trigger>
-
-                    </ControlTemplate.Triggers>
-
 
                 </ControlTemplate>
 
@@ -119,6 +147,74 @@
 
     </Style>
 
+
+    <Style
+        x:Key="IMGStrokeButton"
+        BasedOn="{StaticResource IMGButton}"
+        TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+
+                    <Border
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent">
+                        <Path
+                            x:Name="Path"
+                            RenderTransformOrigin="0.5, 0.5"
+                            Stroke="{DynamicResource Stroke}"
+                            Style="{DynamicResource ResourceKey=Img}">
+                            <Path.RenderTransform>
+
+                                <ScaleTransform CenterX="0" CenterY="0" ScaleX="{DynamicResource ResourceKey=Scale}" ScaleY="{DynamicResource ResourceKey=Scale}" />
+
+                            </Path.RenderTransform>
+
+                        </Path>
+
+
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+
+
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Stroke.Color"
+                                            To="{DynamicResource Button2(Color)}"
+                                            Duration="0:0:0.1" />
+
+                                    </Storyboard>
+                                </VisualState>
+
+
+                                <VisualState Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Stroke.Color"
+                                            To="{DynamicResource ButtonPressed(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState Name="Normal" />
+
+
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
 </ResourceDictionary>
