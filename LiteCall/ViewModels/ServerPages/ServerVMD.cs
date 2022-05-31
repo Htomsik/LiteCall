@@ -203,6 +203,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private void OnDisconectGroupExecuted(object p)
         {
+            CurrentGroup = null;
             AsyncGroupDisconect();
         }
 
@@ -623,10 +624,6 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
-
-      
-
-        
 
         private Server _CurrentServer;
 

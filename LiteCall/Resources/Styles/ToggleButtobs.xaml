@@ -15,10 +15,13 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
 
-                    <Border HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent">
 
                         <Path
-                            Name="Image"
+                            Name="Path"
                             Stretch="Uniform"
                             Style="{DynamicResource ResourceKey=Img}">
 
@@ -30,13 +33,61 @@
 
                         </Path>
 
+
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+
+
+
+
+                                <VisualState Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Fill.Color"
+                                            To="{DynamicResource ButtonDisabled(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Fill.Color"
+                                            To="{DynamicResource Button(Color)}"
+                                            Duration="0:0:0.1" />
+
+                                    </Storyboard>
+                                </VisualState>
+
+
+                                <VisualState Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Fill.Color"
+                                            To="{DynamicResource ButtonDisabled(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState Name="Normal" />
+
+
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
                     </Border>
 
 
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Image" Property="Style" Value="{DynamicResource ResourceKey=Img2}" />
+                            <Setter TargetName="Path" Property="Style" Value="{DynamicResource ResourceKey=Img2}" />
                         </Trigger>
 
                     </ControlTemplate.Triggers>

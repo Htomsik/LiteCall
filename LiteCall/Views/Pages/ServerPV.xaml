@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
+            <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
             <system:Double x:Key="SendMassegeButtonScale">1.0</system:Double>
             <system:Double x:Key="MicrophoneButtonscale">0.8</system:Double>
             <system:String x:Key="RoomNameText">ROOM NAME</system:String>
@@ -53,6 +54,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+            <!--  Название сервера и кнопки взаимодействия  -->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -72,7 +74,11 @@
                     BorderThickness="1"
                     CornerRadius="5" />
 
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Row="1" Margin="0 5 0 0">
+                <Grid
+                    Margin="0,5,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Row="1">
 
 
                     <Grid.ColumnDefinitions>
@@ -103,6 +109,7 @@
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         Command="{Binding DisconectGroupCommand}"
+                        IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                         Style="{StaticResource IMGButton}"
                         ToolTip="Disconnect from group">
                         <Button.Resources>
@@ -116,6 +123,7 @@
                 </Grid>
             </Grid>
 
+            <!--  Список комнат и пользователей  -->
             <ListView
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
@@ -206,12 +214,8 @@
                             </ListView>
                         </Grid>
 
-
-
-
                     </DataTemplate>
                 </ListView.ItemTemplate>
-
 
 
             </ListView>
@@ -227,6 +231,7 @@
                 Command="{Binding VoiceInputCommand}"
                 CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
                 IsChecked="True"
+                IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                 Style="{DynamicResource ImgToggleButton}">
 
                 <ToggleButton.Resources>
@@ -357,11 +362,8 @@
 
                 <!--  Сообщеия  -->
                 <Border Grid.Row="1" Background="{DynamicResource Background6(Solid)}">
-                    <ListView
-                        Grid.Row="0"
-                        ItemContainerStyle="{DynamicResource MessageListItems}"
-                        ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
 
+                    <ListView ItemContainerStyle="{DynamicResource MessageListItems}" ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -384,7 +386,6 @@
                                     <TextBlock Text="{Binding Text, StringFormat=: {0}}" />
 
                                 </VirtualizingStackPanel>
-
 
 
                             </DataTemplate>
@@ -421,12 +422,14 @@
                         Background="{DynamicResource Background4(Solid)}"
                         BorderBrush="{DynamicResource Background6(Solid)}"
                         BorderThickness="1"
-                        CornerRadius="12">
+                        CornerRadius="10">
+
                         <TextBox
-                            Margin="0,0"
+                            Margin="5,0"
                             HorizontalContentAlignment="Right"
                             VerticalContentAlignment="Center"
-                            MaxLength="40"
+                            IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                            MaxLength="100"
                             Text="{Binding CurrentMessage, UpdateSourceTrigger=PropertyChanged}" />
                     </Border>
                 </Grid>
