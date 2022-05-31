@@ -21,9 +21,9 @@ namespace LiteCall.Services
 {
     internal static class DataBaseService
     {
+        private static Guid ProgramCaptchaID = Guid.NewGuid();
 
 
-       private static Guid ProgramCaptchaID = Guid.NewGuid();
         internal static async Task<string> GetAuthorizeToken(Account newAcc)
         {
             using var httpClient = new HttpClient();

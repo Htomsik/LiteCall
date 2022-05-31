@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace LiteCall.Infrastructure.Commands
 {
-    internal class AuthCommand : BaseCommand
+    internal class AuthCommand : AsyncCommand<object>
     {
 
         private readonly AuthorisationPageVMD _AuthVMD;
@@ -35,7 +35,8 @@ namespace LiteCall.Infrastructure.Commands
         {
           return  _CanExecute?.Invoke(parameter) ?? true;
         }
-        public override void Execute(object parameter)
+
+        public async override Task ExecuteAsync(object parameter)
         {
             Account newAccount = new Account()
             {
@@ -45,11 +46,11 @@ namespace LiteCall.Infrastructure.Commands
             //Если авторизирован
             if (!_AuthVMD.CheckStatus)
             {
-                var Response = DataBaseService.GetAuthorizeToken(newAccount).Result;
+                var Response = await DataBaseService.GetAuthorizeToken(newAccount);
                 //Если появился msbox то откат всего
                 if (Response == "invalid")
                 {
-                   return;
+                    return;
                 }
                 newAccount.Token = Response;
                 newAccount.IsAuthorise = true;
@@ -64,6 +65,9 @@ namespace LiteCall.Infrastructure.Commands
 
             }
             _AccountStore.CurrentAccount = newAccount;
+
         }
+
+        
     }
 }
