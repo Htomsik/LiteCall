@@ -20,6 +20,7 @@
     WindowStyle="None"
     mc:Ignorable="d">
 
+
     <WindowChrome.WindowChrome>
         <WindowChrome
             CaptionHeight="0"
@@ -32,7 +33,8 @@
     <Window.Resources>
         <ResourceDictionary>
             <commands:CloseAppCommand x:Key="CloseAppComm" />
-
+            <system:Double x:Key="MinimaizeScale">1.6</system:Double>
+            <system:Double x:Key="MinScale">1.4</system:Double>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -46,7 +48,8 @@
             <ContentControl
                 Grid.Row="1"
                 Content="{Binding CurrentViewModel}"
-                LostFocus="LostFocus" SizeChanged="SizeChanged">
+                LostFocus="LostFocus"
+                SizeChanged="SizeChanged">
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
                         <pages:MainPV />
@@ -68,8 +71,8 @@
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
                     <Image
-                        Width="30"
-                        Margin="5,0,0,0"
+                        Stretch="Uniform"
+                        Margin="2"
                         Source="../Resources/Assets/Icons/AppIcon.png" />
                     <TextBlock
                         Margin="5,0,0,0"
@@ -92,9 +95,11 @@
                         VerticalAlignment="Top"
                         Command="{StaticResource CloseAppComm}"
                         Style="{DynamicResource IMGButton}">
+
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="ClosePath" />
                         </Button.Resources>
+
                     </Button>
 
                     <Button
@@ -108,21 +113,25 @@
 
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="MaxPath" />
+                            <StaticResource x:Key="Scale" ResourceKey="MinimaizeScale" />
                         </Button.Resources>
+
                     </Button>
 
                     <Button
                         Width="25"
                         Height="25"
                         Margin="5,0,0,0"
-                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
                         VerticalContentAlignment="Center"
                         Click="MinButton_OnClick"
                         Style="{DynamicResource IMGStrokeButton}">
-                        <Button.Resources>
 
+                        <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="MinPath" />
+                            <StaticResource x:Key="Scale" ResourceKey="MinScale" />
                         </Button.Resources>
+
                     </Button>
 
 

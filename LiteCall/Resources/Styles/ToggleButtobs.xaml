@@ -16,6 +16,7 @@
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
 
                     <Border HorizontalAlignment="Center" VerticalAlignment="Center">
+
                         <Path
                             Name="Image"
                             Stretch="Uniform"
@@ -55,7 +56,7 @@
 
 
 
- 
+
 </ResourceDictionary>
 
 

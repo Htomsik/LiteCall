@@ -24,7 +24,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
             <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
-            <system:Double x:Key="PlusScale">1.6</system:Double>
+            <system:Double x:Key="PlusScale">1</system:Double>
             <system:String x:Key="tittleOrIpText">SERVER NAME OR IP</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -131,9 +131,8 @@
             </Border>
 
             <Button
-                Width="45"
-                Height="45"
-                HorizontalAlignment="Center"
+                Width="35"
+                Height="35"
                 Command="{Binding OpenModalCommaCommand}"
                 CommandParameter="1"
                 Style="{StaticResource IMGButton}"
@@ -151,14 +150,18 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Background="{StaticResource Background3(Solid)}"
-            CornerRadius="0 0 20 0">
+            CornerRadius="0 0 15 0">
             <StackPanel Orientation="Horizontal">
 
                 <Border
                     Width="40"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
                     Background="{DynamicResource Background4(Solid)}"
                     BorderBrush="{DynamicResource Fonts(Solid)}"
                     BorderThickness="1"
+                    ClipToBounds="True"
                     CornerRadius="20">
 
                     <Border.ContextMenu>
@@ -167,19 +170,12 @@
                         </ContextMenu>
                     </Border.ContextMenu>
 
-                    <Path
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Fill="{DynamicResource Fonts(Solid)}"
-                        RenderTransformOrigin="0.5, 0.5"
-                        Style="{DynamicResource Person}">
-                        <Path.RenderTransform>
-
-                            <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.1" ScaleY="1.1" />
-
-                        </Path.RenderTransform>
-                    </Path>
-
+                    <Viewbox Width="25" Height="25">
+                        <Path
+                            Fill="{DynamicResource Fonts(Solid)}"
+                            Stretch="Uniform"
+                            Style="{DynamicResource Person}" />
+                    </Viewbox>
 
 
                 </Border>

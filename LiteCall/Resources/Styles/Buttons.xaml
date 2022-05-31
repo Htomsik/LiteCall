@@ -80,19 +80,26 @@
     <Style x:Key="IMGButton" TargetType="{x:Type Button}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
 
                     <Border
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent">
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Background="Transparent"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
                         <Path
                             x:Name="Path"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
                             Fill="{DynamicResource Fill}"
-                            RenderTransformOrigin="0.5, 0.5"
+                            Stretch="Uniform"
                             Style="{DynamicResource ResourceKey=Img}">
                             <Path.RenderTransform>
 
@@ -152,17 +159,26 @@
         x:Key="IMGStrokeButton"
         BasedOn="{StaticResource IMGButton}"
         TargetType="{x:Type Button}">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
 
                     <Border
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Background="Transparent">
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Background="Transparent"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
                         <Path
                             x:Name="Path"
-                            RenderTransformOrigin="0.5, 0.5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Fill="Transparent"
+                            Stretch="None"
                             Stroke="{DynamicResource Stroke}"
                             Style="{DynamicResource ResourceKey=Img}">
                             <Path.RenderTransform>
