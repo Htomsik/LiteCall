@@ -55,5 +55,10 @@ namespace LiteCall.Views
         {
             Keyboard.ClearFocus();
         }
+
+        private void SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Keyboard.ClearFocus();
+        }
     }
 }

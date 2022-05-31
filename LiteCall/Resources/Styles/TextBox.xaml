@@ -39,10 +39,6 @@
     </Style>
 
 
-
-
-
-
     <!--  Логин и пароль на странице авторизации  -->
     <Style
         x:Key="LogPassTextBox"
@@ -195,7 +191,10 @@
                             Text="{DynamicResource ResourceKey=BackText}"
                             Visibility="Collapsed" />
 
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
+
+                        <ScrollViewer x:Name="PART_ContentHost" />
+
+
 
 
 
@@ -203,29 +202,23 @@
 
                     <ControlTemplate.Triggers>
 
-
-
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-
                             <Setter TargetName="Block" Property="Text" Value="{DynamicResource ResourceKey=BackText}" />
                             <Setter TargetName="Block" Property="Visibility" Value="Visible" />
-
                         </DataTrigger>
 
                         <MultiDataTrigger>
 
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static converters:IsHighterConverter.Instance}, ConverterParameter=Text}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="False" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static converters:IsHighterConverter.Instance}, ConverterParameter=Text, UpdateSourceTrigger=PropertyChanged}" Value="True" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocusWithin, Mode=OneWay}" Value="False" />
                             </MultiDataTrigger.Conditions>
 
                             <Setter TargetName="Block" Property="Text" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Converter={x:Static converters:StringToStarConverter.Instance}, ConverterParameter=Text}" />
                             <Setter TargetName="Block" Property="Visibility" Value="Visible" />
-                            <Setter Property="Foreground" Value="Transparent" />
-
+                            <Setter TargetName="PART_ContentHost" Property="Visibility" Value="Hidden" />
 
                         </MultiDataTrigger>
-
 
                     </ControlTemplate.Triggers>
 
