@@ -91,27 +91,40 @@ namespace LiteCall.Services
 
         internal static async Task<Server> ServerGetInfo(string ServerName)
         {
-            using var httpClient = new HttpClient();
+            
+                using var httpClient = new HttpClient();
 
-            var json = JsonSerializer.Serialize(ServerName);
+                var json = JsonSerializer.Serialize(ServerName);
 
-            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+                var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+                var response = new HttpResponseMessage();
+                try
+                {
+                    response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Сообщение");
+                    return null;
+                }
+               
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
 
-                var a = response.Content.ReadAsStringAsync().Result;
+                    var a = response.Content.ReadAsStringAsync().Result;
 
-                var str = JsonSerializer.Deserialize<Server>(a);
+                    var str = JsonSerializer.Deserialize<Server>(a);
 
-                return str;
-            }
-            else
-            {
-                return null;
-            }
+                    return str;
+                }
+                else
+                {
+                    return null;
+                }
+           
+           
         }
 
 

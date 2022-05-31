@@ -251,15 +251,27 @@ namespace LiteCall.ViewModels.Pages
 
             string[] ServerAddresArray = serverAdress.Split(':');
 
-            try
+            if (ServerAddresArray.Length ==2)
             {
-                using (var client = new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
-                    return true;
+                try
+                {
+                    using (var client = new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
+                        return true;
+                }
+                catch (SocketException ex)
+                {
+                    MessageBox.Show(ex.Message, "Сообщение");
+                    return false;
+                }
             }
-            catch (SocketException ex)
+            else
             {
+
                 return false;
+
             }
+
+           
 
         }
 
