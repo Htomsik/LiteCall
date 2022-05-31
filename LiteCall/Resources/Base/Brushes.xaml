@@ -89,5 +89,9 @@
 
     <Color x:Key="ButtonPressed(Color)">#666666</Color>
 
+    <Color x:Key="ButtonDisabled(Color)">#8F8F8F</Color>
+
+
+
 
 </ResourceDictionary>

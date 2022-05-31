@@ -37,6 +37,8 @@
                             <VisualStateGroup Name="CommonStates">
 
 
+
+
                                 <VisualState Name="MouseOver">
                                     <Storyboard>
 
@@ -115,6 +117,18 @@
                             <VisualStateGroup Name="CommonStates">
 
 
+
+
+                                <VisualState Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Fill.Color"
+                                            To="{DynamicResource ButtonDisabled(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
                                 <VisualState Name="MouseOver">
                                     <Storyboard>
 
@@ -133,7 +147,7 @@
                                         <ColorAnimation
                                             Storyboard.TargetName="Path"
                                             Storyboard.TargetProperty="Fill.Color"
-                                            To="{DynamicResource ButtonPressed(Color)}"
+                                            To="{DynamicResource ButtonDisabled(Color)}"
                                             Duration="0:0:0.1" />
                                     </Storyboard>
                                 </VisualState>
@@ -194,6 +208,17 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="CommonStates">
 
+
+
+                                <VisualState Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Path"
+                                            Storyboard.TargetProperty="Stroke.Color"
+                                            To="{DynamicResource ButtonDisabled(Color)}"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
 
                                 <VisualState Name="MouseOver">
                                     <Storyboard>
