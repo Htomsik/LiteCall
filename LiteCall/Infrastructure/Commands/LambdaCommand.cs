@@ -24,7 +24,7 @@ namespace LiteCall.Infrastructure.Commands
 
         public override void Execute(object parameter)
         {
-            if (!CanExecute(parameter)) return;
+          //  if (!CanExecute(parameter)) return;
             _Execute(parameter);
         }
     }
