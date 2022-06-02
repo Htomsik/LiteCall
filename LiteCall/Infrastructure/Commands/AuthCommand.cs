@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using LiteCall.Infrastructure.Commands.Base;
 using LiteCall.Model;
 using LiteCall.Services;
@@ -16,7 +17,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace LiteCall.Infrastructure.Commands
 {
-    internal class AuthCommand : AsyncCommand<object>
+    internal class AuthCommand : AsyncCommandBase
     {
 
         private readonly AuthorisationPageVMD _AuthVMD;
@@ -24,7 +25,7 @@ namespace LiteCall.Infrastructure.Commands
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
         public AuthCommand(AuthorisationPageVMD AuthVMD, INavigatonService<MainPageVMD> navigationServices,
-            AccountStore accountStore, Func<object, bool> canExecute=null)
+            AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
             _AuthVMD = AuthVMD;
             _NavigationServices = navigationServices;
@@ -33,10 +34,18 @@ namespace LiteCall.Infrastructure.Commands
         }
         public override bool CanExecute(object parameter)
         {
-          return  _CanExecute?.Invoke(parameter) ?? true;
+            if (!IsExecuting)
+            {
+                return (_CanExecute?.Invoke(parameter) ?? true);
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
-        public async override Task ExecuteAsync(object parameter)
+        protected  override async Task ExecuteAsync(object parameter)
         {
             Account newAccount = new Account()
             {
@@ -66,6 +75,7 @@ namespace LiteCall.Infrastructure.Commands
             }
             _AccountStore.CurrentAccount = newAccount;
 
+           
         }
 
         

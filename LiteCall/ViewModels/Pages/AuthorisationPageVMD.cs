@@ -24,7 +24,7 @@ namespace LiteCall.ViewModels.Pages
 
             _RegistrationNavigationServices = RegistrationPageNavigationServices;
 
-            AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore,CanAuthExecute);
+            AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore, (ex) => StatusMessage = ex.Message, CanAuthExecute);
 
             OpenRegistrationPageCommand = new NavigationCommand<RegistrationPageVMD>(RegistrationPageNavigationServices);
 
@@ -32,6 +32,7 @@ namespace LiteCall.ViewModels.Pages
         private readonly NavigationStore _NavigationStore;
 
         #region Команды
+
 
 
         public ICommand AuthCommand { get; }
@@ -87,6 +88,25 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
+        //Сообщение об ошибке
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get
+            {
+                return _statusMessage;
+            }
+            set
+            {
+                _statusMessage = value;
+                OnPropertyChanged(nameof(StatusMessage));
+                OnPropertyChanged(nameof(HasStatusMessage));
+            }
+        }
+
+        
+        //Есть ли сообщение об ошибке
+        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
 
         #endregion
