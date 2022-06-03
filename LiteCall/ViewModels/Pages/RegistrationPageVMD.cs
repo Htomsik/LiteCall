@@ -20,11 +20,11 @@ namespace LiteCall.ViewModels.Pages
     {
         public RegistrationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices,INavigatonService<AuthorisationPageVMD> AuthPagenavigationservices)
         {
-            RegistrationCommand = new RegistrationCommand(CapthcaString, this, MainPageNavigationServices, AccountStore, CanRegistrationExecute);
+            RegistrationCommand = new RegistrationCommand(CapthcaString, this, MainPageNavigationServices, AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
 
             OpenAuthPageCommand = new NavigationCommand<AuthorisationPageVMD>(AuthPagenavigationservices);
 
-            OpenModalCommand = new LambdaCommand(OnOpenModalCommamdExecuted,CanOpenModalCommamdExecute);
+            OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => StatusMessage = ex.Message, CanOpenModalCommamdExecute);
         }
 
 
@@ -39,17 +39,21 @@ namespace LiteCall.ViewModels.Pages
 
 
         public ICommand OpenModalCommand { get; }
-        private void OnOpenModalCommamdExecuted(object p)
+        private async Task OnOpenModalCommamdExecuted(object p)
         {
 
             if (ModalStatus == false)
             {
 
-               GetCaptcha();
+                StatusMessage = "Connecting to server. . .";
+
+                await GetCaptcha();
 
                 ErrorHeight = 0;
 
                 ModalStatus = true;
+
+                StatusMessage = string.Empty;
             }
             else
             {
@@ -62,43 +66,34 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-
-        public void GetCaptcha()
-        {
-            byte[] receive_bytes = DataBaseService.GetCaptcha().Result.GetRawData();
-
-            var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes);
-
-            Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
-        }
-
-
-
-
-
-
         private bool CanOpenModalCommamdExecute(object p)
         {
-
-
             var param = (Tuple<object, object>)p;
 
             var logintb = !Convert.ToBoolean(param?.Item1);
+
             var passtb = !Convert.ToBoolean(param?.Item2);
-
-
 
             if (Password != ConfirmPassword)
             {
                 return false;
             }
 
-
             return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword);
 
         }
 
 
+        public async Task GetCaptcha()
+        {
+            ModalStatusMessage = "Get new Captcha. . .";
+            var receive_bytes = await DataBaseService.GetCaptcha();
+
+            var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes.GetRawData());
+
+            Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
+            ModalStatusMessage = string.Empty;
+        }
 
 
 
@@ -172,7 +167,36 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
+       
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                Set(ref _statusMessage, value);
+                OnPropertyChanged(nameof(HasStatusMessage));
+            }
+        }
 
-      
+        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
+
+
+        //Для модального окна
+        private string _ModalstatusMessage;
+        public string ModalStatusMessage
+        {
+            get => _ModalstatusMessage;
+            set
+            {
+                Set(ref _ModalstatusMessage, value);
+                OnPropertyChanged(nameof(ModalHasStatusMessage));
+            }
+        }
+
+        public bool ModalHasStatusMessage => !string.IsNullOrEmpty(ModalStatusMessage);
+
+
+
     }
 }

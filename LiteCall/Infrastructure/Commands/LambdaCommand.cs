@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using LiteCall.Infrastructure.Commands.Base;
 
 namespace LiteCall.Infrastructure.Commands
@@ -26,6 +27,8 @@ namespace LiteCall.Infrastructure.Commands
         {
           //  if (!CanExecute(parameter)) return;
             _Execute(parameter);
+            CommandManager.InvalidateRequerySuggested();
+
         }
     }
 }

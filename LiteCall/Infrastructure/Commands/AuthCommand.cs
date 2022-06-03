@@ -95,10 +95,6 @@ namespace LiteCall.Infrastructure.Commands
 
             }
             _AccountStore.CurrentAccount = newAccount;
-
-
-            
-     
             _AuthVMD.StatusMessage = string.Empty;
 
 

@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using LiteCall.Infrastructure.Commands.Base;
 
 namespace LiteCall.Infrastructure.Commands
 {
-    internal class AsyncRelayCommand : AsyncCommandBase
+    internal class AsyncLamdaCommand : AsyncCommandBase
     {
 
         private readonly Func<object,Task> _Execute;
 
         private readonly Func<object, bool> _CanExecute;
 
-        public AsyncRelayCommand(Func<object, Task> Execute, Action<Exception> onException, Func<object, bool> CanExecute = null) : base(onException)
+        public AsyncLamdaCommand(Func<object, Task> Execute, Action<Exception> onException, Func<object, bool> CanExecute = null) : base(onException)
         {
             _Execute = Execute;
             _CanExecute = CanExecute;
@@ -35,7 +36,7 @@ namespace LiteCall.Infrastructure.Commands
             {
                 return false;
             }
-
+           
         }
     }
 }

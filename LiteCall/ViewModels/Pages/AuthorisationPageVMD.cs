@@ -92,10 +92,7 @@ namespace LiteCall.ViewModels.Pages
         private string _statusMessage;
         public string StatusMessage
         {
-            get
-            {
-                return _statusMessage;
-            }
+            get => _statusMessage;
             set
             {
                 Set(ref _statusMessage, value);

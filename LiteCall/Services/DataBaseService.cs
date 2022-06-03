@@ -76,7 +76,7 @@ namespace LiteCall.Services
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return await response.Content.ReadAsStringAsync();
+                return response.Content.ToString();
             }
             else
             {

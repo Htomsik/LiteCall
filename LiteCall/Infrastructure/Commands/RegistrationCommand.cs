@@ -14,7 +14,7 @@ using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.Infrastructure.Commands
 {
-    internal class RegistrationCommand : BaseCommand
+    internal class RegistrationCommand : AsyncCommandBase
     {
         private readonly RegistrationPageVMD _RegVMD;
         private readonly INavigatonService<MainPageVMD> _NavigationServices;
@@ -23,7 +23,7 @@ namespace LiteCall.Infrastructure.Commands
        
 
         public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD, INavigatonService<MainPageVMD> navigationServices,
-            AccountStore accountStore, Func<object, bool> canExecute = null )
+            AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
            
             _RegVMD = RegVMD;
@@ -33,23 +33,33 @@ namespace LiteCall.Infrastructure.Commands
         }
         public override bool CanExecute(object parameter)
         {
-            return _CanExecute?.Invoke(parameter) ?? true;
+            if (!IsExecuting)
+            {
+                return (_CanExecute?.Invoke(parameter) ?? true);
+            }
+            else
+            {
+                return false;
+            }
         }
-        public override void Execute(object parameter)
+        protected override async Task ExecuteAsync(object parameter)
         {
 
-            if (!CanExecute(parameter)) return;
+            _RegVMD.ModalStatusMessage = "Connecting to server. . .";
+
+
             Account newAccount = new Account()
             {
                 Login = _RegVMD.Login,
                 Password = _RegVMD.Password,
             };
 
-            var Response = DataBaseService.Registration(newAccount, _RegVMD.CapthcaString).Result;
+            var Response = await DataBaseService.Registration(newAccount, _RegVMD.CapthcaString);
 
             if (Response.Replace(" ","") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
                 _RegVMD.GetCaptcha();
+                
                 return;
             }
             else if (Response == System.Net.HttpStatusCode.Conflict.ToString())
@@ -61,8 +71,17 @@ namespace LiteCall.Infrastructure.Commands
             }
             newAccount.Token = Response;
             newAccount.IsAuthorise = true;
+            
+            //Задержка перед открытием
+            _RegVMD.ModalStatusMessage = "Registration sucsesfull. . .";
+            await Task.Delay(1000);
+
             _NavigationServices.Navigate();
+
+            _RegVMD.ModalStatusMessage = string.Empty;
+
             _AccountStore.CurrentAccount = newAccount;
+
 
 
 
