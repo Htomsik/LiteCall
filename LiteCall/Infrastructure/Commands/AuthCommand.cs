@@ -47,15 +47,21 @@ namespace LiteCall.Infrastructure.Commands
 
         protected  override async Task ExecuteAsync(object parameter)
         {
+
+            _AuthVMD.StatusMessage = "Logging in....";
+
             Account newAccount = new Account()
             {
                 Login = _AuthVMD.Login,
                 Password = _AuthVMD.Password,
             };
+
             //Если авторизирован
+
             if (!_AuthVMD.CheckStatus)
             {
                 var Response = await DataBaseService.GetAuthorizeToken(newAccount);
+
                 //Если появился msbox то откат всего
                 if (Response == "invalid")
                 {

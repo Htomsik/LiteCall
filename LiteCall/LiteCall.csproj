@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LoadingCustom\LoadingCustom.csproj" />
     <ProjectReference Include="..\ModalCutom\ModalCutom.csproj" />
   </ItemGroup>
 

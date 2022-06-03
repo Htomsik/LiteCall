@@ -98,8 +98,7 @@ namespace LiteCall.ViewModels.Pages
             }
             set
             {
-                _statusMessage = value;
-                OnPropertyChanged(nameof(StatusMessage));
+                Set(ref _statusMessage, value);
                 OnPropertyChanged(nameof(HasStatusMessage));
             }
         }

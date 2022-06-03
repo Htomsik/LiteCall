@@ -39,11 +39,8 @@ namespace LiteCall.ViewModels.Pages
 
             CurrentServer = new Server();
 
+            _savedServerCollection = new ObservableCollection<Server> { };
 
-            _savedServerCollection = new ObservableCollection<Server>
-            {
-              
-            };
         }
 
 
