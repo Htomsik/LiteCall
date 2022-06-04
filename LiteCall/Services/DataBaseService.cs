@@ -64,7 +64,7 @@ namespace LiteCall.Services
 
         }
 
-        internal static async Task<string> Registration(Account newAcc, string capthca)
+        internal static async Task<string> Registration(Account newAcc, string capthca, string ApiServerIp = "localhost:5000")
         {
             using var httpClient = new HttpClient();
 
@@ -93,7 +93,7 @@ namespace LiteCall.Services
 
 
 
-        internal static async Task<Server> ServerGetInfo(string ServerName)
+        internal static async Task<Server> ServerGetInfo(string ServerName,string ApiServerIp = "localhost:5000")
         {
             
                 using var httpClient = new HttpClient();
@@ -108,7 +108,7 @@ namespace LiteCall.Services
             var response = new HttpResponseMessage();
                 try
                 {
-                    response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+                    response = await httpClient.PostAsync($"http://{ApiServerIp}/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

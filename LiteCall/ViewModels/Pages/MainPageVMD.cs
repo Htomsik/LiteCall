@@ -141,7 +141,9 @@ namespace LiteCall.ViewModels.Pages
             {
                 StatusMessage = "Get server ip. . .";
                 await Task.Delay(1000);
-                newServer = await DataBaseService.ServerGetInfo(ServernameOrIp);
+
+                newServer = await DataBaseService.ServerGetInfo(ServernameOrIp,);
+
                 if (newServer == null)
                 {
                     StatusMessage = string.Empty;

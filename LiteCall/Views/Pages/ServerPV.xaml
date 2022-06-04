@@ -38,6 +38,7 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70" />
             <ColumnDefinition Width="235" />
             <ColumnDefinition Width="*" MinWidth="50" />
         </Grid.ColumnDefinitions>
@@ -50,7 +51,7 @@
 
         <!--  Список комнат на сервере  -->
 
-        <Grid Background="{DynamicResource Background2(Solid)}">
+        <Grid Grid.Column="1" Background="{DynamicResource Background2(Solid)}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="72" MaxHeight="72" />
                 <RowDefinition />
@@ -242,6 +243,7 @@
         <!--  Управление звуком  -->
         <StackPanel
             Grid.Row="1"
+            Grid.Column="1"
             Background="{DynamicResource Background23(Solid)}"
             Orientation="Horizontal">
 
@@ -265,7 +267,7 @@
         <!--  Блок информации + сообщений  -->
         <Grid
             Background="{DynamicResource Background4(Solid)}"
-            Column="1"
+            Column="2"
             RowSpan="3">
 
             <Grid Grid.Row="1">
