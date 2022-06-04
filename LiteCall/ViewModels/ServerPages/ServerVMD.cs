@@ -89,7 +89,7 @@ namespace LiteCall.ViewModels.ServerPages
                 (ex) => StatusMessage = ex.Message, CanConectWithPasswordExecute);
 
 
-            OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandCommandExecuted);
+            OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
 
             OpenPasswordModalCommand = new LambdaCommand(OnOpenPasswordModalCommandCommandExecuted);
 
@@ -260,8 +260,7 @@ namespace LiteCall.ViewModels.ServerPages
             
                 try
                 {
-                    var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", NewRoomName, "123");
-
+                    var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", NewRoomName, NewRoomPassword);
 
                     if (GroupStatus)
                     {
@@ -272,8 +271,12 @@ namespace LiteCall.ViewModels.ServerPages
                             Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
                         };
 
-                        input.StartRecording();
-
+                        try
+                        {
+                            input.StartRecording();
+                        }
+                        catch (Exception e) {}
+                        
                     }
 
                 }
@@ -284,6 +287,7 @@ namespace LiteCall.ViewModels.ServerPages
                 }
 
                 NewRoomName = string.Empty;
+                NewRoomPassword = string.Empty;
                 CreateRoomModalStatus = false;
         }
 
@@ -293,7 +297,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         public ICommand OpenCreateRoomModalCommand { get; }
 
-        private void OnOpenCreateRoomModalCommandCommandExecuted(object p)
+        private void OnOpenCreateRoomModalCommandExecuted(object p)
         {
 
             if ((string)p == "1")
@@ -304,6 +308,7 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 CreateRoomModalStatus = false;
                 NewRoomName = string.Empty;
+                NewRoomPassword=string.Empty;
             }
 
 
@@ -736,6 +741,16 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
+        private string _NewRoomPassword;
+
+        public string NewRoomPassword
+        {
+            get => _NewRoomPassword;
+            set => Set(ref _NewRoomPassword, value);
+        }
+
+
+
 
         private bool _RoomPasswordModalStatus;
 
@@ -744,7 +759,6 @@ namespace LiteCall.ViewModels.ServerPages
             get => _RoomPasswordModalStatus;
             set => Set(ref _RoomPasswordModalStatus, value);
         }
-
 
 
         private string _RoomPassword;

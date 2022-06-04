@@ -460,7 +460,7 @@
         </Grid>
 
         <!--
-            IsOpen="{Binding ModalStatus,UpdateSourceTrigger=PropertyChanged}"
+            IsOpen="{Binding CreateRoomModalStatus, UpdateSourceTrigger=PropertyChanged}"
         -->
         <!--  Окно создания комнаты  -->
         <modalCutom:ModalCustom
@@ -470,7 +470,7 @@
 
             <Border
                 MinWidth="250"
-                MinHeight="200"
+                MinHeight="250"
                 Background="{DynamicResource Background2(Solid)}"
                 BorderBrush="{DynamicResource Fonts(Solid)}"
                 BorderThickness="1"
@@ -478,6 +478,7 @@
                 <Grid>
 
                     <Grid.RowDefinitions>
+                        <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
@@ -517,10 +518,30 @@
                         </TextBox.Resources>
                     </TextBox>
 
+                    <TextBox
+                        Grid.Row="2"
+                        Margin="20,8"
+                        MaxLength="15"
+                        Style="{StaticResource LogPassTextBox}">
+
+                        <TextBox.Text>
+
+                            <Binding
+                                Mode="TwoWay"
+                                Path="NewRoomPassword"
+                                UpdateSourceTrigger="PropertyChanged" />
+
+                        </TextBox.Text>
+
+                        <TextBox.Resources>
+                            <StaticResource x:Key="BackText" ResourceKey="RoomPassword" />
+                        </TextBox.Resources>
+                    </TextBox>
 
 
 
-                    <Grid Row="2">
+
+                    <Grid Row="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -553,14 +574,12 @@
                             CommandParameter="0">
                             <TextBlock Text="EXIT" />
                         </Button>
+
                     </Grid>
 
 
                 </Grid>
             </Border>
-
-
-
 
         </modalCutom:ModalCustom>
 
@@ -654,7 +673,7 @@
                             MaxHeight="40"
                             Margin="15"
                             BorderBrush="{DynamicResource Dangerous(Solid)}"
-                            Command="{Binding OnOpenPasswordModalCommandCommandExecuted}"
+                            Command="{Binding OpenPasswordModalCommand}"
                             CommandParameter="0">
                             <TextBlock Text="EXIT" />
                         </Button>
