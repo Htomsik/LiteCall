@@ -5,6 +5,7 @@
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
@@ -219,41 +220,27 @@
 
             <Grid
                 MinWidth="200"
-                MinHeight="200"
+                MinHeight="180"
                 Background="{DynamicResource Background2(Solid)}">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="{Binding ErrorHeight}" />
-                    <RowDefinition Height="0.2*" />
-                    <RowDefinition Height="0.2*" />
-                    <RowDefinition Height="0.2*" />
-                    <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.15*" />
+                    <RowDefinition Height="0.1*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="0.1*" />
+                    <RowDefinition Height="0.1*" />
                 </Grid.RowDefinitions>
 
-                <Border
-                    Width="200"
-                    Height="35"
-                    Margin="5"
-                    BorderBrush="{DynamicResource Dangerous(Solid)}"
-                    BorderThickness="2"
-                    CornerRadius="15">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{DynamicResource Dangerous(Solid)}"
-                        Style="{DynamicResource Bigtext}"
-                        Text="Connection failed" />
-                </Border>
 
                 <TextBlock
-                    Grid.Row="1"
+                    Grid.Row="0"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="CONNECT" />
 
                 <TextBox
                     x:Name="Iptb"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Margin="5"
                     MaxLength="17"
                     Style="{StaticResource LogPassTextBox}"
@@ -266,7 +253,7 @@
                 </TextBox>
 
                 <StackPanel
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Margin="15,0,15,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
@@ -283,7 +270,7 @@
 
                 </StackPanel>
 
-                <Grid Row="4">
+                <Grid Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
@@ -313,6 +300,17 @@
                         <TextBlock Text="EXIT" />
                     </Button>
                 </Grid>
+
+                <!--  Показывает статус загрузки  -->
+                <loadingCustom:LoadingCustom
+                    Grid.Row="4"
+                    Margin="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Diameter="20"
+                    IsLoading="{Binding HasStatusMessage}"
+                    MainText="{Binding StatusMessage}"
+                    Color="{DynamicResource Fonts(Solid)}" />
 
             </Grid>
 

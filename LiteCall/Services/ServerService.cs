@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Stores;
@@ -23,15 +24,18 @@ namespace SignalRServ
         {
             hubConnection = new HubConnectionBuilder()
                 .WithUrl($"{url}?token={_AccountStore.CurrentAccount.Token}")
+
                 .WithAutomaticReconnect(new[]
                 {
                     TimeSpan.Zero, TimeSpan.Zero,
                     TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(15),
-                    TimeSpan.FromSeconds(50)
+                    TimeSpan.FromSeconds(20)
                 })
+
                 .Build();
 
-            hubConnection.ServerTimeout = TimeSpan.FromSeconds(1800);
+            hubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);
+
             hubConnection.On<Message>("Send", message =>
             {
 
@@ -61,21 +65,23 @@ namespace SignalRServ
             //если соединение закрыто
             hubConnection.Closed += error =>
             {
-                //  Console.WriteLine($"Connection closed {error.Message}");
+                MessageBox.Show("Disconected", "Сообщение");
                 return Task.CompletedTask;
             };
+
+        
 
             //возникает когда получается обратно подключится
             hubConnection.Reconnected += id =>
             {
-                //  Console.WriteLine($"Connection reconected with id {id}");
+                MessageBox.Show("Reconected Sucsesfull", "Сообщение");
                 return Task.CompletedTask;
             };
 
             //возникает в момент переподключения
             hubConnection.Reconnecting += error =>
             {
-                //  Console.WriteLine($"Connection reconecting {error.Message}");
+             //   MessageBox.Show("Reconnecting", "Сообщение");
                 return Task.CompletedTask;
             };
 

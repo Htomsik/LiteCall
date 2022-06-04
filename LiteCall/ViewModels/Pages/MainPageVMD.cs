@@ -31,7 +31,7 @@ namespace LiteCall.ViewModels.Pages
 
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
 
-            ConnectServerCommand=new LambdaCommand(OnConnectServerExecuted);
+            ConnectServerCommand=new AsyncLamdaCommand(OnConnectServerExecuted, (ex) => StatusMessage = ex.Message);
 
             DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
 
@@ -53,11 +53,14 @@ namespace LiteCall.ViewModels.Pages
         private void OnDisconnectServerExecuted(object p)
         {
             selectedViewModel.Dispose();
-            selectedViewModel = null;
-            CurrentServer.Ip = string.Empty;
-            VisibilitiStatus = Visibility.Collapsed;
-            ServerService.hubConnection.StopAsync();
 
+            selectedViewModel = null;
+
+            CurrentServer.Ip = string.Empty;
+
+            VisibilitiStatus = Visibility.Collapsed;
+
+            
         }
 
         public ICommand VisibilitySwitchCommand { get; }
@@ -119,9 +122,10 @@ namespace LiteCall.ViewModels.Pages
 
         public ICommand ConnectServerCommand { get; }
 
-        private void OnConnectServerExecuted(object p)
+        private async Task OnConnectServerExecuted(object p)
         {
 
+           
 
             Server newServer = new Server{Ip = ServernameOrIp};
 
@@ -129,25 +133,41 @@ namespace LiteCall.ViewModels.Pages
             //по имени на сервере
             if (!CheckStatus)
             {
-                newServer = DataBaseService.ServerGetInfo(ServernameOrIp).Result;
+                StatusMessage = "Get server ip. . .";
+                await Task.Delay(1000);
+                newServer = await DataBaseService.ServerGetInfo(ServernameOrIp);
+                if (newServer == null)
+                {
+                    StatusMessage = string.Empty;
+                    MessageBox.Show("Incorrect server name", "Сообщение");
+                    return;
+                }
             }
-            
-            if (newServer is not null && CheckServerStatus(newServer.Ip))
+
+            StatusMessage = "Check sever status. . .";
+
+
+             bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
+
+
+            if (newServer is not null && ServerStatus)
             {
-                CurrentServer = newServer;
+               CurrentServer = newServer;
+
+
+               StatusMessage = "Sever status sucsesfull. . .";
+               await Task.Delay(1000);
+
                ModalStatus = false;
+
                selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
                ServernameOrIp = String.Empty;
+
                VisibilitiStatus=Visibility.Visible;
-              
             }
-           else
-           {
-               ErrorHeight = 50;
-           }
           
 
-
+            StatusMessage = string.Empty;
         }
 
 
@@ -239,11 +259,32 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _selectedViewModel, value);
         }
 
-    
+
+
+
+        //Сообщение об ошибке
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                Set(ref _statusMessage, value);
+                OnPropertyChanged(nameof(HasStatusMessage));
+            }
+        }
+
+
+        //Есть ли сообщение об ошибке
+        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
+
+
+
+
         #endregion
 
 
-        bool CheckServerStatus(string serverAdress)
+       bool  CheckServerStatus(string serverAdress)
         {
 
             string[] ServerAddresArray = serverAdress.Split(':');
@@ -252,7 +293,7 @@ namespace LiteCall.ViewModels.Pages
             {
                 try
                 {
-                    using (var client = new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
+                    using (var client =  new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
                         return true;
                 }
                 catch (SocketException ex)
@@ -263,7 +304,7 @@ namespace LiteCall.ViewModels.Pages
             }
             else
             {
-
+                MessageBox.Show("Incorrect Ip adrress", "Сообщение");
                 return false;
 
             }

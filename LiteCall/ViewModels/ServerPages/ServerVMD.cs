@@ -456,7 +456,7 @@ namespace LiteCall.ViewModels.ServerPages
         {
             try
             {
-                var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", _RoomName);
+                var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", _RoomName,"123");
 
 
                 if (GroupStatus)
@@ -509,7 +509,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             try
             {
-                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}");
+                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}",null);
 
                 if (ConnetGroupStatus)
                 {
@@ -607,6 +607,8 @@ namespace LiteCall.ViewModels.ServerPages
             input.StopRecording();
 
             _waveOutEvent.Stop();
+
+            ServerService.hubConnection.StopAsync();
 
             base.Dispose();
         }

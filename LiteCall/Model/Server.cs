@@ -10,12 +10,6 @@ using LiteCall.ViewModels.Base;
 namespace LiteCall.Model
 {
 
-
-
-
-
-
-
     internal class Server
     {
 
@@ -44,6 +38,8 @@ namespace LiteCall.Model
     {
 
         public string RoomName { get; set; }
+
+        public bool Guard { get; set; }
 
         public ICollection<ServerUser> Users { get; set; }
      

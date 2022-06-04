@@ -23,17 +23,19 @@ namespace LiteCall.Services
     {
         private static Guid ProgramCaptchaID = Guid.NewGuid();
 
+        const string apikey = "ACbaAS324hnaASD324bzZwq41";
 
         internal static async Task<string> GetAuthorizeToken(Account newAcc)
         {
             using var httpClient = new HttpClient();
-
 
             var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1(),Guid = ProgramCaptchaID };
 
             var json = JsonSerializer.Serialize(authModel);
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
 
             var response = new HttpResponseMessage();
 
@@ -44,7 +46,7 @@ namespace LiteCall.Services
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
-                return "No Connect";
+                return "invalid";
             }
 
             
@@ -72,6 +74,8 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
+            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
+
             var response = await httpClient.PostAsync("http://localhost:5000/api/auth/Registration", content).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -98,7 +102,10 @@ namespace LiteCall.Services
 
                 var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-                var response = new HttpResponseMessage();
+
+                httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
+
+            var response = new HttpResponseMessage();
                 try
                 {
                     response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
@@ -136,6 +143,8 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
+            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
+
             var response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -165,6 +174,8 @@ namespace LiteCall.Services
             var json = JsonSerializer.Serialize(ProgramCaptchaID.ToString());
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
 
             var response = await httpClient.PostAsync("http://localhost:5000/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
 
