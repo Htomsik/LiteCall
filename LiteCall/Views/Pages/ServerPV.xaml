@@ -28,6 +28,7 @@
             <system:Double x:Key="SendMassegeButtonScale">1.0</system:Double>
             <system:Double x:Key="MicrophoneButtonscale">0.8</system:Double>
             <system:String x:Key="RoomNameText">ROOM NAME</system:String>
+            <system:String x:Key="RoomPassword">PASSWORD</system:String>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -93,7 +94,7 @@
                         Height="25"
                         Margin="0,0,5,0"
                         HorizontalAlignment="Right"
-                        Command="{Binding OpenModalCommand}"
+                        Command="{Binding OpenCreateRoomModalCommand}"
                         CommandParameter="1"
                         Style="{DynamicResource IMGButton}"
                         ToolTip="Create new group">
@@ -137,7 +138,7 @@
                     <ContextMenu>
                         <MenuItem
                             Command="{Binding ConnectCommand}"
-                            CommandParameter="{Binding SelRooms.RoomName}"
+                            CommandParameter="{Binding SelRooms}"
                             Header="Connect" />
                     </ContextMenu>
                 </ListView.ContextMenu>
@@ -287,6 +288,7 @@
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="FontSize" Value="16" />
+
                         </Style>
 
                     </Grid.Resources>
@@ -464,9 +466,7 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
-            IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
-
-
+            IsOpen="{Binding CreateRoomModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
             <Border
                 MinWidth="250"
@@ -509,6 +509,7 @@
                                 </Binding.ValidationRules>
 
                             </Binding>
+
                         </TextBox.Text>
 
                         <TextBox.Resources>
@@ -548,7 +549,7 @@
                             MaxHeight="40"
                             Margin="15"
                             BorderBrush="{DynamicResource Dangerous(Solid)}"
-                            Command="{Binding OpenModalCommand}"
+                            Command="{Binding OpenCreateRoomModalCommand}"
                             CommandParameter="0">
                             <TextBlock Text="EXIT" />
                         </Button>
@@ -562,6 +563,112 @@
 
 
         </modalCutom:ModalCustom>
+
+
+        <!--  IsOpen="{Binding RoomPasswordModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
+        <!--  Окно ввода пароля комнаты  -->
+        <modalCutom:ModalCustom
+            Grid.RowSpan="3"
+            Grid.ColumnSpan="3"
+            IsOpen="{Binding RoomPasswordModalStatus, UpdateSourceTrigger=PropertyChanged}">
+
+
+
+            <Border
+                MinWidth="250"
+                MinHeight="200"
+                Background="{DynamicResource Background2(Solid)}"
+                BorderBrush="{DynamicResource Fonts(Solid)}"
+                BorderThickness="1"
+                CornerRadius="10">
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{DynamicResource Bigtext}"
+                        Text="Password" />
+
+
+
+                    <TextBox
+                        x:Name="RoomPasswordTb"
+                        Grid.Row="1"
+                        Margin="20,8"
+                        MaxLength="15"
+                        Style="{StaticResource LogPassTextBox}">
+
+                        <TextBox.Text>
+
+                            <Binding
+                                Mode="TwoWay"
+                                Path="RoomPassword"
+                                UpdateSourceTrigger="PropertyChanged">
+
+                                <Binding.ValidationRules>
+                                    <validationRule:RoomPasswordValidator />
+                                </Binding.ValidationRules>
+
+                            </Binding>
+                        </TextBox.Text>
+
+                        <TextBox.Resources>
+                            <StaticResource x:Key="BackText" ResourceKey="RoomPassword" />
+                        </TextBox.Resources>
+                    </TextBox>
+
+
+
+
+                    <Grid Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            MaxWidth="125"
+                            MaxHeight="40"
+                            Margin="15"
+                            BorderBrush="{DynamicResource Green(Solid)}"
+                            Command="{Binding ConnectWithPasswordCommand}">
+                            <TextBlock Text="OK" />
+
+                            <Button.CommandParameter>
+                                <Binding
+                                    ElementName="RoomPasswordTb"
+                                    Path="(Validation.HasError)"
+                                    UpdateSourceTrigger="PropertyChanged" />
+
+                            </Button.CommandParameter>
+                        </Button>
+
+                        <Button
+                            Grid.Column="1"
+                            MaxWidth="125"
+                            MaxHeight="40"
+                            Margin="15"
+                            BorderBrush="{DynamicResource Dangerous(Solid)}"
+                            Command="{Binding OnOpenPasswordModalCommandCommandExecuted}"
+                            CommandParameter="0">
+                            <TextBlock Text="EXIT" />
+                        </Button>
+                    </Grid>
+
+
+                </Grid>
+            </Border>
+
+
+
+
+        </modalCutom:ModalCustom>
+
 
     </Grid>
 </UserControl>

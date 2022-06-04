@@ -41,6 +41,8 @@ namespace LiteCall.ViewModels.Pages
 
             DisconectSeverReloader.Reloader += DisconectServer;
 
+            ServerInfoBus.Bus += GetServeInfo;
+
             _savedServerCollection = new ObservableCollection<Server> { };
 
         }
@@ -55,20 +57,21 @@ namespace LiteCall.ViewModels.Pages
         private void OnDisconnectServerExecuted(object p)
         {
             DisconectServer();
-
         }
-
 
 
         private void DisconectServer()
         {
-            selectedViewModel.Dispose();
+            
+            if (selectedViewModel == null) return;
 
-            selectedViewModel = null;
+            selectedViewModel.Dispose();
 
             CurrentServer.Ip = string.Empty;
 
             VisibilitiStatus = Visibility.Collapsed;
+
+             selectedViewModel = null;
         }
 
         public ICommand VisibilitySwitchCommand { get; }
@@ -76,14 +79,11 @@ namespace LiteCall.ViewModels.Pages
         {
             if (Convert.ToInt32(p) == 1)
             {
-
                 VisibilitiStatus = Visibility.Collapsed;
-               
             }
             else
             {
                 VisibilitiStatus = Visibility.Visible;
-                
             }
                
         }
@@ -160,14 +160,20 @@ namespace LiteCall.ViewModels.Pages
             {
                CurrentServer = newServer;
 
-
                StatusMessage = "Sever status sucsesfull. . .";
+
+
+                await Task.Delay(1000);
+
+                StatusMessage = "Сonnect to server. . .";
+
                await Task.Delay(1000);
 
                ModalStatus = false;
 
-               selectedViewModel = new ServerVMD(AccountStore, CurrentServer);
-               ServernameOrIp = String.Empty;
+               selectedViewModel = new ServerVMD(AccountStore, newServer);
+
+                ServernameOrIp = String.Empty;
 
                VisibilitiStatus=Visibility.Visible;
             }
@@ -176,6 +182,14 @@ namespace LiteCall.ViewModels.Pages
             StatusMessage = string.Empty;
         }
 
+
+
+
+
+        private void GetServeInfo(Server CurrentServerInfo)
+        {
+            CurrentServer = CurrentServerInfo;
+        }
 
 
         #endregion

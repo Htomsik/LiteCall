@@ -56,8 +56,10 @@ namespace LiteCall.ViewModels.ServerPages
 
             #endregion
 
-            //Инициализация подлючения
+           
             InitSignalRConnection(CurrentServer);
+
+            AsyncGetServerInfo();
 
             //Проверка на имя
             AsyncGetUserServerName();
@@ -83,8 +85,13 @@ namespace LiteCall.ViewModels.ServerPages
 
             ConnectCommand = new AsyncLamdaCommand(OnConnectExecuted, (ex) => StatusMessage = ex.Message, CanConnectExecute);
 
+            ConnectWithPasswordCommand = new AsyncLamdaCommand(OnConnectWithPasswordCommandExecuted,
+                (ex) => StatusMessage = ex.Message, CanConectWithPasswordExecute);
 
-            OpenModalCommand = new LambdaCommand(OnOpenModalCommandExecuted);
+
+            OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandCommandExecuted);
+
+            OpenPasswordModalCommand = new LambdaCommand(OnOpenPasswordModalCommandCommandExecuted);
 
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
 
@@ -130,6 +137,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             #endregion
 
+            /*
             ServerRooms = new ObservableCollection<ServerRooms>
             {
                 new ServerRooms { Guard = true, RoomName = "Guard", Users = new List<ServerUser>
@@ -146,6 +154,8 @@ namespace LiteCall.ViewModels.ServerPages
 
                 } }
             };
+
+            */
 
 
 
@@ -174,7 +184,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// <summary>
         /// Инициализация соединения
         /// </summary>
-        private static void InitSignalRConnection(Server CurrentServer)
+        public static void InitSignalRConnection(Server CurrentServer)
         {
             ServerService.ConnectionHub($"http://{CurrentServer.Ip}/LiteCall");
 
@@ -217,6 +227,13 @@ namespace LiteCall.ViewModels.ServerPages
 
             }
         }
+
+
+
+
+
+
+
 
 
 
@@ -267,26 +284,49 @@ namespace LiteCall.ViewModels.ServerPages
                 }
 
                 NewRoomName = string.Empty;
-                ModalStatus = false;
+                CreateRoomModalStatus = false;
         }
 
 
 
 
 
-        public ICommand OpenModalCommand { get; }
+        public ICommand OpenCreateRoomModalCommand { get; }
 
-        private void OnOpenModalCommandExecuted(object p)
+        private void OnOpenCreateRoomModalCommandCommandExecuted(object p)
         {
 
             if ((string)p == "1")
             {
-                ModalStatus = true;
+                CreateRoomModalStatus = true;
             }
             else
             {
-                ModalStatus = false;
+                CreateRoomModalStatus = false;
                 NewRoomName = string.Empty;
+            }
+
+
+        }
+
+
+
+
+
+
+        public ICommand OpenPasswordModalCommand { get; }
+
+        private void OnOpenPasswordModalCommandCommandExecuted(object p)
+        {
+
+            if ((string)p == "1")
+            {
+                RoomPasswordModalStatus = true;
+            }
+            else
+            {
+                RoomPasswordModalStatus = false;
+                RoomPassword = string.Empty;
             }
 
 
@@ -297,7 +337,24 @@ namespace LiteCall.ViewModels.ServerPages
 
         public ICommand ConnectCommand { get; }
 
-        private bool CanConnectExecute(object p) => (CurrentGroup is null) || ((string)p != CurrentGroup.RoomName);
+        private bool CanConnectExecute(object p)
+        {
+
+            if (p == null) return false;
+
+            var ConnectedGroup = (ServerRooms)p;
+
+            if (CurrentGroup is not null)
+            {
+                return ConnectedGroup.RoomName != CurrentGroup.RoomName.ToLower();
+            }
+            else
+            {
+                return true;
+            }
+           
+           
+        }
 
 
         private async Task OnConnectExecuted(object p)
@@ -305,9 +362,39 @@ namespace LiteCall.ViewModels.ServerPages
 
             var ConnectedGroup = (ServerRooms)p;
 
+
+            if (ConnectedGroup.Guard)
+            {
+                RoomPasswordModalStatus = true;
+                return;
+            }
+            else
+            {
+                await AsyncConnectCommand(ConnectedGroup);
+            }
+
+          
+        }
+
+        public ICommand ConnectWithPasswordCommand { get; }
+
+        private bool CanConectWithPasswordExecute(object p) => !Convert.ToBoolean(p) && !string.IsNullOrEmpty(RoomPassword);
+
+        private async Task OnConnectWithPasswordCommandExecuted(object p)
+        {
+            await AsyncConnectCommand(SelRooms, RoomPassword);
+            RoomPassword = string.Empty;
+            RoomPasswordModalStatus = false;
+
+        }
+
+
+
+        async Task AsyncConnectCommand(ServerRooms ConnectedGroup,string RoomPassword = null)
+        {
             try
             {
-                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}", null);
+                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}", RoomPassword);
 
                 if (ConnetGroupStatus)
                 {
@@ -320,8 +407,6 @@ namespace LiteCall.ViewModels.ServerPages
                 MessageBox.Show($"Error:{e.Message}");
             }
         }
-
-
 
 
 
@@ -373,11 +458,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             MessagesColCollection.Add(newMessage);
 
-
         }
-
-
-
 
 
 
@@ -473,7 +554,7 @@ namespace LiteCall.ViewModels.ServerPages
             var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
 
 
-          // ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+         ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
 
             
 
@@ -503,7 +584,6 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
         
-
         private async void AsyncGetUserServerName()
         {
             var NewName = string.Empty;
@@ -522,8 +602,20 @@ namespace LiteCall.ViewModels.ServerPages
                 _Account.CurrentServerLogin = NewName;
             }
 
+        }
 
+        private async void AsyncGetServerInfo()
+        {
+            try
+            {
+                CurrentServer = await ServerService.hubConnection.InvokeAsync<Server>("GetServerInfo");
+            }
+            catch (Exception e)
+            {
 
+            }
+
+            ServerInfoBus.Send(CurrentServer);
         }
 
         private async void Voice_Input(object sender, WaveInEventArgs e)
@@ -577,6 +669,8 @@ namespace LiteCall.ViewModels.ServerPages
 
         public override void Dispose()
         {
+            ServerService.hubConnection.StopAsync();
+
             MessageBus.Bus -= AsyncGetMessageBUS;
 
             ReloadServerRooms.Reloader -= AsynGetServerRoomsBUS;
@@ -586,8 +680,6 @@ namespace LiteCall.ViewModels.ServerPages
             input.StopRecording();
 
             _waveOutEvent.Stop();
-
-            ServerService.hubConnection.StopAsync();
 
             base.Dispose();
         }
@@ -625,12 +717,12 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
 
-        private bool _ModalStatus;
+        private bool _createRoomModalStatus;
 
-        public bool ModalStatus
+        public bool CreateRoomModalStatus
         {
-            get => _ModalStatus;
-            set => Set(ref _ModalStatus, value);
+            get => _createRoomModalStatus;
+            set => Set(ref _createRoomModalStatus, value);
         }
 
 
@@ -640,6 +732,27 @@ namespace LiteCall.ViewModels.ServerPages
         {
             get => _NewRoomName;
             set => Set(ref _NewRoomName, value);
+        }
+
+
+
+
+        private bool _RoomPasswordModalStatus;
+
+        public bool RoomPasswordModalStatus
+        {
+            get => _RoomPasswordModalStatus;
+            set => Set(ref _RoomPasswordModalStatus, value);
+        }
+
+
+
+        private string _RoomPassword;
+
+        public string RoomPassword
+        {
+            get => _RoomPassword;
+            set => Set(ref _RoomPassword, value);
         }
 
         private ServerRooms _SelRooms;

@@ -16,6 +16,14 @@ namespace LiteCall.Services
     }
 
 
+    internal static class ServerInfoBus
+    {
+        public static event Action<Server> Bus;
+
+        public static void Send(Server data) => Bus?.Invoke(data);
+    }
+
+
     internal static class VoiceMessageBus
     {
         public static event Action<VoiceMessage> Bus;
