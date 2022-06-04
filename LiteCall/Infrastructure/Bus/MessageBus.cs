@@ -24,9 +24,19 @@ namespace LiteCall.Services
     }
 
 
-
-
     internal static class ReloadServerRooms
+    {
+        public static event Action Reloader;
+
+        public static void Reload()
+        {
+            Reloader?.Invoke();
+        }
+
+    }
+
+
+    internal static class DisconectSeverReloader
     {
         public static event Action Reloader;
 

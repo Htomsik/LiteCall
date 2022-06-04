@@ -39,6 +39,8 @@ namespace LiteCall.ViewModels.Pages
 
             CurrentServer = new Server();
 
+            DisconectSeverReloader.Reloader += DisconectServer;
+
             _savedServerCollection = new ObservableCollection<Server> { };
 
         }
@@ -52,6 +54,14 @@ namespace LiteCall.ViewModels.Pages
 
         private void OnDisconnectServerExecuted(object p)
         {
+            DisconectServer();
+
+        }
+
+
+
+        private void DisconectServer()
+        {
             selectedViewModel.Dispose();
 
             selectedViewModel = null;
@@ -59,8 +69,6 @@ namespace LiteCall.ViewModels.Pages
             CurrentServer.Ip = string.Empty;
 
             VisibilitiStatus = Visibility.Collapsed;
-
-            
         }
 
         public ICommand VisibilitySwitchCommand { get; }
@@ -124,8 +132,6 @@ namespace LiteCall.ViewModels.Pages
 
         private async Task OnConnectServerExecuted(object p)
         {
-
-           
 
             Server newServer = new Server{Ip = ServernameOrIp};
 

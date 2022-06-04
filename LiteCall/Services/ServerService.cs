@@ -65,7 +65,7 @@ namespace SignalRServ
             //если соединение закрыто
             hubConnection.Closed += error =>
             {
-                MessageBox.Show("Disconected", "Сообщение");
+                DisconectSeverReloader.Reload();
                 return Task.CompletedTask;
             };
 

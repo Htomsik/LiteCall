@@ -70,19 +70,21 @@ namespace LiteCall.ViewModels.ServerPages
             //Обновение комнат
             ReloadServerRooms.Reloader += AsynGetServerRoomsBUS;
 
+            //Приход сообщений
             VoiceMessageBus.Bus += AsyncGetAudioBus;
 
             #endregion
 
             #region команды
 
-            SendMessageCommand = new LambdaCommand(OnSendMessageExecuted, CanSendMessageExecuted);
+            SendMessageCommand = new AsyncLamdaCommand(OnSendMessageExecuted, (ex) => StatusMessage = ex.Message, CanSendMessageExecuted);
+
+            CreateNewRoomCommand = new AsyncLamdaCommand(OnCreateNewRoomExecuted,(ex) => StatusMessage = ex.Message,CanCreateNewRoomExecute);
+
+            ConnectCommand = new AsyncLamdaCommand(OnConnectExecuted, (ex) => StatusMessage = ex.Message, CanConnectExecute);
+
 
             OpenModalCommand = new LambdaCommand(OnOpenModalCommandExecuted);
-
-            CreateNewRoomCommand = new LambdaCommand(OnCreateNewRoomExecuted, CanCreateNewRoomExecute);
-
-            ConnectCommand = new LambdaCommand(OnConnectExecuted, CanConnectExecute);
 
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
 
@@ -168,7 +170,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// </summary>
         public ICommand VoiceInputCommand { get; }
 
-        private void OnVoiceInputExecuted(object p)
+        private async void OnVoiceInputExecuted(object p)
         {
             if (!(bool)p)
             {
@@ -216,22 +218,40 @@ namespace LiteCall.ViewModels.ServerPages
 
         private bool CanCreateNewRoomExecute(object p) => !Convert.ToBoolean(p) && !string.IsNullOrEmpty(NewRoomName);
 
-        private void OnCreateNewRoomExecuted(object p)
+        private async Task OnCreateNewRoomExecuted(object p)
         {
-            try
-            {
-                AsyncCreateRoom(NewRoomName);
+            
+                try
+                {
+                    var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", NewRoomName, "123");
+
+
+                    if (GroupStatus)
+                    {
+
+                        CurrentGroup = new ServerRooms
+                        {
+                            RoomName = NewRoomName,
+                            Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
+                        };
+
+                        input.StartRecording();
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Error:{e.Message}");
+
+                }
+
                 NewRoomName = string.Empty;
                 ModalStatus = false;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-
-
-
         }
+
+
+
 
 
         public ICommand OpenModalCommand { get; }
@@ -253,32 +273,37 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
 
+
+
         public ICommand ConnectCommand { get; }
 
-        private bool CanConnectExecute(object p)
+        private bool CanConnectExecute(object p) => (CurrentGroup is null) || ((string)p != CurrentGroup.RoomName);
+
+
+        private async Task OnConnectExecuted(object p)
         {
 
-            if (CurrentGroup is null) return true;
+            var ConnectedGroup = (ServerRooms)p;
 
-            if (p is ServerRooms)
+            try
             {
-                var ConnectGroup = (ServerRooms)p;
+                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}", null);
 
-                if (CurrentGroup.RoomName != ConnectGroup.RoomName)
+                if (ConnetGroupStatus)
                 {
-                    return true;
+                    input.StartRecording();
+                    CurrentGroup = ConnectedGroup;
                 }
             }
-            return false;
-
-
+            catch (Exception e)
+            {
+                MessageBox.Show($"Error:{e.Message}");
+            }
         }
 
-        private void OnConnectExecuted(object p)
-        {
 
-            AsyncConnectGroup((ServerRooms)p);
-        }
+
+
 
         #region Отправка сообщений
 
@@ -286,9 +311,8 @@ namespace LiteCall.ViewModels.ServerPages
 
         public bool CanSendMessageExecuted(object p) => CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
 
-        private void OnSendMessageExecuted(object p)
+        private async Task OnSendMessageExecuted(object p)
         {
-
 
             Message newMessage = new Message
             {
@@ -297,14 +321,17 @@ namespace LiteCall.ViewModels.ServerPages
                 Sender = Account.CurrentServerLogin
             };
 
-            AsyncSendMessage(newMessage);
-
-            MessagesColCollection.Add(newMessage);
+            try
+            {
+                await ServerService.hubConnection.InvokeAsync("SendMessage", newMessage);
+                MessagesColCollection.Add(newMessage);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Error:{e.Message}");
+            }
 
             CurrentMessage = string.Empty;
-
-
-
 
         }
 
@@ -448,82 +475,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-        /// <summary>
-        /// Создание комнаты
-        /// </summary>
-        /// <param name="RoomName"></param>
-        private async void AsyncCreateRoom(string _RoomName)
-        {
-            try
-            {
-                var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", _RoomName,"123");
-
-
-                if (GroupStatus)
-                {
-
-                    CurrentGroup = new ServerRooms
-                    {
-                        RoomName = _RoomName,
-                        Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", _RoomName)
-                    };
-
-                    input.StartRecording();
-
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Error:{e.Message}");
-
-            }
-
-        }
-
-        /// <summary>
-        /// Отправка сообщений
-        /// </summary>
-        /// <param name="RoomName"></param>
-        private async void AsyncSendMessage(Message NewMessage)
-        {
-            try
-            {
-                await ServerService.hubConnection.InvokeAsync("SendMessage", NewMessage);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Error:{e.Message}");
-            }
-
-
-        }
-
-        /// <summary>
-        /// Присоединение к комнате
-        /// </summary>
-        /// <param name="ConnectedGroup"></param>
-        private async void AsyncConnectGroup(ServerRooms ConnectedGroup)
-        {
-
-            try
-            {
-                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}",null);
-
-                if (ConnetGroupStatus)
-                {
-                    input.StartRecording();
-                    CurrentGroup = ConnectedGroup;
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Error:{e.Message}");
-            }
-
-        }
-
+        
 
         private async void AsyncGetUserServerName()
         {
@@ -689,6 +641,23 @@ namespace LiteCall.ViewModels.ServerPages
             get => _CurrentGroup;
             set => Set(ref _CurrentGroup, value);
         }
+
+
+        //Сообщение об ошибке
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                Set(ref _statusMessage, value);
+                OnPropertyChanged(nameof(HasStatusMessage));
+            }
+        }
+
+
+        //Есть ли сообщение об ошибке
+        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
 
 

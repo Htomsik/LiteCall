@@ -135,7 +135,7 @@
                     <ContextMenu>
                         <MenuItem
                             Command="{Binding ConnectCommand}"
-                            CommandParameter="{Binding SelRooms}"
+                            CommandParameter="{Binding SelRooms.RoomName}"
                             Header="Connect" />
                     </ContextMenu>
                 </ListView.ContextMenu>
