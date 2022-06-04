@@ -130,6 +130,26 @@ namespace LiteCall.ViewModels.ServerPages
 
             #endregion
 
+            ServerRooms = new ObservableCollection<ServerRooms>
+            {
+                new ServerRooms { Guard = true, RoomName = "Guard", Users = new List<ServerUser>
+                {
+                    new ServerUser { Login = "JessJake" },
+                    new ServerUser { Login = "JessJake" },
+                    
+                } },
+                new ServerRooms { Guard = false, RoomName = "NoNGuard", Users = new List<ServerUser>
+                {
+                    new ServerUser { Login = "JessJake" },
+                    new ServerUser { Login = "JessJake" },
+                
+
+                } }
+            };
+
+
+
+
         }
 
 
@@ -449,8 +469,15 @@ namespace LiteCall.ViewModels.ServerPages
         /// </summary>
         private async void AsynGetServerRoomsBUS()
         {
+
             var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
-            ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+
+
+          // ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+
+            
+
+
         }
 
 

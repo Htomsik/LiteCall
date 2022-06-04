@@ -32,7 +32,7 @@ namespace LiteCall
         {
             
 
-            INavigatonService<AuthorisationPageVMD> AuthPageNavigationService = CreateAutPageNavigationServices();
+          INavigatonService<AuthorisationPageVMD> AuthPageNavigationService = CreateAutPageNavigationServices();
             AuthPageNavigationService.Navigate();
                 
             MainWindow = new MainWindov()
@@ -42,6 +42,8 @@ namespace LiteCall
             MainWindow.Show();
 
             base.OnStartup(e);
+
+
         }
 
         internal INavigatonService<AuthorisationPageVMD> CreateAutPageNavigationServices()

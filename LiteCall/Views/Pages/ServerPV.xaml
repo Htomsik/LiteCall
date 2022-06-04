@@ -10,6 +10,7 @@
     xmlns:serverPages="clr-namespace:LiteCall.ViewModels.ServerPages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
+    xmlns:viewmodels="clr-namespace:LiteCall.ViewModels.Pages"
     d:DesignHeight="450"
     d:DesignWidth="900"
     mc:Ignorable="d">
@@ -22,7 +23,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <converters:VisibilityConverter x:Key="VisibilityConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
             <system:Double x:Key="SendMassegeButtonScale">1.0</system:Double>
             <system:Double x:Key="MicrophoneButtonscale">0.8</system:Double>
@@ -36,7 +37,7 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="235" />
+            <ColumnDefinition Width="235" />
             <ColumnDefinition Width="*" MinWidth="50" />
         </Grid.ColumnDefinitions>
 
@@ -131,6 +132,7 @@
                 ItemsSource="{Binding ServerRooms}"
                 SelectedItem="{Binding SelRooms, UpdateSourceTrigger=PropertyChanged}">
 
+
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem
@@ -153,11 +155,31 @@
                                 MinWidth="200"
                                 BorderBrush="{DynamicResource Fonts(Solid)}"
                                 BorderThickness="1"
-                                CornerRadius="10">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding Guard}" />
+                                CornerRadius="8">
+
+
+
+                                <Grid>
+
+
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding RoomName}" />
+
+                                    <TextBlock
+                                        Margin="0,0,5,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontSize="18"
+                                        Foreground="{DynamicResource Dangerous(Solid)}"
+                                        Text="P"
+                                        Visibility="{Binding Guard, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+
+
+                                </Grid>
+
                             </Border>
 
 
@@ -167,23 +189,17 @@
                                 ItemsSource="{Binding Users}">
 
 
-                                <ListView.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ListView.ItemsPanel>
-
                                 <ListView.ItemTemplate>
 
 
                                     <DataTemplate>
 
 
-                                        <Grid ToolTip="{Binding Login}">
+                                        <Grid>
 
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
 
                                             <Path
@@ -199,12 +215,13 @@
                                                 </Path.RenderTransform>
                                             </Path>
 
-
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Margin="5,0,0,0"
+                                                Text="{Binding Login}" />
 
 
                                         </Grid>
-
-
 
 
                                     </DataTemplate>
@@ -253,7 +270,7 @@
             <Grid Grid.Row="1">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.3*" />
+                    <RowDefinition Height="0.3*" MaxHeight="140" />
                     <RowDefinition Height="0.6*" />
                     <RowDefinition Height="40" />
                 </Grid.RowDefinitions>
