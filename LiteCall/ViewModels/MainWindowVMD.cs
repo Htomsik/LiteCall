@@ -26,9 +26,13 @@ namespace LiteCall.ViewModels
 
         private readonly AdditionalNavigationStore _AdditionalNavigationStore;
 
+
+
         public BaseVMD CurrentViewModel => _NavigationStore.MainWindowCurrentViewModel;
 
-        public BaseVMD AdditionalCurrentViewModel => _AdditionalNavigationStore.AdditionalMainWindowCurrentViewModel;
+        public BaseVMD AdditionalCurrentViewModel => _AdditionalNavigationStore.AdditionalMainWindowCurrentViewModel ;
+
+
 
         private void OnCurrentViewModelChanged()
         {

@@ -14,6 +14,7 @@ namespace LiteCall.Stores
     {
         private static Account DefaultAccount = new Account { Login = "LC_User" };
 
+        public bool isDefaulAccount => CurrentAccount == DefaultAccount;
 
         public AccountStore(INavigationService _AuthPageNavigationService)
         {
@@ -23,12 +24,24 @@ namespace LiteCall.Stores
         INavigationService AuthPageNavigationService;
 
 
+        public event Action CurrentAccountChange;
+
+
+        private void OnCurrentAccountChangeChanged()
+        {
+            CurrentAccountChange?.Invoke();
+        }
+
         private Account _CurrentAccount = DefaultAccount;
 
         public Account CurrentAccount
         {
             get => _CurrentAccount;
-            set => Set(ref _CurrentAccount, value);
+            set
+            {
+                Set(ref _CurrentAccount, value);
+                OnCurrentAccountChangeChanged();
+            } 
         }
 
 

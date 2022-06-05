@@ -23,7 +23,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource Background(Solid)}">
+    <Grid Background="Transparent">
+
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="Auto" MaxWidth="400" />

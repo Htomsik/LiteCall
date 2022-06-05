@@ -54,16 +54,9 @@
                 LostFocus="LostFocus"
                 SizeChanged="SizeChanged">
                 <ContentControl.Resources>
+
                     <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
                         <pages:MainPV />
-                    </DataTemplate>
-
-                    <DataTemplate DataType="{x:Type viewModel:AuthorisationPageVMD}">
-                        <pages:AuthorisationPV />
-                    </DataTemplate>
-
-                    <DataTemplate DataType="{x:Type viewModel:RegistrationPageVMD}">
-                        <pages:RegistrationPV />
                     </DataTemplate>
 
                     <DataTemplate DataType="{x:Type viewModel:SettingVMD}">

@@ -22,16 +22,15 @@ namespace LiteCall.Infrastructure.Commands
 
         private readonly AuthorisationPageVMD _AuthVMD;
 
-        private readonly INavigationService _NavigationServices;
+       
 
         private readonly AccountStore _AccountStore;
 
         private readonly Func<object, bool> _CanExecute;
-        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigationService navigationServices,
+        public AuthCommand(AuthorisationPageVMD AuthVMD,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
             _AuthVMD = AuthVMD;
-            _NavigationServices = navigationServices;
             _AccountStore = accountStore;
             _CanExecute = canExecute;
         }
@@ -80,8 +79,6 @@ namespace LiteCall.Infrastructure.Commands
                 _AuthVMD.StatusMessage = "Loggin sucsesfull. . .";
                  await  Task.Delay(1000);
 
-
-                _NavigationServices.Navigate();
             }
             else
             {
@@ -93,8 +90,6 @@ namespace LiteCall.Infrastructure.Commands
                 //Задержка перед открытием
                 _AuthVMD.StatusMessage = "Loggin sucsesfull. . .";
                 await Task.Delay(1000);
-
-                _NavigationServices.Navigate();
 
             }
 
