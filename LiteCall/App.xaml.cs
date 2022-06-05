@@ -31,9 +31,13 @@ namespace LiteCall
 
             services.AddSingleton<AccountStore>();
 
-            services.AddSingleton<NavigationStore>();
+            services.AddSingleton<MainWindowNavigationStore>();
 
             services.AddSingleton<AdditionalNavigationStore>();
+
+            services.AddSingleton<SettingsAccNavigationStore>();
+
+
 
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
 
@@ -47,14 +51,21 @@ namespace LiteCall
                 s.GetRequiredService<AccountStore>(),
                 CreateMainPageNavigationServices(s),CreateRegistrationPageNavigationServices(s)));
 
+
+
+
             services.AddTransient<MainPageVMD>(
                 s => new MainPageVMD(s.GetRequiredService<AccountStore>(),CreateSettingPageNavigationService(s)));
 
-            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(),
-                CreateAutPageNavigationServices(s),
-                s.GetRequiredService<CloseAdditionalNavigationServices>(),
-                s.GetRequiredService<AuthorisationPageVMD>(),
-                s.GetRequiredService<RegistrationPageVMD>()));
+
+
+
+            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(), 
+                s.GetRequiredService<CloseAdditionalNavigationServices>(), 
+                CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
+               ));
+
+
 
             services.AddSingleton<MainWindowVMD>();
 
@@ -85,21 +96,21 @@ namespace LiteCall
         internal INavigationService CreateAutPageNavigationServices(IServiceProvider serviceProvider)
         {
 
-            return new NavigationServices<AuthorisationPageVMD>
-            (serviceProvider.GetRequiredService<NavigationStore>(),
+            return new SettingAccNavigationServices<AuthorisationPageVMD>
+            (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
                 () => serviceProvider.GetRequiredService<AuthorisationPageVMD>());
         }
 
         private INavigationService CreateRegistrationPageNavigationServices(IServiceProvider serviceProvider)
         {
             return new NavigationServices<RegistrationPageVMD>
-                (serviceProvider.GetRequiredService<NavigationStore>(),
+                (serviceProvider.GetRequiredService<MainWindowNavigationStore>(),
                     () => serviceProvider.GetRequiredService<RegistrationPageVMD>());
         }
 
         private INavigationService CreateMainPageNavigationServices(IServiceProvider serviceProvider)
         {
-            return new NavigationServices<MainPageVMD>(serviceProvider.GetRequiredService<NavigationStore>(),
+            return new NavigationServices<MainPageVMD>(serviceProvider.GetRequiredService<MainWindowNavigationStore>(),
                 () => serviceProvider.GetRequiredService<MainPageVMD>());
         }
 

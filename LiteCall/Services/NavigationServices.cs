@@ -12,20 +12,20 @@ namespace LiteCall.Services
     internal class NavigationServices<TViewModel> : INavigationService where TViewModel : BaseVMD
 
     {
-        private readonly NavigationStore _NavigationStore;
+        private readonly MainWindowNavigationStore _mainWindowNavigationStore;
 
         private readonly Func<TViewModel> _CreateViewModel;
 
-        public NavigationServices(NavigationStore navigationStore, Func<TViewModel> createViewModel)
+        public NavigationServices(MainWindowNavigationStore mainWindowNavigationStore, Func<TViewModel> createViewModel)
         {
-            _NavigationStore = navigationStore;
+            _mainWindowNavigationStore = mainWindowNavigationStore;
 
             _CreateViewModel = createViewModel;
         }
 
         public void Navigate()
         {
-            _NavigationStore.MainWindowCurrentViewModel = _CreateViewModel();
+            _mainWindowNavigationStore.MainWindowCurrentViewModel = _CreateViewModel();
         }
     }
 }

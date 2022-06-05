@@ -68,10 +68,10 @@
 
                 <TabItem.Content>
 
-
                     <Grid>
 
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
@@ -104,12 +104,23 @@
 
                         </StackPanel>
 
+                        <Button
+                            Grid.Row="1"
+                            Margin="5"
+                            Padding="3"
+                            HorizontalAlignment="Left"
+                            Command="{Binding LogoutAccCommand}">
+                            <TextBlock Text="Logout" />
+
+
+                        </Button>
+
 
 
                         <ContentControl
-                            Grid.Row="1"
+                            Grid.Row="2"
                             HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
+                            VerticalAlignment="Top"
                             Content="{Binding AccountCurrentVMD, UpdateSourceTrigger=PropertyChanged}">
 
                             <ContentControl.Resources>

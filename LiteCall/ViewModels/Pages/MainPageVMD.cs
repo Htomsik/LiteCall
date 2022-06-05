@@ -35,7 +35,7 @@ namespace LiteCall.ViewModels.Pages
 
             DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
 
-            AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted,CanAccountLogoutExecute);
+            AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted);
 
             OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
 
@@ -112,8 +112,6 @@ namespace LiteCall.ViewModels.Pages
 
 
         public ICommand AccountLogoutCommand { get; }
-
-        private bool CanAccountLogoutExecute(object p) => true;
 
         private void OnAccountLogoutExecuted(object p)
         {

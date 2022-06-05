@@ -10,25 +10,25 @@ namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
-        public MainWindowVMD(NavigationStore navigationStore, AdditionalNavigationStore additionalNavigationStore)
+        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore)
         {
-            _NavigationStore = navigationStore;
+            _mainWindowNavigationStore = mainWindowNavigationStore;
 
             _AdditionalNavigationStore = additionalNavigationStore;
 
-            _NavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            _mainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
             _AdditionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
         }
 
        
-        private readonly NavigationStore _NavigationStore;
+        private readonly MainWindowNavigationStore _mainWindowNavigationStore;
 
         private readonly AdditionalNavigationStore _AdditionalNavigationStore;
 
 
 
-        public BaseVMD CurrentViewModel => _NavigationStore.MainWindowCurrentViewModel;
+        public BaseVMD CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;
 
         public BaseVMD AdditionalCurrentViewModel => _AdditionalNavigationStore.AdditionalMainWindowCurrentViewModel ;
 

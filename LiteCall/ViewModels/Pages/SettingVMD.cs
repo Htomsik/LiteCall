@@ -15,9 +15,9 @@ namespace LiteCall.ViewModels.Pages
     internal class SettingVMD:BaseVMD
     {
 
-        private AuthorisationPageVMD _AuthorisationPageVMD;
+        private readonly SettingsAccNavigationStore _SettingsAccNavigationStore;
 
-        private RegistrationPageVMD _RegistrationPageVMD;
+        private readonly INavigationService _AuthNavigationService;
 
 
         private AccountStore _AccountStore;
@@ -28,36 +28,41 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _AccountStore, value);
         }
 
-        public SettingVMD(AccountStore accountStore, INavigationService AuthPagenavigationservices, INavigationService CloseAdditioNavigationService,AuthorisationPageVMD authorisationPageVmd, RegistrationPageVMD registrationPageVmd)
-        {
-           
-            _AuthorisationPageVMD = authorisationPageVmd;
 
-            _RegistrationPageVMD = registrationPageVmd;
+        public SettingVMD(AccountStore accountStore, INavigationService CloseAdditioNavigationService, INavigationService AuthNavigationService ,SettingsAccNavigationStore SettingsAccNavigationStore)
+        {
+
+            _AuthNavigationService = AuthNavigationService;
+
+            _SettingsAccNavigationStore = SettingsAccNavigationStore;
 
             AccountStore = accountStore;
 
-            OpenAuthCommand = new NavigationCommand(AuthPagenavigationservices);
+
+            LogoutAccCommand = new AccountLogoutCommand(_AccountStore);
 
             CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);
 
+
+
+
             AccountStore.CurrentAccountChange += AcoountStatusChange;
+
+            _SettingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
             AcoountStatusChange();
 
 
         }
 
-
-        private BaseVMD _AccountCurrentVMD;
-
-        public BaseVMD AccountCurrentVMD
+        private void OnCurrentViewModelChanged()
         {
-            get => _AccountCurrentVMD;
-            set => Set(ref _AccountCurrentVMD, value);
+            OnPropertyChanged(nameof(AccountCurrentVMD));
         }
 
-        public ICommand OpenAuthCommand { get; }
+        public BaseVMD AccountCurrentVMD => _SettingsAccNavigationStore.SettingsAccCurrentViewModel;
+        
+        public ICommand LogoutAccCommand { get; }
 
         public ICommand CloseSettingsCommand { get; }
 
@@ -67,14 +72,14 @@ namespace LiteCall.ViewModels.Pages
 
             if (IsDefault)
             {
-
-                AccountCurrentVMD = _AuthorisationPageVMD;
+                _AuthNavigationService.Navigate();
 
             }
             else
             {
-                AccountCurrentVMD  = null;
+                _SettingsAccNavigationStore.Close();
             }
+           
         }
 
      

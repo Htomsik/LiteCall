@@ -16,16 +16,12 @@ namespace LiteCall.Stores
 
         public bool isDefaulAccount => CurrentAccount == DefaultAccount;
 
-        public AccountStore(INavigationService _AuthPageNavigationService)
+        public AccountStore()
         {
-            this.AuthPageNavigationService = _AuthPageNavigationService;
+            
         }
 
-        INavigationService AuthPageNavigationService;
-
-
         public event Action CurrentAccountChange;
-
 
         private void OnCurrentAccountChangeChanged()
         {
@@ -47,9 +43,8 @@ namespace LiteCall.Stores
 
         public void Logout()
         {
-            _CurrentAccount = DefaultAccount;
+            CurrentAccount = DefaultAccount;
 
-            AuthPageNavigationService.Navigate();
         }
     }
 }

@@ -164,11 +164,11 @@
                         ClipToBounds="True"
                         CornerRadius="20">
 
-                        <Border.ContextMenu>
+                     <!--   <Border.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Command="{Binding AccountLogoutCommand}" Header="Account Logout" />
                             </ContextMenu>
-                        </Border.ContextMenu>
+                        </Border.ContextMenu> -->
 
                         <Viewbox Width="25" Height="25">
                             <Path
