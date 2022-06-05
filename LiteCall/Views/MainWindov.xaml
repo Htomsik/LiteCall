@@ -2,13 +2,16 @@
     x:Class="LiteCall.Views.MainWindov"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Base="clr-namespace:LiteCall.ViewModels.Base"
     xmlns:commands="clr-namespace:LiteCall.Infrastructure.Commands"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LiteCall.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:LiteCall.ViewModels.Pages"
+    x:Name="Window"
     Width="800"
     Height="450"
     MinWidth="305"
@@ -69,6 +72,50 @@
 
                 </ContentControl.Resources>
             </ContentControl>
+
+
+            <!--  Для настроек, отрывается поверх остальных окон  -->
+
+
+
+
+            <modalCutom:ModalCustom
+                Grid.Row="1"
+                Corner="0"
+                IsOpen="{Binding IsOpen}">
+
+                <Grid
+                    Width="{Binding ElementName=Window, Path=ActualWidth}"
+                    Height="{Binding ElementName=Window, Path=ActualHeight}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource Background2(Solid)}">
+
+                    <ContentControl
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Content="{Binding AdditionalCurrentViewModel}"
+                        LostFocus="LostFocus"
+                        SizeChanged="SizeChanged">
+
+                        <ContentControl.Resources>
+
+                            <DataTemplate DataType="{x:Type viewModel:SettingVMD}">
+                                <pages:SettingPV />
+                            </DataTemplate>
+
+                        </ContentControl.Resources>
+
+
+                    </ContentControl>
+
+                </Grid>
+
+
+            </modalCutom:ModalCustom>
+
+
+
             <!--  Верхняя панель  -->
             <DockPanel Background="{DynamicResource Background(Solid)}" MouseLeftButtonDown="DragPanel">
 

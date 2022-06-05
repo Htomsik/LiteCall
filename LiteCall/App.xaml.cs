@@ -9,6 +9,7 @@ using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels;
+using LiteCall.ViewModels.Base;
 using LiteCall.ViewModels.Pages;
 using LiteCall.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,13 +33,16 @@ namespace LiteCall
 
             services.AddSingleton<NavigationStore>();
 
+            services.AddSingleton<AdditionalNavigationStore>();
+
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
 
-
+            
             services.AddTransient<AuthorisationPageVMD>(s => new AuthorisationPageVMD( s.GetRequiredService<AccountStore>(),
                 CreateMainPageNavigationServices(s),
                 CreateRegistrationPageNavigationServices(s)));
 
+            services.AddSingleton<CloseAdditionalNavigationServices>();
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
@@ -47,7 +51,7 @@ namespace LiteCall
             services.AddTransient<MainPageVMD>(
                 s => new MainPageVMD(s.GetRequiredService<AccountStore>(),CreateSettingPageNavigationService(s)));
 
-            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(),CreateAutPageNavigationServices(s)));
+            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(),CreateAutPageNavigationServices(s),s.GetRequiredService<CloseAdditionalNavigationServices>()));
 
             services.AddSingleton<MainWindowVMD>();
 
@@ -98,8 +102,10 @@ namespace LiteCall
 
         private INavigationService CreateSettingPageNavigationService(IServiceProvider serviceProvider)
         {
-            return new NavigationServices<SettingVMD>(serviceProvider.GetRequiredService<NavigationStore>(),() => serviceProvider.GetRequiredService<SettingVMD>());
+            return new AdditionalNavigationServices<SettingVMD>(serviceProvider.GetRequiredService<AdditionalNavigationStore>(),() => serviceProvider.GetRequiredService<SettingVMD>());
         }
+
+      
     }
 
 

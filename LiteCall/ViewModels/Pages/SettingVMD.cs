@@ -22,14 +22,19 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _AccountStore, value);
         }
 
-        public SettingVMD(AccountStore accountStore, INavigationService AuthPagenavigationservices)
+        public SettingVMD(AccountStore accountStore, INavigationService AuthPagenavigationservices, INavigationService CloseAdditioNavigationService)
         {
             AccountStore = accountStore;
 
             OpenAuthCommand = new NavigationCommand(AuthPagenavigationservices);
+
+            CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);
+
         }
 
         public ICommand OpenAuthCommand { get; }
+
+        public ICommand CloseSettingsCommand { get; }
 
      
     }

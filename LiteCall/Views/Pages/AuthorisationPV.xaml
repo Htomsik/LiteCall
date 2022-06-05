@@ -198,13 +198,6 @@
             Color="{DynamicResource Fonts(Solid)}" />
 
 
-
-
-
-
-
-
-
     </Grid>
 
 </UserControl>

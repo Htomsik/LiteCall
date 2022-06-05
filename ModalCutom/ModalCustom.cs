@@ -28,6 +28,17 @@ namespace ModalCutom
             set { SetValue(IsOpenProperty, value); }
         }
 
+
+        public static readonly DependencyProperty CornerProperty =
+            DependencyProperty.Register("Corner", typeof(int), typeof(ModalCustom),
+                new PropertyMetadata(10));
+
+        public int Corner
+        {
+            get { return (int)GetValue(CornerProperty); }
+            set { SetValue(CornerProperty, value); }
+        }
+
         static ModalCustom()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ModalCustom), new FrameworkPropertyMetadata(typeof(ModalCustom)));

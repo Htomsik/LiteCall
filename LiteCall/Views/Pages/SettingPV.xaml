@@ -21,9 +21,32 @@
     </UserControl.Resources>
 
 
-    <Grid Background="{DynamicResource Background(Solid)}">
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{DynamicResource Background(Solid)}">
 
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="40" />
+        </Grid.ColumnDefinitions>
+
+
+        <Button
+            Grid.Column="1"
+            Width="25"
+            Height="25"
+            Margin="0,5,0,0"
+            VerticalAlignment="Top"
+            Command="{Binding CloseSettingsCommand}"
+            Style="{DynamicResource IMGButton}">
+
+            <Button.Resources>
+                <StaticResource x:Key="Img" ResourceKey="ClosePath" />
+            </Button.Resources>
+
+        </Button>
 
 
         <TabControl

@@ -20,7 +20,6 @@ namespace LiteCall.Infrastructure.Commands
             private readonly INavigationService _NavigationService;
 
 
-
             public NavigationCommand(INavigationService navigationService)
             {
                 _NavigationService = navigationService;
