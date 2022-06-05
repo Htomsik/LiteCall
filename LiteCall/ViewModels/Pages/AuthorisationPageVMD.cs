@@ -25,7 +25,6 @@ namespace LiteCall.ViewModels.Pages
 
         }
 
-        
         #region Команды
 
         public ICommand AuthCommand { get; }

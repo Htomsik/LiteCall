@@ -20,7 +20,7 @@ namespace LiteCall.ViewModels.Pages
     {
         public RegistrationPageVMD(AccountStore AccountStore, INavigationService MainPageNavigationServices,INavigationService AuthPagenavigationservices)
         {
-            RegistrationCommand = new RegistrationCommand(CapthcaString, this, MainPageNavigationServices, AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
+            RegistrationCommand = new RegistrationCommand(CapthcaString, this,  AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
 
             OpenAuthPageCommand = new NavigationCommand(AuthPagenavigationservices);
 

@@ -17,17 +17,17 @@ namespace LiteCall.Infrastructure.Commands
     internal class RegistrationCommand : AsyncCommandBase
     {
         private readonly RegistrationPageVMD _RegVMD;
-        private readonly INavigationService _NavigationServices;
+    
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
        
 
-        public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD, INavigationService navigationServices,
+        public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
            
             _RegVMD = RegVMD;
-            _NavigationServices = navigationServices;
+          
             _AccountStore = accountStore;
             _CanExecute = canExecute;
         }
@@ -76,7 +76,7 @@ namespace LiteCall.Infrastructure.Commands
             _RegVMD.ModalStatusMessage = "Registration sucsesfull. . .";
             await Task.Delay(1000);
 
-            _NavigationServices.Navigate();
+            
 
             _RegVMD.ModalStatusMessage = string.Empty;
 

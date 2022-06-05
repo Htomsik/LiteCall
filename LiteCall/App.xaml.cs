@@ -45,11 +45,14 @@ namespace LiteCall
             services.AddTransient<AuthorisationPageVMD>(s => new AuthorisationPageVMD( s.GetRequiredService<AccountStore>(),
                 CreateRegistrationPageNavigationServices(s)));
 
+
             services.AddSingleton<CloseAdditionalNavigationServices>();
+
+
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
-                CreateMainPageNavigationServices(s),CreateRegistrationPageNavigationServices(s)));
+                CreateMainPageNavigationServices(s),CreateAutPageNavigationServices(s)));
 
 
 
@@ -103,8 +106,8 @@ namespace LiteCall
 
         private INavigationService CreateRegistrationPageNavigationServices(IServiceProvider serviceProvider)
         {
-            return new NavigationServices<RegistrationPageVMD>
-                (serviceProvider.GetRequiredService<MainWindowNavigationStore>(),
+            return new SettingAccNavigationServices<RegistrationPageVMD>
+                (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
                     () => serviceProvider.GetRequiredService<RegistrationPageVMD>());
         }
 
