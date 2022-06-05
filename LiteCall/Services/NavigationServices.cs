@@ -9,15 +9,17 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services
 {
-    internal class NavigationServices<TViewModel> : INavigatonService<TViewModel> where TViewModel : BaseVMD
+    internal class NavigationServices<TViewModel> : INavigationService where TViewModel : BaseVMD
 
     {
         private readonly NavigationStore _NavigationStore;
+
         private readonly Func<TViewModel> _CreateViewModel;
 
         public NavigationServices(NavigationStore navigationStore, Func<TViewModel> createViewModel)
         {
             _NavigationStore = navigationStore;
+
             _CreateViewModel = createViewModel;
         }
 

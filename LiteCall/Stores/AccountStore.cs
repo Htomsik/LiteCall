@@ -14,17 +14,13 @@ namespace LiteCall.Stores
     {
 
 
-        public AccountStore()
-        {
-
-        }
-
-        public AccountStore(INavigatonService<AuthorisationPageVMD> _AuthPageNavigationService)
+       
+        public AccountStore(INavigationService _AuthPageNavigationService)
         {
             this.AuthPageNavigationService = _AuthPageNavigationService;
         }
 
-        INavigatonService<AuthorisationPageVMD> AuthPageNavigationService;
+        INavigationService AuthPageNavigationService;
 
 
         private Account _CurrentAccount;
@@ -39,7 +35,6 @@ namespace LiteCall.Stores
         public void Logout()
         {
             _CurrentAccount=null;
-
 
             AuthPageNavigationService.Navigate();
         }

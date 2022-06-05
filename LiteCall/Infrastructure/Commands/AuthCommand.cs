@@ -21,10 +21,13 @@ namespace LiteCall.Infrastructure.Commands
     {
 
         private readonly AuthorisationPageVMD _AuthVMD;
-        private readonly INavigatonService<MainPageVMD> _NavigationServices;
+
+        private readonly INavigationService _NavigationServices;
+
         private readonly AccountStore _AccountStore;
+
         private readonly Func<object, bool> _CanExecute;
-        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigatonService<MainPageVMD> navigationServices,
+        public AuthCommand(AuthorisationPageVMD AuthVMD, INavigationService navigationServices,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
             _AuthVMD = AuthVMD;
@@ -94,7 +97,9 @@ namespace LiteCall.Infrastructure.Commands
                 _NavigationServices.Navigate();
 
             }
+
             _AccountStore.CurrentAccount = newAccount;
+
             _AuthVMD.StatusMessage = string.Empty;
 
 

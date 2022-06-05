@@ -107,7 +107,6 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-
         public ICommand AccountLogoutCommand { get; }
 
         private bool CanAccountLogoutExecute(object p) => true;
@@ -142,7 +141,7 @@ namespace LiteCall.ViewModels.Pages
                 StatusMessage = "Get server ip. . .";
                 await Task.Delay(1000);
 
-                newServer = await DataBaseService.ServerGetInfo(ServernameOrIp,);
+                newServer = await DataBaseService.ServerGetInfo(ServernameOrIp);
 
                 if (newServer == null)
                 {

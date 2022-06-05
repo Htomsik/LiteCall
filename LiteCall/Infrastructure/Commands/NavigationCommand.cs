@@ -13,15 +13,15 @@ namespace LiteCall.Infrastructure.Commands
 {
    
     
-        internal class NavigationCommand<TViewModel> : BaseCommand
-            where TViewModel : BaseVMD
+        internal class NavigationCommand : BaseCommand
+           
         {
 
-            private readonly INavigatonService<TViewModel> _NavigationService;
+            private readonly INavigationService _NavigationService;
 
 
 
-            public NavigationCommand(INavigatonService<TViewModel> navigationService)
+            public NavigationCommand(INavigationService navigationService)
             {
                 _NavigationService = navigationService;
             }

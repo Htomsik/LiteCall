@@ -17,23 +17,21 @@ namespace LiteCall.ViewModels.Pages
     {
 
 
-        private readonly INavigatonService<RegistrationPageVMD> _RegistrationNavigationServices;
+        private readonly INavigationService _RegistrationNavigationServices;
 
-        public AuthorisationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices, INavigatonService<RegistrationPageVMD> RegistrationPageNavigationServices)
+        public AuthorisationPageVMD(AccountStore AccountStore, INavigationService MainPageNavigationServices, INavigationService RegistrationPageNavigationServices)
         {
 
             _RegistrationNavigationServices = RegistrationPageNavigationServices;
 
             AuthCommand = new AuthCommand(this, MainPageNavigationServices, AccountStore, (ex) => StatusMessage = ex.Message, CanAuthExecute);
 
-            OpenRegistrationPageCommand = new NavigationCommand<RegistrationPageVMD>(RegistrationPageNavigationServices);
+            OpenRegistrationPageCommand = new NavigationCommand(RegistrationPageNavigationServices);
 
         }
         private readonly NavigationStore _NavigationStore;
 
         #region Команды
-
-
 
         public ICommand AuthCommand { get; }
 

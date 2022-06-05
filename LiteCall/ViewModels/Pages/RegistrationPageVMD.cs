@@ -18,11 +18,11 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class RegistrationPageVMD:BaseVMD
     {
-        public RegistrationPageVMD(AccountStore AccountStore, INavigatonService<MainPageVMD> MainPageNavigationServices,INavigatonService<AuthorisationPageVMD> AuthPagenavigationservices)
+        public RegistrationPageVMD(AccountStore AccountStore, INavigationService MainPageNavigationServices,INavigationService AuthPagenavigationservices)
         {
             RegistrationCommand = new RegistrationCommand(CapthcaString, this, MainPageNavigationServices, AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
 
-            OpenAuthPageCommand = new NavigationCommand<AuthorisationPageVMD>(AuthPagenavigationservices);
+            OpenAuthPageCommand = new NavigationCommand(AuthPagenavigationservices);
 
             OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => StatusMessage = ex.Message, CanOpenModalCommamdExecute);
         }

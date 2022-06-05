@@ -7,7 +7,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Services.Interfaces
 {
-    internal interface INavigatonService<TViewModel> where TViewModel : BaseVMD
+    internal interface INavigationService 
     {
         void Navigate();
     }

@@ -17,12 +17,12 @@ namespace LiteCall.Infrastructure.Commands
     internal class RegistrationCommand : AsyncCommandBase
     {
         private readonly RegistrationPageVMD _RegVMD;
-        private readonly INavigatonService<MainPageVMD> _NavigationServices;
+        private readonly INavigationService _NavigationServices;
         private readonly AccountStore _AccountStore;
         private readonly Func<object, bool> _CanExecute;
        
 
-        public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD, INavigatonService<MainPageVMD> navigationServices,
+        public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD, INavigationService navigationServices,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
            

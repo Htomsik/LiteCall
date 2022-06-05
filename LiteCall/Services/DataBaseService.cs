@@ -108,7 +108,7 @@ namespace LiteCall.Services
             var response = new HttpResponseMessage();
                 try
                 {
-                    response = await httpClient.PostAsync($"http://{ApiServerIp}/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
+                    response = await httpClient.PostAsync($"http://{ApiServerIp}/api/Server/ServerGetInfo", content).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -133,35 +133,6 @@ namespace LiteCall.Services
            
            
         }
-
-
-        internal static async Task<Server> ServerGetInfo(Server server)
-        {
-            using var httpClient = new HttpClient();
-
-            var json = JsonSerializer.Serialize(server.Ip);
-
-            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-
-            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
-
-            var response = await httpClient.PostAsync("http://localhost:5000/api/ServerList/ServerGetInfo", content).ConfigureAwait(false);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-
-                var a = response.Content.ReadAsStringAsync().Result;
-
-                var str = JsonSerializer.Deserialize<Server>(a);
-
-                return str;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
 
 
 
