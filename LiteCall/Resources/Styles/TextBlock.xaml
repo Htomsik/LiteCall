@@ -19,7 +19,11 @@
         TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="{DynamicResource OswaldBold}" />
         <Setter Property="FontSize" Value="24" />
+
     </Style>
+
+
+
 
 
 </ResourceDictionary>

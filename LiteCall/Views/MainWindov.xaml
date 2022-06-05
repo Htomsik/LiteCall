@@ -63,6 +63,10 @@
                         <pages:RegistrationPV />
                     </DataTemplate>
 
+                    <DataTemplate DataType="{x:Type viewModel:SettingVMD}">
+                        <pages:SettingPV />
+                    </DataTemplate>
+
                 </ContentControl.Resources>
             </ContentControl>
             <!--  Верхняя панель  -->

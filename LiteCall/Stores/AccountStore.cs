@@ -12,9 +12,9 @@ namespace LiteCall.Stores
 {
     internal class AccountStore:BaseVMD
     {
+        private static Account DefaultAccount = new Account { Login = "LC_User" };
 
 
-       
         public AccountStore(INavigationService _AuthPageNavigationService)
         {
             this.AuthPageNavigationService = _AuthPageNavigationService;
@@ -23,7 +23,7 @@ namespace LiteCall.Stores
         INavigationService AuthPageNavigationService;
 
 
-        private Account _CurrentAccount;
+        private Account _CurrentAccount = DefaultAccount;
 
         public Account CurrentAccount
         {
@@ -34,7 +34,7 @@ namespace LiteCall.Stores
 
         public void Logout()
         {
-            _CurrentAccount=null;
+            _CurrentAccount = DefaultAccount;
 
             AuthPageNavigationService.Navigate();
         }

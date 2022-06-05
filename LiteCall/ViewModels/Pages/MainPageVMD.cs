@@ -23,7 +23,7 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(AccountStore AccountStore)
+        public MainPageVMD(AccountStore AccountStore,INavigationService SettingsPageNavigationService)
         {
             this.AccountStore = AccountStore;
 
@@ -36,6 +36,8 @@ namespace LiteCall.ViewModels.Pages
             DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
 
             AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted,CanAccountLogoutExecute);
+
+            OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
 
             CurrentServer = new Server();
 
@@ -50,6 +52,8 @@ namespace LiteCall.ViewModels.Pages
 
         #region Команды
 
+
+        public ICommand OpenSettingsCommand { get; set; }
         public ICommand DisconnectServerCommand { get; }
 
         private bool CanDisconnectServerExecute(object p) => true;

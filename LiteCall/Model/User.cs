@@ -15,7 +15,6 @@ namespace LiteCall.Model
     public class Account:ServerUser
     {
 
-
         public Account()
         {
             CurrentServerLogin = Login;

@@ -149,50 +149,70 @@
             Grid.ColumnSpan="2"
             Background="{StaticResource Background3(Solid)}"
             CornerRadius="0 0 15 0">
-            <StackPanel Orientation="Horizontal">
 
-                <Border
-                    Width="40"
-                    Height="40"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Background="{DynamicResource Background4(Solid)}"
-                    BorderBrush="{DynamicResource Fonts(Solid)}"
-                    BorderThickness="1"
-                    ClipToBounds="True"
-                    CornerRadius="20">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
 
-                    <Border.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Command="{Binding AccountLogoutCommand}" Header="Account Logout" />
-                        </ContextMenu>
-                    </Border.ContextMenu>
+                    <Border
+                        Width="40"
+                        Height="40"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{DynamicResource Background4(Solid)}"
+                        BorderBrush="{DynamicResource Fonts(Solid)}"
+                        BorderThickness="1"
+                        ClipToBounds="True"
+                        CornerRadius="20">
 
-                    <Viewbox Width="25" Height="25">
-                        <Path
-                            Fill="{DynamicResource Fonts(Solid)}"
-                            Stretch="Uniform"
-                            Style="{DynamicResource Person}" />
-                    </Viewbox>
+                        <Border.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding AccountLogoutCommand}" Header="Account Logout" />
+                            </ContextMenu>
+                        </Border.ContextMenu>
+
+                        <Viewbox Width="25" Height="25">
+                            <Path
+                                Fill="{DynamicResource Fonts(Solid)}"
+                                Stretch="Uniform"
+                                Style="{DynamicResource Person}" />
+                        </Viewbox>
 
 
-                </Border>
+                    </Border>
 
-                <TextBlock
-                    Margin="5,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding AccountStore.CurrentAccount.Login}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding AccountStore.CurrentAccount.Login}" />
 
-                <TextBlock
-                    Margin="5,5,0,0"
-                    VerticalAlignment="Top"
-                    FontSize="10"
-                    Foreground="{DynamicResource Dangerous(Solid)}"
-                    Text="[NA]"
-                    ToolTip="Non authoized User"
-                    Visibility="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                    <TextBlock
+                        Margin="5,5,0,0"
+                        VerticalAlignment="Top"
+                        FontSize="10"
+                        Foreground="{DynamicResource Dangerous(Solid)}"
+                        Text="[NA]"
+                        ToolTip="Non authoized User"
+                        Visibility="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
-            </StackPanel>
+                </StackPanel>
+
+                <Button
+                    Width="25"
+                    Height="25"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    Command="{Binding OpenSettingsCommand}"
+                    CommandParameter="1"
+                    Style="{DynamicResource IMGButton}"
+                    ToolTip="Create new group">
+                    <Button.Resources>
+                        <StaticResource x:Key="Img" ResourceKey="Settings" />
+                    </Button.Resources>
+
+                </Button>
+            </Grid>
+
+
         </Border>
 
         <ContentControl
