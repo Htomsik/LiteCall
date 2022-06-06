@@ -20,6 +20,17 @@ namespace LiteCall.ViewModels.Pages
         private readonly INavigationService _AuthNavigationService;
 
 
+
+
+        private bool _IsDefault;
+
+        public bool IsDefault
+        {
+            get => _IsDefault;
+            set => Set(ref _IsDefault, value);
+        }
+
+
         private AccountStore _AccountStore;
 
         public AccountStore AccountStore
@@ -39,6 +50,7 @@ namespace LiteCall.ViewModels.Pages
             AccountStore = accountStore;
 
 
+
             LogoutAccCommand = new AccountLogoutCommand(_AccountStore);
 
             CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);
@@ -47,6 +59,7 @@ namespace LiteCall.ViewModels.Pages
 
 
             AccountStore.CurrentAccountChange += AcoountStatusChange;
+
 
             _SettingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
@@ -66,11 +79,13 @@ namespace LiteCall.ViewModels.Pages
 
         public ICommand CloseSettingsCommand { get; }
 
+
         void AcoountStatusChange()
         {
-            var IsDefault = AccountStore.isDefaulAccount;
 
-            if (IsDefault)
+            IsDefault = AccountStore.isDefaultAccount;
+
+            if (AccountStore.isDefaultAccount)
             {
                 _AuthNavigationService.Navigate();
 

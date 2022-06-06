@@ -14,7 +14,8 @@ namespace LiteCall.Stores
     {
         private static Account DefaultAccount = new Account { Login = "LC_User" };
 
-        public bool isDefaulAccount => CurrentAccount == DefaultAccount;
+
+        public bool isDefaultAccount => CurrentAccount == DefaultAccount;
 
         public AccountStore()
         {

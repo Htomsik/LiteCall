@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/TabIControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:IsAuthoriseToStingConverter x:Key="IsAuthoriseToStingConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -29,8 +30,8 @@
 
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
 
@@ -38,7 +39,8 @@
             Grid.Column="1"
             Width="25"
             Height="25"
-            Margin="0,5,0,0"
+            Margin="5,5,0,0"
+            HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Command="{Binding CloseSettingsCommand}"
             Style="{DynamicResource IMGButton}">
@@ -56,6 +58,7 @@
             BorderThickness="0"
             TabStripPlacement="Left">
 
+            <!--  Аккаунт  -->
             <TabItem
                 Margin="0"
                 Padding="0"
@@ -82,36 +85,86 @@
                                 <TextBlock Text="{Binding AccountStore.CurrentAccount.Login}" />
                             </StackPanel>
 
+                            <!--  Тип аккаунта  -->
                             <StackPanel Orientation="Horizontal">
 
                                 <TextBlock Text="Account type: " />
 
-                                <TextBlock Text="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource IsAuthoriseToStingConverter}}">
+                                <TextBlock Text="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource IsAuthoriseToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                                     <TextBlock.Style>
+
                                         <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
+
+                                            <Setter Property="Foreground" Value="{DynamicResource Dangerous(Solid)}" />
+
                                             <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="Authorized">
 
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="Non authorized">
-                                                    <Setter Property="Foreground" Value="{DynamicResource Dangerous(Solid)}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource Green(Solid)}" />
+
                                                 </DataTrigger>
-
                                             </Style.Triggers>
                                         </Style>
+
+
+
                                     </TextBlock.Style>
+
                                 </TextBlock>
+
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    Foreground="{DynamicResource Dangerous(Solid)}"
+                                    Text="Default"
+                                    Visibility="{Binding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+
+
                             </StackPanel>
 
                         </StackPanel>
 
+                        <!--  Кнопка выхода из аккаунта  -->
                         <Button
                             Grid.Row="1"
                             Margin="5"
                             Padding="3"
                             HorizontalAlignment="Left"
                             Command="{Binding LogoutAccCommand}">
-                            <TextBlock Text="Logout" />
 
+                            <Button.Style>
+
+                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+
+
+                                    <Setter Property="Visibility" Value="Collapsed" />
+
+                                    <Style.Triggers>
+
+                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}" Value="True">
+
+                                            <Setter Property="Visibility" Value="Visible" />
+
+                                        </DataTrigger>
+
+                                        <MultiDataTrigger>
+
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsDefault}" Value="False" />
+                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Visibility" Value="Visible" />
+
+                                        </MultiDataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+
+                            </Button.Style>
+                            <TextBlock Text="Logout" />
 
                         </Button>
 
