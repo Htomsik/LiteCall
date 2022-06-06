@@ -9,6 +9,6 @@ namespace LiteCall.Services.Interfaces
 {
     public interface ILoginServices
     {
-        Task<bool> Login(bool isSeverAuthorise, ServerAccount _NewAccount,string _ApiServeIp);
+        Task<bool> Login(bool isSeverAuthorise, Account _NewAccount,string _ApiServeIp);
     }
 }

@@ -19,9 +19,9 @@ namespace LiteCall.Stores
             CurrentAccountChange?.Invoke();
         }
 
-        private ServerAccount _CurrentAccount;
+        private  Account _CurrentAccount;
 
-        public  ServerAccount CurrentAccount
+        public override Account CurrentAccount
         {
             get => _CurrentAccount;
             set

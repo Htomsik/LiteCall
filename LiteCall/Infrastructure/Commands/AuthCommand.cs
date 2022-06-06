@@ -51,7 +51,7 @@ namespace LiteCall.Infrastructure.Commands
         {
 
 
-            ServerAccount newAccount = new ServerAccount()
+            Account newAccount = new Account()
             {
                 Login = _AuthVMD.Login,
                 Password = _AuthVMD.Password,

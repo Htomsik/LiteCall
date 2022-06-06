@@ -20,7 +20,7 @@ namespace LiteCall.Services
         }
 
         
-        public async Task<bool> Login(bool _isServerAuthoisation, ServerAccount _NewAccount, string ApiServerIp)
+        public async Task<bool> Login(bool _isServerAuthoisation, Account _NewAccount, string ApiServerIp)
         {
             if (_isServerAuthoisation)
             {
@@ -53,5 +53,7 @@ namespace LiteCall.Services
 
             return true;
         }
+
+       
     }
 }

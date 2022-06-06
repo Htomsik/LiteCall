@@ -137,7 +137,7 @@ namespace LiteCall.ViewModels.Pages
         private async Task OnConnectServerExecuted(object p)
         {
 
-            ServerAccount ServerAccount = new ServerAccount
+            Account ServerAccount = new Account
             {
                 Login = AccountStore.CurrentAccount.Login
             };

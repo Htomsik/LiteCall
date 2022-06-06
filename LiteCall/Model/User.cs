@@ -25,8 +25,5 @@ namespace LiteCall.Model
 
     }
 
-    public class ServerAccount : Account
-    {
-       
-    }
+   
 }

@@ -11,9 +11,9 @@ namespace LiteCall.Stores
     internal class ServersAccountsStore:BaseVMD
     {
 
-        private static Dictionary<string, ServerAccount> DefaultDictionary = new Dictionary<string, ServerAccount>()
+        private static Dictionary<string, Account> DefaultDictionary = new Dictionary<string, Account>()
         {
-            {"localhost:5002",new ServerAccount
+            {"localhost:5002",new Account
             {
                 Login = "JessJake",Password = "evilet228Q"
             }}
@@ -27,9 +27,9 @@ namespace LiteCall.Stores
             CurrentAccountChange?.Invoke();
         }
 
-        private Dictionary<string, ServerAccount> _SavedServerAccounts = DefaultDictionary;
+        private Dictionary<string, Account> _SavedServerAccounts = DefaultDictionary;
 
-        public Dictionary<string, ServerAccount> SavedServerAccounts
+        public Dictionary<string, Account> SavedServerAccounts
         {
             get => _SavedServerAccounts;
             set
