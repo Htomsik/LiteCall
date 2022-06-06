@@ -25,6 +25,8 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
             <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
+
+            <converters:IsCurrentServerNullConveter x:Key="IsCurrentServerNullConveter" />
             <system:Double x:Key="PlusScale">1</system:Double>
             <system:String x:Key="tittleOrIpText">SERVER NAME OR IP</system:String>
         </ResourceDictionary>
@@ -164,11 +166,11 @@
                         ClipToBounds="True"
                         CornerRadius="20">
 
-                     <!--   <Border.ContextMenu>
+                        <!--   <Border.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Command="{Binding AccountLogoutCommand}" Header="Account Logout" />
                             </ContextMenu>
-                        </Border.ContextMenu> -->
+                        </Border.ContextMenu>-->
 
                         <Viewbox Width="25" Height="25">
                             <Path
@@ -180,10 +182,32 @@
 
                     </Border>
 
-                    <TextBlock
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding AccountStore.CurrentAccount.Login}" />
+                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
+
+                        <TextBlock.Style>
+
+                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
+                                <Setter Property="Text" Value="{Binding AccountStore.CurrentAccount.Login}" />
+
+
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
+
+                                        <Setter Property="Text" Value="{Binding ServerAccountStore.CurrentAccount.Login}" />
+
+                                        <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
+
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+                        </TextBlock.Style>
+
+                    </TextBlock>
+
 
                     <TextBlock
                         Margin="5,5,0,0"
@@ -191,8 +215,35 @@
                         FontSize="10"
                         Foreground="{DynamicResource Dangerous(Solid)}"
                         Text="[NA]"
-                        ToolTip="Non authoized User"
-                        Visibility="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                        ToolTip="Non authoized User">
+
+
+
+                        <TextBlock.Style>
+
+                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
+                                <Setter Property="Visibility" Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
+
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="True">
+
+                                        <Setter Property="Visibility" Value="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
+
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </TextBlock.Style>
+
+
+
+                    </TextBlock>
+
+
+
+
 
                 </StackPanel>
 

@@ -47,10 +47,14 @@ namespace LiteCall.ViewModels.Pages
 
                 StatusMessage = "Connecting to server. . .";
 
-                await GetCaptcha();
+               var Status = await GetCaptcha();
 
-                ErrorHeight = 0;
-
+               if (!Status)
+               {
+                   StatusMessage = string.Empty;
+                    return;
+               }
+               
                 ModalStatus = true;
 
                 StatusMessage = string.Empty;
@@ -84,15 +88,25 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        public async Task GetCaptcha()
+        public async Task<bool> GetCaptcha()
         {
             ModalStatusMessage = "Get new Captcha. . .";
+
             var receive_bytes = await DataBaseService.GetCaptcha();
 
-            var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes.GetRawData());
+            if (receive_bytes !=null)
+            {
+                
+                var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes.GetRawData());
 
-            Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
-            ModalStatusMessage = string.Empty;
+                Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
+
+                ModalStatusMessage = string.Empty;
+
+                return true;
+            }
+
+            return false;
         }
 
 

@@ -14,12 +14,7 @@ namespace LiteCall.Model
 
     public class Account:ServerUser
     {
-
-        public Account()
-        {
-            CurrentServerLogin = Login;
-        }
-
+        
         public string CurrentServerLogin { get; set; }
 
         public string Password { get; set; }
@@ -28,5 +23,10 @@ namespace LiteCall.Model
 
         public bool IsAuthorise { get; set; }
 
+    }
+
+    public class ServerAccount : Account
+    {
+       
     }
 }

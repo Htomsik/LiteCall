@@ -16,6 +16,9 @@ namespace LiteCall.Model
         [JsonPropertyName("ip")]
         public string Ip { get; set; }
 
+        [JsonPropertyName("ApiIp")]
+        public string ApiIp { get; set; }
+
         [JsonPropertyName("id")]
         public int Id { get; set; }
 

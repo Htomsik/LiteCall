@@ -18,18 +18,17 @@ namespace SignalRServ
     {
         public static HubConnection hubConnection;
 
-        public static AccountStore _AccountStore;
+    
 
-        public static Task ConnectionHub(string url /*,Action<Message> a*/)
+        public static Task ConnectionHub(string url, Account CurrentAccount)
         {
             hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{url}?token={_AccountStore.CurrentAccount.Token}")
+                .WithUrl($"{url}?token={CurrentAccount.Token}")
 
                 .WithAutomaticReconnect(new[]
                 {
                     TimeSpan.Zero, TimeSpan.Zero,
-                    TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(15),
-                    TimeSpan.FromSeconds(20)
+                    TimeSpan.Zero, TimeSpan.FromSeconds(5)
                 })
 
                 .Build();

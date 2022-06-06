@@ -31,6 +31,10 @@ namespace LiteCall
 
             services.AddSingleton<AccountStore>();
 
+            services.AddSingleton<ServerAccountStore>();
+
+            services.AddSingleton<ServersAccountsStore>();
+
             services.AddSingleton<MainWindowNavigationStore>();
 
             services.AddSingleton<AdditionalNavigationStore>();
@@ -58,7 +62,10 @@ namespace LiteCall
 
 
             services.AddTransient<MainPageVMD>(
-                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),CreateSettingPageNavigationService(s)));
+                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
+                    s.GetRequiredService<ServerAccountStore>(),
+                    s.GetRequiredService<ServersAccountsStore>(),
+                    CreateSettingPageNavigationService(s)));
 
 
 
@@ -85,6 +92,7 @@ namespace LiteCall
 
 
             INavigationService InitialNavigationService = _ServicesPovider.GetRequiredService<INavigationService>();
+
             InitialNavigationService.Navigate();
 
             MainWindow = _ServicesPovider.GetRequiredService<MainWindov>();

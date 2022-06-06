@@ -23,9 +23,13 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(AccountStore AccountStore,INavigationService SettingsPageNavigationService)
+        public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore,ServersAccountsStore ServersAccountsStore, INavigationService SettingsPageNavigationService)
         {
             this.AccountStore = AccountStore;
+
+            this.ServerAccountStore = ServerAccountStore;
+
+            this.ServersAccountsStore = ServersAccountsStore;
 
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
 
@@ -39,7 +43,7 @@ namespace LiteCall.ViewModels.Pages
 
             OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
 
-            CurrentServer = new Server();
+            CurrentServer = null;
 
             DisconectSeverReloader.Reloader += DisconectServer;
 
@@ -51,7 +55,6 @@ namespace LiteCall.ViewModels.Pages
 
 
         #region Команды
-
 
         public ICommand OpenSettingsCommand { get; set; }
         public ICommand DisconnectServerCommand { get; }
@@ -71,7 +74,7 @@ namespace LiteCall.ViewModels.Pages
 
             selectedViewModel.Dispose();
 
-            CurrentServer.Ip = string.Empty;
+            CurrentServer = null;
 
             VisibilitiStatus = Visibility.Collapsed;
 
@@ -134,37 +137,91 @@ namespace LiteCall.ViewModels.Pages
         private async Task OnConnectServerExecuted(object p)
         {
 
-            Server newServer = new Server{Ip = ServernameOrIp};
+            ServerAccount ServerAccount = new ServerAccount
+            {
+                Login = AccountStore.CurrentAccount.Login
+            };
 
-            
-            //по имени на сервере
+            ILoginServices loginServices = new LoginSevices<ServerAccountStore>(ServerAccountStore);
+
+            Server newServer;
+
+
+
+            StatusMessage = "Get server ip. . .";
+
             if (!CheckStatus)
             {
-                StatusMessage = "Get server ip. . .";
-                await Task.Delay(1000);
-
+                
+                //Получить информацию о сервере из главной базы по имени
                 newServer = await DataBaseService.ServerGetInfo(ServernameOrIp);
 
                 if (newServer == null)
                 {
+
                     StatusMessage = string.Empty;
-                    MessageBox.Show("Incorrect server name", "Сообщение");
+                   
                     return;
+
                 }
+            }
+            else
+            {
+                
+                // Получить информацию из API сервера о сервере
+                newServer = await DataBaseService.ApiServerGetInfo(ServernameOrIp);
+
+                if (newServer == null)
+                {
+
+                    StatusMessage = string.Empty;
+
+                    return;
+
+                }
+
+                newServer.ApiIp = ServernameOrIp;
+            }
+
+
+            StatusMessage = "Login into server account. . .";
+
+            try
+            {
+              var  DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts[newServer.ApiIp];
+
+              var AuthoriseStatus =  await loginServices.Login(true, DictionaryServerAccount, newServer.ApiIp);
+
+              if (!AuthoriseStatus)
+              {
+                  MessageBox.Show("Authorization error. You will be logged without account", "Сообщение");
+
+                  await loginServices.Login(false, ServerAccount, ServernameOrIp);
+              }
+              else
+              {
+                  ServerAccount = DictionaryServerAccount;
+              }
+            }
+            catch (Exception e)
+            {
+                
+                await loginServices.Login(false, ServerAccount, ServernameOrIp);
+
             }
 
             StatusMessage = "Check sever status. . .";
 
+            newServer.Ip = "localhost:5004";
 
              bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
 
-
             if (newServer is not null && ServerStatus)
             {
-               CurrentServer = newServer;
+
+                CurrentServer = newServer;
 
                StatusMessage = "Sever status sucsesfull. . .";
-
 
                 await Task.Delay(1000);
 
@@ -174,19 +231,17 @@ namespace LiteCall.ViewModels.Pages
 
                ModalStatus = false;
 
-               selectedViewModel = new ServerVMD(AccountStore, newServer);
+
+               selectedViewModel = new ServerVMD(ServerAccountStore, newServer);
 
                 ServernameOrIp = String.Empty;
 
                VisibilitiStatus=Visibility.Visible;
             }
-          
-
+            
             StatusMessage = string.Empty;
+
         }
-
-
-
 
 
         private void GetServeInfo(Server CurrentServerInfo)
@@ -251,6 +306,27 @@ namespace LiteCall.ViewModels.Pages
         {
             get => _AccountStore;
             set => Set(ref _AccountStore, value);
+        }
+
+
+        private ServerAccountStore _ServerAccountStore;
+
+        public ServerAccountStore ServerAccountStore
+        {
+            get => _ServerAccountStore;
+            set => Set(ref _ServerAccountStore, value);
+        }
+
+
+
+
+      
+        private ServersAccountsStore _ServersAccountsStore;
+
+        public ServersAccountsStore ServersAccountsStore
+        {
+            get => _ServersAccountsStore;
+            set => Set(ref _ServersAccountsStore, value);
         }
 
 

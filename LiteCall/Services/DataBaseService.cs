@@ -25,23 +25,31 @@ namespace LiteCall.Services
 
         const string apikey = "ACbaAS324hnaASD324bzZwq41";
 
-        internal static async Task<string> GetAuthorizeToken(Account newAcc)
-        {
-            using var httpClient = new HttpClient();
+        private const string DefaultMainIp = "localhost:4999";
 
+        static HttpClient httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(20),
+            DefaultRequestHeaders = {{"ApiKey",apikey}}
+        };
+
+        
+        internal static async Task<string> GetAuthorizeToken(Account newAcc, string ApiServerIp= DefaultMainIp)
+        {
+            
             var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1(),Guid = ProgramCaptchaID };
 
             var json = JsonSerializer.Serialize(authModel);
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
-
             var response = new HttpResponseMessage();
+
+            
 
             try
             {
-                response = await httpClient.PostAsync("http://localhost:5000/api/Auth/Authorization", content).ConfigureAwait(false);
+                response = await httpClient.PostAsync($"https://{ApiServerIp}/api/Auth/Authorization", content).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -64,9 +72,9 @@ namespace LiteCall.Services
 
         }
 
-        internal static async Task<string> Registration(Account newAcc, string capthca, string ApiServerIp = "localhost:5000")
+        internal static async Task<string> Registration(Account newAcc, string capthca, string ApiServerIp = DefaultMainIp)
         {
-            using var httpClient = new HttpClient();
+          // using var httpClient = new HttpClient();
 
             var authModel = new { Login = newAcc.Login, Password = newAcc.Password.GetHashSha1(),Guid = ProgramCaptchaID,Captcha = capthca };
 
@@ -74,9 +82,7 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
-
-            var response = await httpClient.PostAsync("http://localhost:5000/api/auth/Registration", content).ConfigureAwait(false);
+            var response = await httpClient.PostAsync($"https://{ApiServerIp}/api/auth/Registration", content).ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -93,22 +99,19 @@ namespace LiteCall.Services
 
 
 
-        internal static async Task<Server> ServerGetInfo(string ServerName,string ApiServerIp = "localhost:5000")
+        internal static async Task<Server> ServerGetInfo(string ServerName,string ApiServerIp = DefaultMainIp)
         {
-            
-                using var httpClient = new HttpClient();
+          //  using var httpClient = new HttpClient();
 
                 var json = JsonSerializer.Serialize(ServerName);
 
                 var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
+                var response = new HttpResponseMessage();
 
-                httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
-
-            var response = new HttpResponseMessage();
                 try
                 {
-                    response = await httpClient.PostAsync($"http://{ApiServerIp}/api/Server/ServerGetInfo", content).ConfigureAwait(false);
+                    response = await httpClient.PostAsync($"https://{ApiServerIp}/api/Server/ServerGetInfo", content).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -128,28 +131,70 @@ namespace LiteCall.Services
                 }
                 else
                 {
-                    return null;
+                    MessageBox.Show("Incorrect server name", "Сообщение");
+                     return null;
                 }
            
            
         }
 
+        internal static async Task<Server> ApiServerGetInfo(string ApiServerIp)
+        {
+
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                response = await httpClient.GetAsync($"https://{ApiServerIp}/api/Server/ServerGetInfo").ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Сообщение");
+                return null;
+            }
+
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+
+                var a = response.Content.ReadAsStringAsync().Result;
+
+                var str = JsonSerializer.Deserialize<Server>(a);
+
+                return str;
+            }
+            else
+            {
+                MessageBox.Show("Incorrect server name", "Сообщение");
+                return null;
+            }
+
+
+        }
+
+
 
 
         public static async Task<ImagePacket> GetCaptcha()
         {
-            var httpClient = new HttpClient();
 
-            //var authModel = new { Login = login, Password = GetHashSha1(password) };
+            var response = new HttpResponseMessage();
 
             var json = JsonSerializer.Serialize(ProgramCaptchaID.ToString());
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            httpClient.DefaultRequestHeaders.Add("ApiKey", apikey);
+            try
+            {
+                 response = await httpClient.PostAsync($"https://{DefaultMainIp}/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Сообщение");
+                return null;
+            }
 
-            var response = await httpClient.PostAsync("http://localhost:5000/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
-
+            
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return JsonSerializer.Deserialize<ImagePacket>(response.Content.ReadAsStringAsync().Result);
@@ -160,15 +205,17 @@ namespace LiteCall.Services
             }
         }
 
+
         private static string GetHashSha1(this string content)
         {
-            if (string.IsNullOrEmpty(content)) return "X";
+            if (string.IsNullOrEmpty(content)) return null;
             using var sha1 = new SHA1Managed();
 
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
 
             return string.Concat(hash.Select(b => b.ToString("x2")));
         }
+
 
         public static BitmapSource GetImageStream(System.Drawing.Image myImage)
         {

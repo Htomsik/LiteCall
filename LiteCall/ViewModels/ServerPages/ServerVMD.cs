@@ -48,8 +48,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             Account = _AccountStore.CurrentAccount;
 
-            ServerService._AccountStore = _AccountStore;
-
             MessagesColCollection = new ObservableCollection<Message>();
 
             CurrentServer = _CurrentServer;
@@ -57,7 +55,7 @@ namespace LiteCall.ViewModels.ServerPages
             #endregion
 
            
-            InitSignalRConnection(CurrentServer);
+            InitSignalRConnection(CurrentServer, Account);
 
             AsyncGetServerInfo();
 
@@ -184,9 +182,9 @@ namespace LiteCall.ViewModels.ServerPages
         /// <summary>
         /// Инициализация соединения
         /// </summary>
-        public static void InitSignalRConnection(Server CurrentServer)
+        public static void InitSignalRConnection(Server CurrentServer, Account CurrentAccount)
         {
-            ServerService.ConnectionHub($"http://{CurrentServer.Ip}/LiteCall");
+            ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount);
 
         }
 
