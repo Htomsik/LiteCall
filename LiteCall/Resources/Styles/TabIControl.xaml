@@ -26,7 +26,6 @@
                         <Border
                             x:Name="Border"
                             Grid.Column="1"
-                            Margin="5,0,0,0"
                             Background="{DynamicResource Background(Solid)}"
                             BorderBrush="Transparent"
                             BorderThickness="1"
@@ -78,7 +77,6 @@
 
                             <ContentPresenter
                                 x:Name="ContentSite"
-                                Margin="5"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 ContentSource="Header"
