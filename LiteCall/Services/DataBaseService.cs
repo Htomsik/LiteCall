@@ -209,6 +209,7 @@ namespace LiteCall.Services
         private static string GetHashSha1(this string content)
         {
             if (string.IsNullOrEmpty(content)) return null;
+
             using var sha1 = new SHA1Managed();
 
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));

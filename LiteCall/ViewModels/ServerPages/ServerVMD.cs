@@ -57,7 +57,7 @@ namespace LiteCall.ViewModels.ServerPages
            
             InitSignalRConnection(CurrentServer, Account);
 
-            AsyncGetServerInfo();
+           
 
             //Проверка на имя
             AsyncGetUserServerName();
@@ -557,7 +557,7 @@ namespace LiteCall.ViewModels.ServerPages
             var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
 
 
-         ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+            ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
 
             
 
@@ -607,19 +607,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-        private async void AsyncGetServerInfo()
-        {
-            try
-            {
-                CurrentServer = await ServerService.hubConnection.InvokeAsync<Server>("GetServerInfo");
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            ServerInfoBus.Send(CurrentServer);
-        }
+       
 
         private async void Voice_Input(object sender, WaveInEventArgs e)
         {

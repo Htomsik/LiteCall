@@ -149,10 +149,41 @@
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Background="{StaticResource Background3(Solid)}"
-            CornerRadius="0 0 15 0">
+            MinWidth="200"
+            Background="{StaticResource Background3(Solid)}">
+
+
+
+
+            <Border.Style>
+
+                <Style TargetType="{x:Type Border}">
+
+                    <Setter Property="CornerRadius" Value="0 15 15 0" />
+
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+
+                    <Style.Triggers>
+
+                        <DataTrigger Binding="{Binding CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
+
+                            <Setter Property="CornerRadius" Value="0 0 15 0" />
+
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+
+                        </DataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+
+            </Border.Style>
 
             <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
 
                     <Border
@@ -248,6 +279,7 @@
                 </StackPanel>
 
                 <Button
+                    Grid.Column="1"
                     Width="25"
                     Height="25"
                     Margin="0,0,5,0"
@@ -262,6 +294,9 @@
 
                 </Button>
             </Grid>
+
+
+
 
 
         </Border>

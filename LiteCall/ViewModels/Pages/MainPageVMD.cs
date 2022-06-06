@@ -47,8 +47,6 @@ namespace LiteCall.ViewModels.Pages
 
             DisconectSeverReloader.Reloader += DisconectServer;
 
-            ServerInfoBus.Bus += GetServeInfo;
-
             _savedServerCollection = new ObservableCollection<Server> { };
 
         }
@@ -241,12 +239,6 @@ namespace LiteCall.ViewModels.Pages
             
             StatusMessage = string.Empty;
 
-        }
-
-
-        private void GetServeInfo(Server CurrentServerInfo)
-        {
-            CurrentServer = CurrentServerInfo;
         }
 
 

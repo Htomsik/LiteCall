@@ -24,6 +24,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
             <system:Double x:Key="SendMassegeButtonScale">1.0</system:Double>
             <system:Double x:Key="MicrophoneButtonscale">0.8</system:Double>
@@ -319,7 +320,7 @@
                         </StackPanel>
 
                         <!--  County  -->
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentServer.Country, Converter={StaticResource NullToVisibilityConverter}}">
 
                             <TextBlock Text="Country:" />
                             <TextBlock Text="{Binding CurrentServer.Country}" />
@@ -327,12 +328,13 @@
                         </StackPanel>
 
                         <!--  City  -->
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentServer.City, Converter={StaticResource NullToVisibilityConverter}}">
 
                             <TextBlock Text="City:" />
                             <TextBlock Text="{Binding CurrentServer.City}" />
 
                         </StackPanel>
+
                     </StackPanel>
 
 
@@ -591,6 +593,7 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
+           
             IsOpen="{Binding RoomPasswordModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
 

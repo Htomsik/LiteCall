@@ -30,19 +30,22 @@ namespace ModalCutom
 
 
         public static readonly DependencyProperty CornerProperty =
-            DependencyProperty.Register("Corner", typeof(int), typeof(ModalCustom),
-                new PropertyMetadata(10));
+            DependencyProperty.Register("Corner", typeof(CornerRadius), typeof(ModalCustom),
+                new PropertyMetadata( new CornerRadius(10)));
 
-        public int Corner
+        public CornerRadius Corner
         {
-            get { return (int)GetValue(CornerProperty); }
+            get { return (CornerRadius)GetValue(CornerProperty); }
             set { SetValue(CornerProperty, value); }
         }
 
         static ModalCustom()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ModalCustom), new FrameworkPropertyMetadata(typeof(ModalCustom)));
+
             BackgroundProperty.OverrideMetadata(typeof(ModalCustom), new FrameworkPropertyMetadata(CreateDefaultBackground()));
+
+           
         }
 
         private static object CreateDefaultBackground()
