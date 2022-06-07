@@ -103,23 +103,6 @@ namespace LoadingCustom
         }
 
 
-
-        public static readonly DependencyProperty FontSizeProperty =
-            DependencyProperty.Register("FontSize", typeof(int), typeof(LoadingCustom),
-                new PropertyMetadata(18));
-
-        public int FontSize
-        {
-            get { return (int)GetValue(FontSizeProperty); }
-            set { SetValue(FontSizeProperty, value); }
-        }
-
-
-
-
-
-
-
         static LoadingCustom()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(LoadingCustom), new FrameworkPropertyMetadata(typeof(LoadingCustom)));

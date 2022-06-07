@@ -57,14 +57,13 @@
 
                         <TextBlock
                             Margin="5,0,0,0"
-                            FontSize="{TemplateBinding FontSize}"
                             Foreground="{TemplateBinding Color}"
                             Text="{TemplateBinding MainText}">
 
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="FontSize" Value="18" />
                                     <Setter Property="FontFamily" Value="Segoe UI Black" />
+                                    <Setter Property="FontSize" Value="18" />
                                     <Setter Property="VerticalAlignment" Value="Center" />
                                     <Setter Property="HorizontalAlignment" Value="Center" />
                                     <Setter Property="TextAlignment" Value="Center" />

@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using LiteCall.Services;
 using LiteCall.Services.Interfaces;
+using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
+using LiteCall.Stores.ModelStores;
+using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels;
 using LiteCall.ViewModels.Base;
 using LiteCall.ViewModels.Pages;
+using LiteCall.ViewModels.ServerPages;
 using LiteCall.Views;
+using LiteCall.Views.Pages;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LiteCall
@@ -35,12 +40,20 @@ namespace LiteCall
 
             services.AddSingleton<ServersAccountsStore>();
 
+            services.AddSingleton<CurrentServerStore>();
+
+
+
+
             services.AddSingleton<MainWindowNavigationStore>();
 
             services.AddSingleton<AdditionalNavigationStore>();
 
+            services.AddSingleton<ModalNavigationStore>();
+
             services.AddSingleton<SettingsAccNavigationStore>();
 
+            services.AddSingleton<MainPageServerNavigationStore>();
 
 
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
@@ -64,8 +77,8 @@ namespace LiteCall
             services.AddTransient<MainPageVMD>(
                 s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
                     s.GetRequiredService<ServerAccountStore>(),
-                    s.GetRequiredService<ServersAccountsStore>(),
-                    CreateSettingPageNavigationService(s)));
+                    s.GetRequiredService<ServersAccountsStore>(),s.GetRequiredService<CurrentServerStore>(),s.GetRequiredService<MainPageServerNavigationStore>(),
+                    CreateSettingPageNavigationService(s),CreateServerPageNavigationService(s)));
 
 
 
@@ -75,6 +88,9 @@ namespace LiteCall
                 CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
                ));
 
+
+            services.AddTransient<ServerVMD>(s =>
+                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>()));
 
 
             services.AddSingleton<MainWindowVMD>();
@@ -129,6 +145,13 @@ namespace LiteCall
         {
             return new AdditionalNavigationServices<SettingVMD>(serviceProvider.GetRequiredService<AdditionalNavigationStore>(),() => serviceProvider.GetRequiredService<SettingVMD>());
         }
+
+        internal INavigationService CreateServerPageNavigationService(IServiceProvider serviceProvider)
+        {
+            return new MainPageServerNavigationSevices<ServerVMD>(serviceProvider.GetRequiredService<MainPageServerNavigationStore>(), ()=>serviceProvider.GetRequiredService<ServerVMD>());
+        }
+
+       
 
       
     }

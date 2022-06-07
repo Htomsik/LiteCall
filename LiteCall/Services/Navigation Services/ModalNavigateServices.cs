@@ -11,20 +11,20 @@ namespace LiteCall.Services
 {
     internal class ModalNavigateServices<TViewModel> : INavigationService where TViewModel : BaseVMD
     {
-        private readonly AdditionalNavigationStore _AdditionalNavigationStore;
+        private readonly ModalNavigationStore _ModalNavigationStore;
 
         private readonly Func<TViewModel> _CreateViewModel;
 
-        public ModalNavigateServices(AdditionalNavigationStore additionalNavigationStore, Func<TViewModel> createViewModel)
+        public ModalNavigateServices(ModalNavigationStore ModalNavigationStore, Func<TViewModel> createViewModel)
         {
-            _AdditionalNavigationStore = additionalNavigationStore;
+            _ModalNavigationStore = ModalNavigationStore;
 
             _CreateViewModel = createViewModel;
         }
 
         public void Navigate()
         {
-            _AdditionalNavigationStore.AdditionalMainWindowCurrentViewModel = _CreateViewModel();
+            _ModalNavigationStore.ModalMainWindowCurrentViewModel = _CreateViewModel();
         }
     }
 }

@@ -15,7 +15,9 @@ using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
+using LiteCall.Stores.ModelStores;
 using LiteCall.ViewModels.Base;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.VisualBasic.ApplicationServices;
@@ -41,23 +43,21 @@ namespace LiteCall.ViewModels.ServerPages
     }
     internal class ServerVMD : BaseVMD
     {
-        public ServerVMD(AccountStore _AccountStore, Server _CurrentServer)
+        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore)
         {
 
             #region Создание данных
 
-            Account = _AccountStore.CurrentAccount;
+            ServerAccountStore = _ServerAccountStore;
 
             MessagesColCollection = new ObservableCollection<Message>();
 
-            CurrentServer = _CurrentServer;
+            CurrentServerStore = _CurrentServerStore;
 
             #endregion
 
            
-            InitSignalRConnection(CurrentServer, Account);
-
-           
+            InitSignalRConnection(CurrentServerStore.CurrentServer, ServerAccountStore.CurrentAccount);
 
             //Проверка на имя
             AsyncGetUserServerName();
@@ -86,6 +86,7 @@ namespace LiteCall.ViewModels.ServerPages
             ConnectWithPasswordCommand = new AsyncLamdaCommand(OnConnectWithPasswordCommandExecuted,
                 (ex) => StatusMessage = ex.Message, CanConectWithPasswordExecute);
 
+           // ModalRegistrationOpenCommand = new NavigationCommand(ModalRegistraNavigationService);
 
             OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
 
@@ -191,6 +192,8 @@ namespace LiteCall.ViewModels.ServerPages
         #endregion
 
 
+
+        public ICommand ModalRegistrationOpenCommand { get; set; }
 
         /// <summary>
         /// Включение/Выключение звука
@@ -426,7 +429,7 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 DateSend = DateTime.Now,
                 Text = CurrentMessage,
-                Sender = Account.CurrentServerLogin
+                Sender = ServerAccountStore.CurrentAccount.CurrentServerLogin
             };
 
             try
@@ -592,7 +595,7 @@ namespace LiteCall.ViewModels.ServerPages
             var NewName = string.Empty;
             try
             {
-                NewName = await ServerService.hubConnection.InvokeAsync<string>("SetName", _Account.Login).ConfigureAwait(false);
+                NewName = await ServerService.hubConnection.InvokeAsync<string>("SetName", ServerAccountStore.CurrentAccount.Login).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -600,9 +603,9 @@ namespace LiteCall.ViewModels.ServerPages
             }
 
             //Если пришедшее имя содержит имя пользователя на клиенте то задаем его
-            if (!string.IsNullOrEmpty(NewName) && NewName.Contains(Account.Login))
+            if (!string.IsNullOrEmpty(NewName) && NewName.Contains(ServerAccountStore.CurrentAccount.Login))
             {
-                _Account.CurrentServerLogin = NewName;
+                ServerAccountStore.CurrentAccount.CurrentServerLogin = NewName;
             }
 
         }
@@ -691,13 +694,15 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
-        private Server _CurrentServer;
 
-        public Server CurrentServer
+        private CurrentServerStore _CurrentServerStore;
+
+        public CurrentServerStore CurrentServerStore
         {
-            get => _CurrentServer;
-            set => Set(ref _CurrentServer, value);
+            get => _CurrentServerStore;
+            set => Set(ref _CurrentServerStore, value);
         }
+
 
         private string _CurrentMessage;
 
@@ -805,13 +810,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         #region Хранилища
 
-        private Account _Account;
-
-        public Account Account
-        {
-            get => _Account;
-            set => Set(ref _Account, value);
-        }
+        public ServerAccountStore ServerAccountStore;
 
         #endregion
 

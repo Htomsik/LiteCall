@@ -14,6 +14,8 @@ using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
+using LiteCall.Stores.ModelStores;
+using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Base;
 using LiteCall.ViewModels.ServerPages;
 using LiteCall.Views.Pages;
@@ -23,13 +25,20 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore,ServersAccountsStore ServersAccountsStore, INavigationService SettingsPageNavigationService)
+        public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore,ServersAccountsStore ServersAccountsStore,CurrentServerStore CurrentServerStore, 
+                MainPageServerNavigationStore MainPageServerNavigationStore, INavigationService SettingsPageNavigationService, INavigationService ServerPageNavigationService)
         {
             this.AccountStore = AccountStore;
 
             this.ServerAccountStore = ServerAccountStore;
 
             this.ServersAccountsStore = ServersAccountsStore;
+            
+            this.CurrentServerStore = CurrentServerStore;
+
+            this.MainPageServerNavigationStore = MainPageServerNavigationStore;
+
+            this.ServerPageNavigationService = ServerPageNavigationService;
 
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
 
@@ -43,14 +52,23 @@ namespace LiteCall.ViewModels.Pages
 
             OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
 
-            CurrentServer = null;
+          
 
             DisconectSeverReloader.Reloader += DisconectServer;
 
             _savedServerCollection = new ObservableCollection<Server> { };
 
+
+            MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
 
+
+
+
+        private void OnCurrentViewModelChanged()
+        {
+            OnPropertyChanged(nameof(selectedViewModel));
+        }
 
         #region Команды
 
@@ -76,7 +94,7 @@ namespace LiteCall.ViewModels.Pages
 
             VisibilitiStatus = Visibility.Collapsed;
 
-             selectedViewModel = null;
+            MainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
         }
 
         public ICommand VisibilitySwitchCommand { get; }
@@ -116,10 +134,10 @@ namespace LiteCall.ViewModels.Pages
 
         private void OnAccountLogoutExecuted(object p)
         {
-            if (selectedViewModel!=null)
+            if (selectedViewModel!= null)
             {
-                selectedViewModel.Dispose();
-                selectedViewModel = null;
+                //selectedViewModel.Dispose();
+               MainPageServerNavigationStore.Close();
             }
             
             CurrentServer.Ip = string.Empty;
@@ -196,7 +214,7 @@ namespace LiteCall.ViewModels.Pages
 
             try
             {
-              var  DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts[newServer.ApiIp];
+              var  DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts[newServer.ApiIp.ToLower()];
 
               var AuthoriseStatus =  await loginServices.Login(true, DictionaryServerAccount, newServer.ApiIp);
 
@@ -224,23 +242,28 @@ namespace LiteCall.ViewModels.Pages
 
             if (newServer is not null && ServerStatus)
             {
-
+                //заглушка
                 CurrentServer = newServer;
+
+               
+                CurrentServerStore.CurrentServer = newServer;
+
 
                StatusMessage = "Sever status sucsesfull. . .";
 
-                await Task.Delay(1000);
+                await Task.Delay(250);
 
                 StatusMessage = "Сonnect to server. . .";
 
-               await Task.Delay(1000);
+               await Task.Delay(250);
 
                ModalStatus = false;
 
+               ServerPageNavigationService.Navigate();
 
-               selectedViewModel = new ServerVMD(ServerAccountStore, newServer);
+                 //  selectedViewModel = new ServerVMD(ServerAccountStore,CurrentServerStore);
 
-                ServernameOrIp = String.Empty;
+                 ServernameOrIp = String.Empty;
 
                VisibilitiStatus=Visibility.Visible;
             }
@@ -253,8 +276,6 @@ namespace LiteCall.ViewModels.Pages
         #endregion
 
         #region Данные с окна
-
-
 
 
         private ObservableCollection<Server> _savedServerCollection;
@@ -308,9 +329,16 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _AccountStore, value);
         }
 
+        private CurrentServerStore _CurrentServerStore;
+
+        public CurrentServerStore CurrentServerStore
+        {
+            get => _CurrentServerStore;
+            set => Set(ref _CurrentServerStore, value);
+        }
+
 
         private ServerAccountStore _ServerAccountStore;
-
         public ServerAccountStore ServerAccountStore
         {
             get => _ServerAccountStore;
@@ -319,17 +347,12 @@ namespace LiteCall.ViewModels.Pages
 
 
 
-
-      
         private ServersAccountsStore _ServersAccountsStore;
-
         public ServersAccountsStore ServersAccountsStore
         {
             get => _ServersAccountsStore;
             set => Set(ref _ServersAccountsStore, value);
         }
-
-
 
 
 
@@ -351,13 +374,11 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private BaseVMD _selectedViewModel;
-        public BaseVMD selectedViewModel
-        {
-            get => _selectedViewModel;
-            set => Set(ref _selectedViewModel, value);
-        }
+        private readonly INavigationService ServerPageNavigationService;
 
+        public MainPageServerNavigationStore MainPageServerNavigationStore;
+
+        public BaseVMD selectedViewModel =>  MainPageServerNavigationStore.MainPageServerCurrentViewModel;
 
 
 

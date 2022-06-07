@@ -10,25 +10,30 @@ namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
-        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore)
+        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore,ModalNavigationStore modalNavigation)
         {
-            _mainWindowNavigationStore = mainWindowNavigationStore;
+            _MainWindowNavigationStore = mainWindowNavigationStore;
 
             _AdditionalNavigationStore = additionalNavigationStore;
 
-            _mainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            _ModalNavigationStore = modalNavigation;
+
+            _MainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
             _AdditionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
         }
 
        
-        private readonly MainWindowNavigationStore _mainWindowNavigationStore;
+        private readonly MainWindowNavigationStore _MainWindowNavigationStore;
 
         private readonly AdditionalNavigationStore _AdditionalNavigationStore;
 
+        private readonly ModalNavigationStore _ModalNavigationStore;
 
 
-        public BaseVMD CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;
+        public BaseVMD CurrentViewModel => _MainWindowNavigationStore.MainWindowCurrentViewModel;
+
+        public BaseVMD ModalCurrentViewModel => _ModalNavigationStore.ModalMainWindowCurrentViewModel;
 
         public BaseVMD AdditionalCurrentViewModel => _AdditionalNavigationStore.AdditionalMainWindowCurrentViewModel ;
 
@@ -40,14 +45,23 @@ namespace LiteCall.ViewModels
         }
 
 
+        private void OnModalCurrentViewModelChanged()
+        {
+            OnPropertyChanged(nameof(ModalCurrentViewModel));
+
+            OnPropertyChanged(nameof(ModalIsOpen));
+        }
+
         private void OnAdditionalCurrentViewModelChanged()
         {
             OnPropertyChanged(nameof(AdditionalCurrentViewModel));
 
-            OnPropertyChanged(nameof(IsOpen));
+            OnPropertyChanged(nameof(AdditionalIsOpen));
         }
 
-        public bool IsOpen => _AdditionalNavigationStore.IsOpen;
+        public bool AdditionalIsOpen => _AdditionalNavigationStore.IsOpen;
+
+        public bool ModalIsOpen => _AdditionalNavigationStore.IsOpen;
 
 
 

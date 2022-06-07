@@ -10,19 +10,21 @@ using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
+using LiteCall.ViewModels.Base;
 using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.Infrastructure.Commands
 {
-    internal class RegistrationCommand : AsyncCommandBase
+    internal class RegistrationCommand<TViewModel> : AsyncCommandBase where TViewModel : RegistrationPageVMD
     {
-        private readonly RegistrationPageVMD _RegVMD;
+        private readonly TViewModel _RegVMD;
     
         private readonly AccountStore _AccountStore;
+
         private readonly Func<object, bool> _CanExecute;
        
 
-        public RegistrationCommand(string Captcha,RegistrationPageVMD RegVMD,
+        public RegistrationCommand(string Captcha,TViewModel RegVMD,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
            

@@ -72,7 +72,7 @@
             <modalCutom:ModalCustom
                 Grid.Row="1"
                 Corner="0"
-                IsOpen="{Binding IsOpen}">
+                IsOpen="{Binding AdditionalIsOpen}">
 
                 <Grid
                     Width="{Binding ElementName=Window, Path=ActualWidth}"
@@ -109,7 +109,7 @@
             <modalCutom:ModalCustom
                 Grid.Row="1"
                 Corner="0"
-                IsOpen="{Binding IsOpen}">
+                IsOpen="{Binding ModalIsOpen}">
 
                 <Grid
                     HorizontalAlignment="Stretch"
@@ -125,8 +125,8 @@
 
                         <ContentControl.Resources>
 
-                            <DataTemplate DataType="{x:Type viewModel:SettingVMD}">
-                                <pages:SettingPV />
+                            <DataTemplate DataType="{x:Type viewModel:RegistrationPageVMD}">
+                                <pages:RegistrationPV />
                             </DataTemplate>
 
                         </ContentControl.Resources>
@@ -135,7 +135,6 @@
                     </ContentControl>
 
                 </Grid>
-
 
             </modalCutom:ModalCustom>
 

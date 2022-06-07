@@ -46,7 +46,7 @@ namespace LiteCall.Services
             }
 
             //Задержка для правильного отображения статусов
-            await Task.Delay(1000);
+            await Task.Delay(250);
 
 
             _AuthAccountStore.CurrentAccount = _NewAccount;
