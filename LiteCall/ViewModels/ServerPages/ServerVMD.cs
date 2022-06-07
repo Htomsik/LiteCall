@@ -94,7 +94,8 @@ namespace LiteCall.ViewModels.ServerPages
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
 
             VoiceInputCommand = new LambdaCommand(OnVoiceInputExecuted);
-
+          
+     
             #endregion
 
             #region Настройка Naduio
@@ -155,13 +156,8 @@ namespace LiteCall.ViewModels.ServerPages
 
             */
 
-
-
-
         }
 
-
-        
 
         private BufferedWaveProvider bufferedWaveProvider;
 
@@ -182,10 +178,13 @@ namespace LiteCall.ViewModels.ServerPages
         /// <summary>
         /// Инициализация соединения
         /// </summary>
-        public static void InitSignalRConnection(Server CurrentServer, Account CurrentAccount)
+        public async void InitSignalRConnection(Server CurrentServer, Account CurrentAccount)
         {
-            ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount);
+            StatusMessage = "Connecting to server. . .";
 
+           await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount);
+
+            StatusMessage = string.Empty;
         }
 
 
@@ -783,8 +782,6 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _CurrentGroup, value);
         }
 
-
-        //Сообщение об ошибке
         private string _statusMessage;
         public string StatusMessage
         {
@@ -796,8 +793,6 @@ namespace LiteCall.ViewModels.ServerPages
             }
         }
 
-
-        //Есть ли сообщение об ошибке
         public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
 

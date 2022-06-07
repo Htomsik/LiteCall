@@ -69,6 +69,40 @@
 
             <!--  Для настроек, отрывается поверх остальных окон  -->
 
+            <modalCutom:ModalCustom
+                Grid.Row="1"
+                Corner="0"
+                IsOpen="{Binding IsOpen}">
+
+                <Grid
+                    Width="{Binding ElementName=Window, Path=ActualWidth}"
+                    Height="{Binding ElementName=Window, Path=ActualHeight}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource Background2(Solid)}">
+
+                    <ContentControl
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Content="{Binding AdditionalCurrentViewModel}"
+                        LostFocus="LostFocus"
+                        SizeChanged="SizeChanged">
+
+                        <ContentControl.Resources>
+
+                            <DataTemplate DataType="{x:Type viewModel:SettingVMD}">
+                                <pages:SettingPV />
+                            </DataTemplate>
+
+                        </ContentControl.Resources>
+
+
+                    </ContentControl>
+
+                </Grid>
+
+
+            </modalCutom:ModalCustom>
 
 
 
@@ -78,8 +112,6 @@
                 IsOpen="{Binding IsOpen}">
 
                 <Grid
-                    Width="{Binding ElementName=Window, Path=ActualWidth}"
-                    Height="{Binding ElementName=Window, Path=ActualHeight}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Background="{DynamicResource Background2(Solid)}">

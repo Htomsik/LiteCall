@@ -3,29 +3,70 @@
 
 
     <Style TargetType="{x:Type ContextMenu}">
-        <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
-        <Setter Property="HasDropShadow" Value="True" />
 
         <Setter Property="Template">
             <Setter.Value>
+
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
+
+                    <Border
+                        Background="{DynamicResource Background(Solid)}"
+                        BorderBrush="{DynamicResource Fonts(Solid)}"
+                        BorderThickness="1"
+                        CornerRadius="10">
+
+                        <StackPanel
+                            Margin="2"
+                            IsItemsHost="True"
+                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="{x:Type MenuItem}">
+
+        <Setter Property="Background" Value="Transparent" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+
+
                     <Border
                         x:Name="Border"
-                        Background="{DynamicResource Background(Solid)}"
-                        BorderThickness="1">
-                        <Border.BorderBrush>
-                            <SolidColorBrush Color="{DynamicResource Important(Color)}" />
-                        </Border.BorderBrush>
-                        <Grid IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <ContentPresenter
+                            x:Name="HeaderHost"
+                            Margin="5"
+                            ContentSource="Header"
+                            RecognizesAccessKey="True" />
+
+
                     </Border>
+
                     <ControlTemplate.Triggers>
-                        <Trigger Property="HasDropShadow" Value="true">
-                            <Setter TargetName="Border" Property="Padding" Value="0,3,0,3" />
-                            <Setter TargetName="Border" Property="CornerRadius" Value="4" />
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource Button2(Solid)}" />
                         </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+
                     </ControlTemplate.Triggers>
+
+
+
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -80,7 +80,7 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        //Сообщение об ошибке
+      
         private string _statusMessage;
         public string StatusMessage
         {
@@ -92,8 +92,6 @@ namespace LiteCall.ViewModels.Pages
             }
         }
 
-        
-        //Есть ли сообщение об ошибке
         public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
 
