@@ -46,8 +46,4 @@
     </Resource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Stores\NavigationStores\" />
-  </ItemGroup>
-
 </Project>
