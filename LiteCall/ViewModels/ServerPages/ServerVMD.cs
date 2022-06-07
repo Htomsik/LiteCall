@@ -342,14 +342,15 @@ namespace LiteCall.ViewModels.ServerPages
 
         private bool CanConnectExecute(object p)
         {
-
+            if (p is not Model.ServerRooms) return false;
+                
             if (p == null) return false;
 
             var ConnectedGroup = (ServerRooms)p;
 
             if (CurrentGroup is not null)
             {
-                return ConnectedGroup.RoomName != CurrentGroup.RoomName.ToLower();
+                return ConnectedGroup.RoomName.ToLower() != CurrentGroup.RoomName.ToLower();
             }
             else
             {

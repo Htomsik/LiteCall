@@ -61,7 +61,7 @@ namespace LiteCall.Infrastructure.Commands
 
             _AuthVMD.StatusMessage = "Connecting to server. . .";
 
-          var LoginStatus = await loginServices.Login(!_AuthVMD.CheckStatus,newAccount,"localhost:4999");
+          var LoginStatus = await loginServices.Login(!_AuthVMD.CheckStatus,newAccount,"localhost:5005");
 
           if (LoginStatus)
           {

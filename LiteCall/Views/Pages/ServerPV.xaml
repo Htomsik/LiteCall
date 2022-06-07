@@ -138,10 +138,12 @@
 
                 <ListView.ContextMenu>
                     <ContextMenu>
+
                         <MenuItem
                             Command="{Binding ConnectCommand}"
                             CommandParameter="{Binding SelRooms}"
                             Header="Connect" />
+
                     </ContextMenu>
                 </ListView.ContextMenu>
 

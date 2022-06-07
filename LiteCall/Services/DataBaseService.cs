@@ -25,7 +25,7 @@ namespace LiteCall.Services
 
         const string apikey = "ACbaAS324hnaASD324bzZwq41";
 
-        private const string DefaultMainIp = "localhost:4999";
+        private const string DefaultMainIp = "localhost:5005";
 
         static HttpClient httpClient = new HttpClient
         {
@@ -137,6 +137,46 @@ namespace LiteCall.Services
            
            
         }
+
+
+        internal static async Task<string> MainServerGetApiIPI(string ServerName)
+        {
+            
+
+            var json = JsonSerializer.Serialize(ServerName);
+
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                response = await httpClient.PostAsync($"https://{DefaultMainIp}/api/Server/ServerGetIP", content).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Сообщение");
+                return null;
+            }
+
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+
+                var a = response.Content.ReadAsStringAsync().Result;
+
+                return a;
+            }
+            else
+            {
+                MessageBox.Show("Incorrect server name", "Сообщение");
+                return null;
+            }
+
+
+        }
+
+
 
         internal static async Task<Server> ApiServerGetInfo(string ApiServerIp)
         {

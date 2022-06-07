@@ -142,19 +142,18 @@ namespace LiteCall.ViewModels.Pages
 
             ILoginServices loginServices = new LoginSevices<ServerAccountStore>(ServerAccountStore);
 
-            Server newServer;
+            Server newServer = new Server();
 
-
+            string ApiIp;
 
             StatusMessage = "Get server ip. . .";
 
             if (!CheckStatus)
             {
-                
                 //Получить информацию о сервере из главной базы по имени
-                newServer = await DataBaseService.ServerGetInfo(ServernameOrIp);
+                ApiIp = await DataBaseService.MainServerGetApiIPI(ServernameOrIp);
 
-                if (newServer == null)
+                if (ApiIp == null)
                 {
 
                     StatusMessage = string.Empty;
@@ -162,6 +161,17 @@ namespace LiteCall.ViewModels.Pages
                     return;
 
                 }
+
+                newServer = await DataBaseService.ApiServerGetInfo(ApiIp);
+
+                if (newServer == null)
+                {
+                    StatusMessage = string.Empty;
+
+                    return;
+                }
+
+                newServer.ApiIp = ApiIp;
             }
             else
             {
@@ -209,8 +219,6 @@ namespace LiteCall.ViewModels.Pages
             }
 
             StatusMessage = "Check sever status. . .";
-
-            newServer.Ip = "localhost:5004";
 
              bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
 
