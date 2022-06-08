@@ -24,7 +24,7 @@ namespace LiteCall.Infrastructure.Commands
         private readonly Func<object, bool> _CanExecute;
        
 
-        public RegistrationCommand(string Captcha,TViewModel RegVMD,
+        public RegistrationCommand(TViewModel RegVMD,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
            
@@ -83,8 +83,6 @@ namespace LiteCall.Infrastructure.Commands
             _RegVMD.ModalStatusMessage = string.Empty;
 
             _AccountStore.CurrentAccount = newAccount;
-
-
 
 
 

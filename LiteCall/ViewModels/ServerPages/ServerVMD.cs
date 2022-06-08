@@ -43,7 +43,7 @@ namespace LiteCall.ViewModels.ServerPages
     }
     internal class ServerVMD : BaseVMD
     {
-        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore)
+        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore, INavigationService OpenModalServerRegistratioNavigationService)
         {
 
             #region Создание данных
@@ -76,6 +76,8 @@ namespace LiteCall.ViewModels.ServerPages
             #endregion
 
             #region команды
+
+            ModalRegistrationOpenCommand = new NavigationCommand(OpenModalServerRegistratioNavigationService);
 
             SendMessageCommand = new AsyncLamdaCommand(OnSendMessageExecuted, (ex) => StatusMessage = ex.Message, CanSendMessageExecuted);
 
@@ -116,7 +118,6 @@ namespace LiteCall.ViewModels.ServerPages
             wave16ToFloatProvider = new Wave16ToFloatProvider(bufferedWaveProvider);
 
             _mixingWaveProvider32 = new MixingWaveProvider32(new[] { new DummyWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1)), });
-
 
              _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
 
@@ -200,7 +201,7 @@ namespace LiteCall.ViewModels.ServerPages
         /// </summary>
         public ICommand VoiceInputCommand { get; }
 
-        private async void OnVoiceInputExecuted(object p)
+        private  void OnVoiceInputExecuted(object p)
         {
             if (!(bool)p)
             {
@@ -271,11 +272,7 @@ namespace LiteCall.ViewModels.ServerPages
                             Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
                         };
 
-                        try
-                        {
-                            input.StartRecording();
-                        }
-                        catch (Exception e) {}
+                      
                         
                     }
 
@@ -362,7 +359,6 @@ namespace LiteCall.ViewModels.ServerPages
            
         }
 
-
         private async Task OnConnectExecuted(object p)
         {
 
@@ -400,11 +396,11 @@ namespace LiteCall.ViewModels.ServerPages
         {
             try
             {
-                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect", $"{ConnectedGroup.RoomName}", RoomPassword);
+                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect",
+                    $"{ConnectedGroup.RoomName}", RoomPassword);
 
                 if (ConnetGroupStatus)
                 {
-                    input.StartRecording();
                     CurrentGroup = ConnectedGroup;
                 }
             }
@@ -484,31 +480,23 @@ namespace LiteCall.ViewModels.ServerPages
 
             if (bufferedWaveProvider.BufferedBytes < 3200)
             {
-                await Task.Factory.StartNew(() =>
-                {
-                    AsyncGetAudio(newVoiceMes);
-                });
+                await AsyncGetAudio(newVoiceMes);
+                StatusMessage = bufferedWaveProvider.BufferedBytes.ToString();
+
             }
 
-            MessagesColCollection.Add(new Message
-            {
-                Text = bufferedWaveProvider.BufferedBytes.ToString()
-            });
-
            
-
 
         }
 
 
-        public void AsyncGetAudio(VoiceMessage newVoiceMes)
+        public async Task AsyncGetAudio(VoiceMessage newVoiceMes)
         {
-          //   _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+        // _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
 
               var memoryStreamReader = new MemoryStream(newVoiceMes.AudioByteArray);
 
-                byte[] buffer = new byte[100];
-
+                byte[] buffer = new byte[200];
 
                 bool readCompleted = false;
 
@@ -542,13 +530,11 @@ namespace LiteCall.ViewModels.ServerPages
                 }
            
 
-      //   _mixingWaveProvider32.RemoveInputStream(wave16ToFloatProvider);
+       //_mixingWaveProvider32.RemoveInputStream(wave16ToFloatProvider);
 
        
 
         }
-
-
 
 
         /// <summary>
@@ -561,8 +547,6 @@ namespace LiteCall.ViewModels.ServerPages
 
 
             ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
-
-            
 
 
         }
@@ -615,14 +599,12 @@ namespace LiteCall.ViewModels.ServerPages
         private async void Voice_Input(object sender, WaveInEventArgs e)
         {
 
-           
             try
             {
 
-                 if (ProcessData(e))
-                 {
-                    await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
-                 }
+                // if (VAD(e))
+                await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+                 
                
             }
             catch (Exception ex)
@@ -633,12 +615,12 @@ namespace LiteCall.ViewModels.ServerPages
             
         }
 
-        private bool ProcessData(WaveInEventArgs e)
+        private bool VAD(WaveInEventArgs e)
         {
+            double porog = 0.03;
 
-            double porog = 0.01;
-            bool result = false;
             bool Tr = false;
+
             double Sum2 = 0;
             int Count = e.BytesRecorded / 2;
 
@@ -646,18 +628,22 @@ namespace LiteCall.ViewModels.ServerPages
             for (int index = 0; index < e.BytesRecorded; index += 2)
             {
                 double Tmp = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
+
                 Tmp /= 32768.0;
+
                 Sum2 += Tmp * Tmp;
+
                 if (Tmp > porog)
+
                     Tr = true;
             }
+
             Sum2 /= Count;
-            if (Tr || Sum2 > porog)
-            { result = true; }
-            else
-            { result = false; }
-            return result;
+
+            return Tr || Sum2 > porog;
         }
+
+
 
 
 

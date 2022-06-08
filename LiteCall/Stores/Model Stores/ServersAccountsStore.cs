@@ -13,10 +13,7 @@ namespace LiteCall.Stores
 
         private static Dictionary<string, Account> DefaultDictionary = new Dictionary<string, Account>()
         {
-            {"localhost:4999",new Account
-            {
-                Login = "JessJake",Password = "evilet228Q"
-            }}
+           
         };
 
 

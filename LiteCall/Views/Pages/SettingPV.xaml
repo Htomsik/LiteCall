@@ -194,6 +194,8 @@
 
             </TabItem>
 
+    
+
             <TabItem
                 Margin="0"
                 Padding="0"
@@ -203,7 +205,59 @@
                 <TabItem.Header>
 
 
-                    <TextBlock Text="about progam" />
+                    <TextBlock Text="Severs" />
+
+
+                </TabItem.Header>
+
+                <TabItem.Content>
+
+
+
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        
+                        
+                    </Grid>
+
+
+                </TabItem.Content>
+
+
+            </TabItem>
+
+            <TabItem
+                Margin="0"
+                Padding="0"
+                Background="{DynamicResource Background(Solid)}">
+
+
+                <TabItem.Header>
+
+
+                    <TextBlock Text="Audio" />
+
+
+                </TabItem.Header>
+
+                <TabItem.Content>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="тут могла бы быть ваша реклама" />
+                    </Grid>
+                </TabItem.Content>
+
+
+            </TabItem>
+
+            <TabItem
+                Margin="0"
+                Padding="0"
+                Background="{DynamicResource Background(Solid)}">
+
+
+                <TabItem.Header>
+
+
+                    <TextBlock Text="About progam" />
 
 
                 </TabItem.Header>
@@ -218,7 +272,6 @@
 
 
             </TabItem>
-
         </TabControl>
 
 

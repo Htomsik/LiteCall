@@ -26,7 +26,6 @@ namespace LiteCall.Infrastructure.Commands
 
         private readonly Func<object, bool> _CanExecute;
 
-       
         public AuthCommand(AuthorisationPageVMD AuthVMD,
             AccountStore accountStore, Action<Exception> onException, Func<object, bool> canExecute = null) : base(onException)
         {
@@ -46,10 +45,8 @@ namespace LiteCall.Infrastructure.Commands
             }
 
         }
-
         protected  override async Task ExecuteAsync(object parameter)
         {
-
 
             Account newAccount = new Account()
             {
@@ -72,6 +69,5 @@ namespace LiteCall.Infrastructure.Commands
 
         }
 
-        
     }
 }

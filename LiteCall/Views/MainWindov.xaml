@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
+    xmlns:server="clr-namespace:LiteCall.ViewModels.ServerPages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:LiteCall.ViewModels.Pages"
     x:Name="Window"
@@ -108,24 +109,23 @@
 
             <modalCutom:ModalCustom
                 Grid.Row="1"
+                BorderBrush="{DynamicResource Fonts(Solid)}"
+                BorderThickness="1"
                 Corner="0"
                 IsOpen="{Binding ModalIsOpen}">
 
-                <Grid
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="{DynamicResource Background2(Solid)}">
+                <Grid Background="{DynamicResource Background3(Solid)}">
 
                     <ContentControl
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        Content="{Binding AdditionalCurrentViewModel}"
+                        Content="{Binding ModalCurrentViewModel}"
                         LostFocus="LostFocus"
                         SizeChanged="SizeChanged">
 
                         <ContentControl.Resources>
 
-                            <DataTemplate DataType="{x:Type viewModel:RegistrationPageVMD}">
+                            <DataTemplate DataType="{x:Type server:ServerRegistrationModalVMD}">
                                 <pages:RegistrationPV />
                             </DataTemplate>
 

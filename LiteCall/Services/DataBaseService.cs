@@ -27,13 +27,21 @@ namespace LiteCall.Services
 
         private const string DefaultMainIp = "localhost:5005";
 
-        static HttpClient httpClient = new HttpClient
-        {
-            Timeout = TimeSpan.FromSeconds(20),
-            DefaultRequestHeaders = {{"ApiKey",apikey}}
-        };
+       private static HttpClientHandler clientHandler = new HttpClientHandler
+       {
+           ServerCertificateCustomValidationCallback = ((sender, cert, chain, sslPolicyErrors) => { return true; })
+       };
 
-        
+       private static HttpClient httpClient = new HttpClient(clientHandler)
+       {
+           Timeout = TimeSpan.FromSeconds(20),
+           DefaultRequestHeaders = { { "ApiKey", apikey } },
+
+       };
+
+
+
+
         internal static async Task<string> GetAuthorizeToken(Account newAcc, string ApiServerIp= DefaultMainIp)
         {
             

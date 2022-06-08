@@ -10,13 +10,12 @@
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:Boolinverter x:Key="Boolinvert" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
             <system:String x:Key="UsernameText">USERNAME</system:String>
             <system:String x:Key="PasswordText">PASSWORD</system:String>
@@ -25,301 +24,307 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource Background(Solid)}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="235" />
-            <ColumnDefinition />
 
-        </Grid.ColumnDefinitions>
+    <Border>
+        <Grid Background="Transparent">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="Auto" MinHeight="235" />
-            <RowDefinition Height="Auto" MinHeight="70" />
-            <RowDefinition Height="1*" MinHeight="50" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" MaxWidth="400" />
+                <ColumnDefinition Width="1*" />
 
-        </Grid.RowDefinitions>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+
+            </Grid.RowDefinitions>
 
 
-        <Border
-            Grid.Row="1"
-            Grid.Column="1"
-            Background="{StaticResource Background2(Solid)}"
-            CornerRadius="10">
-            <Grid>
+            <Border
+                CornerRadius="10"
+                Grid.Row="1"
+                Grid.Column="1"
+                Background="{StaticResource Background2(Solid)}">
+                <Grid>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1.6*" />
-                    <RowDefinition Height="1.6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1.6*" />
+                        <RowDefinition Height="1.6*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
 
-                <TextBlock
-                    Margin="5,10,0,0"
-                    HorizontalAlignment="Center"
-                    Style="{DynamicResource Bigtext}"
-                    Text="REGISTRATION" />
+                    <TextBlock
+                        Margin="5,10,0,0"
+                        HorizontalAlignment="Center"
+                        Style="{DynamicResource Bigtext}"
+                        Text="REGISTRATION" />
 
-                <TextBox
-                    x:Name="UsernameTB"
-                    Grid.Row="1"
-                    Margin="20,8"
-                    Style="{StaticResource LogPassTextBox}">
+                    <TextBox
+                        x:Name="UsernameTB"
+                        Grid.Row="1"
+                        Margin="20,8"
+                        Style="{StaticResource LogPassTextBox}">
 
-                    <TextBox.Text>
+                        <TextBox.Text>
+                            <Binding
+                                Mode="TwoWay"
+                                Path="Login"
+                                UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRule:UsernameValidator />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+
+                        <TextBox.Resources>
+                            <StaticResource x:Key="BackText" ResourceKey="UsernameText" />
+                        </TextBox.Resources>
+
+                    </TextBox>
+
+                    <TextBox
+                        x:Name="PasswordTB"
+                        Grid.Row="2"
+                        Margin="20,8"
+                        Style="{StaticResource PassTextBox}">
                         <Binding
                             Mode="TwoWay"
-                            Path="Login"
+                            Path="Password"
                             UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <validationRule:UsernameValidator />
+                                <validationRule:PasswordValidator />
                             </Binding.ValidationRules>
                         </Binding>
-                    </TextBox.Text>
 
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="UsernameText" />
-                    </TextBox.Resources>
+                        <TextBox.Resources>
+                            <StaticResource x:Key="BackText" ResourceKey="PasswordText" />
+                        </TextBox.Resources>
+                    </TextBox>
 
-                </TextBox>
+                    <TextBox
+                        x:Name="PasswordConfirmTB"
+                        Grid.Row="3"
+                        Margin="20,8"
+                        Style="{StaticResource PassTextBox}"
+                        Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}">
 
-                <TextBox
-                    x:Name="PasswordTB"
-                    Grid.Row="2"
-                    Margin="20,8"
-                    Style="{StaticResource PassTextBox}">
-                    <Binding
-                        Mode="TwoWay"
-                        Path="Password"
-                        UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <validationRule:PasswordValidator />
-                        </Binding.ValidationRules>
-                    </Binding>
+                        <TextBox.Resources>
+                            <StaticResource x:Key="BackText" ResourceKey="PasswordConfirmText" />
+                        </TextBox.Resources>
 
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="PasswordText" />
-                    </TextBox.Resources>
-                </TextBox>
-
-                <TextBox
-                    x:Name="PasswordConfirmTB"
-                    Grid.Row="3"
-                    Margin="20,8"
-                    Style="{StaticResource PassTextBox}"
-                    Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}">
-
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="PasswordConfirmText" />
-                    </TextBox.Resources>
-
-                </TextBox>
+                    </TextBox>
 
 
 
-                <!--  Переход на логин  -->
-                <StackPanel
-                    Grid.Row="4"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Orientation="Horizontal">
-
-                    <TextBlock>
-                        have account?
-                    </TextBlock>
-
-                    <TextBlock Margin="5,0,0,0">
-                        Login
-                        <TextBlock.Style>
-
-                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
-                                <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
-
-                                <Style.Triggers>
-
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="TextDecorations" Value="UnderLine" />
-                                    </Trigger>
-
-                                </Style.Triggers>
-
-                            </Style>
-                        </TextBlock.Style>
-
-                        <TextBlock.InputBindings>
-                            <MouseBinding
-                                Command="{Binding OpenAuthPageCommand}"
-                                CommandParameter="2"
-                                MouseAction="LeftClick" />
-                        </TextBlock.InputBindings>
-
-                    </TextBlock>
-
-                </StackPanel>
-            </Grid>
-
-        </Border>
-
-        <!--  Кнопка регистрации  -->
-
-        <Button
-            Grid.Row="2"
-            Grid.Column="1"
-            MaxWidth="235"
-            MaxHeight="40"
-            Margin="15"
-            Command="{Binding OpenModalCommand}">
-            <TextBlock Style="{DynamicResource Bigtext}" Text="REGITRATION" />
-
-            <Button.CommandParameter>
-                <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
-                    <Binding ElementName="UsernameTB" Path="(Validation.HasError)" />
-                    <Binding ElementName="PasswordTB" Path="(Validation.HasError)" />
-                </MultiBinding>
-            </Button.CommandParameter>
-        </Button>
-
-        <!--  Показывает статус загрузки  -->
-        <loadingCustom:LoadingCustom
-            Grid.Row="3"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Margin="5"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Diameter="30"
-            IsLoading="{Binding HasStatusMessage}"
-            MainText="{Binding StatusMessage}"
-            Color="{DynamicResource Fonts(Solid)}" />
-
-
-
-        <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
-
-        <modalCutom:ModalCustom
-            Grid.RowSpan="4"
-            Grid.ColumnSpan="3"
-            IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
-
-            <Grid
-                MinWidth="200"
-                MinHeight="200"
-                Background="{DynamicResource Background2(Solid)}">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.1*" />
-                    <RowDefinition Height="0.3*" />
-                    <RowDefinition Height="0.2*" />
-                    <RowDefinition Height="0.2*" />
-                    <RowDefinition Height="0.2*" />
-
-                </Grid.RowDefinitions>
-
-
-
-                <Border
-                    Grid.Row="1"
-                    Width="120"
-                    Height="60"
-                    Margin="5"
-                    BorderBrush="{DynamicResource Fonts(Solid)}"
-                    BorderThickness="2"
-                    CornerRadius="5">
-                    <Image Source="{Binding Capthca, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
-                </Border>
-
-
-                <TextBox
-                    x:Name="CapthcaTB"
-                    Grid.Row="2"
-                    Margin="20,8"
-                    MaxLength="4"
-                    Style="{StaticResource LogPassTextBox}">
-
-                    <TextBox.Text>
-                        <Binding
-                            Mode="TwoWay"
-                            Path="CapthcaString"
-                            UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <validationRule:CaptchaValidation />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="CaptchaText" />
-                    </TextBox.Resources>
-                </TextBox>
-
-
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-
-                    <Button
-                        Grid.Column="0"
-                        MinWidth="75"
-                        MinHeight="40"
-                        MaxWidth="125"
-                        MaxHeight="40"
+                    <!--  Переход на логин  -->
+                    <StackPanel
+                        Grid.Row="4"
                         Margin="5"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource Green(Solid)}"
-                        Command="{Binding RegistrationCommand, UpdateSourceTrigger=PropertyChanged}">
+                        VerticalAlignment="Top"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsNotApiRegistration, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                        <Button.CommandParameter>
-                            <Binding ElementName="CapthcaTB" Path="(Validation.HasError)" />
-                        </Button.CommandParameter>
+                        <TextBlock>
+                            have account?
+                        </TextBlock>
 
-                        <TextBlock Text="OK" />
+                        <TextBlock Margin="5,0,0,0">
+                            Login
+                            <TextBlock.Style>
 
-                    </Button>
+                                <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
-                    <Button
-                        Grid.Column="1"
-                        MinWidth="75"
-                        MinHeight="40"
-                        MaxWidth="125"
-                        MaxHeight="40"
-                        Margin="5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource Dangerous(Solid)}"
-                        Command="{Binding OpenModalCommand}">
-                        <TextBlock Text="EXIT" />
-                    </Button>
+                                    <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
+
+                                    <Style.Triggers>
+
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="TextDecorations" Value="UnderLine" />
+                                        </Trigger>
+
+                                    </Style.Triggers>
+
+                                </Style>
+                            </TextBlock.Style>
+
+                            <TextBlock.InputBindings>
+                                <MouseBinding
+                                    Command="{Binding OpenAuthPageCommand}"
+                                    CommandParameter="2"
+                                    MouseAction="LeftClick" />
+                            </TextBlock.InputBindings>
+
+                        </TextBlock>
+
+                    </StackPanel>
                 </Grid>
 
+            </Border>
+
+            <!--  Кнопка регистрации  -->
+
+            <Button
+                Grid.Row="2"
+                Grid.Column="1"
+                MaxWidth="235"
+                MaxHeight="40"
+                Margin="15"
+                Command="{Binding OpenModalCommand}">
+                <TextBlock Style="{DynamicResource Bigtext}" Text="REGITRATION" />
+
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
+                        <Binding ElementName="UsernameTB" Path="(Validation.HasError)" />
+                        <Binding ElementName="PasswordTB" Path="(Validation.HasError)" />
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+
+            <!--  Показывает статус загрузки  -->
+            <loadingCustom:LoadingCustom
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Diameter="30"
+                IsLoading="{Binding HasStatusMessage}"
+                MainText="{Binding StatusMessage}"
+                Color="{DynamicResource Fonts(Solid)}" />
 
 
-                <!--  Показывает статус загрузки  -->
-                <loadingCustom:LoadingCustom
-                    Grid.Row="4"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Diameter="30"
-                    IsLoading="{Binding ModalHasStatusMessage}"
-                    MainText="{Binding ModalStatusMessage}"
-                    Color="{DynamicResource Fonts(Solid)}" />
+
+            <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
+
+            <modalCutom:ModalCustom
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
+
+                <Grid
+                    MinWidth="200"
+                    MinHeight="200"
+                    Background="{DynamicResource Background2(Solid)}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*" />
+                        <RowDefinition Height="0.3*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+
+                    </Grid.RowDefinitions>
+
+
+
+                    <Border
+                        Grid.Row="1"
+                        Width="120"
+                        Height="60"
+                        Margin="5"
+                        BorderBrush="{DynamicResource Fonts(Solid)}"
+                        BorderThickness="2"
+                        CornerRadius="5">
+                        <Image Source="{Binding Capthca, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
+                    </Border>
+
+
+                    <TextBox
+                        x:Name="CapthcaTB"
+                        Grid.Row="2"
+                        Margin="20,8"
+                        MaxLength="4"
+                        Style="{StaticResource LogPassTextBox}">
+
+                        <TextBox.Text>
+                            <Binding
+                                Mode="TwoWay"
+                                Path="CapthcaString"
+                                UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRule:CaptchaValidation />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+
+                        <TextBox.Resources>
+                            <StaticResource x:Key="BackText" ResourceKey="CaptchaText" />
+                        </TextBox.Resources>
+                    </TextBox>
+
+
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            Grid.Column="0"
+                            MinWidth="75"
+                            MinHeight="40"
+                            MaxWidth="125"
+                            MaxHeight="40"
+                            Margin="5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            BorderBrush="{DynamicResource Green(Solid)}"
+                            Command="{Binding RegistrationCommand, UpdateSourceTrigger=PropertyChanged}">
+
+                            <Button.CommandParameter>
+                                <Binding ElementName="CapthcaTB" Path="(Validation.HasError)" />
+                            </Button.CommandParameter>
+
+                            <TextBlock Text="OK" />
+
+                        </Button>
+
+                        <Button
+                            Grid.Column="1"
+                            MinWidth="75"
+                            MinHeight="40"
+                            MaxWidth="125"
+                            MaxHeight="40"
+                            Margin="5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            BorderBrush="{DynamicResource Dangerous(Solid)}"
+                            Command="{Binding OpenModalCommand}">
+                            <TextBlock Text="EXIT" />
+                        </Button>
+                    </Grid>
+
+
+
+                    <!--  Показывает статус загрузки  -->
+                    <loadingCustom:LoadingCustom
+                        Grid.Row="4"
+                        Margin="5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Diameter="30"
+                        IsLoading="{Binding ModalHasStatusMessage}"
+                        MainText="{Binding ModalStatusMessage}"
+                        Color="{DynamicResource Fonts(Solid)}" />
 
 
 
 
 
 
-            </Grid>
-        </modalCutom:ModalCustom>
+                </Grid>
+            </modalCutom:ModalCustom>
 
 
-    </Grid>
+        </Grid>
+    </Border>
+
 </UserControl>

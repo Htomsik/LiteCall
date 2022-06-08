@@ -22,8 +22,21 @@ namespace SignalRServ
 
         public static Task ConnectionHub(string url, Account CurrentAccount)
         {
+            
+
             hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{url}?token={CurrentAccount.Token}")
+                .WithUrl($"{url}?token={CurrentAccount.Token}", options =>
+                {
+                    options.WebSocketConfiguration = conf =>
+                    {
+                        conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                    };
+                    options.HttpMessageHandlerFactory = factory => new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                    };
+                    options.AccessTokenProvider = () => Task.FromResult(CurrentAccount.Token);
+                })
 
                 .WithAutomaticReconnect(new[]
                 {

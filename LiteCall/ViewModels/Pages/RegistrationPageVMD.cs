@@ -18,9 +18,9 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class RegistrationPageVMD:BaseVMD
     {
-        public RegistrationPageVMD(AccountStore AccountStore, INavigationService MainPageNavigationServices,INavigationService AuthPagenavigationservices)
+        public RegistrationPageVMD(AccountStore AccountStore,INavigationService AuthPagenavigationservices)
         {
-            RegistrationCommand = new RegistrationCommand(CapthcaString, this,  AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
+            RegistrationCommand = new RegistrationCommand<RegistrationPageVMD>( this,  AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
 
             OpenAuthPageCommand = new NavigationCommand(AuthPagenavigationservices);
 
@@ -130,14 +130,6 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-
-        private double _ErrorHeight = 0;
-        public double ErrorHeight
-        {
-            get => _ErrorHeight;
-            set => Set(ref _ErrorHeight, value);
-        }
-
         private string _CapthcaString;
 
         public string CapthcaString
@@ -181,7 +173,23 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-       
+
+
+
+        private bool _IsNotApiRegistration = true;
+        public bool IsNotApiRegistration
+        {
+            get => _IsNotApiRegistration;
+            set
+            {
+                Set(ref _IsNotApiRegistration, value);
+                
+            }
+        }
+
+
+
+
         private string _statusMessage;
         public string StatusMessage
         {

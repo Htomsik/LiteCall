@@ -24,17 +24,14 @@ namespace LiteCall.Services
         {
             if (_isServerAuthoisation)
             {
-
                 var Response = await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
 
-                //Если появился msbox то откат всего
                 if (Response == "invalid")
                 {
                     return false;
                 }
                 _NewAccount.Token = Response;
                 _NewAccount.IsAuthorise = true;
-
             }
             else
             {
@@ -44,10 +41,6 @@ namespace LiteCall.Services
                 _NewAccount.Token = await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
 
             }
-
-            //Задержка для правильного отображения статусов
-            await Task.Delay(250);
-
 
             _AuthAccountStore.CurrentAccount = _NewAccount;
 

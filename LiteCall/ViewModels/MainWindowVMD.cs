@@ -10,17 +10,19 @@ namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
-        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore,ModalNavigationStore modalNavigation)
+        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore,ModalNavigationStore modalNavigationStore)
         {
             _MainWindowNavigationStore = mainWindowNavigationStore;
 
             _AdditionalNavigationStore = additionalNavigationStore;
 
-            _ModalNavigationStore = modalNavigation;
+            _ModalNavigationStore = modalNavigationStore;
 
             _MainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
             _AdditionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
+
+            _ModalNavigationStore.CurrentViewModelChanged += OnModalCurrentViewModelChanged;
         }
 
        
@@ -50,6 +52,7 @@ namespace LiteCall.ViewModels
             OnPropertyChanged(nameof(ModalCurrentViewModel));
 
             OnPropertyChanged(nameof(ModalIsOpen));
+
         }
 
         private void OnAdditionalCurrentViewModelChanged()
@@ -61,7 +64,7 @@ namespace LiteCall.ViewModels
 
         public bool AdditionalIsOpen => _AdditionalNavigationStore.IsOpen;
 
-        public bool ModalIsOpen => _AdditionalNavigationStore.IsOpen;
+        public bool ModalIsOpen => _ModalNavigationStore.IsOpen;
 
 
 

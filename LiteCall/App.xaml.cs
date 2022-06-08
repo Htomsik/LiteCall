@@ -65,15 +65,15 @@ namespace LiteCall
 
             services.AddSingleton<CloseAdditionalNavigationServices>();
 
+            services.AddSingleton<CloseModalNavigationServices>();
+
 
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
-                CreateMainPageNavigationServices(s),CreateAutPageNavigationServices(s)));
+                CreateAutPageNavigationServices(s)));
 
-
-
-
+            //Главная страница
             services.AddTransient<MainPageVMD>(
                 s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
                     s.GetRequiredService<ServerAccountStore>(),
@@ -88,9 +88,18 @@ namespace LiteCall
                 CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
                ));
 
-
+                
             services.AddTransient<ServerVMD>(s =>
-                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>()));
+                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),CreateModalRegistrationPageNavigationServices(s)));
+
+
+
+            services.AddTransient<ServerRegistrationModalVMD>(s =>
+                new ServerRegistrationModalVMD(s.GetRequiredService<ServerAccountStore>(),
+                    s.GetRequiredService<CloseModalNavigationServices>(),
+                    s.GetRequiredService<CloseModalNavigationServices>()));
+
+
 
 
             services.AddSingleton<MainWindowVMD>();
@@ -151,9 +160,14 @@ namespace LiteCall
             return new MainPageServerNavigationSevices<ServerVMD>(serviceProvider.GetRequiredService<MainPageServerNavigationStore>(), ()=>serviceProvider.GetRequiredService<ServerVMD>());
         }
 
-       
 
-      
+        private INavigationService CreateModalRegistrationPageNavigationServices(IServiceProvider serviceProvider)
+        {
+            return new ModalNavigateServices<ServerRegistrationModalVMD>
+            (serviceProvider.GetRequiredService<ModalNavigationStore>(),
+                () => serviceProvider.GetRequiredService<ServerRegistrationModalVMD>());
+        }
+
     }
 
 

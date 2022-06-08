@@ -238,7 +238,9 @@ namespace LiteCall.ViewModels.Pages
 
             StatusMessage = "Check sever status. . .";
 
-             bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
+            newServer.Ip = newServer.Ip.Replace("https://", "");
+
+            bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
 
             if (newServer is not null && ServerStatus)
             {

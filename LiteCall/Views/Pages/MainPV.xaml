@@ -344,7 +344,7 @@
                     x:Name="Iptb"
                     Grid.Row="1"
                     Margin="5"
-                    MaxLength="17"
+                    MaxLength="20"
                     Style="{StaticResource LogPassTextBox}"
                     Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}">
 
