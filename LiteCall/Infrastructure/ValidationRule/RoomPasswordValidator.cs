@@ -18,9 +18,9 @@ namespace LiteCall.Infrastructure.ValidationRule
             {
                 return new ValidationResult(true, null);
             }
-            else if (StringArray.Length < 3)
+            else if (StringArray.Length < 1)
             {
-                return new ValidationResult(false, "Password can`t be less than 3");
+                return new ValidationResult(false, "Password can`t be less than 1");
             }
 
             return new ValidationResult(true, null);

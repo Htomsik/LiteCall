@@ -125,14 +125,7 @@ namespace LiteCall.ViewModels.ServerPages
             
             _waveOutEvent = new WaveOut();
             
-            
-
             _waveOutEvent.Init(_output);
-
-
-
-
-
 
 
 
@@ -496,7 +489,7 @@ namespace LiteCall.ViewModels.ServerPages
 
               var memoryStreamReader = new MemoryStream(newVoiceMes.AudioByteArray);
 
-                byte[] buffer = new byte[200];
+                byte[] buffer = new byte[180];
 
                 bool readCompleted = false;
 
@@ -505,7 +498,7 @@ namespace LiteCall.ViewModels.ServerPages
 
                     if (bufferedWaveProvider.BufferedBytes <= bufferedWaveProvider.BufferLength - buffer.Length*2)
                     {
-                        int read = memoryStreamReader.Read(buffer, 0, buffer.Length);
+                        int read =  memoryStreamReader.Read(buffer, 0, buffer.Length);
 
 
                         if (read > 0)
@@ -563,7 +556,7 @@ namespace LiteCall.ViewModels.ServerPages
             try
             {
                 await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
-                input.StopRecording();
+              //  input.StopRecording();
                 _waveOutEvent.Stop();
             }
             catch (Exception e)
@@ -602,7 +595,7 @@ namespace LiteCall.ViewModels.ServerPages
             try
             {
 
-                // if (VAD(e))
+               if (VAD(e))
                 await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
                  
                
@@ -661,6 +654,10 @@ namespace LiteCall.ViewModels.ServerPages
 
             _waveOutEvent.Stop();
 
+            CurrentServerStore.CurrentServer = null;
+
+            ServerAccountStore.CurrentAccount= null;
+
             base.Dispose();
         }
 
@@ -676,8 +673,6 @@ namespace LiteCall.ViewModels.ServerPages
             get => _MessagesColCollection;
             set => Set(ref _MessagesColCollection, value);
         }
-
-
 
 
 

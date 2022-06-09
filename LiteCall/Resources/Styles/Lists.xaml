@@ -3,22 +3,81 @@
 
     <!--  стиль для листвью меню  -->
     <Style TargetType="{x:Type ListView}">
+
         <Setter Property="Background" Value="Transparent" />
+
         <Setter Property="BorderThickness" Value="0" />
+
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
+
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
 
         <Style.Triggers>
             <Trigger Property="IsFocused" Value="True" />
         </Style.Triggers>
+
+
+
     </Style>
+
+
+
+
+
 
     <Style TargetType="{x:Type ListViewItem}">
         <Style.Triggers>
             <Trigger Property="IsFocused" Value="True" />
         </Style.Triggers>
+
+        <Setter Property="Template">
+
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+
+                    <Border>
+                        <Border.Background>
+                            <SolidColorBrush x:Name="BorderBackgroundColor" Color="{TemplateBinding Background}" />
+                        </Border.Background>
+
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+
+                                        <ColorAnimation
+                                            Storyboard.TargetName="BorderBackgroundColor"
+                                            Storyboard.TargetProperty="Color"
+                                            To="{DynamicResource Button2(Color)}"
+                                            Duration="0:0:0.0" />
+
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState Name="Normal" />
+
+                                <VisualState Name="Disabled" />
+
+
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+
+
+
+
+                </ControlTemplate>
+            </Setter.Value>
+
+        </Setter>
+
     </Style>
 
     <!--  стиль для листвью меню  -->
@@ -34,6 +93,20 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
+using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
@@ -40,14 +41,26 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        public SettingVMD(AccountStore accountStore, INavigationService CloseAdditioNavigationService, INavigationService AuthNavigationService ,SettingsAccNavigationStore SettingsAccNavigationStore)
+        private ServersAccountsStore _ServersAccountsStore;
+
+        public ServersAccountsStore ServersAccountsStore
+        {
+            get => _ServersAccountsStore;
+            set => Set(ref _ServersAccountsStore, value);
+        }
+
+        public SettingVMD(AccountStore accountStore,ServersAccountsStore serversAccountsStore, INavigationService CloseAdditioNavigationService, INavigationService AuthNavigationService ,SettingsAccNavigationStore SettingsAccNavigationStore)
         {
 
+            AccountStore = accountStore;
+
+            ServersAccountsStore = serversAccountsStore;
+
+            
             _AuthNavigationService = AuthNavigationService;
 
             _SettingsAccNavigationStore = SettingsAccNavigationStore;
 
-            AccountStore = accountStore;
 
             LogoutAccCommand = new AccountLogoutCommand(_AccountStore);
 

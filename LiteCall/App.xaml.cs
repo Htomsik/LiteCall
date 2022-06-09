@@ -43,8 +43,6 @@ namespace LiteCall
             services.AddSingleton<CurrentServerStore>();
 
 
-
-
             services.AddSingleton<MainWindowNavigationStore>();
 
             services.AddSingleton<AdditionalNavigationStore>();
@@ -54,7 +52,6 @@ namespace LiteCall
             services.AddSingleton<SettingsAccNavigationStore>();
 
             services.AddSingleton<MainPageServerNavigationStore>();
-
 
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
 
@@ -67,28 +64,28 @@ namespace LiteCall
 
             services.AddSingleton<CloseModalNavigationServices>();
 
-
+            services.AddSingleton<FileServices>(s => new FileServices(s.GetRequiredService<ServersAccountsStore>()));
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
                 CreateAutPageNavigationServices(s)));
 
-            //Главная страница
-            services.AddTransient<MainPageVMD>(
-                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
-                    s.GetRequiredService<ServerAccountStore>(),
-                    s.GetRequiredService<ServersAccountsStore>(),s.GetRequiredService<CurrentServerStore>(),s.GetRequiredService<MainPageServerNavigationStore>(),
-                    CreateSettingPageNavigationService(s),CreateServerPageNavigationService(s)));
+            
 
-
-
-
-            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(), 
+            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(),s.GetRequiredService<ServersAccountsStore>(), 
                 s.GetRequiredService<CloseAdditionalNavigationServices>(), 
                 CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
                ));
 
-                
+
+      
+            services.AddTransient<MainPageVMD>(
+                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
+                    s.GetRequiredService<ServerAccountStore>(),
+                    s.GetRequiredService<ServersAccountsStore>(), s.GetRequiredService<CurrentServerStore>(), s.GetRequiredService<MainPageServerNavigationStore>(),
+                    CreateSettingPageNavigationService(s), CreateServerPageNavigationService(s)));
+
+
             services.AddTransient<ServerVMD>(s =>
                 new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),CreateModalRegistrationPageNavigationServices(s)));
 
@@ -114,7 +111,7 @@ namespace LiteCall
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-
+            _ServicesPovider.GetRequiredService<FileServices>().GetAccountsServers();
 
             INavigationService InitialNavigationService = _ServicesPovider.GetRequiredService<INavigationService>();
 

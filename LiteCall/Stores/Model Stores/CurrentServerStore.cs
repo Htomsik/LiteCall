@@ -17,7 +17,7 @@ namespace LiteCall.Stores.ModelStores
             CurrentServerChange?.Invoke();
         }
 
-        private Server _CurrentServer;
+        private Server _CurrentServer = null;
 
         public Server CurrentServer
         {

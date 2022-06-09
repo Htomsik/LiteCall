@@ -25,14 +25,14 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore,ServersAccountsStore ServersAccountsStore,CurrentServerStore CurrentServerStore, 
+        public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore, ServersAccountsStore serversAccountsStore, CurrentServerStore CurrentServerStore, 
                 MainPageServerNavigationStore MainPageServerNavigationStore, INavigationService SettingsPageNavigationService, INavigationService ServerPageNavigationService)
         {
             this.AccountStore = AccountStore;
 
             this.ServerAccountStore = ServerAccountStore;
 
-            this.ServersAccountsStore = ServersAccountsStore;
+            ServersAccountsStore = serversAccountsStore;
             
             this.CurrentServerStore = CurrentServerStore;
 
@@ -52,12 +52,13 @@ namespace LiteCall.ViewModels.Pages
 
             OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
 
-          
+            SaveServerCommand = new AsyncLamdaCommand(OnSaveServerCommandExecuted, (ex) => StatusMessage = ex.Message, CanSaveServerCommandExecute);
+
+            ConnectServerSavedCommand = new AsyncLamdaCommand(OnConnectServerSavedExecuted, (ex) => StatusMessage = ex.Message, CanConnectServerSavedExecute);
 
             DisconectSeverReloader.Reloader += DisconectServer;
 
-            _savedServerCollection = new ObservableCollection<Server> { };
-
+    
 
             MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
@@ -72,7 +73,120 @@ namespace LiteCall.ViewModels.Pages
 
         #region Команды
 
-        public ICommand OpenSettingsCommand { get; set; }
+        public ICommand OpenSettingsCommand { get; }
+
+
+
+
+
+        public ICommand ConnectServerSavedCommand { get; }
+
+        private bool CanConnectServerSavedExecute(object p)
+        {
+
+            if (CurrentServerStore.CurrentServer != default && SelectedServerAccount is not null)
+            {
+                return SelectedServerAccount.SavedServer.ApiIp != CurrentServerStore.CurrentServer.ApiIp;
+            }
+            return true;
+
+        }
+
+        private async  Task OnConnectServerSavedExecuted(object p)
+        {
+
+            if (!CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp))
+            {
+                return;
+            }
+
+            if (selectedViewModel != default)
+            {
+                DisconectServer();
+            }
+
+
+            ILoginServices loginServices = new LoginSevices<ServerAccountStore>(ServerAccountStore);
+
+
+            Account ServerAccount = new Account
+            {
+                Login = SelectedServerAccount.Account.Login
+            };
+
+
+            try
+            {
+                var AuthoriseStatus = await loginServices.Login(true, SelectedServerAccount.Account, SelectedServerAccount.SavedServer.ApiIp);
+
+                if (!AuthoriseStatus)
+                {
+                    MessageBox.Show("Authorization error. You will be logged without account", "Сообщение");
+
+                    await loginServices.Login(false, ServerAccount, ServernameOrIp);
+                }
+                else
+                {
+                    ServerAccount = SelectedServerAccount.Account;
+                }
+            }
+            catch (Exception e)
+            {
+
+                await loginServices.Login(false, ServerAccount, ServernameOrIp);
+
+            }
+
+
+            bool ServerStatus = await Task.Run(() => CheckServerStatus(SelectedServerAccount.SavedServer.Ip));
+
+            if (ServerStatus)
+            {
+                CurrentServerStore.CurrentServer = SelectedServerAccount.SavedServer;
+
+                ServerPageNavigationService.Navigate();
+
+                ServernameOrIp = String.Empty;
+
+                VisibilitiStatus = Visibility.Visible;
+            }
+
+
+        }
+
+
+
+
+        public ICommand SaveServerCommand { get; set; }
+
+        private bool CanSaveServerCommandExecute(object p)
+        {
+
+
+            if (CurrentServerStore.CurrentServer == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var IsCurrentServerSaved = ServersAccountsStore.SavedServerAccounts.FirstOrDefault(x => x.SavedServer.ApiIp == CurrentServerStore.CurrentServer.ApiIp);
+
+                return IsCurrentServerSaved is null;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+          
+        }
+        private async Task OnSaveServerCommandExecuted(object p)
+        {
+            ServersAccountsStore.add(new ServerAccount{Account = ServerAccountStore.CurrentAccount,SavedServer = CurrentServerStore.CurrentServer});
+        }
+
+
+
         public ICommand DisconnectServerCommand { get; }
 
         private bool CanDisconnectServerExecute(object p) => true;
@@ -82,20 +196,6 @@ namespace LiteCall.ViewModels.Pages
             DisconectServer();
         }
 
-
-        private void DisconectServer()
-        {
-            
-            if (selectedViewModel == null) return;
-
-            selectedViewModel.Dispose();
-
-            CurrentServer = null;
-
-            VisibilitiStatus = Visibility.Collapsed;
-
-            MainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
-        }
 
         public ICommand VisibilitySwitchCommand { get; }
         private void OnVisibilitySwitchExecuted(object p)
@@ -117,7 +217,6 @@ namespace LiteCall.ViewModels.Pages
         {
             if ((string)p == "1")
             {
-                ErrorHeight = 0;
                 ModalStatus = true;
             }
             else
@@ -139,8 +238,9 @@ namespace LiteCall.ViewModels.Pages
                 //selectedViewModel.Dispose();
                MainPageServerNavigationStore.Close();
             }
-            
-            CurrentServer.Ip = string.Empty;
+
+            CurrentServerStore.CurrentServer = default;
+
             VisibilitiStatus = Visibility.Collapsed;
             this.AccountStore.Logout();
         }
@@ -202,6 +302,7 @@ namespace LiteCall.ViewModels.Pages
 
                     StatusMessage = string.Empty;
 
+
                     return;
 
                 }
@@ -213,10 +314,10 @@ namespace LiteCall.ViewModels.Pages
             StatusMessage = "Login into server account. . .";
 
             try
-            {
-              var  DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts[newServer.ApiIp.ToLower()];
+            { 
+                var DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
 
-              var AuthoriseStatus =  await loginServices.Login(true, DictionaryServerAccount, newServer.ApiIp);
+              var AuthoriseStatus =  await loginServices.Login(true, DictionaryServerAccount.Account, newServer.ApiIp);
 
               if (!AuthoriseStatus)
               {
@@ -226,12 +327,12 @@ namespace LiteCall.ViewModels.Pages
               }
               else
               {
-                  ServerAccount = DictionaryServerAccount;
+                  ServerAccount = DictionaryServerAccount.Account;
               }
             }
             catch (Exception e)
             {
-                
+
                 await loginServices.Login(false, ServerAccount, ServernameOrIp);
 
             }
@@ -244,12 +345,8 @@ namespace LiteCall.ViewModels.Pages
 
             if (newServer is not null && ServerStatus)
             {
-                //заглушка
-                CurrentServer = newServer;
-
-               
+                
                 CurrentServerStore.CurrentServer = newServer;
-
 
                StatusMessage = "Sever status sucsesfull. . .";
 
@@ -262,8 +359,6 @@ namespace LiteCall.ViewModels.Pages
                ModalStatus = false;
 
                ServerPageNavigationService.Navigate();
-
-                 //  selectedViewModel = new ServerVMD(ServerAccountStore,CurrentServerStore);
 
                  ServernameOrIp = String.Empty;
 
@@ -280,23 +375,6 @@ namespace LiteCall.ViewModels.Pages
         #region Данные с окна
 
 
-        private ObservableCollection<Server> _savedServerCollection;
-
-        public ObservableCollection<Server> savedServerCollection
-        {
-            get => _savedServerCollection;
-            set => Set(ref _savedServerCollection, value);
-        }
-
-
-
-        private double _ErrorHeight = 0;
-        public double ErrorHeight
-        {
-            get => _ErrorHeight;
-            set => Set(ref _ErrorHeight, value);
-        }
-
         private bool _CheckStatus;
         public bool CheckStatus
         {
@@ -304,13 +382,7 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _CheckStatus, value);
         }
 
-        private Server _CurrentServer;
-
-        public Server CurrentServer
-        {
-            get => _CurrentServer;
-            set => Set(ref _CurrentServer, value);
-        }
+       
 
 
 
@@ -321,6 +393,7 @@ namespace LiteCall.ViewModels.Pages
             get => _ModalStatus;
             set => Set(ref _ModalStatus, value);
         }
+
 
 
         private AccountStore _AccountStore;
@@ -348,8 +421,19 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
+        private ServerAccount _selectedServerAccount;
+
+        public ServerAccount SelectedServerAccount
+        {
+            get => _selectedServerAccount;
+            set => Set(ref _selectedServerAccount, value);
+        }
+
+
+
 
         private ServersAccountsStore _ServersAccountsStore;
+
         public ServersAccountsStore ServersAccountsStore
         {
             get => _ServersAccountsStore;
@@ -431,9 +515,20 @@ namespace LiteCall.ViewModels.Pages
 
             }
 
-           
 
         }
+
+       private void DisconectServer()
+       {
+
+           if (selectedViewModel == null) return;
+
+           selectedViewModel.Dispose();
+
+           VisibilitiStatus = Visibility.Collapsed;
+
+           MainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
+       }
 
 
 

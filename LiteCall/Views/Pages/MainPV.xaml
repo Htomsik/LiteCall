@@ -23,8 +23,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
             <converters:VisibilityConverter x:Key="VisibilityConverter" />
+
             <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
+
+            <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
 
             <converters:IsCurrentServerNullConveter x:Key="IsCurrentServerNullConveter" />
             <system:Double x:Key="PlusScale">1</system:Double>
@@ -73,35 +77,84 @@
 
         <!--  Меню серверов  -->
         <Grid Background="{StaticResource Background(Solid)}">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="73" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+
             <ListView
                 Grid.Row="1"
-                ItemsSource="{Binding savedServerCollection}"
-                SelectedItem="{Binding CurrentServer}">
+                ItemsSource="{Binding ServersAccountsStore.SavedServerAccounts}"
+                SelectedItem="{Binding SelectedServerAccount}">
+
+                <ListView.ContextMenu>
+
+                    <ContextMenu>
+                        <MenuItem Command="{Binding ConnectServerSavedCommand}" Header="Connect" />
+                    </ContextMenu>
+
+                </ListView.ContextMenu>
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
+
+
                         <Border
                             Width="45"
                             Height="45"
+                            Background="Transparent"
                             BorderBrush="{DynamicResource Fonts(Solid)}"
                             BorderThickness="1"
-                            CornerRadius="22">
+                            CornerRadius="22"
+                            ToolTipService.InitialShowDelay="0">
+
+                            <Border.ToolTip>
+                                <ToolTip Placement="Right">
+
+                                    <StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Ip: " />
+                                            <TextBlock Text="{Binding SavedServer.Ip}" />
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+
+                                            <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Nickname: " />
+
+                                            <TextBlock Text="{Binding Account.Login}" />
+
+                                            <TextBlock
+                                                VerticalAlignment="Top"
+                                                FontSize="15"
+                                                Foreground="{DynamicResource Dangerous(Solid)}"
+                                                Text="[NA]"
+                                                Visibility="{Binding Account.IsAuthorise, Converter={StaticResource BooleanToVisibilityInverter}}" />
+
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                </ToolTip>
+                            </Border.ToolTip>
+
+
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Foreground="White"
-                                Text="{Binding Title}" />
-                            <!--  Тригер для переключения видимости  -->
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseLeftButtonDown">
-                                    <i:InvokeCommandAction Command="{Binding DataContext.VisibilitySwitchCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="0" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
+                                Text="{Binding SavedServer.Title[0]}" />
+
+
+
+
+
+
+
                         </Border>
+
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -120,11 +173,12 @@
                     VerticalAlignment="Center"
                     FontSize="20"
                     Foreground="{DynamicResource Important(Solid)}"
-                    Text="{Binding CurrentServer.Title[0]}" />
+                    Text="{Binding CurrentServerStore.CurrentServer.Title[0]}" />
 
                 <Border.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding DisconnectServerCommand}" Header="Server Disconnect" />
+                        <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
                     </ContextMenu>
                 </Border.ContextMenu>
 
@@ -165,7 +219,7 @@
 
                     <Style.Triggers>
 
-                        <DataTrigger Binding="{Binding CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
+                        <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
 
                             <Setter Property="CornerRadius" Value="0 0 15 0" />
 
@@ -197,12 +251,6 @@
                         ClipToBounds="True"
                         CornerRadius="20">
 
-                        <!--   <Border.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Command="{Binding AccountLogoutCommand}" Header="Account Logout" />
-                            </ContextMenu>
-                        </Border.ContextMenu>-->
-
                         <Viewbox Width="25" Height="25">
                             <Path
                                 Fill="{DynamicResource Fonts(Solid)}"
@@ -224,7 +272,7 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger Binding="{Binding CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
+                                    <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
 
                                         <Setter Property="Text" Value="{Binding ServerAccountStore.CurrentAccount.Login}" />
 
@@ -258,7 +306,7 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger Binding="{Binding CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="True">
+                                    <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="True">
 
                                         <Setter Property="Visibility" Value="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
 

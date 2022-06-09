@@ -39,9 +39,6 @@ namespace LiteCall.Services
 
        };
 
-
-
-
         internal static async Task<string> GetAuthorizeToken(Account newAcc, string ApiServerIp= DefaultMainIp)
         {
             
