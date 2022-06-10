@@ -93,6 +93,8 @@
 
                     <ContextMenu>
                         <MenuItem Command="{Binding ConnectServerSavedCommand}" Header="Connect" />
+
+                        <MenuItem Command="{Binding DeleteServerSavedCommand}" Header="Delete" />
                     </ContextMenu>
 
                 </ListView.ContextMenu>
@@ -178,7 +180,10 @@
                 <Border.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding DisconnectServerCommand}" Header="Server Disconnect" />
+
                         <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
+
+                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Registration in current server" />
                     </ContextMenu>
                 </Border.ContextMenu>
 

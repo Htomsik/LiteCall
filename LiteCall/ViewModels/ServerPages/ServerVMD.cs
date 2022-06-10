@@ -43,7 +43,7 @@ namespace LiteCall.ViewModels.ServerPages
     }
     internal class ServerVMD : BaseVMD
     {
-        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore, INavigationService OpenModalServerRegistratioNavigationService)
+        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore)
         {
 
             #region Создание данных
@@ -77,8 +77,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             #region команды
 
-            ModalRegistrationOpenCommand = new NavigationCommand(OpenModalServerRegistratioNavigationService);
-
             SendMessageCommand = new AsyncLamdaCommand(OnSendMessageExecuted, (ex) => StatusMessage = ex.Message, CanSendMessageExecuted);
 
             CreateNewRoomCommand = new AsyncLamdaCommand(OnCreateNewRoomExecuted,(ex) => StatusMessage = ex.Message,CanCreateNewRoomExecute);
@@ -87,8 +85,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             ConnectWithPasswordCommand = new AsyncLamdaCommand(OnConnectWithPasswordCommandExecuted,
                 (ex) => StatusMessage = ex.Message, CanConectWithPasswordExecute);
-
-           // ModalRegistrationOpenCommand = new NavigationCommand(ModalRegistraNavigationService);
 
             OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
 
@@ -184,10 +180,6 @@ namespace LiteCall.ViewModels.ServerPages
 
 
         #endregion
-
-
-
-        public ICommand ModalRegistrationOpenCommand { get; set; }
 
         /// <summary>
         /// Включение/Выключение звука
@@ -536,10 +528,21 @@ namespace LiteCall.ViewModels.ServerPages
         private async void AsynGetServerRoomsBUS()
         {
 
-            var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
 
 
-            ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+            try
+            {
+                var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
+                ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+            }
+            catch (Exception e)
+            {
+                ServerRooms = new ObservableCollection<ServerRooms>();
+            }
+        
+
+
+           
 
 
         }

@@ -91,7 +91,7 @@ namespace LiteCall.Services
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return response.Content.ToString();
+                return await response.Content.ReadAsStringAsync();
             }
             else
             {
@@ -101,47 +101,6 @@ namespace LiteCall.Services
             }
         }
 
-
-
-
-        internal static async Task<Server> ServerGetInfo(string ServerName,string ApiServerIp = DefaultMainIp)
-        {
-          //  using var httpClient = new HttpClient();
-
-                var json = JsonSerializer.Serialize(ServerName);
-
-                var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-
-                var response = new HttpResponseMessage();
-
-                try
-                {
-                    response = await httpClient.PostAsync($"https://{ApiServerIp}/api/Server/ServerGetInfo", content).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Сообщение");
-                    return null;
-                }
-               
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-
-                    var a = response.Content.ReadAsStringAsync().Result;
-
-                    var str = JsonSerializer.Deserialize<Server>(a);
-
-                    return str;
-                }
-                else
-                {
-                    MessageBox.Show("Incorrect server name", "Сообщение");
-                     return null;
-                }
-           
-           
-        }
 
 
         internal static async Task<string> MainServerGetApiIPI(string ServerName)
@@ -220,7 +179,7 @@ namespace LiteCall.Services
 
 
 
-        public static async Task<ImagePacket> GetCaptcha()
+        public static async Task<ImagePacket> GetCaptcha(string ServerIp = DefaultMainIp)
         {
 
             var response = new HttpResponseMessage();
@@ -231,7 +190,7 @@ namespace LiteCall.Services
 
             try
             {
-                 response = await httpClient.PostAsync($"https://{DefaultMainIp}/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
+                 response = await httpClient.PostAsync($"https://{ServerIp}/api/auth/CaptchaGenerator", content).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

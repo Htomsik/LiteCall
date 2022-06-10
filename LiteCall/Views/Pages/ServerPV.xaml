@@ -103,14 +103,6 @@
         <!--  Статус загрузки  -->
         <Grid Background="{DynamicResource Background2(Solid)}" Column="1">
 
-
-            <Button
-                HorizontalAlignment="Center"
-                Command="{Binding ModalRegistrationOpenCommand}"
-                Visibility="Collapsed">
-                <TextBlock Text="Registration" />
-            </Button>
-
             <loadingCustom:LoadingCustom
                 HorizontalAlignment="Left"
                 Diameter="15"

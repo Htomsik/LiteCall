@@ -36,9 +36,10 @@ namespace LiteCall.Services
             else
             {
                 _NewAccount.IsAuthorise = false;
+
                 _NewAccount.Password = "";
 
-                _NewAccount.Token = await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
+               _NewAccount.Token = await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
 
             }
 

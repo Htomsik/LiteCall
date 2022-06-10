@@ -18,11 +18,15 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class RegistrationPageVMD:BaseVMD
     {
-        public RegistrationPageVMD(AccountStore AccountStore,INavigationService AuthPagenavigationservices)
+        public RegistrationPageVMD(AccountStore accountStore,INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices)
         {
-            RegistrationCommand = new RegistrationCommand<RegistrationPageVMD>( this,  AccountStore, (ex) => StatusMessage = ex.Message, CanRegistrationExecute);
 
-            OpenAuthPageCommand = new NavigationCommand(AuthPagenavigationservices);
+            _RegistrationSevices = registrationSevices;
+
+            RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => StatusMessage = ex.Message,
+                CanRegistrationExecute);
+
+            OpenAuthPageCommand = new NavigationCommand(authPagenavigationservices);
 
             OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => StatusMessage = ex.Message, CanOpenModalCommamdExecute);
         }
@@ -35,6 +39,30 @@ namespace LiteCall.ViewModels.Pages
         /// </summary>
         public ICommand RegistrationCommand { get; }
         private bool CanRegistrationExecute(object p)=> !(bool)p && !string.IsNullOrEmpty(CapthcaString);
+
+        private async Task OnRegistrationExecuted(object p)
+        {
+            var newAccount = new Account
+            {
+                Login = this.Login,
+                Password = this.Password,
+            };
+
+            var Response = await _RegistrationSevices.Registration(newAccount, CapthcaString);
+
+            switch (Response)
+            {
+                case 0:
+                    GetCaptcha();
+                    break;
+
+                case 1:
+                    ModalStatus = false;
+                    StatusMessage = null;
+                    break;
+
+            }
+        }
 
 
 
@@ -188,7 +216,7 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-
+        private IRegistrationSevices _RegistrationSevices;
 
         private string _statusMessage;
         public string StatusMessage
@@ -206,6 +234,8 @@ namespace LiteCall.ViewModels.Pages
 
         //Для модального окна
         private string _ModalstatusMessage;
+
+        
         public string ModalStatusMessage
         {
             get => _ModalstatusMessage;

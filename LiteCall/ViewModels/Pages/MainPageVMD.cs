@@ -26,7 +26,7 @@ namespace LiteCall.ViewModels.Pages
     internal class MainPageVMD:BaseVMD
     {
         public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore, ServersAccountsStore serversAccountsStore, CurrentServerStore CurrentServerStore, 
-                MainPageServerNavigationStore MainPageServerNavigationStore, INavigationService SettingsPageNavigationService, INavigationService ServerPageNavigationService)
+                MainPageServerNavigationStore MainPageServerNavigationStore, INavigationService SettingsPageNavigationService, INavigationService ServerPageNavigationService, INavigationService OpenModalServerRegistratioNavigationService)
         {
             this.AccountStore = AccountStore;
 
@@ -39,6 +39,8 @@ namespace LiteCall.ViewModels.Pages
             this.MainPageServerNavigationStore = MainPageServerNavigationStore;
 
             this.ServerPageNavigationService = ServerPageNavigationService;
+
+            ModalRegistrationOpenCommand = new NavigationCommand(OpenModalServerRegistratioNavigationService, CanModalRegistrationOpenCommandExecuted);
 
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
 
@@ -53,6 +55,8 @@ namespace LiteCall.ViewModels.Pages
             OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
 
             SaveServerCommand = new AsyncLamdaCommand(OnSaveServerCommandExecuted, (ex) => StatusMessage = ex.Message, CanSaveServerCommandExecute);
+
+            DeleteServerSavedCommand = new AsyncLamdaCommand(OnDeleteServerSavedExecuted, (ex) => StatusMessage = ex.Message,CanDeleteServerSavedExecute);
 
             ConnectServerSavedCommand = new AsyncLamdaCommand(OnConnectServerSavedExecuted, (ex) => StatusMessage = ex.Message, CanConnectServerSavedExecute);
 
@@ -73,9 +77,22 @@ namespace LiteCall.ViewModels.Pages
 
         #region Команды
 
+
         public ICommand OpenSettingsCommand { get; }
 
+        public ICommand ModalRegistrationOpenCommand { get; set; }
 
+        private bool CanModalRegistrationOpenCommandExecuted()
+        {
+            if (ServerAccountStore.CurrentAccount != default)
+            {
+                return !ServerAccountStore.CurrentAccount.IsAuthorise;
+            }
+
+            return false;
+
+        }
+           
 
 
 
@@ -183,6 +200,18 @@ namespace LiteCall.ViewModels.Pages
         private async Task OnSaveServerCommandExecuted(object p)
         {
             ServersAccountsStore.add(new ServerAccount{Account = ServerAccountStore.CurrentAccount,SavedServer = CurrentServerStore.CurrentServer});
+        }
+
+
+
+
+        public ICommand DeleteServerSavedCommand { get; }
+
+        private bool CanDeleteServerSavedExecute(object p) => SelectedServerAccount is not null;
+
+        private async Task OnDeleteServerSavedExecuted(object p)
+        {
+            ServersAccountsStore.remove(SelectedServerAccount);
         }
 
 

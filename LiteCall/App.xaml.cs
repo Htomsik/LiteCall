@@ -64,11 +64,13 @@ namespace LiteCall
 
             services.AddSingleton<CloseModalNavigationServices>();
 
+            services.AddSingleton<RegistrationMainServerService>();
+
             services.AddSingleton<FileServices>(s => new FileServices(s.GetRequiredService<ServersAccountsStore>()));
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
-                CreateAutPageNavigationServices(s)));
+                CreateAutPageNavigationServices(s), s.GetRequiredService<RegistrationMainServerService>()));
 
             
 
@@ -83,18 +85,16 @@ namespace LiteCall
                 s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
                     s.GetRequiredService<ServerAccountStore>(),
                     s.GetRequiredService<ServersAccountsStore>(), s.GetRequiredService<CurrentServerStore>(), s.GetRequiredService<MainPageServerNavigationStore>(),
-                    CreateSettingPageNavigationService(s), CreateServerPageNavigationService(s)));
+                    CreateSettingPageNavigationService(s), CreateServerPageNavigationService(s),CreateModalRegistrationPageNavigationServices(s)));
 
 
             services.AddTransient<ServerVMD>(s =>
-                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),CreateModalRegistrationPageNavigationServices(s)));
+                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>()));
 
 
-
-            services.AddTransient<ServerRegistrationModalVMD>(s =>
-                new ServerRegistrationModalVMD(s.GetRequiredService<ServerAccountStore>(),
-                    s.GetRequiredService<CloseModalNavigationServices>(),
-                    s.GetRequiredService<CloseModalNavigationServices>()));
+            
+            services.AddTransient<ServerRegistrationModalVMD>(s => new ServerRegistrationModalVMD(
+                s.GetRequiredService<CloseModalNavigationServices>(),createApiRegistrationSevices(s),s.GetRequiredService<CurrentServerStore>()));
 
 
 
@@ -163,6 +163,13 @@ namespace LiteCall
             return new ModalNavigateServices<ServerRegistrationModalVMD>
             (serviceProvider.GetRequiredService<ModalNavigationStore>(),
                 () => serviceProvider.GetRequiredService<ServerRegistrationModalVMD>());
+        }
+
+
+        private IRegistrationSevices createApiRegistrationSevices(IServiceProvider serviceProvider)
+        {
+            return new RegistrationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
+                serviceProvider.GetRequiredService<CurrentServerStore>(),serviceProvider.GetRequiredService<CloseModalNavigationServices>());
         }
 
     }

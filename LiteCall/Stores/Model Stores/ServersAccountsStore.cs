@@ -41,7 +41,64 @@ namespace LiteCall.Stores
              
        }
 
-       private ObservableCollection<ServerAccount> _SavedServerAccounts = new ObservableCollection<ServerAccount>();
+       public void remove(ServerAccount deletedServer)
+       {
+
+           ServerAccount FindAccount = null;
+
+           try
+           {
+               FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == deletedServer.SavedServer.ApiIp);
+           }
+           catch (Exception e) { }
+
+
+           if (FindAccount != null)
+           {
+               SavedServerAccounts.Remove(FindAccount);
+               OnCurrentSeverAccountChanged();
+           }
+
+       }
+
+       public void replace(Server ReplacedServer, Account newAccount)
+       {
+
+           ServerAccount FindAccount = null;
+
+
+         
+               try
+               {
+                   FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
+
+                   SavedServerAccounts.Remove(FindAccount);
+
+                   FindAccount.Account = newAccount;
+
+                   SavedServerAccounts.Add(FindAccount);
+            }
+               catch (Exception e)
+               {
+                   FindAccount = new ServerAccount();
+
+                   FindAccount.Account = newAccount;
+
+                   FindAccount.SavedServer = ReplacedServer;
+
+                   SavedServerAccounts.Add(FindAccount);
+               }
+
+            
+
+
+
+           OnCurrentSeverAccountChanged();
+
+
+        }
+
+        private ObservableCollection<ServerAccount> _SavedServerAccounts = new ObservableCollection<ServerAccount>();
 
         public ObservableCollection<ServerAccount> SavedServerAccounts 
         {
