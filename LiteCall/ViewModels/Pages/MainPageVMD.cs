@@ -40,29 +40,42 @@ namespace LiteCall.ViewModels.Pages
 
             this.ServerPageNavigationService = ServerPageNavigationService;
 
+
+
+
             ModalRegistrationOpenCommand = new NavigationCommand(OpenModalServerRegistratioNavigationService, CanModalRegistrationOpenCommandExecuted);
+
+
 
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
 
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);
 
-            ConnectServerCommand=new AsyncLamdaCommand(OnConnectServerExecuted, (ex) => StatusMessage = ex.Message);
+          
 
             DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted,CanDisconnectServerExecute);
 
-            AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted);
+            AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted); //Не работает
 
             OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
+
+
+
 
             SaveServerCommand = new AsyncLamdaCommand(OnSaveServerCommandExecuted, (ex) => StatusMessage = ex.Message, CanSaveServerCommandExecute);
 
             DeleteServerSavedCommand = new AsyncLamdaCommand(OnDeleteServerSavedExecuted, (ex) => StatusMessage = ex.Message,CanDeleteServerSavedExecute);
 
+
+
+            ConnectServerCommand = new AsyncLamdaCommand(OnConnectServerExecuted, (ex) => StatusMessage = ex.Message);
+
             ConnectServerSavedCommand = new AsyncLamdaCommand(OnConnectServerSavedExecuted, (ex) => StatusMessage = ex.Message, CanConnectServerSavedExecute);
 
-            DisconectSeverReloader.Reloader += DisconectServer;
 
-    
+
+
+            DisconectSeverReloader.Reloader += DisconectServer;
 
             MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
@@ -112,7 +125,10 @@ namespace LiteCall.ViewModels.Pages
         private async  Task OnConnectServerSavedExecuted(object p)
         {
 
-            if (!CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp))
+
+            var ServerStatus = await Task.Run(() => CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+
+            if (!ServerStatus)
             {
                 return;
             }
@@ -134,7 +150,7 @@ namespace LiteCall.ViewModels.Pages
 
             try
             {
-                var AuthoriseStatus = await loginServices.Login(true, SelectedServerAccount.Account, SelectedServerAccount.SavedServer.ApiIp);
+                var AuthoriseStatus = await loginServices.Login(SelectedServerAccount.Account.IsAuthorise, SelectedServerAccount.Account, SelectedServerAccount.SavedServer.ApiIp);
 
                 if (!AuthoriseStatus)
                 {
@@ -155,7 +171,7 @@ namespace LiteCall.ViewModels.Pages
             }
 
 
-            bool ServerStatus = await Task.Run(() => CheckServerStatus(SelectedServerAccount.SavedServer.Ip));
+             ServerStatus = await Task.Run(() => CheckServerStatus(SelectedServerAccount.SavedServer.Ip));
 
             if (ServerStatus)
             {
@@ -346,7 +362,7 @@ namespace LiteCall.ViewModels.Pages
             { 
                 var DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
 
-              var AuthoriseStatus =  await loginServices.Login(true, DictionaryServerAccount.Account, newServer.ApiIp);
+              var AuthoriseStatus =  await loginServices.Login(DictionaryServerAccount.Account.IsAuthorise, DictionaryServerAccount.Account, newServer.ApiIp);
 
               if (!AuthoriseStatus)
               {
@@ -411,10 +427,7 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _CheckStatus, value);
         }
 
-       
-
-
-
+        
         private bool _ModalStatus;
 
         public bool ModalStatus

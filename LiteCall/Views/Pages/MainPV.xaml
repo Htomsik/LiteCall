@@ -31,8 +31,11 @@
             <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
 
             <converters:IsCurrentServerNullConveter x:Key="IsCurrentServerNullConveter" />
+
             <system:Double x:Key="PlusScale">1</system:Double>
+
             <system:String x:Key="tittleOrIpText">SERVER NAME OR IP</system:String>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -92,18 +95,21 @@
                 <ListView.ContextMenu>
 
                     <ContextMenu>
+
                         <MenuItem Command="{Binding ConnectServerSavedCommand}" Header="Connect" />
 
                         <MenuItem Command="{Binding DeleteServerSavedCommand}" Header="Delete" />
+
                     </ContextMenu>
 
                 </ListView.ContextMenu>
 
                 <ListView.ItemTemplate>
+
                     <DataTemplate>
 
-
                         <Border
+                            x:Name="Border"
                             Width="45"
                             Height="45"
                             Background="Transparent"
@@ -111,7 +117,6 @@
                             BorderThickness="1"
                             CornerRadius="22"
                             ToolTipService.InitialShowDelay="0">
-
                             <Border.ToolTip>
                                 <ToolTip Placement="Right">
 
@@ -142,7 +147,6 @@
                                 </ToolTip>
                             </Border.ToolTip>
 
-
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -151,11 +155,14 @@
 
 
 
-
-
-
-
                         </Border>
+
+                        <DataTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource Button2(Solid)}" />
+                            </Trigger>
+                        </DataTemplate.Triggers>
+
 
                     </DataTemplate>
                 </ListView.ItemTemplate>

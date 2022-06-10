@@ -29,16 +29,14 @@
 
 
     <Style TargetType="{x:Type ListViewItem}">
-        <Style.Triggers>
-            <Trigger Property="IsFocused" Value="True" />
-        </Style.Triggers>
+
 
         <Setter Property="Template">
 
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
 
-                    <Border>
+                    <Border Margin="0,0,0,5">
                         <Border.Background>
                             <SolidColorBrush x:Name="BorderBackgroundColor" Color="{TemplateBinding Background}" />
                         </Border.Background>
@@ -48,23 +46,9 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="CommonStates">
 
-                                <VisualState Name="MouseOver">
-                                    <Storyboard>
-
-                                        <ColorAnimation
-                                            Storyboard.TargetName="BorderBackgroundColor"
-                                            Storyboard.TargetProperty="Color"
-                                            To="{DynamicResource Button2(Color)}"
-                                            Duration="0:0:0.0" />
-
-                                    </Storyboard>
-                                </VisualState>
-
                                 <VisualState Name="Normal" />
 
                                 <VisualState Name="Disabled" />
-
-
 
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
