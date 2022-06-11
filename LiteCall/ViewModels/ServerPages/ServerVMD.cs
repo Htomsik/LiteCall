@@ -1,46 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Media;
-using System.Net;
-using System.ServiceModel;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
+
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Services;
-using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.Stores.ModelStores;
 using LiteCall.ViewModels.Base;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.VisualBasic.ApplicationServices;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using SignalRServ;
+
 
 namespace LiteCall.ViewModels.ServerPages
 {
 
-    class DummyWaveProvider : IWaveProvider
-    {
-        public DummyWaveProvider(WaveFormat waveFormat)
-        {
-            WaveFormat = waveFormat;
-        }
-
-        public int Read(byte[] buffer, int offset, int count)
-        {
-            return 0;
-        }
-
-        public WaveFormat WaveFormat { get; }
-    }
+  
     internal class ServerVMD : BaseVMD
     {
         public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore)
@@ -93,74 +73,86 @@ namespace LiteCall.ViewModels.ServerPages
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
 
             VoiceInputCommand = new LambdaCommand(OnVoiceInputExecuted);
-          
-     
+
+
             #endregion
 
             #region Настройка Naduio
 
-            input.DeviceNumber = 0;
+          
 
-            input.WaveFormat = new WaveFormat(8000, 16, 1);
-
-            input.DataAvailable += Voice_Input;
+     
 
 
 
 
+            input = new WaveIn();
 
-            bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat(8000, 16, 1)) { ReadFully = false };
+        
 
-            wave16ToFloatProvider = new Wave16ToFloatProvider(bufferedWaveProvider);
+            input.DataAvailable += InputDataAvailable;
 
-            _mixingWaveProvider32 = new MixingWaveProvider32(new[] { new DummyWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1)), });
+            input.BufferMilliseconds = 20;
 
-             _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+            input.WaveFormat = _waveFormat;
 
-            _output = new WaveFloatTo16Provider(_mixingWaveProvider32);
+
+            _playBuffer = new BufferedWaveProvider(_waveFormat);
+
+            mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1));
+
+            mixer.ReadFully = true;
+
+            _waveOut.DeviceNumber = 0;
+
+            mixer.AddMixerInput(_playBuffer);
+
+            _waveOut.Init(mixer);
+
+            _waveOut.Play();
+
             
-            _waveOutEvent = new WaveOut();
-            
-            _waveOutEvent.Init(_output);
-
-
-
-            #endregion
 
             /*
-            ServerRooms = new ObservableCollection<ServerRooms>
-            {
-                new ServerRooms { Guard = true, RoomName = "Guard", Users = new List<ServerUser>
-                {
-                    new ServerUser { Login = "JessJake" },
-                    new ServerUser { Login = "JessJake" },
-                    
-                } },
-                new ServerRooms { Guard = false, RoomName = "NoNGuard", Users = new List<ServerUser>
-                {
-                    new ServerUser { Login = "JessJake" },
-                    new ServerUser { Login = "JessJake" },
-                
 
-                } }
-            };
+                        bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat(8000, 16, 1)) { ReadFully = false };
+
+                        wave16ToFloatProvider = new Wave16ToFloatProvider(bufferedWaveProvider);
+
+                        _mixingWaveProvider32 = new MixingWaveProvider32(new[] { new DummyWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1)), });
+
+                        _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
+
+                        _output = new WaveFloatTo16Provider(_mixingWaveProvider32);
+
+                        _waveOutEvent = new WaveOut(WaveCallbackInfo.FunctionCallback());
+
+                        _waveOutEvent.Init(_output);
+
+                        _waveOutEvent.Play();
 
             */
+            #endregion
+
+
 
         }
 
 
-        private BufferedWaveProvider bufferedWaveProvider;
+        WaveIn input;
 
-        private Wave16ToFloatProvider wave16ToFloatProvider;
+        private WaveOut _waveOut = new WaveOut();
 
-        private WaveOut _waveOutEvent;
+        BufferedWaveProvider _playBuffer;
 
-        private MixingWaveProvider32 _mixingWaveProvider32;
+        MixingSampleProvider mixer;
 
-        private WaveFloatTo16Provider _output;
 
-        private WaveIn input = new WaveIn();
+        private WaveFormat _waveFormat = new WaveFormat(8000, 16, 1);
+
+
+
+
 
 
         #region Подключение к серверу
@@ -387,6 +379,7 @@ namespace LiteCall.ViewModels.ServerPages
                 if (ConnetGroupStatus)
                 {
                     CurrentGroup = ConnectedGroup;
+                   
                 }
             }
             catch (Exception e)
@@ -449,32 +442,24 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
-        List<string> users = new List<string>();
         public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
-            /*
-            if (!users.Contains(newVoiceMes.Name))
-            {
-                _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
-                users.Add(newVoiceMes.Name);
-            }
-          */
+            
+            // _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
 
-            //_mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
 
-            if (bufferedWaveProvider.BufferedBytes < 3200)
-            {
-                await AsyncGetAudio(newVoiceMes);
-                StatusMessage = bufferedWaveProvider.BufferedBytes.ToString();
+            StatusMessage = _playBuffer.BufferedBytes.ToString();
 
-            }
+        
+            _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+            
+          
 
-           
 
         }
 
-
+        /*
         public async Task AsyncGetAudio(VoiceMessage newVoiceMes)
         {
         // _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
@@ -498,8 +483,7 @@ namespace LiteCall.ViewModels.ServerPages
 
                             bufferedWaveProvider.AddSamples(buffer, 0, read);
                             Thread.Sleep(0);
-                            _waveOutEvent.Play();
-
+                        
                         }
                         else
                         {
@@ -520,7 +504,7 @@ namespace LiteCall.ViewModels.ServerPages
        
 
         }
-
+        */
 
         /// <summary>
         /// Информация о комнатах и пользователях на сервере
@@ -560,7 +544,7 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
               //  input.StopRecording();
-                _waveOutEvent.Stop();
+                _waveOut.Stop();
             }
             catch (Exception e)
             {
@@ -590,16 +574,39 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-       
 
-        private async void Voice_Input(object sender, WaveInEventArgs e)
+        private async  void InputDataAvailable(object sender, WaveInEventArgs e)
         {
+
+
+
+
+     
+
+                try
+                {
+                    // if (VAD(e))
+                    if (CurrentGroup != null)
+                        await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+               
+            
+
+
+            /*
 
             try
             {
 
-               if (VAD(e))
-                await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+              // if (VAD(e))
+                await ServerService.hubConnection.SendAsync("SendAudio", soundBuffer);
                  
                
             }
@@ -608,7 +615,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             }
 
-            
+            */
         }
 
         private bool VAD(WaveInEventArgs e)
@@ -655,7 +662,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             input.StopRecording();
 
-            _waveOutEvent.Stop();
+            _waveOut.Stop();
 
             CurrentServerStore.CurrentServer = null;
 
