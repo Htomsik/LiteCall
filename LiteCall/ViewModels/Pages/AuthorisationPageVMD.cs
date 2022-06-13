@@ -13,19 +13,22 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.ViewModels.Pages
 {
-    internal class AuthorisationPageVMD:BaseVMD
+    internal class AuthorisationPageVMD : BaseVMD
     {
+        #region Команды
 
-        public AuthorisationPageVMD(AccountStore AccountStore, INavigationService RegistrationPageNavigationServices)
+
+        public AuthorisationPageVMD(INavigationService registrationNavigationServices, IAuthorisationServices authorisationServices)
         {
 
-            AuthCommand = new AuthCommand(this, AccountStore, (ex) => StatusMessage = ex.Message, CanAuthExecute);
 
-            OpenRegistrationPageCommand = new NavigationCommand(RegistrationPageNavigationServices);
+            AuthorisationServices = authorisationServices;
 
+            AuthCommand =
+                new AsyncLamdaCommand(OnAuthExecuteExecuted, (ex) => StatusMessage = ex.Message, CanAuthExecute);
+
+            OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationServices);
         }
-
-        #region Команды
 
         public ICommand AuthCommand { get; }
 
@@ -33,7 +36,9 @@ namespace LiteCall.ViewModels.Pages
         {
 
             var param = (Tuple<object, object>)p;
+
             var logintbValidator = !Convert.ToBoolean(param.Item1);
+
             var passtbValidator = !Convert.ToBoolean(param.Item2);
 
             if (CheckStatus && logintbValidator && !string.IsNullOrEmpty(Login))
@@ -44,15 +49,47 @@ namespace LiteCall.ViewModels.Pages
 
 
         }
-        /// <summary>
-        /// Открыть окно регистрации
-        /// </summary>
+
+        private async Task OnAuthExecuteExecuted(object p)
+        {
+            var newAccount = new Account
+            {
+                Login = this.Login,
+                Password = this.Password,
+            };
+
+            var Response = await AuthorisationServices.Login(!CheckStatus, newAccount);
+
+            switch (Response)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    StatusMessage = null;
+                    break;
+
+            }
+        }
+
+
+
+
+
+
+
+
         public ICommand OpenRegistrationPageCommand { get; }
-       
+
 
         #endregion
 
         #region Данные с формы
+
+
+
+        public IAuthorisationServices AuthorisationServices { get; }
+
 
 
         private bool _CheckStatus;
@@ -80,7 +117,7 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-      
+
         private string _statusMessage;
         public string StatusMessage
         {
@@ -97,4 +134,7 @@ namespace LiteCall.ViewModels.Pages
 
         #endregion
     }
+
+
+
 }

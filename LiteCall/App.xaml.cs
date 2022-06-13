@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using LiteCall.Services;
+using LiteCall.Services.Authorisation;
 using LiteCall.Services.Interfaces;
 using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
@@ -34,6 +35,10 @@ namespace LiteCall
 
             IServiceCollection services = new ServiceCollection();
 
+            services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
+
+            #region Хранилища
+
             services.AddSingleton<AccountStore>();
 
             services.AddSingleton<ServerAccountStore>();
@@ -42,7 +47,9 @@ namespace LiteCall
 
             services.AddSingleton<CurrentServerStore>();
 
+            #endregion
 
+            #region NavigationStores
             services.AddSingleton<MainWindowNavigationStore>();
 
             services.AddSingleton<AdditionalNavigationStore>();
@@ -52,27 +59,55 @@ namespace LiteCall
             services.AddSingleton<SettingsAccNavigationStore>();
 
             services.AddSingleton<MainPageServerNavigationStore>();
+            #endregion
 
-            services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
+            #region Сервисы
 
-            
-            services.AddTransient<AuthorisationPageVMD>(s => new AuthorisationPageVMD( s.GetRequiredService<AccountStore>(),
-                CreateRegistrationPageNavigationServices(s)));
-
+            services.AddSingleton<FileServices>(s => new FileServices(s.GetRequiredService<ServersAccountsStore>()));
 
             services.AddSingleton<CloseAdditionalNavigationServices>();
 
             services.AddSingleton<CloseModalNavigationServices>();
 
-            services.AddSingleton<RegistrationMainServerService>();
+            #endregion
 
-            services.AddSingleton<FileServices>(s => new FileServices(s.GetRequiredService<ServersAccountsStore>()));
+            #region Регистрация/Авторизация на мейн сервере
+
+            services.AddTransient<AuthorisationPageVMD>(s => new AuthorisationPageVMD(
+                CreateRegistrationPageNavigationServices(s), CreateMainAuthorisationServices(s)));
+
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
-                CreateAutPageNavigationServices(s), s.GetRequiredService<RegistrationMainServerService>()));
+                CreateAutPageNavigationServices(s), CreateMainRegistrationSevices(s)));
 
-            
+            #endregion
+
+            #region Регистрация/Авторизация на API сервере чата
+
+            services.AddTransient<ServerRegistrationModalVMD>(s => new ServerRegistrationModalVMD(
+                CreateModalAuthorisationPageNavigationService(s),
+                CreateApiRegistrationSevices(s),
+                s.GetRequiredService<CurrentServerStore>()));
+
+
+            services.AddTransient<ServerAuthorisationModalVMD>(s => new ServerAuthorisationModalVMD(
+                CreateModalRegistrationPageNavigationServices(s), CreateApiAuthorisationServices(s)));
+
+
+            #endregion
+
+
+            services.AddTransient<MainPageVMD>(
+                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
+                    s.GetRequiredService<ServerAccountStore>(),
+                    s.GetRequiredService<ServersAccountsStore>(), 
+                    s.GetRequiredService<CurrentServerStore>(),
+                    s.GetRequiredService<MainPageServerNavigationStore>(),
+                    CreateSettingPageNavigationService(s), 
+                    CreateServerPageNavigationService(s), 
+                    CreateModalAuthorisationPageNavigationService(s),
+                    CreateAuthCheckApiServerSevices(s)));
 
             services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(),s.GetRequiredService<ServersAccountsStore>(), 
                 s.GetRequiredService<CloseAdditionalNavigationServices>(), 
@@ -80,26 +115,15 @@ namespace LiteCall
                ));
 
 
-      
-            services.AddTransient<MainPageVMD>(
-                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
-                    s.GetRequiredService<ServerAccountStore>(),
-                    s.GetRequiredService<ServersAccountsStore>(), s.GetRequiredService<CurrentServerStore>(), s.GetRequiredService<MainPageServerNavigationStore>(),
-                    CreateSettingPageNavigationService(s), CreateServerPageNavigationService(s),CreateModalRegistrationPageNavigationServices(s)));
-
-
             services.AddTransient<ServerVMD>(s =>
                 new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>()));
 
 
-            
-            services.AddTransient<ServerRegistrationModalVMD>(s => new ServerRegistrationModalVMD(
-                s.GetRequiredService<CloseModalNavigationServices>(),createApiRegistrationSevices(s),s.GetRequiredService<CurrentServerStore>()));
 
-
-
-
-            services.AddSingleton<MainWindowVMD>();
+            services.AddSingleton<MainWindowVMD>(s => new MainWindowVMD(
+                s.GetRequiredService<MainWindowNavigationStore>(),s.GetRequiredService<AdditionalNavigationStore>(),
+                s.GetRequiredService<ModalNavigationStore>()
+                ,s.GetRequiredService<CloseModalNavigationServices>()));
 
             services.AddSingleton<MainWindov>(s => new MainWindov()
             {
@@ -158,6 +182,9 @@ namespace LiteCall
         }
 
 
+
+        #region Модальное окно
+
         private INavigationService CreateModalRegistrationPageNavigationServices(IServiceProvider serviceProvider)
         {
             return new ModalNavigateServices<ServerRegistrationModalVMD>
@@ -165,12 +192,49 @@ namespace LiteCall
                 () => serviceProvider.GetRequiredService<ServerRegistrationModalVMD>());
         }
 
+        private INavigationService CreateModalAuthorisationPageNavigationService(IServiceProvider serviceProvider)
+        {
+            return new ModalNavigateServices<ServerAuthorisationModalVMD>(serviceProvider.GetRequiredService<ModalNavigationStore>(),() => serviceProvider.GetRequiredService<ServerAuthorisationModalVMD>());
+        }
 
-        private IRegistrationSevices createApiRegistrationSevices(IServiceProvider serviceProvider)
+
+        #endregion
+
+
+        #region Авторизация/Регистрация
+
+
+        private IRegistrationSevices CreateApiRegistrationSevices(IServiceProvider serviceProvider)
         {
             return new RegistrationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
-                serviceProvider.GetRequiredService<CurrentServerStore>(),serviceProvider.GetRequiredService<CloseModalNavigationServices>());
+                serviceProvider.GetRequiredService<CurrentServerStore>(), serviceProvider.GetRequiredService<CloseModalNavigationServices>());
         }
+
+        private IRegistrationSevices CreateMainRegistrationSevices(IServiceProvider serviceProvider)
+        {
+            return new RegistrationMainServerService(serviceProvider.GetRequiredService<AccountStore>());
+        }
+
+
+
+        private IAuthorisationServices CreateApiAuthorisationServices(IServiceProvider serviceProvider)
+        {
+            return new AuthorisationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
+                serviceProvider.GetRequiredService<CurrentServerStore>(),
+                serviceProvider.GetRequiredService<CloseModalNavigationServices>());
+        }
+
+        private IAuthorisationServices CreateMainAuthorisationServices(IServiceProvider serviceProvider)
+        {
+            return new AuthoisationMainServerServices(serviceProvider.GetRequiredService<AccountStore>());
+        }
+
+        private IAuthorisationServices CreateAuthCheckApiServerSevices(IServiceProvider serviceProvider)
+        {
+            return new AuthCheckApiServerSevices(serviceProvider.GetRequiredService<ServerAccountStore>());
+        }
+
+        #endregion
 
     }
 

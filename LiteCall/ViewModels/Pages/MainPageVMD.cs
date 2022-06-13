@@ -25,25 +25,34 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class MainPageVMD:BaseVMD
     {
-        public MainPageVMD(AccountStore AccountStore,ServerAccountStore ServerAccountStore, ServersAccountsStore serversAccountsStore, CurrentServerStore CurrentServerStore, 
-                MainPageServerNavigationStore MainPageServerNavigationStore, INavigationService SettingsPageNavigationService, INavigationService ServerPageNavigationService, INavigationService OpenModalServerRegistratioNavigationService)
+        public MainPageVMD(AccountStore accountStore,ServerAccountStore serverAccountStore, 
+                ServersAccountsStore serversAccountsStore,
+                CurrentServerStore currentServerStore, 
+                MainPageServerNavigationStore mainPageServerNavigationStore, 
+                INavigationService settingsPageNavigationService, 
+                INavigationService serverPageNavigationService,
+                INavigationService openModalServerAuthorisationNavigationService,
+                IAuthorisationServices authorisationApiServices)
         {
-            this.AccountStore = AccountStore;
+            AccountStore = accountStore;
 
-            this.ServerAccountStore = ServerAccountStore;
+            ServerAccountStore = serverAccountStore;
 
             ServersAccountsStore = serversAccountsStore;
             
-            this.CurrentServerStore = CurrentServerStore;
-
-            this.MainPageServerNavigationStore = MainPageServerNavigationStore;
-
-            this.ServerPageNavigationService = ServerPageNavigationService;
+            CurrentServerStore = currentServerStore;
 
 
+            AuthorisationServices = authorisationApiServices;
+
+            MainPageServerNavigationStore = mainPageServerNavigationStore;
+
+            ServerPageNavigationService = serverPageNavigationService;
 
 
-            ModalRegistrationOpenCommand = new NavigationCommand(OpenModalServerRegistratioNavigationService, CanModalRegistrationOpenCommandExecuted);
+
+
+            ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorisationNavigationService, CanModalRegistrationOpenCommandExecuted);
 
 
 
@@ -57,7 +66,7 @@ namespace LiteCall.ViewModels.Pages
 
             AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted); //Не работает
 
-            OpenSettingsCommand = new NavigationCommand(SettingsPageNavigationService);
+            OpenSettingsCommand = new NavigationCommand(settingsPageNavigationService);
 
 
 
@@ -139,10 +148,7 @@ namespace LiteCall.ViewModels.Pages
             }
 
 
-            ILoginServices loginServices = new LoginSevices<ServerAccountStore>(ServerAccountStore);
-
-
-            Account ServerAccount = new Account
+            Account newServerAccount = new Account
             {
                 Login = SelectedServerAccount.Account.Login
             };
@@ -150,23 +156,23 @@ namespace LiteCall.ViewModels.Pages
 
             try
             {
-                var AuthoriseStatus = await loginServices.Login(SelectedServerAccount.Account.IsAuthorise, SelectedServerAccount.Account, SelectedServerAccount.SavedServer.ApiIp);
+                var authoriseStatus = await AuthorisationServices.Login(SelectedServerAccount.Account.IsAuthorise, SelectedServerAccount.Account, SelectedServerAccount.SavedServer.ApiIp);
 
-                if (!AuthoriseStatus)
+                if (authoriseStatus == 0)
                 {
                     MessageBox.Show("Authorization error. You will be logged without account", "Сообщение");
 
-                    await loginServices.Login(false, ServerAccount, ServernameOrIp);
+                    await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
                 }
                 else
                 {
-                    ServerAccount = SelectedServerAccount.Account;
+                    newServerAccount = SelectedServerAccount.Account;
                 }
             }
             catch (Exception e)
             {
 
-                await loginServices.Login(false, ServerAccount, ServernameOrIp);
+                await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
 
             }
 
@@ -303,8 +309,6 @@ namespace LiteCall.ViewModels.Pages
                 Login = AccountStore.CurrentAccount.Login
             };
 
-            ILoginServices loginServices = new LoginSevices<ServerAccountStore>(ServerAccountStore);
-
             Server newServer = new Server();
 
             string ApiIp;
@@ -362,13 +366,13 @@ namespace LiteCall.ViewModels.Pages
             { 
                 var DictionaryServerAccount = ServersAccountsStore.SavedServerAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
 
-              var AuthoriseStatus =  await loginServices.Login(DictionaryServerAccount.Account.IsAuthorise, DictionaryServerAccount.Account, newServer.ApiIp);
+              var AuthoriseStatus =  await AuthorisationServices.Login(DictionaryServerAccount.Account.IsAuthorise, DictionaryServerAccount.Account, newServer.ApiIp);
 
-              if (!AuthoriseStatus)
+              if (AuthoriseStatus == 0)
               {
                   MessageBox.Show("Authorization error. You will be logged without account", "Сообщение");
 
-                  await loginServices.Login(false, ServerAccount, ServernameOrIp);
+                  await AuthorisationServices.Login(false, ServerAccount, newServer.ApiIp);
               }
               else
               {
@@ -378,12 +382,13 @@ namespace LiteCall.ViewModels.Pages
             catch (Exception e)
             {
 
-                await loginServices.Login(false, ServerAccount, ServernameOrIp);
+                await AuthorisationServices.Login(false, ServerAccount, newServer.ApiIp);
 
             }
 
             StatusMessage = "Check sever status. . .";
 
+            //Временно
             newServer.Ip = newServer.Ip.Replace("https://", "");
 
             bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
@@ -417,7 +422,7 @@ namespace LiteCall.ViewModels.Pages
 
         #endregion
 
-        #region Данные с окна
+        #region Данные с
 
 
         private bool _CheckStatus;
@@ -472,15 +477,22 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-
-
         private ServersAccountsStore _ServersAccountsStore;
-
         public ServersAccountsStore ServersAccountsStore
         {
             get => _ServersAccountsStore;
             set => Set(ref _ServersAccountsStore, value);
         }
+
+
+        private IAuthorisationServices _AuthorisationServices;
+
+        public IAuthorisationServices AuthorisationServices
+        {
+            get => _AuthorisationServices;
+            set => Set(ref _AuthorisationServices, value);
+        }
+
 
 
 

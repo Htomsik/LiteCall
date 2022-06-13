@@ -18,7 +18,7 @@ namespace LiteCall.ViewModels.ServerPages
 {
     internal class ServerRegistrationModalVMD:BaseVMD
     {
-        public ServerRegistrationModalVMD(INavigationService closeModalNavigationService, IRegistrationSevices registrationSevices,CurrentServerStore currentServerStore)
+        public ServerRegistrationModalVMD(INavigationService OpenModalAuthServices, IRegistrationSevices registrationSevices,CurrentServerStore currentServerStore)
         {
 
             _CurrentServerStore = currentServerStore;
@@ -28,7 +28,7 @@ namespace LiteCall.ViewModels.ServerPages
             RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => StatusMessage = ex.Message,
                 CanRegistrationExecute);
 
-            OpenAuthPageCommand = new NavigationCommand(closeModalNavigationService);
+            OpenAuthPageCommand = new NavigationCommand(OpenModalAuthServices);
 
             OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => StatusMessage = ex.Message, CanOpenModalCommamdExecute);
 
@@ -196,22 +196,6 @@ namespace LiteCall.ViewModels.ServerPages
             get => _ConfirmPassword;
             set => Set(ref _ConfirmPassword, value);
         }
-
-
-
-
-
-        private bool _IsNotApiRegistration = false;
-        public bool IsNotApiRegistration
-        {
-            get => _IsNotApiRegistration;
-            set
-            {
-                Set(ref _IsNotApiRegistration, value);
-
-            }
-        }
-
 
         private CurrentServerStore _CurrentServerStore;
 

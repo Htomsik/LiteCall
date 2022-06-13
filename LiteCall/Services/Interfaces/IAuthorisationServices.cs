@@ -7,8 +7,10 @@ using LiteCall.Model;
 
 namespace LiteCall.Services.Interfaces
 {
-    public interface ILoginServices
+    public interface IAuthorisationServices
     {
-        Task<bool> Login(bool isSeverAuthorise, Account _NewAccount,string _ApiServeIp);
+        Task<int> Login(bool IsAuthTokenAuthorise, Account _NewAccount, string ApiServerIp = null);
+
+
     }
 }

@@ -12,7 +12,6 @@ namespace LiteCall.Services
     internal class RegistrationMainServerService:IRegistrationSevices
     {
 
-
         private readonly AccountStore _MainAccountStore;
 
         public RegistrationMainServerService(AccountStore MainAccountStore)

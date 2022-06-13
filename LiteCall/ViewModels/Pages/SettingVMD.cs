@@ -61,7 +61,6 @@ namespace LiteCall.ViewModels.Pages
 
             _SettingsAccNavigationStore = SettingsAccNavigationStore;
 
-
             LogoutAccCommand = new AccountLogoutCommand(_AccountStore);
 
             CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);

@@ -190,7 +190,7 @@
 
                         <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
 
-                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Registration in current server" />
+                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorisation in current server" />
                     </ContextMenu>
                 </Border.ContextMenu>
 

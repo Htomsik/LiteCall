@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using LiteCall.Infrastructure.Commands;
+using LiteCall.Services.Interfaces;
+using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 
@@ -10,7 +14,7 @@ namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
-        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore,ModalNavigationStore modalNavigationStore)
+        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore,ModalNavigationStore modalNavigationStore, INavigationService closeModalNavigationServices)
         {
             _MainWindowNavigationStore = mainWindowNavigationStore;
 
@@ -23,9 +27,13 @@ namespace LiteCall.ViewModels
             _AdditionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
 
             _ModalNavigationStore.CurrentViewModelChanged += OnModalCurrentViewModelChanged;
+
+            CloseModalCommand = new NavigationCommand(closeModalNavigationServices);
         }
 
-       
+
+        public ICommand CloseModalCommand { get; }
+
         private readonly MainWindowNavigationStore _MainWindowNavigationStore;
 
         private readonly AdditionalNavigationStore _AdditionalNavigationStore;

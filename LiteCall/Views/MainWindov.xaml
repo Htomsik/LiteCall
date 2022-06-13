@@ -105,7 +105,7 @@
 
             </modalCutom:ModalCustom>
 
-
+            <!--  IsOpen="{Binding ModalIsOpen}">  -->
 
             <modalCutom:ModalCustom
                 Grid.Row="1"
@@ -114,7 +114,13 @@
                 Corner="0"
                 IsOpen="{Binding ModalIsOpen}">
 
+
                 <Grid Background="{DynamicResource Background3(Solid)}">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
                     <ContentControl
                         HorizontalAlignment="Stretch"
@@ -129,10 +135,30 @@
                                 <pages:RegistrationPV />
                             </DataTemplate>
 
+                            <DataTemplate DataType="{x:Type server:ServerAuthorisationModalVMD}">
+                                <pages:AuthorisationPV />
+                            </DataTemplate>
+
                         </ContentControl.Resources>
 
 
                     </ContentControl>
+
+                    <Button
+                        Grid.Column="1"
+                        Width="25"
+                        Height="25"
+                        Margin="5"
+                        VerticalAlignment="Top"
+                        Command="{Binding CloseModalCommand}"
+                        Style="{DynamicResource IMGButton}">
+
+                        <Button.Resources>
+                            <StaticResource x:Key="Img" ResourceKey="ClosePath" />
+                        </Button.Resources>
+
+                    </Button>
+
 
                 </Grid>
 
