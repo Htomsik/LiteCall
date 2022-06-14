@@ -171,7 +171,7 @@
                 MaxHeight="40"
                 Margin="15"
                 Command="{Binding OpenModalCommand}">
-                <TextBlock Style="{DynamicResource Bigtext}" Text="REGITRATION" />
+                <TextBlock Style="{DynamicResource Bigtext}" Text="REGISTRATION" />
 
                 <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">

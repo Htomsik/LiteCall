@@ -135,7 +135,7 @@ namespace LiteCall.ViewModels.Pages
         {
 
 
-            var ServerStatus = await Task.Run(() => CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+            var ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
             if (!ServerStatus)
             {
@@ -177,7 +177,7 @@ namespace LiteCall.ViewModels.Pages
             }
 
 
-             ServerStatus = await Task.Run(() => CheckServerStatus(SelectedServerAccount.SavedServer.Ip));
+             ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.Ip));
 
             if (ServerStatus)
             {
@@ -391,7 +391,7 @@ namespace LiteCall.ViewModels.Pages
             //Временно
             newServer.Ip = newServer.Ip.Replace("https://", "");
 
-            bool ServerStatus = await Task.Run(() => CheckServerStatus(newServer.Ip));
+            bool ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(newServer.Ip));
 
             if (newServer is not null && ServerStatus)
             {
@@ -544,33 +544,7 @@ namespace LiteCall.ViewModels.Pages
         #endregion
 
 
-       bool  CheckServerStatus(string serverAdress)
-        {
-
-            string[] ServerAddresArray = serverAdress.Split(':');
-
-            if (ServerAddresArray.Length ==2)
-            {
-                try
-                {
-                    using (var client =  new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
-                        return true;
-                }
-                catch (SocketException ex)
-                {
-                    MessageBox.Show(ex.Message, "Сообщение");
-                    return false;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Incorrect Ip adrress", "Сообщение");
-                return false;
-
-            }
-
-
-        }
+       
 
        private void DisconectServer()
        {

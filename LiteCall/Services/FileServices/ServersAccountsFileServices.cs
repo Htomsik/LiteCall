@@ -13,25 +13,25 @@ using Newtonsoft.Json;
 
 namespace LiteCall.Services
 {
-    internal class FileServices: IFileReadServices
+    internal class ServersAccountsFileServices: IFileReadServices
     { 
         private  const string _FilePath = @"SavedServersAccounts.json";
 
 
         private ServersAccountsStore _ServersAccountsStore;
 
-        public FileServices(ServersAccountsStore serversAccountsStore)
+        public ServersAccountsFileServices(ServersAccountsStore serversAccountsStore)
         {
             _ServersAccountsStore = serversAccountsStore;
 
-            _ServersAccountsStore.ServersAccountsChange += SaveAccountServers;
+            _ServersAccountsStore.ServersAccountsChange += SaveDataInFile;
 
          
         }
 
        
 
-        public async void  GetAccountsServers()
+        public async void GetDataFromFile()
        {
 
            try
@@ -46,7 +46,7 @@ namespace LiteCall.Services
            
        }
 
-       public async void  SaveAccountServers()
+       public async void SaveDataInFile()
        {
            try
            {

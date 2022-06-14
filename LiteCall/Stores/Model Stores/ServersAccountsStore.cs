@@ -22,23 +22,27 @@ namespace LiteCall.Stores
         }
 
 
-       public void add(ServerAccount newServerAccount)
+       public bool add(ServerAccount newServerAccount)
        {
 
            ServerAccount FindAccount = null;
            try
            {
-                FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == newServerAccount.SavedServer.ApiIp);
+               FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == newServerAccount.SavedServer.ApiIp);
            }
            catch (Exception e){}
+           
            
            
            if (FindAccount == null)
            {
                  SavedServerAccounts.Add(newServerAccount);
                  OnCurrentSeverAccountChanged();
+                 return true;
            }
-             
+
+           return false;
+
        }
 
        public void remove(ServerAccount deletedServer)

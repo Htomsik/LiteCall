@@ -9,8 +9,8 @@ namespace LiteCall.Services.Interfaces
 {
     public interface IFileReadServices
     {
-       void GetAccountsServers();
+       void GetDataFromFile();
 
-       void SaveAccountServers();
+       void SaveDataInFile();
     }
 }

@@ -39,9 +39,6 @@ namespace LiteCall.Stores
             } 
         }
 
-
-
-
         public void Logout()
         {
             CurrentAccount = DefaultAccount;

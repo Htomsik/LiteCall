@@ -71,7 +71,7 @@
 
                     <TextBox.Text>
                         <Binding
-                            Mode="TwoWay"
+                            Mode="OneWayToSource"
                             Path="Login"
                             UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
@@ -93,7 +93,7 @@
                     Style="{StaticResource PassTextBox}">
                     <TextBox.Text>
                         <Binding
-                            Mode="TwoWay"
+                            Mode="OneWayToSource"
                             Path="Password"
                             UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>

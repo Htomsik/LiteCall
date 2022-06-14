@@ -41,6 +41,8 @@ namespace LiteCall
 
             services.AddSingleton<AccountStore>();
 
+            services.AddSingleton<SettingsStore>();
+
             services.AddSingleton<ServerAccountStore>();
 
             services.AddSingleton<ServersAccountsStore>();
@@ -63,7 +65,9 @@ namespace LiteCall
 
             #region Сервисы
 
-            services.AddSingleton<FileServices>(s => new FileServices(s.GetRequiredService<ServersAccountsStore>()));
+            services.AddSingleton<ServersAccountsFileServices>(s => new ServersAccountsFileServices(s.GetRequiredService<ServersAccountsStore>()));
+
+            services.AddSingleton<MainAccountFileServices>(s => new MainAccountFileServices(s.GetRequiredService<AccountStore>(),s.GetRequiredService<SettingsStore>()));
 
             services.AddSingleton<CloseAdditionalNavigationServices>();
 
@@ -135,7 +139,9 @@ namespace LiteCall
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-            _ServicesPovider.GetRequiredService<FileServices>().GetAccountsServers();
+            _ServicesPovider.GetRequiredService<ServersAccountsFileServices>().GetDataFromFile();
+
+            _ServicesPovider.GetRequiredService<MainAccountFileServices>().GetDataFromFile();
 
             INavigationService InitialNavigationService = _ServicesPovider.GetRequiredService<INavigationService>();
 

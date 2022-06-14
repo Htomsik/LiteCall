@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -69,8 +70,6 @@ namespace LiteCall.Services
             }
             else
             {
-
-               MessageBox.Show(response.Content.ReadAsStringAsync().Result, "Сообщение");
 
                 return "invalid";
             }
@@ -255,6 +254,35 @@ namespace LiteCall.Services
             {
                 System.Windows.Forms.MessageBox.Show(e.Message);
                 return false;
+            }
+
+
+        }
+
+
+      public static async Task<bool> CheckServerStatus(string serverAdress)
+        {
+
+            string[] ServerAddresArray = serverAdress.Split(':');
+
+            if (ServerAddresArray.Length == 2)
+            {
+                try
+                {
+                    using (var client = new TcpClient(ServerAddresArray[0], Convert.ToInt32(ServerAddresArray[1])))
+                        return true;
+                }
+                catch (SocketException ex)
+                {
+                    MessageBox.Show(ex.Message, "Сообщение");
+                    return false;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Incorrect Ip adrress", "Сообщение");
+                return false;
+
             }
 
 

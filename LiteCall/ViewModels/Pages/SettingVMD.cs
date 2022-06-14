@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
+using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
@@ -71,8 +73,17 @@ namespace LiteCall.ViewModels.Pages
 
             AcoountStatusChange();
 
+            AddNewServerCommand = new AsyncLamdaCommand(OnAddNewServerExecuted, (ex) => StatusMessage = ex.Message,
+                CanAddNewServerExecute);
+
 
         }
+
+
+
+
+
+       
 
         private void OnCurrentViewModelChanged()
         {
@@ -103,6 +114,70 @@ namespace LiteCall.ViewModels.Pages
            
         }
 
-     
+        public ICommand AddNewServerCommand { get; }
+
+        private bool CanAddNewServerExecute(object p) => !string.IsNullOrEmpty(NewServerApiIp) && !string.IsNullOrEmpty(NewSeverLogin);
+
+        private async Task OnAddNewServerExecuted(object p)
+        {
+
+            var newSavedSeverAccount = new ServerAccount
+            {
+               Account = new Account{Login = NewSeverLogin},
+               SavedServer = new Server
+               {
+                   ApiIp = NewServerApiIp
+               }
+            };
+
+            if ( await DataBaseService.CheckServerStatus(NewServerApiIp))
+            {
+                if (!ServersAccountsStore.add(newSavedSeverAccount))
+                {
+                    MessageBox.Show("this server already saved", "Сообщение");
+                }
+
+            }
+          
+
+           
+
+        }
+
+
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                Set(ref _statusMessage, value);
+                OnPropertyChanged(nameof(HasStatusMessage));
+            }
+        }
+
+        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
+
+        private string _NewServerApiIp;
+
+        public string NewServerApiIp
+        {
+            get => _NewServerApiIp;
+            set => Set(ref _NewServerApiIp, value);
+        }
+
+
+        private string _NewSeverLogin;
+
+        public string NewSeverLogin
+        {
+            get => _NewSeverLogin;
+            set => Set(ref _NewSeverLogin, value);
+        }
+
+
+
+
+
     }
 }
