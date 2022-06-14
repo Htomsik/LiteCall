@@ -53,6 +53,10 @@ namespace LiteCall.ViewModels.ServerPages
             //Приход сообщений
             VoiceMessageBus.Bus += AsyncGetAudioBus;
 
+            DisconnectNotification.Notificator += GroupDisconnected;
+
+
+
             #endregion
 
             #region команды
@@ -75,21 +79,28 @@ namespace LiteCall.ViewModels.ServerPages
             VoiceInputCommand = new LambdaCommand(OnVoiceInputExecuted);
 
 
+
+            #region Админ команды
+
+            AdminDeleteRoomCommand = new AsyncLamdaCommand(OnAdminDeleteRoomExecuted,
+                (ex) => StatusMessage = ex.Message, CanAdminDeleteRoomExecute);
+
+            AdminDisconnectUserFromRoomCommand = new AsyncLamdaCommand(OnAdminDisconnectUserFromRoomExecuted,
+                (ex) => StatusMessage = ex.Message, CanAdminDisconnectUserFromRoomExecute);
+
+            #endregion
+
+
             #endregion
 
             #region Настройка Naduio
-
-          
-
-     
 
 
 
 
             input = new WaveIn();
 
-        
-
+            
             input.DataAvailable += InputDataAvailable;
 
             input.BufferMilliseconds = 20;
@@ -151,10 +162,6 @@ namespace LiteCall.ViewModels.ServerPages
         private WaveFormat _waveFormat = new WaveFormat(8000, 16, 1);
 
 
-
-
-
-
         #region Подключение к серверу
 
 
@@ -209,7 +216,60 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
+        #region Админ команды
 
+
+        public ICommand AdminDeleteRoomCommand { get; }
+
+        private bool CanAdminDeleteRoomExecute(object p)
+        {
+            if (ServerAccountStore.CurrentAccount.Role != "Admin") return false;
+
+            if (p is not Model.ServerRooms) return false;
+
+            if (p == null) return false;
+
+            return true;
+        }
+
+       private async Task OnAdminDeleteRoomExecuted(object p)
+       {
+             var deletedRoom = (ServerRooms)p;
+
+            try
+            {
+                await ServerService.hubConnection.SendAsync("AdminDeleteRoom", deletedRoom.RoomName);
+            }
+            catch (Exception ex){}
+            
+       }
+
+
+        public ICommand AdminDisconnectUserFromRoomCommand { get; }
+
+        private bool CanAdminDisconnectUserFromRoomExecute(object p)
+        {
+            if (ServerAccountStore.CurrentAccount.Role != "Admin") return false;
+
+            if (p is not ServerUser) return false;
+
+            if (p == null) return false;
+
+            return true;
+        }
+
+        private async Task OnAdminDisconnectUserFromRoomExecuted(object p)
+        {
+            var deletedRoom = (ServerRooms)p;
+
+            try
+            {
+                await ServerService.hubConnection.SendAsync("AdminKickFromRoomUser", deletedRoom.RoomName);
+            }
+            catch (Exception ex) { }
+        }
+
+        #endregion
 
 
 
@@ -222,10 +282,8 @@ namespace LiteCall.ViewModels.ServerPages
 
         private void OnDisconectGroupExecuted(object p)
         {
-            CurrentGroup = null;
             AsyncGroupDisconect();
         }
-
 
 
 
@@ -249,8 +307,6 @@ namespace LiteCall.ViewModels.ServerPages
                             Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
                         };
 
-                      
-                        
                     }
 
                 }
@@ -512,8 +568,6 @@ namespace LiteCall.ViewModels.ServerPages
         private async void AsynGetServerRoomsBUS()
         {
 
-
-
             try
             {
                 var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
@@ -523,12 +577,7 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 ServerRooms = new ObservableCollection<ServerRooms>();
             }
-        
-
-
-           
-
-
+            
         }
 
 
@@ -543,14 +592,21 @@ namespace LiteCall.ViewModels.ServerPages
             try
             {
                 await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
-              //  input.StopRecording();
-                _waveOut.Stop();
+                GroupDisconnected();
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Error:{e.Message}");
             }
 
+        }
+
+        private void GroupDisconnected()
+        {
+            CurrentGroup = null;
+            MessagesColCollection = null;
+            _waveOut.Stop();
+            input.StopRecording();
         }
 
         
@@ -578,17 +634,15 @@ namespace LiteCall.ViewModels.ServerPages
         private async  void InputDataAvailable(object sender, WaveInEventArgs e)
         {
 
-
-
-
-     
-
                 try
                 {
-                    // if (VAD(e))
-                    if (CurrentGroup != null)
-                        await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
 
+                    if (CurrentGroup != null)
+                    {
+                        if (VAD(e))
+                            await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
+
+                    }
 
                 }
                 catch (Exception ex)
@@ -596,26 +650,6 @@ namespace LiteCall.ViewModels.ServerPages
 
                 }
 
-               
-            
-
-
-            /*
-
-            try
-            {
-
-              // if (VAD(e))
-                await ServerService.hubConnection.SendAsync("SendAudio", soundBuffer);
-                 
-               
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            */
         }
 
         private bool VAD(WaveInEventArgs e)
@@ -645,9 +679,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             return Tr || Sum2 > porog;
         }
-
-
-
 
 
         public override void Dispose()
@@ -758,6 +789,16 @@ namespace LiteCall.ViewModels.ServerPages
             get => _SelRooms;
             set => Set(ref _SelRooms, value);
         }
+
+
+        private ServerUser _SelServerUser;
+
+        public ServerUser SelServerUser
+        {
+            get => _SelServerUser;
+            set => Set(ref _SelServerUser, value);
+        }
+
 
 
         private ObservableCollection<ServerRooms> _ServerRooms;

@@ -187,8 +187,6 @@ namespace LiteCall
             return new MainPageServerNavigationSevices<ServerVMD>(serviceProvider.GetRequiredService<MainPageServerNavigationStore>(), ()=>serviceProvider.GetRequiredService<ServerVMD>());
         }
 
-
-
         #region Модальное окно
 
         private INavigationService CreateModalRegistrationPageNavigationServices(IServiceProvider serviceProvider)

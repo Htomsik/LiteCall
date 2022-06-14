@@ -259,6 +259,19 @@ namespace LiteCall.Services
 
         }
 
+        public static async Task<string> GetRoleFromToken(string token)
+        {
+            try
+            {
+                dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
+                return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            }
+            catch (Exception e)
+            {
+                return "User";
+            }
+        }
+
 
       public static async Task<bool> CheckServerStatus(string serverAdress)
         {

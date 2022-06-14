@@ -34,10 +34,6 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-
-
-
-
         public ICommand RegistrationCommand { get; }
         private bool CanRegistrationExecute(object p) => !(bool)p && !string.IsNullOrEmpty(CapthcaString);
 
@@ -64,8 +60,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             }
         }
-
-
 
         public ICommand OpenModalCommand { get; }
         private async Task OnOpenModalCommamdExecuted(object p)
@@ -98,7 +92,6 @@ namespace LiteCall.ViewModels.ServerPages
 
         }
 
-
         private bool CanOpenModalCommamdExecute(object p)
         {
             var param = (Tuple<object, object>)p;
@@ -115,8 +108,6 @@ namespace LiteCall.ViewModels.ServerPages
             return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword);
 
         }
-
-
         public async Task<bool> GetCaptcha()
         {
             ModalStatusMessage = "Get new Captcha. . .";
@@ -138,12 +129,9 @@ namespace LiteCall.ViewModels.ServerPages
             return false;
         }
 
-
-
-        /// <summary>
-        /// Переход на окно авторизации
-        /// </summary>
+      
         public ICommand OpenAuthPageCommand { get; }
+
 
 
         private bool _ModalStatus;
@@ -214,10 +202,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
-
-        //Для модального окна
         private string _ModalstatusMessage;
-
 
         public string ModalStatusMessage
         {

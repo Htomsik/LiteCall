@@ -10,6 +10,8 @@ namespace LiteCall.Model
     public class ServerUser
     {
         public string Login { get; set; }
+
+        public string Role { get; set; }
     }
 
     public class Account:ServerUser

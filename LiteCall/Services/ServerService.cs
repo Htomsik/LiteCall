@@ -56,6 +56,13 @@ namespace SignalRServ
 
             });
 
+            //Оповещение об отключении
+            hubConnection.On<bool>("Notification", flag =>
+            {
+                
+                DisconnectNotification.Reload();
+            });
+
             hubConnection.On("UpdateRooms", () =>
             {
 

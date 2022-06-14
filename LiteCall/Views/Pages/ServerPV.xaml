@@ -170,7 +170,10 @@
                             Header="Disconect from room"
                             IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
-
+                        <MenuItem
+                            Command="{Binding AdminDeleteRoom}"
+                            CommandParameter="{Binding SelRooms}"
+                            Header="Delete Room" />
 
 
 
@@ -221,7 +224,20 @@
                             <ListView
                                 Grid.Row="1"
                                 HorizontalContentAlignment="Stretch"
-                                ItemsSource="{Binding Users}">
+                                ItemsSource="{Binding Users}"
+                                SelectedItem="{Binding SelServerUser, UpdateSourceTrigger=PropertyChanged}">
+
+
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+
+                                        <MenuItem
+                                            Command="{Binding AdminDisconnectUserFromRoomCommand}"
+                                            CommandParameter="{Binding SelServerUser}"
+                                            Header="Disconnect selected user" />
+
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
 
 
                                 <ListView.ItemTemplate>
@@ -480,6 +496,7 @@
                         CornerRadius="10">
 
                         <TextBox
+                            FlowDirection="LeftToRight"
                             Margin="5,0"
                             HorizontalContentAlignment="Right"
                             VerticalContentAlignment="Center"

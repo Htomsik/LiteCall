@@ -8,6 +8,7 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.Stores.ModelStores;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace LiteCall.Services
 {
@@ -44,6 +45,8 @@ namespace LiteCall.Services
                     return 0;
                 }
 
+                _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+
                 _NewAccount.Token = Response;
 
                 _NewAccount.IsAuthorise = true;
@@ -54,18 +57,23 @@ namespace LiteCall.Services
 
                 _NewAccount.Password = "";
 
-                var Response = await DataBaseService.GetAuthorizeToken(_NewAccount);
+                var Response = await DataBaseService.GetAuthorizeToken(_NewAccount,_CurrentServerStore.CurrentServer.ApiIp);
 
                 if (Response == "invalid")
                 {
-                    MessageBox.Show("The server is not responding. The account will be local", "Сообщение");
+                    MessageBox.Show("Server is not available. Try again later", "Сообщение");
+                    return 0;
                 }
                 else
                 {
+                    _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+
                     _NewAccount.Token = Response;
                 }
 
             }
+
+
 
             _ServersAccountsStore.replace(_CurrentServerStore.CurrentServer, _NewAccount);
 

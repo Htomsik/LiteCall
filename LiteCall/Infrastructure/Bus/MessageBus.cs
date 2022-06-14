@@ -36,6 +36,17 @@ namespace LiteCall.Services
 
     }
 
+    internal static class DisconnectNotification
+    {
+        public static event Action Notificator;
+
+        public static void Reload()
+        {
+            Notificator?.Invoke();
+        }
+
+    }
+
 
     internal static class DisconectSeverReloader
     {
