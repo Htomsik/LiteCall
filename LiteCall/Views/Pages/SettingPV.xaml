@@ -226,7 +226,7 @@
                         VerticalAlignment="Stretch">
 
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="100" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" MinWidth="200" />
                         </Grid.ColumnDefinitions>
 
@@ -251,7 +251,7 @@
 
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Ip: " />
-                                                    <TextBlock Text="{Binding SavedServer.Ip}" />
+                                                    <TextBlock Text="{Binding SavedServer.ApiIp}" />
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal">

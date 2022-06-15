@@ -42,6 +42,12 @@ namespace LiteCall.Services.Authorisation
 
                 var Response= await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
 
+
+                if (Response == "invalid")
+                {
+                    return 0;
+                }
+
                 _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
 
                 _NewAccount.Token = Response;

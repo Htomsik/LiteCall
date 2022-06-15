@@ -171,12 +171,12 @@ namespace LiteCall.ViewModels.Pages
             catch (Exception e)
             {
 
-                await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
+                await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.Ip);
 
             }
 
-
-             ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.Ip));
+            
+             ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
             if (ServerStatus)
             {

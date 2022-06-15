@@ -505,6 +505,7 @@ namespace LiteCall.ViewModels.ServerPages
             StatusMessage = _playBuffer.BufferedBytes.ToString();
 
         
+            if(_playBuffer.BufferedBytes <3200)
             _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
             
           

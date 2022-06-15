@@ -117,14 +117,18 @@
                             BorderThickness="1"
                             CornerRadius="22"
                             ToolTipService.InitialShowDelay="0">
+
                             <Border.ToolTip>
                                 <ToolTip Placement="Right">
 
                                     <StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
+
                                             <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Ip: " />
-                                            <TextBlock Text="{Binding SavedServer.Ip}" />
+
+                                            <TextBlock Text="{Binding SavedServer.ApiIp}" />
+
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
@@ -148,6 +152,7 @@
                             </Border.ToolTip>
 
                             <TextBlock
+                                x:Name="TitleTB"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Foreground="White"
@@ -158,9 +163,11 @@
                         </Border>
 
                         <DataTemplate.Triggers>
+
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Border" Property="Background" Value="{DynamicResource Button2(Solid)}" />
                             </Trigger>
+
                         </DataTemplate.Triggers>
 
 

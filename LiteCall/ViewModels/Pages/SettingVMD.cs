@@ -159,14 +159,19 @@ namespace LiteCall.ViewModels.Pages
             var newSavedSeverAccount = new ServerAccount
             {
                Account = new Account{Login = NewSeverLogin},
-               SavedServer = new Server
-               {
-                   ApiIp = NewServerApiIp
-               }
+
             };
 
             if ( await DataBaseService.CheckServerStatus(NewServerApiIp))
             {
+
+               var newServer = await DataBaseService.ApiServerGetInfo(NewServerApiIp);
+
+               if (newServer == null) return;
+
+               newServer.ApiIp = NewServerApiIp;
+
+               newSavedSeverAccount.SavedServer = newServer;
                 if (!ServersAccountsStore.add(newSavedSeverAccount))
                 {
                     MessageBox.Show("this server already saved", "Сообщение");
