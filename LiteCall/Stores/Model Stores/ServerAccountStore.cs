@@ -8,7 +8,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores
 {
-    internal class ServerAccountStore:AccountStore
+    internal class ServerAccountStore:BaseVMD
     {
         
 
@@ -21,7 +21,7 @@ namespace LiteCall.Stores
 
         private Account _CurrentAccount;
 
-        public override Account CurrentAccount 
+        public  Account CurrentAccount 
         {
             get => _CurrentAccount;
             set
@@ -34,7 +34,7 @@ namespace LiteCall.Stores
 
         public void Logout()
         {
-            CurrentAccount = null;
+            CurrentAccount = new Account();
 
         }
     }

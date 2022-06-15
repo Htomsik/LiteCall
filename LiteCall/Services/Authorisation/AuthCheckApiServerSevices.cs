@@ -28,6 +28,7 @@ namespace LiteCall.Services.Authorisation
                 {
                     return 0;
                 }
+                _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
 
                 _NewAccount.Token = Response;
 
@@ -39,7 +40,11 @@ namespace LiteCall.Services.Authorisation
 
                 _NewAccount.Password = "";
 
-                _NewAccount.Token = await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
+                var Response= await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
+
+                _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+
+                _NewAccount.Token = Response;
 
             }
 

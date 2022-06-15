@@ -286,7 +286,7 @@
 
                                     <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
 
-                                        <Setter Property="Text" Value="{Binding ServerAccountStore.CurrentAccount.Login}" />
+                                        <Setter Property="Text" Value="{Binding ServerAccountStore.CurrentAccount.Login, UpdateSourceTrigger=PropertyChanged}" />
 
                                         <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
 

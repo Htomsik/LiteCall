@@ -55,7 +55,6 @@ namespace LiteCall.ViewModels.Pages
             ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorisationNavigationService, CanModalRegistrationOpenCommandExecuted);
 
 
-
             VisibilitySwitchCommand = new LambdaCommand(OnVisibilitySwitchExecuted);
 
             OpenModalCommaCommand=new LambdaCommand(OnOpenModalCommaExecuted);

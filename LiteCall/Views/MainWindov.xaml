@@ -118,11 +118,13 @@
                 <Grid Background="{DynamicResource Background3(Solid)}">
 
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
                         <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="40" />
                     </Grid.ColumnDefinitions>
 
                     <ContentControl
+                        Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Content="{Binding ModalCurrentViewModel}"
@@ -145,7 +147,7 @@
                     </ContentControl>
 
                     <Button
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Width="25"
                         Height="25"
                         Margin="5"

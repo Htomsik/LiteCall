@@ -214,7 +214,7 @@
 
                 <TabItem.Header>
 
-                    <TextBlock Text="Severs" />
+                    <TextBlock Text="Servers" />
 
                 </TabItem.Header>
 
@@ -285,9 +285,6 @@
 
                             </ListView>
                         </Border>
-
-
-
 
 
                         <Grid
@@ -447,8 +444,24 @@
                 </TabItem.Header>
 
                 <TabItem.Content>
-                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="тут могла бы быть ваша реклама" />
+                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="Input device:" />
+                            <ListView ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+
+                        <StackPanel Grid.Row="1">
+                            <TextBlock Text="Output device:" />
+                            <ListView ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
                     </Grid>
                 </TabItem.Content>
 
@@ -471,7 +484,52 @@
 
                 <TabItem.Content>
                     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="тут могла бы быть ваша реклама" />
+
+                        <Border BorderBrush="{DynamicResource Fonts(Solid)}" BorderThickness="1">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <Image
+                                    Width="150"
+                                    Margin="2"
+                                    Source="\Resources/Assets/Icons/AppIcon.png"
+                                    Stretch="Uniform" />
+
+                                <StackPanel Grid.Row="1">
+
+                                    <TextBlock>Мессенджер &quot;LiteCall&quot;</TextBlock>
+
+                                    <TextBlock>Год выпуска 2022</TextBlock>
+
+                                </StackPanel>
+
+
+                                <StackPanel Grid.Row="2" Margin="0,5,0,0">
+
+                                    <TextBlock>Авторы:</TextBlock>
+
+
+                                    <StackPanel Orientation="Horizontal">
+
+                                        <TextBlock FontSize="14" Foreground="{DynamicResource Important(Solid)}">Клиент:</TextBlock>
+
+                                        <TextBlock>Несутулов К.С</TextBlock>
+
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontSize="14" Foreground="{DynamicResource Important(Solid)}">Сервера:</TextBlock>
+                                        <TextBlock>Краснов А.А</TextBlock>
+                                    </StackPanel>
+
+                                </StackPanel>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </TabItem.Content>
 

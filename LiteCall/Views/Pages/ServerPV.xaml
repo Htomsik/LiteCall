@@ -171,9 +171,16 @@
                             IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
                         <MenuItem
-                            Command="{Binding AdminDeleteRoom}"
+                            Command="{Binding AdminDeleteRoomCommand}"
                             CommandParameter="{Binding SelRooms}"
                             Header="Delete Room" />
+
+
+                        <MenuItem
+                            Command="{Binding AdminDisconnectUserFromRoomCommand}"
+                            CommandParameter="{Binding SelServerUser}"
+                            Header="Disconnect selected user" />
+
 
 
 
@@ -225,20 +232,7 @@
                                 Grid.Row="1"
                                 HorizontalContentAlignment="Stretch"
                                 ItemsSource="{Binding Users}"
-                                SelectedItem="{Binding SelServerUser, UpdateSourceTrigger=PropertyChanged}">
-
-
-                                <ListView.ContextMenu>
-                                    <ContextMenu>
-
-                                        <MenuItem
-                                            Command="{Binding AdminDisconnectUserFromRoomCommand}"
-                                            CommandParameter="{Binding SelServerUser}"
-                                            Header="Disconnect selected user" />
-
-                                    </ContextMenu>
-                                </ListView.ContextMenu>
-
+                                SelectedItem="{Binding DataContext.SelServerUser, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}, UpdateSourceTrigger=PropertyChanged}">
 
                                 <ListView.ItemTemplate>
 
@@ -496,10 +490,10 @@
                         CornerRadius="10">
 
                         <TextBox
-                            FlowDirection="LeftToRight"
                             Margin="5,0"
                             HorizontalContentAlignment="Right"
                             VerticalContentAlignment="Center"
+                            FlowDirection="LeftToRight"
                             IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                             MaxLength="100"
                             Text="{Binding CurrentMessage, UpdateSourceTrigger=PropertyChanged}" />

@@ -28,7 +28,12 @@
     <Border>
         <Grid MinWidth="240" Background="Transparent">
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" MaxWidth="400" />
+                <ColumnDefinition Width="1*" />
 
+            </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />

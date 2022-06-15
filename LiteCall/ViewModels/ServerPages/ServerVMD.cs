@@ -95,9 +95,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             #region Настройка Naduio
 
-
-
-
             input = new WaveIn();
 
             
@@ -260,11 +257,11 @@ namespace LiteCall.ViewModels.ServerPages
 
         private async Task OnAdminDisconnectUserFromRoomExecuted(object p)
         {
-            var deletedRoom = (ServerRooms)p;
+            var disconnectedUser = (ServerUser)p;
 
             try
             {
-                await ServerService.hubConnection.SendAsync("AdminKickFromRoomUser", deletedRoom.RoomName);
+                await ServerService.hubConnection.SendAsync("AdminKickUser", disconnectedUser.Login);
             }
             catch (Exception ex) { }
         }
@@ -604,7 +601,7 @@ namespace LiteCall.ViewModels.ServerPages
         private void GroupDisconnected()
         {
             CurrentGroup = null;
-            MessagesColCollection = null;
+            MessagesColCollection = new ObservableCollection<Message>();
             _waveOut.Stop();
             input.StopRecording();
         }
@@ -619,36 +616,35 @@ namespace LiteCall.ViewModels.ServerPages
             }
             catch (Exception e)
             {
-
+                Dispose();
             }
 
-            //Если пришедшее имя содержит имя пользователя на клиенте то задаем его
-            if (!string.IsNullOrEmpty(NewName) && NewName.Contains(ServerAccountStore.CurrentAccount.Login))
+            //Если пользователь с таким аком уже есть на серве
+            if (NewName == "non")
             {
-                ServerAccountStore.CurrentAccount.CurrentServerLogin = NewName;
+                Dispose();
             }
+            
+            ServerAccountStore.CurrentAccount.CurrentServerLogin = NewName;
+            
 
         }
-
 
         private async  void InputDataAvailable(object sender, WaveInEventArgs e)
         {
 
-                try
-                {
+            try
+            {
 
-                    if (CurrentGroup != null)
-                    {
+                if (CurrentGroup != null)
+                {
                         if (VAD(e))
                             await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
 
-                    }
-
                 }
-                catch (Exception ex)
-                {
 
-                }
+            }
+            catch (Exception ex) { }
 
         }
 
@@ -695,9 +691,9 @@ namespace LiteCall.ViewModels.ServerPages
 
             _waveOut.Stop();
 
-            CurrentServerStore.CurrentServer = null;
+            CurrentServerStore.Delete();
 
-            ServerAccountStore.CurrentAccount= null;
+            ServerAccountStore.Logout();
 
             base.Dispose();
         }

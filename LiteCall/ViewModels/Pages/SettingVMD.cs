@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 using Microsoft.Extensions.DependencyInjection;
+using NAudio.Wave;
 
 namespace LiteCall.ViewModels.Pages
 {
@@ -77,13 +79,46 @@ namespace LiteCall.ViewModels.Pages
                 CanAddNewServerExecute);
 
 
+            inputDevice = new ObservableCollection<string>();
+
+            outputDevice = new ObservableCollection<string>();
+
+            for (int n = 0; n < WaveIn.DeviceCount; n++)
+            {
+                var capabilities = WaveIn.GetCapabilities(n);
+                inputDevice.Add(capabilities.ProductName);
+            }
+
+            for (int n = 0; n < WaveOut.DeviceCount; n++)
+            {
+                var capabilities = WaveIn.GetCapabilities(n);
+                outputDevice.Add(capabilities.ProductName);
+            }
+
+
         }
 
 
 
+        private ObservableCollection<string> _inputDevice;
+
+        public ObservableCollection<string> inputDevice
+        {
+            get => _inputDevice;
+            set => Set(ref _inputDevice, value);
+        }
 
 
-       
+        private ObservableCollection<string> _outputDevice;
+
+        public ObservableCollection<string> outputDevice
+        {
+            get => _outputDevice;
+            set => Set(ref _outputDevice, value);
+        }
+
+
+
 
         private void OnCurrentViewModelChanged()
         {

@@ -30,7 +30,7 @@ namespace LiteCall.Stores.ModelStores
         }
 
 
-        public void Logout()
+        public void Delete()
         {
             CurrentServer = null;
 
