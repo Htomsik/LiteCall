@@ -16,7 +16,7 @@ namespace LiteCall.Services
     internal class MainAccountFileServices:IFileReadServices
     {
 
-        private const string _FilePath = @"MainAccount.json";
+        private const string _FilePath = $@"MainAccount.json";
 
         private AccountStore _AccountStore;
 

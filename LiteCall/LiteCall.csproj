@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\Assets\Icons\logo.ico</ApplicationIcon>
     <Platforms>AnyCPU</Platforms>
+    <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
+    <StartupObject>LiteCall.Progam</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
