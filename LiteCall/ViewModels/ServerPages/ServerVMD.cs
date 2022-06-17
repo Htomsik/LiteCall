@@ -504,9 +504,12 @@ namespace LiteCall.ViewModels.ServerPages
 
             StatusMessage = _playBuffer.BufferedBytes.ToString();
 
-        
-            if(_playBuffer.BufferedBytes <3200)
-            _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+
+            if (_playBuffer.BufferedBytes < 3200)
+            {
+                _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+            }
+               
             
           
 
@@ -651,7 +654,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private bool VAD(WaveInEventArgs e)
         {
-            double porog = 0.03;
+            double porog = 0.01;
 
             bool Tr = false;
 

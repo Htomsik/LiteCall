@@ -19,6 +19,7 @@ using LiteCall.ViewModels.ServerPages;
 using LiteCall.Views;
 using LiteCall.Views.Pages;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LiteCall
 {
@@ -27,218 +28,63 @@ namespace LiteCall
     /// </summary>
     public partial class App : Application
     {
+
+
+        private static IHost _Host;
+
+        public  static IHost Host => _Host ?? Progam.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
         
-        private readonly IServiceProvider _ServicesPovider;
-
-        public App()
+        
+        protected override async void OnStartup(StartupEventArgs e)
         {
 
-            IServiceCollection services = new ServiceCollection();
+            var host = Host;
 
-            services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
+            host.Services.GetRequiredService<ServersAccountsFileServices>().GetDataFromFile();
 
-            #region Хранилища
+            host.Services.GetRequiredService<MainAccountFileServices>().GetDataFromFile();
 
-            services.AddSingleton<AccountStore>();
-
-            services.AddSingleton<SettingsStore>();
-
-            services.AddSingleton<ServerAccountStore>();
-
-            services.AddSingleton<ServersAccountsStore>();
-
-            services.AddSingleton<CurrentServerStore>();
-
-            #endregion
-
-            #region NavigationStores
-            services.AddSingleton<MainWindowNavigationStore>();
-
-            services.AddSingleton<AdditionalNavigationStore>();
-
-            services.AddSingleton<ModalNavigationStore>();
-
-            services.AddSingleton<SettingsAccNavigationStore>();
-
-            services.AddSingleton<MainPageServerNavigationStore>();
-            #endregion
-
-            #region Сервисы
-
-            services.AddSingleton<ServersAccountsFileServices>(s => new ServersAccountsFileServices(s.GetRequiredService<ServersAccountsStore>()));
-
-            services.AddSingleton<MainAccountFileServices>(s => new MainAccountFileServices(s.GetRequiredService<AccountStore>(),s.GetRequiredService<SettingsStore>()));
-
-            services.AddSingleton<CloseAdditionalNavigationServices>();
-
-            services.AddSingleton<CloseModalNavigationServices>();
-
-            #endregion
-
-            #region Регистрация/Авторизация на мейн сервере
-
-            services.AddTransient<AuthorisationPageVMD>(s => new AuthorisationPageVMD(
-                CreateRegistrationPageNavigationServices(s), CreateMainAuthorisationServices(s)));
-
-
-            services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
-                s.GetRequiredService<AccountStore>(),
-                CreateAutPageNavigationServices(s), CreateMainRegistrationSevices(s)));
-
-            #endregion
-
-            #region Регистрация/Авторизация на API сервере чата
-
-            services.AddTransient<ServerRegistrationModalVMD>(s => new ServerRegistrationModalVMD(
-                CreateModalAuthorisationPageNavigationService(s),
-                CreateApiRegistrationSevices(s),
-                s.GetRequiredService<CurrentServerStore>()));
-
-
-            services.AddTransient<ServerAuthorisationModalVMD>(s => new ServerAuthorisationModalVMD(
-                CreateModalRegistrationPageNavigationServices(s), CreateApiAuthorisationServices(s)));
-
-
-            #endregion
-
-
-            services.AddTransient<MainPageVMD>(
-                s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
-                    s.GetRequiredService<ServerAccountStore>(),
-                    s.GetRequiredService<ServersAccountsStore>(), 
-                    s.GetRequiredService<CurrentServerStore>(),
-                    s.GetRequiredService<MainPageServerNavigationStore>(),
-                    CreateSettingPageNavigationService(s), 
-                    CreateServerPageNavigationService(s), 
-                    CreateModalAuthorisationPageNavigationService(s),
-                    CreateAuthCheckApiServerSevices(s)));
-
-            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(),s.GetRequiredService<ServersAccountsStore>(), 
-                s.GetRequiredService<CloseAdditionalNavigationServices>(), 
-                CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
-               ));
-
-
-            services.AddTransient<ServerVMD>(s =>
-                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>()));
-
-
-
-            services.AddSingleton<MainWindowVMD>(s => new MainWindowVMD(
-                s.GetRequiredService<MainWindowNavigationStore>(),s.GetRequiredService<AdditionalNavigationStore>(),
-                s.GetRequiredService<ModalNavigationStore>()
-                ,s.GetRequiredService<CloseModalNavigationServices>()));
-
-            services.AddSingleton<MainWindov>(s => new MainWindov()
-            {
-                DataContext = s.GetRequiredService<MainWindowVMD>()
-            });
-
-           _ServicesPovider = services.BuildServiceProvider();
-
-        }
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            _ServicesPovider.GetRequiredService<ServersAccountsFileServices>().GetDataFromFile();
-
-            _ServicesPovider.GetRequiredService<MainAccountFileServices>().GetDataFromFile();
-
-            INavigationService InitialNavigationService = _ServicesPovider.GetRequiredService<INavigationService>();
+            INavigationService InitialNavigationService = host.Services.GetRequiredService<INavigationService>();
 
             InitialNavigationService.Navigate();
 
-            MainWindow = _ServicesPovider.GetRequiredService<MainWindov>();
+            MainWindow = host.Services.GetRequiredService<MainWindov>();
 
             MainWindow.Show();
 
             base.OnStartup(e);
 
+           await host.StartAsync().ConfigureAwait(false);
+
 
         }
 
-        internal INavigationService CreateAutPageNavigationServices(IServiceProvider serviceProvider)
+        protected override async void OnExit(ExitEventArgs e)
         {
+            var host = Host;
 
-            return new SettingAccNavigationServices<AuthorisationPageVMD>
-            (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
-                () => serviceProvider.GetRequiredService<AuthorisationPageVMD>());
+            base.OnExit(e);
+
+            await host.StopAsync().ConfigureAwait(false);
+
+            host.Dispose();
+
+            _Host = null;
         }
 
-        private INavigationService CreateRegistrationPageNavigationServices(IServiceProvider serviceProvider)
+        public static  void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            return new SettingAccNavigationServices<RegistrationPageVMD>
-                (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
-                    () => serviceProvider.GetRequiredService<RegistrationPageVMD>());
+            services.AddSingleton<MainWindov>(s => new MainWindov()
+            {
+                DataContext = s.GetRequiredService<MainWindowVMD>()
+            });
+
+            services
+                .RegisterrServices()
+                .RegisterStores()
+                .RegisterVMD();
+
         }
-
-        private INavigationService CreateMainPageNavigationServices(IServiceProvider serviceProvider)
-        {
-            return new NavigationServices<MainPageVMD>(serviceProvider.GetRequiredService<MainWindowNavigationStore>(),
-                () => serviceProvider.GetRequiredService<MainPageVMD>());
-        }
-
-        private INavigationService CreateSettingPageNavigationService(IServiceProvider serviceProvider)
-        {
-            return new AdditionalNavigationServices<SettingVMD>(serviceProvider.GetRequiredService<AdditionalNavigationStore>(),() => serviceProvider.GetRequiredService<SettingVMD>());
-        }
-
-        internal INavigationService CreateServerPageNavigationService(IServiceProvider serviceProvider)
-        {
-            return new MainPageServerNavigationSevices<ServerVMD>(serviceProvider.GetRequiredService<MainPageServerNavigationStore>(), ()=>serviceProvider.GetRequiredService<ServerVMD>());
-        }
-
-        #region Модальное окно
-
-        private INavigationService CreateModalRegistrationPageNavigationServices(IServiceProvider serviceProvider)
-        {
-            return new ModalNavigateServices<ServerRegistrationModalVMD>
-            (serviceProvider.GetRequiredService<ModalNavigationStore>(),
-                () => serviceProvider.GetRequiredService<ServerRegistrationModalVMD>());
-        }
-
-        private INavigationService CreateModalAuthorisationPageNavigationService(IServiceProvider serviceProvider)
-        {
-            return new ModalNavigateServices<ServerAuthorisationModalVMD>(serviceProvider.GetRequiredService<ModalNavigationStore>(),() => serviceProvider.GetRequiredService<ServerAuthorisationModalVMD>());
-        }
-
-
-        #endregion
-
-
-        #region Авторизация/Регистрация
-
-
-        private IRegistrationSevices CreateApiRegistrationSevices(IServiceProvider serviceProvider)
-        {
-            return new RegistrationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
-                serviceProvider.GetRequiredService<CurrentServerStore>(), serviceProvider.GetRequiredService<CloseModalNavigationServices>());
-        }
-
-        private IRegistrationSevices CreateMainRegistrationSevices(IServiceProvider serviceProvider)
-        {
-            return new RegistrationMainServerService(serviceProvider.GetRequiredService<AccountStore>());
-        }
-
-
-
-        private IAuthorisationServices CreateApiAuthorisationServices(IServiceProvider serviceProvider)
-        {
-            return new AuthorisationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
-                serviceProvider.GetRequiredService<CurrentServerStore>(),
-                serviceProvider.GetRequiredService<CloseModalNavigationServices>());
-        }
-
-        private IAuthorisationServices CreateMainAuthorisationServices(IServiceProvider serviceProvider)
-        {
-            return new AuthoisationMainServerServices(serviceProvider.GetRequiredService<AccountStore>());
-        }
-
-        private IAuthorisationServices CreateAuthCheckApiServerSevices(IServiceProvider serviceProvider)
-        {
-            return new AuthCheckApiServerSevices(serviceProvider.GetRequiredService<ServerAccountStore>());
-        }
-
-        #endregion
 
     }
 
