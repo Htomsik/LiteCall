@@ -41,8 +41,11 @@ namespace LiteCall.Services
 
                 SavedMainAccount savedAccount = JsonConvert.DeserializeObject<SavedMainAccount>(FileText);
 
-                _AccountStore.CurrentAccount = savedAccount._MainAccount;
-
+                if (savedAccount?._MainAccount != null)
+                {
+                    _AccountStore.CurrentAccount = savedAccount._MainAccount;
+                }
+                
                 _SettingsStore.CurrentSettings = savedAccount._Settings;
             }
             catch (Exception e) { }
@@ -52,9 +55,12 @@ namespace LiteCall.Services
         {
             try
             {
+
+                var jsonNoNConvertedAccount =  _AccountStore.isDefaultAccount ? null : _AccountStore.CurrentAccount ;
+
                 var jsonSerializeObject = JsonConvert.SerializeObject(new SavedMainAccount
                 {
-                    _MainAccount = _AccountStore.CurrentAccount,
+                    _MainAccount = jsonNoNConvertedAccount,
                     _Settings = _SettingsStore.CurrentSettings
                 });
 

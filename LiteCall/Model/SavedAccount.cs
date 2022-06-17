@@ -8,7 +8,7 @@ namespace LiteCall.Model
 {
     public class SavedMainAccount
     {
-       public Account _MainAccount { get; set; }
+       public Account? _MainAccount { get; set; }
 
        public Settings _Settings { get; set; }
     }

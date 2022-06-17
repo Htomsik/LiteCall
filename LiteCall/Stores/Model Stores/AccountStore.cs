@@ -14,8 +14,7 @@ namespace LiteCall.Stores
     internal class AccountStore:BaseVMD
     {
 
-
-        private static Account DefaultAccount = new Account { Login = "LC_User" };
+        private static readonly Account DefaultAccount = new Account { Login = "LC_User" };
 
         public bool isDefaultAccount => CurrentAccount == DefaultAccount;
 
@@ -44,5 +43,7 @@ namespace LiteCall.Stores
             CurrentAccount = DefaultAccount;
 
         }
+
+
     }
 }
