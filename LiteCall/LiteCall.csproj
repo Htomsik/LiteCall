@@ -9,6 +9,7 @@
     <Platforms>AnyCPU</Platforms>
     <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
     <StartupObject>LiteCall.Progam</StartupObject>
+	  <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>

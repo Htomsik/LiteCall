@@ -167,7 +167,17 @@ namespace LiteCall.ViewModels.ServerPages
      
         public async void InitSignalRConnection(Server CurrentServer, Account CurrentAccount)
         {
-            await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount,StatusServices);
+            try
+            {
+
+                await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount, StatusServices);
+            }
+            catch (Exception e)
+            {
+                
+               
+            }
+           
 
             StatusServices.DeleteStatus();
         }

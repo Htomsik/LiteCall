@@ -25,7 +25,7 @@ namespace SignalRServ
         public static Task ConnectionHub(string url, Account currentAccount, IStatusServices statusServices)
         {
 
-            
+            statusServices.ChangeStatus(new StatusMessage{Message = "Connecting to server. . .", isError = false});
 
             hubConnection = new HubConnectionBuilder()
                 .WithUrl($"{url}?token={currentAccount.Token}", options =>
@@ -40,12 +40,10 @@ namespace SignalRServ
                     };
                     options.AccessTokenProvider = () => Task.FromResult(currentAccount.Token);
                 })
-
                 .WithAutomaticReconnect(new[]
                 {
                     TimeSpan.Zero,TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(10)
                 })
-
                 .Build();
 
             hubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);

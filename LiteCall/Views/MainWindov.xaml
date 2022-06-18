@@ -102,8 +102,6 @@
 
             <!--  Для настроек, отрывается поверх остальных окон  -->
 
-
-
             <Grid
                 Grid.Row="1"
                 Background="{DynamicResource Background(Solid)}"
@@ -244,6 +242,8 @@
 
                                 </DataTrigger>
 
+
+
                             </Style.Triggers>
 
                         </Style>
@@ -252,6 +252,7 @@
                 </loadingCustom:LoadingCustom>
 
 
+           
 
             </Border>
 
