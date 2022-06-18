@@ -89,7 +89,7 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <ContentControl
@@ -201,10 +201,35 @@
 
                 <loadingCustom:LoadingCustom
                     x:Name="StatusLoading"
-                    Diameter="25"
                     IsLoading="True"
-                    MainText="{Binding CurrentStatusMessage.Message}"
-                    Color="{DynamicResource Fonts(Solid)}" />
+                    MainText="{Binding CurrentStatusMessage.Message}">
+
+                    <loadingCustom:LoadingCustom.Style>
+
+                        <Style TargetType="{x:Type loadingCustom:LoadingCustom}">
+
+                            <Setter Property="Color" Value="{DynamicResource Fonts(Solid)}" />
+
+                            <Setter Property="Diameter" Value="25" />
+
+                            <Style.Triggers>
+
+                                <DataTrigger Binding="{Binding CurrentStatusMessage.isError}" Value="True">
+
+                                    <Setter Property="Color" Value="{DynamicResource Dangerous(Solid)}" />
+
+                                    <Setter Property="Diameter" Value="0" />
+
+                                </DataTrigger>
+
+                            </Style.Triggers>
+
+                        </Style>
+
+                    </loadingCustom:LoadingCustom.Style>
+                </loadingCustom:LoadingCustom>
+
+
 
             </Border>
 

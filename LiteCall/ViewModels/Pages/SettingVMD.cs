@@ -20,62 +20,38 @@ namespace LiteCall.ViewModels.Pages
     internal class SettingVMD:BaseVMD
     {
 
-        private readonly SettingsAccNavigationStore _SettingsAccNavigationStore;
+        private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
 
-        private readonly INavigationService _AuthNavigationService;
+        private readonly IhttpDataServices _httpDataServices;
 
-
-
-
-        private bool _IsDefault;
-
-        public bool IsDefault
-        {
-            get => _IsDefault;
-            set => Set(ref _IsDefault, value);
-        }
+        private readonly INavigationService _authNavigationService;
 
 
-        private AccountStore _AccountStore;
-
-        public AccountStore AccountStore
-        {
-            get => _AccountStore;
-            set => Set(ref _AccountStore, value);
-        }
-
-
-        private ServersAccountsStore _ServersAccountsStore;
-
-        public ServersAccountsStore ServersAccountsStore
-        {
-            get => _ServersAccountsStore;
-            set => Set(ref _ServersAccountsStore, value);
-        }
-
-        public SettingVMD(AccountStore accountStore,ServersAccountsStore serversAccountsStore, INavigationService AuthNavigationService ,SettingsAccNavigationStore SettingsAccNavigationStore)
+        public SettingVMD(AccountStore accountStore,ServersAccountsStore serversAccountsStore, INavigationService authNavigationService, IhttpDataServices httpDataServices,IStatusServices statusServices, SettingsAccNavigationStore settingsAccNavigationStore)
         {
 
             AccountStore = accountStore;
 
             ServersAccountsStore = serversAccountsStore;
 
-            
-            _AuthNavigationService = AuthNavigationService;
+            _settingsAccNavigationStore = settingsAccNavigationStore;
 
-            _SettingsAccNavigationStore = SettingsAccNavigationStore;
 
-            LogoutAccCommand = new AccountLogoutCommand(_AccountStore);
+            _authNavigationService = authNavigationService;
+
+            _httpDataServices = httpDataServices;
+
+            LogoutAccCommand = new AccountLogoutCommand(_accountStore);
 
          
 
             AccountStore.CurrentAccountChange += AcoountStatusChange;
 
-            _SettingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            _settingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
             AcoountStatusChange();
 
-            AddNewServerCommand = new AsyncLamdaCommand(OnAddNewServerExecuted, (ex) => StatusMessage = ex.Message,
+            AddNewServerCommand = new AsyncLamdaCommand(OnAddNewServerExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
                 CanAddNewServerExecute);
 
 
@@ -125,12 +101,9 @@ namespace LiteCall.ViewModels.Pages
             OnPropertyChanged(nameof(AccountCurrentVMD));
         }
 
-        public BaseVMD AccountCurrentVMD => _SettingsAccNavigationStore.SettingsAccCurrentViewModel;
+        public BaseVMD AccountCurrentVMD => _settingsAccNavigationStore.SettingsAccCurrentViewModel;
         
         public ICommand LogoutAccCommand { get; }
-
-        public ICommand CloseSettingsCommand { get; }
-
 
         void AcoountStatusChange()
         {
@@ -139,12 +112,12 @@ namespace LiteCall.ViewModels.Pages
 
             if (AccountStore.isDefaultAccount)
             {
-                _AuthNavigationService.Navigate();
+                _authNavigationService.Navigate();
 
             }
             else
             {
-                _SettingsAccNavigationStore.Close();
+                _settingsAccNavigationStore.Close();
             }
            
         }
@@ -162,10 +135,10 @@ namespace LiteCall.ViewModels.Pages
 
             };
 
-            if ( await DataBaseService.CheckServerStatus(NewServerApiIp))
+            if ( await _httpDataServices.CheckServerStatus(NewServerApiIp))
             {
 
-               var newServer = await DataBaseService.ApiServerGetInfo(NewServerApiIp);
+               var newServer = await _httpDataServices.ApiServerGetInfo(NewServerApiIp);
 
                if (newServer == null) return;
 
@@ -183,20 +156,6 @@ namespace LiteCall.ViewModels.Pages
            
 
         }
-
-
-        private string _statusMessage;
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                Set(ref _statusMessage, value);
-                OnPropertyChanged(nameof(HasStatusMessage));
-            }
-        }
-
-        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
 
         private string _NewServerApiIp;
 
@@ -218,6 +177,31 @@ namespace LiteCall.ViewModels.Pages
 
 
 
+        private bool _isDefault;
+
+        public bool IsDefault
+        {
+            get => _isDefault;
+            set => Set(ref _isDefault, value);
+        }
+
+
+        private AccountStore _accountStore;
+
+        public AccountStore AccountStore
+        {
+            get => _accountStore;
+            set => Set(ref _accountStore, value);
+        }
+
+
+        private ServersAccountsStore _serversAccountsStore;
+
+        public ServersAccountsStore ServersAccountsStore
+        {
+            get => _serversAccountsStore;
+            set => Set(ref _serversAccountsStore, value);
+        }
 
     }
 }

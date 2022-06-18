@@ -18,19 +18,23 @@ namespace LiteCall.ViewModels.ServerPages
 {
     internal class ServerRegistrationModalVMD:BaseVMD
     {
-        public ServerRegistrationModalVMD(INavigationService OpenModalAuthServices, IRegistrationSevices registrationSevices,CurrentServerStore currentServerStore)
+        public ServerRegistrationModalVMD(INavigationService OpenModalAuthServices, IRegistrationSevices registrationSevices,IhttpDataServices httpDataServices,IimageServices imageServices,IStatusServices statusServices,CurrentServerStore currentServerStore)
         {
 
-            _CurrentServerStore = currentServerStore;
+            _currentServerStore = currentServerStore;
 
-            _RegistrationSevices = registrationSevices;
+            _registrationSevices = registrationSevices;
 
-            RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => StatusMessage = ex.Message,
+            _httpDataServices = httpDataServices;
+
+            _imageServices = imageServices;
+
+            RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
                 CanRegistrationExecute);
 
             OpenAuthPageCommand = new NavigationCommand(OpenModalAuthServices);
 
-            OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => StatusMessage = ex.Message, CanOpenModalCommamdExecute);
+            OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanOpenModalCommamdExecute);
 
         }
 
@@ -45,7 +49,7 @@ namespace LiteCall.ViewModels.ServerPages
                 Password = this.Password,
             };
 
-            var Response = await _RegistrationSevices.Registration(newAccount, CapthcaString);
+            var Response = await _registrationSevices.Registration(newAccount, CapthcaString);
 
             switch (Response)
             {
@@ -55,7 +59,6 @@ namespace LiteCall.ViewModels.ServerPages
 
                 case 1:
                     ModalStatus = false;
-                    StatusMessage = null;
                     break;
 
             }
@@ -68,19 +71,15 @@ namespace LiteCall.ViewModels.ServerPages
             if (ModalStatus == false)
             {
 
-                StatusMessage = "Connecting to server. . .";
+               
 
                 var Status = await GetCaptcha();
 
-                if (!Status)
-                {
-                    StatusMessage = string.Empty;
-                    return;
-                }
-
+                if (!Status) return;
+                
                 ModalStatus = true;
 
-                StatusMessage = string.Empty;
+              
             }
             else
             {
@@ -110,18 +109,15 @@ namespace LiteCall.ViewModels.ServerPages
         }
         public async Task<bool> GetCaptcha()
         {
-            ModalStatusMessage = "Get new Captcha. . .";
-
-            var receive_bytes = await DataBaseService.GetCaptcha(_CurrentServerStore.CurrentServer.ApiIp);
+            
+            var receive_bytes = await _httpDataServices.GetCaptcha(_currentServerStore.CurrentServer.ApiIp);
 
             if (receive_bytes != null)
             {
 
                 var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes.GetRawData());
 
-                Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
-
-                ModalStatusMessage = string.Empty;
+                Capthca = _imageServices.GetImageStream(CaptchaFromServer);
 
                 return true;
             }
@@ -185,38 +181,14 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _ConfirmPassword, value);
         }
 
-        private CurrentServerStore _CurrentServerStore;
 
-        private IRegistrationSevices _RegistrationSevices;
+        
+        private readonly CurrentServerStore _currentServerStore;
 
-        private string _statusMessage;
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                Set(ref _statusMessage, value);
-                OnPropertyChanged(nameof(HasStatusMessage));
-            }
-        }
+        private readonly IRegistrationSevices _registrationSevices;
 
-        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
+        private readonly IhttpDataServices _httpDataServices;
 
-        private string _ModalstatusMessage;
-
-        public string ModalStatusMessage
-        {
-            get => _ModalstatusMessage;
-            set
-            {
-                Set(ref _ModalstatusMessage, value);
-                OnPropertyChanged(nameof(ModalHasStatusMessage));
-            }
-        }
-
-        public bool ModalHasStatusMessage => !string.IsNullOrEmpty(ModalStatusMessage);
-
-
-
+        private readonly IimageServices _imageServices;
     }
 }

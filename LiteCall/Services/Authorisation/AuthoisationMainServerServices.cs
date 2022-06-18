@@ -13,34 +13,38 @@ namespace LiteCall.Services
     internal class AuthoisationMainServerServices:IAuthorisationServices
     {
 
-        private readonly AccountStore _MainAccountStore;
+        private readonly AccountStore _mainAccountStore;
 
-
-        public AuthoisationMainServerServices(AccountStore accountStore)
+        private readonly IhttpDataServices _httpDataServices;
+        public AuthoisationMainServerServices(AccountStore accountStore, IhttpDataServices httpDataServices)
         {
-            _MainAccountStore = accountStore;
+            _mainAccountStore = accountStore;
+
+            _httpDataServices = httpDataServices;
         }
-        public async Task<int> Login(bool isSeverAuthorise, Account _NewAccount, string SeverIp = null)
+        public async Task<int> Login(bool isSeverAuthorise, Account newAccount, string severIp = null)
         {
 
             if (isSeverAuthorise)
             {
-                var Response = await DataBaseService.GetAuthorizeToken(_NewAccount);
+                var Response = await _httpDataServices.GetAuthorizeToken(newAccount);
 
                 if (Response == "invalid")
                 {
                     return 0;
                 }
-                _NewAccount.Token = Response;
-                _NewAccount.IsAuthorise = true;
+
+                newAccount.Token = Response;
+
+                newAccount.IsAuthorise = true;
             }
             else
             {
-                _NewAccount.IsAuthorise = false;
+                newAccount.IsAuthorise = false;
 
-                _NewAccount.Password = "";
+                newAccount.Password = "";
 
-                var Response = await DataBaseService.GetAuthorizeToken(_NewAccount);
+                var Response = await _httpDataServices.GetAuthorizeToken(newAccount);
 
                 if(Response == "invalid")
                 {
@@ -48,12 +52,12 @@ namespace LiteCall.Services
                 }
                 else
                 {
-                    _NewAccount.Token= Response;
+                    newAccount.Token= Response;
                 }
 
             }
 
-            _MainAccountStore.CurrentAccount = _NewAccount;
+            _mainAccountStore.CurrentAccount = newAccount;
 
             return 1;
 

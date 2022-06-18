@@ -30,7 +30,7 @@ namespace LiteCall.Services
 
         private async void TimerDelete()
         {
-             await Task.Delay(3000);
+             await Task.Delay(7000);
 
              DeleteStatus();
         }

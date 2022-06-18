@@ -21,7 +21,6 @@ namespace LiteCall.ViewModels.Pages
         public AuthorisationPageVMD(INavigationService registrationNavigationServices, IAuthorisationServices authorisationServices)
         {
 
-
             AuthorisationServices = authorisationServices;
 
             AuthCommand =
@@ -71,13 +70,6 @@ namespace LiteCall.ViewModels.Pages
 
             }
         }
-
-
-
-
-
-
-
 
         public ICommand OpenRegistrationPageCommand { get; }
 

@@ -11,24 +11,28 @@ namespace LiteCall.Services.Authorisation
 {
     internal class AuthCheckApiServerSevices:IAuthorisationServices
     {
-        private ServerAccountStore ServerAccountStore;
+        private readonly ServerAccountStore ServerAccountStore;
 
-        public AuthCheckApiServerSevices(ServerAccountStore serverAccountStore)
+        private readonly IhttpDataServices HttpDataServices;
+
+        public AuthCheckApiServerSevices(ServerAccountStore serverAccountStore, IhttpDataServices httpDataServices)
         {
             ServerAccountStore = serverAccountStore;
+
+            HttpDataServices = httpDataServices;
         }
 
         public async Task<int> Login(bool IsAuthTokenAuthorise, Account _NewAccount, string ApiServerIp)
         {
             if (IsAuthTokenAuthorise)
             {
-                var Response = await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
+                var Response = await HttpDataServices.GetAuthorizeToken(_NewAccount, ApiServerIp);
 
                 if (Response == "invalid")
                 {
                     return 0;
                 }
-                _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+                _NewAccount.Role = await HttpDataServices.GetRoleFromJwtToken(Response);
 
                 _NewAccount.Token = Response;
 
@@ -40,7 +44,7 @@ namespace LiteCall.Services.Authorisation
 
                 _NewAccount.Password = "";
 
-                var Response= await DataBaseService.GetAuthorizeToken(_NewAccount, ApiServerIp);
+                var Response= await HttpDataServices.GetAuthorizeToken(_NewAccount, ApiServerIp);
 
 
                 if (Response == "invalid")
@@ -48,7 +52,7 @@ namespace LiteCall.Services.Authorisation
                     return 0;
                 }
 
-                _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+                _NewAccount.Role = await HttpDataServices.GetRoleFromJwtToken(Response);
 
                 _NewAccount.Token = Response;
 

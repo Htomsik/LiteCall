@@ -13,32 +13,39 @@ namespace LiteCall.Services
     internal class RegistrationApiServerServices:IRegistrationSevices
     {
 
-        private ServersAccountsStore _ServersAccountsStore;
+        private readonly ServersAccountsStore _serversAccountsStore;
 
-        private readonly CurrentServerStore _CurrentServerStore;
+        private readonly CurrentServerStore _currentServerStore;
 
-        private readonly INavigationService _CloseModalNavigationService;
+        private readonly INavigationService _closeModalNavigationService;
 
 
-        public RegistrationApiServerServices(ServersAccountsStore serversAccountsStore, CurrentServerStore currentServerStore, INavigationService closeModalNavigationService)
+        private readonly IhttpDataServices _httpDataServices;
+
+
+        public RegistrationApiServerServices(ServersAccountsStore serversAccountsStore, CurrentServerStore currentServerStore, INavigationService closeModalNavigationService, IhttpDataServices httpDataServices)
         {
-            _CloseModalNavigationService = closeModalNavigationService;
+            _closeModalNavigationService = closeModalNavigationService;
 
-            _ServersAccountsStore = serversAccountsStore;
+            _serversAccountsStore = serversAccountsStore;
 
-            _CurrentServerStore = currentServerStore;
+            _currentServerStore = currentServerStore;
+
+            _httpDataServices = httpDataServices;
         }
 
         public async Task<int> Registration(Account _NewAccount, string _Captcha)
         {
-            var Response = await DataBaseService.Registration(_NewAccount, _Captcha,_CurrentServerStore.CurrentServer.ApiIp);
+            var Response = await _httpDataServices.Registration(_NewAccount, _Captcha,_currentServerStore.CurrentServer.ApiIp);
 
             if (Response.Replace(" ", "") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
+                //если не верна капча
                 return 0;
             }
             else if (Response == System.Net.HttpStatusCode.Conflict.ToString())
             {
+                // если неверные данные регистрации
                 return 1;
             }
 
@@ -46,9 +53,9 @@ namespace LiteCall.Services
 
             _NewAccount.IsAuthorise = true;
 
-            _ServersAccountsStore.replace(_CurrentServerStore.CurrentServer,_NewAccount);
+            _serversAccountsStore.replace(_currentServerStore.CurrentServer,_NewAccount);
 
-            _CloseModalNavigationService.Navigate();
+            _closeModalNavigationService.Navigate();
 
             return 2;
         }

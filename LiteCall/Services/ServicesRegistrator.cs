@@ -27,6 +27,12 @@ namespace LiteCall.Services
 
             services.AddSingleton<IStatusServices,StatusServices>();
 
+            services.AddSingleton<IEncryptServices, EncryptServices>();
+
+            services.AddSingleton<IimageServices, ImageServices>();
+
+            services.AddSingleton<IhttpDataServices, HttpDataService>();
+
             #endregion
 
             return services;

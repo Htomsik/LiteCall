@@ -18,25 +18,27 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class RegistrationPageVMD:BaseVMD
     {
-        public RegistrationPageVMD(AccountStore accountStore,INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices)
+        public RegistrationPageVMD(AccountStore accountStore,INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices, IhttpDataServices httpDataServices, IimageServices imageServices, IStatusServices statusServices)
         {
 
-            _RegistrationSevices = registrationSevices;
+            _registrationSevices = registrationSevices;
 
-            RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => StatusMessage = ex.Message,
+            _httpDataServices = httpDataServices;
+
+            _imageServices = imageServices;
+
+            RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
                 CanRegistrationExecute);
 
             OpenAuthPageCommand = new NavigationCommand(authPagenavigationservices);
 
-            OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => StatusMessage = ex.Message, CanOpenModalCommamdExecute);
+            OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanOpenModalCommamdExecute);
         }
 
 
         #region Commands
 
-        /// <summary>
-        /// Регистрация
-        /// </summary>
+     
         public ICommand RegistrationCommand { get; }
         private bool CanRegistrationExecute(object p)=> !(bool)p && !string.IsNullOrEmpty(CapthcaString);
 
@@ -48,7 +50,7 @@ namespace LiteCall.ViewModels.Pages
                 Password = this.Password,
             };
 
-            var Response = await _RegistrationSevices.Registration(newAccount, CapthcaString);
+            var Response = await _registrationSevices.Registration(newAccount, CapthcaString);
 
             switch (Response)
             {
@@ -58,7 +60,7 @@ namespace LiteCall.ViewModels.Pages
 
                 case 1:
                     ModalStatus = false;
-                    StatusMessage = null;
+                 
                     break;
 
             }
@@ -73,19 +75,15 @@ namespace LiteCall.ViewModels.Pages
             if (ModalStatus == false)
             {
 
-                StatusMessage = "Connecting to server. . .";
-
                var Status = await GetCaptcha();
 
                if (!Status)
                {
-                   StatusMessage = string.Empty;
+                  
                     return;
                }
-               
-                ModalStatus = true;
 
-                StatusMessage = string.Empty;
+               ModalStatus = true;
             }
             else
             {
@@ -118,18 +116,15 @@ namespace LiteCall.ViewModels.Pages
 
         public async Task<bool> GetCaptcha()
         {
-            ModalStatusMessage = "Get new Captcha. . .";
+           
 
-            var receive_bytes = await DataBaseService.GetCaptcha();
+            var receive_bytes = await _httpDataServices.GetCaptcha();
 
             if (receive_bytes !=null)
             {
-                
                 var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes.GetRawData());
 
-                Capthca = DataBaseService.GetImageStream(CaptchaFromServer);
-
-                ModalStatusMessage = string.Empty;
+                Capthca = _imageServices.GetImageStream(CaptchaFromServer);
 
                 return true;
             }
@@ -138,10 +133,6 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-
-        /// <summary>
-        /// Переход на окно авторизации
-        /// </summary>
         public ICommand OpenAuthPageCommand { get; }
 
 
@@ -201,53 +192,11 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
+        private readonly IRegistrationSevices _registrationSevices;
 
+        private readonly IhttpDataServices _httpDataServices;
 
-
-        private bool _IsNotApiRegistration = true;
-        public bool IsNotApiRegistration
-        {
-            get => _IsNotApiRegistration;
-            set
-            {
-                Set(ref _IsNotApiRegistration, value);
-                
-            }
-        }
-
-
-        private IRegistrationSevices _RegistrationSevices;
-
-        private string _statusMessage;
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                Set(ref _statusMessage, value);
-                OnPropertyChanged(nameof(HasStatusMessage));
-            }
-        }
-
-        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
-
-
-        //Для модального окна
-        private string _ModalstatusMessage;
-
-        
-        public string ModalStatusMessage
-        {
-            get => _ModalstatusMessage;
-            set
-            {
-                Set(ref _ModalstatusMessage, value);
-                OnPropertyChanged(nameof(ModalHasStatusMessage));
-            }
-        }
-
-        public bool ModalHasStatusMessage => !string.IsNullOrEmpty(ModalStatusMessage);
-
+        private readonly IimageServices _imageServices;
 
 
     }

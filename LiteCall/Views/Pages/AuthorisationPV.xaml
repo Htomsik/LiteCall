@@ -57,7 +57,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock
-                    Margin="8"
+                    Margin="5"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="LOGIN" />
@@ -169,7 +169,7 @@
             Grid.Column="1"
             MaxWidth="235"
             MaxHeight="40"
-            Margin="5"
+            Margin="15,5"
             Command="{Binding AuthCommand, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
             <TextBlock Style="{DynamicResource Bigtext}" Text="LOGIN" />
 

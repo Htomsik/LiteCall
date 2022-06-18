@@ -21,14 +21,18 @@ namespace LiteCall.Services
 
         private readonly INavigationService _CloseModalNavigationService;
 
+        private readonly IhttpDataServices _HttpDataServices;
+
         public AuthorisationApiServerServices(ServersAccountsStore serversAccountsStore,
-            CurrentServerStore currentServerStore, INavigationService closeModalNavigationService)
+            CurrentServerStore currentServerStore, INavigationService closeModalNavigationService, IhttpDataServices httpDataServices)
         {
             _ServersAccountsStore = serversAccountsStore;
 
             _CurrentServerStore = currentServerStore;
 
             _CloseModalNavigationService = closeModalNavigationService;
+
+            _HttpDataServices = httpDataServices;
 
         }
 
@@ -38,14 +42,14 @@ namespace LiteCall.Services
             if (isSeverAuthorise)
             {
                 var Response =
-                    await DataBaseService.GetAuthorizeToken(_NewAccount, _CurrentServerStore.CurrentServer.ApiIp);
+                    await _HttpDataServices.GetAuthorizeToken(_NewAccount, _CurrentServerStore.CurrentServer.ApiIp);
 
                 if (Response == "invalid")
                 {
                     return 0;
                 }
 
-                _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+                _NewAccount.Role = await _HttpDataServices.GetRoleFromJwtToken(Response);
 
                 _NewAccount.Token = Response;
 
@@ -57,7 +61,7 @@ namespace LiteCall.Services
 
                 _NewAccount.Password = "";
 
-                var Response = await DataBaseService.GetAuthorizeToken(_NewAccount,_CurrentServerStore.CurrentServer.ApiIp);
+                var Response = await _HttpDataServices.GetAuthorizeToken(_NewAccount,_CurrentServerStore.CurrentServer.ApiIp);
 
                 if (Response == "invalid")
                 {
@@ -66,7 +70,7 @@ namespace LiteCall.Services
                 }
                 else
                 {
-                    _NewAccount.Role = await DataBaseService.GetRoleFromToken(Response);
+                    _NewAccount.Role = await _HttpDataServices.GetRoleFromJwtToken(Response);
 
                     _NewAccount.Token = Response;
                 }

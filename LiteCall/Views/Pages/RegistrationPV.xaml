@@ -14,10 +14,11 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:Boolinverter x:Key="Boolinvert" />
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
             <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
+
             <system:String x:Key="CaptchaText">Captcha</system:String>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -26,8 +27,11 @@
         <Grid MinWidth="240" Background="Transparent">
 
             <Grid.ColumnDefinitions>
+
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="Auto" MaxWidth="400" />
+
+                <ColumnDefinition Width="Auto" MaxWidth="250" />
+
                 <ColumnDefinition Width="1*" />
 
             </Grid.ColumnDefinitions>
@@ -35,28 +39,26 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
 
             <Border
-                MinWidth="200"
-                Grid.Row="1"
+                Grid.Row="0"
                 Grid.Column="1"
+                MinWidth="200"
                 Background="{StaticResource Background2(Solid)}"
                 CornerRadius="10">
                 <Grid>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1.6*" />
-                        <RowDefinition Height="1.6*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
                     </Grid.RowDefinitions>
 
                     <TextBlock
-                        Margin="5,10,0,0"
+                        Margin="5"
                         HorizontalAlignment="Center"
                         Style="{DynamicResource Bigtext}"
                         Text="REGISTRATION" />
@@ -64,7 +66,7 @@
                     <TextBox
                         x:Name="UsernameTB"
                         Grid.Row="1"
-                        Margin="20,8"
+                        Margin="20,5"
                         Style="{StaticResource LogPassTextBox}"
                         Tag="USERNAME">
 
@@ -85,7 +87,7 @@
                     <TextBox
                         x:Name="PasswordTB"
                         Grid.Row="2"
-                        Margin="20,8"
+                        Margin="20,5"
                         Style="{StaticResource PassTextBox}"
                         Tag="PASSWORD">
                         <Binding
@@ -103,7 +105,7 @@
                     <TextBox
                         x:Name="PasswordConfirmTB"
                         Grid.Row="3"
-                        Margin="20,8"
+                        Margin="20,5"
                         Style="{StaticResource PassTextBox}"
                         Tag="PASSWORD CONFIRM"
                         Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}" />
@@ -113,7 +115,7 @@
                     <!--  Переход на логин  -->
                     <StackPanel
                         Grid.Row="4"
-                        Margin="5"
+                        Margin="6"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Orientation="Horizontal">
@@ -158,11 +160,11 @@
             <!--  Кнопка регистрации  -->
 
             <Button
-                Grid.Row="2"
+                Grid.Row="1"
                 Grid.Column="1"
                 MaxWidth="235"
                 MaxHeight="40"
-                Margin="15"
+                Margin="20,5"
                 Command="{Binding OpenModalCommand}">
                 <TextBlock Style="{DynamicResource Bigtext}" Text="REGISTRATION" />
 
@@ -173,23 +175,6 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
-
-            <!--  Показывает статус загрузки  -->
-            <loadingCustom:LoadingCustom
-                Grid.Row="3"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="5"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Diameter="30"
-                IsLoading="{Binding HasStatusMessage}"
-                MainText="{Binding StatusMessage}"
-                Color="{DynamicResource Fonts(Solid)}" />
-
-
-
-            <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
 
             <modalCutom:ModalCustom
                 Grid.RowSpan="4"

@@ -19,10 +19,12 @@ namespace SignalRServ
     {
         public static HubConnection hubConnection;
 
-    
+
+        private static bool _isRecconectingDisconnect;
 
         public static Task ConnectionHub(string url, Account currentAccount, IStatusServices statusServices)
         {
+
             
 
             hubConnection = new HubConnectionBuilder()
@@ -41,8 +43,7 @@ namespace SignalRServ
 
                 .WithAutomaticReconnect(new[]
                 {
-                    TimeSpan.Zero, TimeSpan.Zero,
-                    TimeSpan.Zero, TimeSpan.FromSeconds(5)
+                    TimeSpan.Zero,TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(10)
                 })
 
                 .Build();
@@ -87,25 +88,45 @@ namespace SignalRServ
             //если соединение закрыто
             hubConnection.Closed += error =>
             {
+
+                if (_isRecconectingDisconnect)
+                {
+                    statusServices.ChangeStatus(new StatusMessage
+                        { isError = true, Message = "Reconnecting failed" });
+                }
+                else
+                {
+                    statusServices.DeleteStatus();
+                }
+
                 DisconectServerReloader.Reload();
+
+                _isRecconectingDisconnect = false;
 
                 return Task.CompletedTask;
             };
 
-        
+     
 
             //возникает когда получается обратно подключится
             hubConnection.Reconnected += id =>
             {
                 statusServices.DeleteStatus();
 
+                _isRecconectingDisconnect = false;
+
                 return Task.CompletedTask;
             };
+
+
+         
 
             //возникает в момент переподключения
             hubConnection.Reconnecting += error =>
             {
-                statusServices.ChangeStatus(new StatusMessage { Message = "Reconecting to server. . ." });
+                _isRecconectingDisconnect = true;
+
+                statusServices.ChangeStatus(new StatusMessage { Message = $"Reconecting to server. . ." });
 
                 return Task.CompletedTask;
             };

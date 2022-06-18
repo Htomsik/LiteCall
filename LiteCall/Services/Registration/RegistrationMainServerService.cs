@@ -12,17 +12,21 @@ namespace LiteCall.Services
     internal class RegistrationMainServerService:IRegistrationSevices
     {
 
-        private readonly AccountStore _MainAccountStore;
+        private readonly AccountStore _mainAccountStore;
 
-        public RegistrationMainServerService(AccountStore MainAccountStore)
+        private readonly IhttpDataServices _httpDataServices;
+
+        public RegistrationMainServerService(AccountStore mainAccountStore, IhttpDataServices httpDataServices)
         {
-            _MainAccountStore = MainAccountStore;
+            _mainAccountStore = mainAccountStore;
+
+            _httpDataServices = httpDataServices;
         }
 
         public async Task<int> Registration(Account _NewAccount,string _Captcha)
         {
             
-            var Response = await DataBaseService.Registration(_NewAccount,_Captcha);
+            var Response = await _httpDataServices.Registration(_NewAccount,_Captcha);
 
             if (Response.Replace(" ", "") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
@@ -37,7 +41,7 @@ namespace LiteCall.Services
 
             _NewAccount.IsAuthorise = true;
 
-            _MainAccountStore.CurrentAccount = _NewAccount;
+            _mainAccountStore.CurrentAccount = _NewAccount;
 
             return 2;
 

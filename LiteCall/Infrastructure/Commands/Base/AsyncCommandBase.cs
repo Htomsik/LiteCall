@@ -51,6 +51,7 @@ namespace LiteCall.Infrastructure.Commands.Base
             }
 
             IsExecuting = false;
+
             CommandManager.InvalidateRequerySuggested();
         }
 

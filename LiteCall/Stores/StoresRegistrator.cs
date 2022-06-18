@@ -15,7 +15,7 @@ namespace LiteCall.Stores
         {
             #region Хранилища
 
-            services.AddSingleton<AccountStore>();
+            services.AddSingleton<AccountStore,AccountStore>();
 
             services.AddSingleton<SettingsStore>();
 

@@ -32,7 +32,10 @@ namespace LiteCall.ViewModels
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 s.GetRequiredService<AccountStore>(),
-                CreateAutPageNavigationServices(s), CreateMainRegistrationSevices(s)));
+                CreateAutPageNavigationServices(s),
+                CreateMainRegistrationSevices(s),
+                s.GetRequiredService<IhttpDataServices>(),
+                s.GetRequiredService<IimageServices>(),s.GetRequiredService<IStatusServices>()));
 
             #endregion
 
@@ -41,6 +44,8 @@ namespace LiteCall.ViewModels
             services.AddTransient<ServerRegistrationModalVMD>(s => new ServerRegistrationModalVMD(
                 CreateModalAuthorisationPageNavigationService(s),
                 CreateApiRegistrationSevices(s),
+                s.GetRequiredService<IhttpDataServices>(),
+                s.GetRequiredService<IimageServices>(),s.GetRequiredService<IStatusServices>(),
                 s.GetRequiredService<CurrentServerStore>()));
 
 
@@ -62,10 +67,14 @@ namespace LiteCall.ViewModels
                     CreateServerPageNavigationService(s),
                     CreateModalAuthorisationPageNavigationService(s),
                     CreateAuthCheckApiServerSevices(s),
-                    s.GetRequiredService<IStatusServices>()));
+                    s.GetRequiredService<IStatusServices>(),
+                    s.GetRequiredService<IhttpDataServices>()));
 
-            services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(), s.GetRequiredService<ServersAccountsStore>(),
-                CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
+            services.AddTransient<SettingVMD>(s => new SettingVMD(
+                s.GetRequiredService<AccountStore>(),
+                s.GetRequiredService<ServersAccountsStore>(),
+                CreateAutPageNavigationServices(s),s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>(),
+                s.GetRequiredService<SettingsAccNavigationStore>()
             ));
 
 
@@ -142,12 +151,14 @@ namespace LiteCall.ViewModels
         private static IRegistrationSevices CreateApiRegistrationSevices(IServiceProvider serviceProvider)
         {
             return new RegistrationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
-                serviceProvider.GetRequiredService<CurrentServerStore>(), serviceProvider.GetRequiredService<CloseModalNavigationServices>());
+                serviceProvider.GetRequiredService<CurrentServerStore>(), 
+                serviceProvider.GetRequiredService<CloseModalNavigationServices>(),
+                serviceProvider.GetRequiredService<IhttpDataServices>());
         }
 
         private static IRegistrationSevices CreateMainRegistrationSevices(IServiceProvider serviceProvider)
         {
-            return new RegistrationMainServerService(serviceProvider.GetRequiredService<AccountStore>());
+            return new RegistrationMainServerService(serviceProvider.GetRequiredService<AccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
         }
 
 
@@ -156,17 +167,18 @@ namespace LiteCall.ViewModels
         {
             return new AuthorisationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
                 serviceProvider.GetRequiredService<CurrentServerStore>(),
-                serviceProvider.GetRequiredService<CloseModalNavigationServices>());
+                serviceProvider.GetRequiredService<CloseModalNavigationServices>(),
+                serviceProvider.GetRequiredService<IhttpDataServices>());
         }
 
-        private static IAuthorisationServices CreateMainAuthorisationServices(IServiceProvider serviceProvider)
+       private static IAuthorisationServices CreateMainAuthorisationServices(IServiceProvider serviceProvider)
         {
-            return new AuthoisationMainServerServices(serviceProvider.GetRequiredService<AccountStore>());
+            return new AuthoisationMainServerServices(serviceProvider.GetRequiredService<AccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
         }
-
+      
         private static IAuthorisationServices CreateAuthCheckApiServerSevices(IServiceProvider serviceProvider)
         {
-            return new AuthCheckApiServerSevices(serviceProvider.GetRequiredService<ServerAccountStore>());
+            return new AuthCheckApiServerSevices(serviceProvider.GetRequiredService<ServerAccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
         }
 
         #endregion

@@ -32,7 +32,9 @@ namespace LiteCall.ViewModels.Pages
                 INavigationService settingsPageNavigationService, 
                 INavigationService serverPageNavigationService,
                 INavigationService openModalServerAuthorisationNavigationService,
-                IAuthorisationServices authorisationApiServices,IStatusServices statusServices)
+                IAuthorisationServices authorisationApiServices,
+                IStatusServices statusServices,
+                IhttpDataServices httpDataServices)
         {
             AccountStore = accountStore;
 
@@ -47,11 +49,11 @@ namespace LiteCall.ViewModels.Pages
 
             MainPageServerNavigationStore = mainPageServerNavigationStore;
 
-            ServerPageNavigationService = serverPageNavigationService;
+            _serverPageNavigationService = serverPageNavigationService;
 
-            StatusServices = statusServices;
+            _statusServices = statusServices;
 
-
+            _httpDataServices = httpDataServices;
 
 
             ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorisationNavigationService, CanModalRegistrationOpenCommandExecuted);
@@ -135,9 +137,9 @@ namespace LiteCall.ViewModels.Pages
         private async  Task OnConnectServerSavedExecuted(object p)
         {
 
-            StatusServices.ChangeStatus(new StatusMessage { Message = "Check API server status. . ." });
+           // _statusServices.ChangeStatus(new StatusMessage { Message = "Check API server status. . ." });
 
-            var ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+            var ServerStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
             if (!ServerStatus)
             {
@@ -162,7 +164,10 @@ namespace LiteCall.ViewModels.Pages
 
                 if (authoriseStatus == 0)
                 {
-                    MessageBox.Show("Authorization error. You will be logged without account", "Сообщение");
+                    
+                    _statusServices.ChangeStatus(new StatusMessage { Message = "Authorization error. You will be logged without account", isError = true});
+
+                    await Task.Delay(1000);
 
                     await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
                 }
@@ -179,19 +184,16 @@ namespace LiteCall.ViewModels.Pages
             }
 
 
-            StatusServices.ChangeStatus(new StatusMessage { Message = "Check server status. . ." });
+        
 
-            ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+            ServerStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
             if (ServerStatus)
             {
-                StatusServices.ChangeStatus(new StatusMessage { Message = "Сonnecting to server. . ." });
-
-                await Task.Delay(250);
-
+                
                 CurrentServerStore.CurrentServer = SelectedServerAccount.SavedServer;
 
-                ServerPageNavigationService.Navigate();
+                _serverPageNavigationService.Navigate();
 
                 ServernameOrIp = String.Empty;
 
@@ -321,27 +323,27 @@ namespace LiteCall.ViewModels.Pages
 
             string ApiIp;
 
-            StatusServices.ChangeStatus(new StatusMessage{Message = "Get server ip. . ." }); 
+         
 
             if (!CheckStatus)
             {
                 //Получить информацию о сервере из главной базы по имени
-                ApiIp = await DataBaseService.MainServerGetApiIPI(ServernameOrIp);
+                ApiIp = await _httpDataServices.MainServerGetApiIP(ServernameOrIp);
 
                 if (ApiIp == null)
                 {
 
-                    StatusServices.DeleteStatus();
+                  //  _statusServices.DeleteStatus();
 
                     return;
 
                 }
 
-                newServer = await DataBaseService.ApiServerGetInfo(ApiIp);
+                newServer = await _httpDataServices.ApiServerGetInfo(ApiIp);
 
                 if (newServer == null)
                 {
-                    StatusServices.DeleteStatus();
+                  //  _statusServices.DeleteStatus();
 
                     return;
                 }
@@ -352,12 +354,12 @@ namespace LiteCall.ViewModels.Pages
             {
                 
                 // Получить информацию из API сервера о сервере
-                newServer = await DataBaseService.ApiServerGetInfo(ServernameOrIp);
+                newServer = await _httpDataServices.ApiServerGetInfo(ServernameOrIp);
 
                 if (newServer == null)
                 {
 
-                    StatusServices.DeleteStatus();
+                   // _statusServices.DeleteStatus();
 
                     return;
 
@@ -366,7 +368,7 @@ namespace LiteCall.ViewModels.Pages
                 newServer.ApiIp = ServernameOrIp;
             }
 
-            StatusServices.ChangeStatus(new StatusMessage { Message = "Login into server account. . ." });
+     
 
             try
             { 
@@ -392,26 +394,24 @@ namespace LiteCall.ViewModels.Pages
 
             }
 
-            StatusServices.ChangeStatus(new StatusMessage { Message = "Check server status. . ." });
-
 
             //Заглушка на случай если Артём забудет убрать из сервера
             newServer.Ip = newServer.Ip.Replace("https://", "");
 
-            bool ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(newServer.Ip));
+            bool ServerStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(newServer.Ip));
 
             if (newServer is not null && ServerStatus)
             {
                 
                 CurrentServerStore.CurrentServer = newServer;
 
-                StatusServices.ChangeStatus(new StatusMessage { Message = "Сonnecting to server. . ." });
+            //    _statusServices.ChangeStatus(new StatusMessage { Message = "Сonnecting to server. . ." });
 
                 await Task.Delay(250);
 
                ModalStatus = false;
 
-               ServerPageNavigationService.Navigate();
+               _serverPageNavigationService.Navigate();
 
                  ServernameOrIp = String.Empty;
 
@@ -517,9 +517,11 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private readonly INavigationService ServerPageNavigationService;
+        private readonly INavigationService _serverPageNavigationService;
 
-        private readonly IStatusServices StatusServices;
+        private readonly IStatusServices _statusServices;
+
+        private readonly IhttpDataServices _httpDataServices;
 
         public MainPageServerNavigationStore MainPageServerNavigationStore;
 
@@ -527,9 +529,6 @@ namespace LiteCall.ViewModels.Pages
 
 
         #endregion
-
-
-       
 
        private void DisconectServer()
        {
