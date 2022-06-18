@@ -63,7 +63,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Bottom"
                             FontSize="20"
-                            Text="{DynamicResource ResourceKey=BackText}"
+                            Text="{TemplateBinding Tag}"
                             Visibility="Collapsed" />
 
                         <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
@@ -188,7 +188,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Bottom"
                             FontSize="20"
-                            Text="{DynamicResource ResourceKey=BackText}"
+                            Text="{TemplateBinding Tag}"
                             Visibility="Collapsed" />
 
 

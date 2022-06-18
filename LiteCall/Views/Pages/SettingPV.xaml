@@ -29,8 +29,11 @@
             <system:String x:Key="Login">LOGIN</system:String>
 
             <converters:IsAuthoriseToStingConverter x:Key="IsAuthoriseToStingConverter" />
+
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
             <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -41,29 +44,11 @@
         Background="{DynamicResource Background(Solid)}">
 
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
 
-
-        <Button
-            Grid.Column="1"
-            Width="25"
-            Height="25"
-            Margin="5"
-            VerticalAlignment="Top"
-            Command="{Binding CloseSettingsCommand}"
-            Style="{DynamicResource IMGButton}">
-
-            <Button.Resources>
-                <StaticResource x:Key="Img" ResourceKey="ClosePath" />
-            </Button.Resources>
-
-        </Button>
-
-
-        <TabControl BorderThickness="0" TabStripPlacement="Left">
+        <TabControl
+            Grid.Row="0"
+            BorderThickness="0"
+            TabStripPlacement="Left">
 
             <!--  Аккаунт  -->
             <TabItem

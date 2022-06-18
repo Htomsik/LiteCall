@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 
 namespace SignalRServ
@@ -20,12 +21,12 @@ namespace SignalRServ
 
     
 
-        public static Task ConnectionHub(string url, Account CurrentAccount)
+        public static Task ConnectionHub(string url, Account currentAccount, IStatusServices statusServices)
         {
             
 
             hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{url}?token={CurrentAccount.Token}", options =>
+                .WithUrl($"{url}?token={currentAccount.Token}", options =>
                 {
                     options.WebSocketConfiguration = conf =>
                     {
@@ -35,7 +36,7 @@ namespace SignalRServ
                     {
                         ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
                     };
-                    options.AccessTokenProvider = () => Task.FromResult(CurrentAccount.Token);
+                    options.AccessTokenProvider = () => Task.FromResult(currentAccount.Token);
                 })
 
                 .WithAutomaticReconnect(new[]
@@ -56,17 +57,20 @@ namespace SignalRServ
 
             });
 
-            //Оповещение об отключении
             hubConnection.On<bool>("Notification", flag =>
             {
-                
+                statusServices.ChangeStatus(new StatusMessage{isError = true,Message = "You have been kicked from room"});
+
                 DisconnectNotification.Reload();
+
+                
             });
 
             hubConnection.On("UpdateRooms", () =>
             {
 
                 ReloadServerRooms.Reload();
+
                 return Task.CompletedTask;
 
             });
@@ -80,11 +84,11 @@ namespace SignalRServ
             });
 
 
-
             //если соединение закрыто
             hubConnection.Closed += error =>
             {
-                DisconectSeverReloader.Reload();
+                DisconectServerReloader.Reload();
+
                 return Task.CompletedTask;
             };
 
@@ -93,14 +97,16 @@ namespace SignalRServ
             //возникает когда получается обратно подключится
             hubConnection.Reconnected += id =>
             {
-                MessageBox.Show("Reconected Sucsesfull", "Сообщение");
+                statusServices.DeleteStatus();
+
                 return Task.CompletedTask;
             };
 
             //возникает в момент переподключения
             hubConnection.Reconnecting += error =>
             {
-             //   MessageBox.Show("Reconnecting", "Сообщение");
+                statusServices.ChangeStatus(new StatusMessage { Message = "Reconecting to server. . ." });
+
                 return Task.CompletedTask;
             };
 

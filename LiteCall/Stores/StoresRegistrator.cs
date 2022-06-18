@@ -25,6 +25,8 @@ namespace LiteCall.Stores
 
             services.AddSingleton<CurrentServerStore>();
 
+            services.AddSingleton<StatusMessageStore>();
+
             #endregion
 
             #region NavigationStores

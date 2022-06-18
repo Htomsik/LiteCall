@@ -8,6 +8,7 @@ using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Model;
 using LiteCall.Services;
+using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.Stores.ModelStores;
 using LiteCall.ViewModels.Base;
@@ -23,7 +24,7 @@ namespace LiteCall.ViewModels.ServerPages
   
     internal class ServerVMD : BaseVMD
     {
-        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore)
+        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore, IStatusServices statusServices)
         {
 
             #region Создание данных
@@ -34,9 +35,10 @@ namespace LiteCall.ViewModels.ServerPages
 
             CurrentServerStore = _CurrentServerStore;
 
+            StatusServices = statusServices;
+
             #endregion
 
-           
             InitSignalRConnection(CurrentServerStore.CurrentServer, ServerAccountStore.CurrentAccount);
 
             //Проверка на имя
@@ -162,24 +164,18 @@ namespace LiteCall.ViewModels.ServerPages
         #region Подключение к серверу
 
 
-        /// <summary>
-        /// Инициализация соединения
-        /// </summary>
+     
         public async void InitSignalRConnection(Server CurrentServer, Account CurrentAccount)
         {
-            StatusMessage = "Connecting to server. . .";
+            await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount,StatusServices);
 
-           await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount);
-
-            StatusMessage = string.Empty;
+            StatusServices.DeleteStatus();
         }
 
 
         #endregion
 
-        /// <summary>
-        /// Включение/Выключение звука
-        /// </summary>
+      
         public ICommand VoiceInputCommand { get; }
 
         private  void OnVoiceInputExecuted(object p)
@@ -843,6 +839,12 @@ namespace LiteCall.ViewModels.ServerPages
         #region Хранилища
 
         public ServerAccountStore ServerAccountStore;
+
+        #endregion
+
+        #region Сервисы
+
+        private readonly IStatusServices StatusServices;
 
         #endregion
 

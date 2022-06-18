@@ -53,7 +53,7 @@ namespace LiteCall.ViewModels.Pages
             set => Set(ref _ServersAccountsStore, value);
         }
 
-        public SettingVMD(AccountStore accountStore,ServersAccountsStore serversAccountsStore, INavigationService CloseAdditioNavigationService, INavigationService AuthNavigationService ,SettingsAccNavigationStore SettingsAccNavigationStore)
+        public SettingVMD(AccountStore accountStore,ServersAccountsStore serversAccountsStore, INavigationService AuthNavigationService ,SettingsAccNavigationStore SettingsAccNavigationStore)
         {
 
             AccountStore = accountStore;
@@ -67,7 +67,7 @@ namespace LiteCall.ViewModels.Pages
 
             LogoutAccCommand = new AccountLogoutCommand(_AccountStore);
 
-            CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);
+         
 
             AccountStore.CurrentAccountChange += AcoountStatusChange;
 

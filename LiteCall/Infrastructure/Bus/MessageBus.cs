@@ -48,7 +48,7 @@ namespace LiteCall.Services
     }
 
 
-    internal static class DisconectSeverReloader
+    internal static class DisconectServerReloader
     {
         public static event Action Reloader;
 

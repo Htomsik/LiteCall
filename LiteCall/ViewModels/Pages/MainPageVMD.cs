@@ -32,7 +32,7 @@ namespace LiteCall.ViewModels.Pages
                 INavigationService settingsPageNavigationService, 
                 INavigationService serverPageNavigationService,
                 INavigationService openModalServerAuthorisationNavigationService,
-                IAuthorisationServices authorisationApiServices)
+                IAuthorisationServices authorisationApiServices,IStatusServices statusServices)
         {
             AccountStore = accountStore;
 
@@ -48,6 +48,8 @@ namespace LiteCall.ViewModels.Pages
             MainPageServerNavigationStore = mainPageServerNavigationStore;
 
             ServerPageNavigationService = serverPageNavigationService;
+
+            StatusServices = statusServices;
 
 
 
@@ -70,20 +72,20 @@ namespace LiteCall.ViewModels.Pages
 
 
 
-            SaveServerCommand = new AsyncLamdaCommand(OnSaveServerCommandExecuted, (ex) => StatusMessage = ex.Message, CanSaveServerCommandExecute);
+            SaveServerCommand = new AsyncLamdaCommand(OnSaveServerCommandExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage{isError = true,Message = ex.Message}), CanSaveServerCommandExecute);
 
-            DeleteServerSavedCommand = new AsyncLamdaCommand(OnDeleteServerSavedExecuted, (ex) => StatusMessage = ex.Message,CanDeleteServerSavedExecute);
-
-
-
-            ConnectServerCommand = new AsyncLamdaCommand(OnConnectServerExecuted, (ex) => StatusMessage = ex.Message);
-
-            ConnectServerSavedCommand = new AsyncLamdaCommand(OnConnectServerSavedExecuted, (ex) => StatusMessage = ex.Message, CanConnectServerSavedExecute);
+            DeleteServerSavedCommand = new AsyncLamdaCommand(OnDeleteServerSavedExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanDeleteServerSavedExecute);
 
 
 
+            ConnectServerCommand = new AsyncLamdaCommand(OnConnectServerExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }));
 
-            DisconectSeverReloader.Reloader += DisconectServer;
+            ConnectServerSavedCommand = new AsyncLamdaCommand(OnConnectServerSavedExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanConnectServerSavedExecute);
+
+
+
+
+            DisconectServerReloader.Reloader += DisconectServer;
 
             MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
         }
@@ -133,6 +135,7 @@ namespace LiteCall.ViewModels.Pages
         private async  Task OnConnectServerSavedExecuted(object p)
         {
 
+            StatusServices.ChangeStatus(new StatusMessage { Message = "Check API server status. . ." });
 
             var ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
@@ -175,11 +178,17 @@ namespace LiteCall.ViewModels.Pages
 
             }
 
-            
-             ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+
+            StatusServices.ChangeStatus(new StatusMessage { Message = "Check server status. . ." });
+
+            ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
             if (ServerStatus)
             {
+                StatusServices.ChangeStatus(new StatusMessage { Message = "Сonnecting to server. . ." });
+
+                await Task.Delay(250);
+
                 CurrentServerStore.CurrentServer = SelectedServerAccount.SavedServer;
 
                 ServerPageNavigationService.Navigate();
@@ -188,7 +197,6 @@ namespace LiteCall.ViewModels.Pages
 
                 VisibilitiStatus = Visibility.Visible;
             }
-
 
         }
 
@@ -272,6 +280,7 @@ namespace LiteCall.ViewModels.Pages
             else
             {
                 ModalStatus = false;
+
                 ServernameOrIp = String.Empty;
 
             }
@@ -285,13 +294,13 @@ namespace LiteCall.ViewModels.Pages
         {
             if (selectedViewModel!= null)
             {
-                //selectedViewModel.Dispose();
-               MainPageServerNavigationStore.Close();
+                MainPageServerNavigationStore.Close();
             }
 
             CurrentServerStore.CurrentServer = default;
 
             VisibilitiStatus = Visibility.Collapsed;
+
             this.AccountStore.Logout();
         }
 
@@ -312,7 +321,7 @@ namespace LiteCall.ViewModels.Pages
 
             string ApiIp;
 
-            StatusMessage = "Get server ip. . .";
+            StatusServices.ChangeStatus(new StatusMessage{Message = "Get server ip. . ." }); 
 
             if (!CheckStatus)
             {
@@ -322,8 +331,8 @@ namespace LiteCall.ViewModels.Pages
                 if (ApiIp == null)
                 {
 
-                    StatusMessage = string.Empty;
-                   
+                    StatusServices.DeleteStatus();
+
                     return;
 
                 }
@@ -332,7 +341,7 @@ namespace LiteCall.ViewModels.Pages
 
                 if (newServer == null)
                 {
-                    StatusMessage = string.Empty;
+                    StatusServices.DeleteStatus();
 
                     return;
                 }
@@ -348,8 +357,7 @@ namespace LiteCall.ViewModels.Pages
                 if (newServer == null)
                 {
 
-                    StatusMessage = string.Empty;
-
+                    StatusServices.DeleteStatus();
 
                     return;
 
@@ -358,8 +366,7 @@ namespace LiteCall.ViewModels.Pages
                 newServer.ApiIp = ServernameOrIp;
             }
 
-
-            StatusMessage = "Login into server account. . .";
+            StatusServices.ChangeStatus(new StatusMessage { Message = "Login into server account. . ." });
 
             try
             { 
@@ -385,9 +392,10 @@ namespace LiteCall.ViewModels.Pages
 
             }
 
-            StatusMessage = "Check sever status. . .";
+            StatusServices.ChangeStatus(new StatusMessage { Message = "Check server status. . ." });
 
-            //Временно
+
+            //Заглушка на случай если Артём забудет убрать из сервера
             newServer.Ip = newServer.Ip.Replace("https://", "");
 
             bool ServerStatus = await Task.Run(() => DataBaseService.CheckServerStatus(newServer.Ip));
@@ -397,13 +405,9 @@ namespace LiteCall.ViewModels.Pages
                 
                 CurrentServerStore.CurrentServer = newServer;
 
-               StatusMessage = "Sever status sucsesfull. . .";
+                StatusServices.ChangeStatus(new StatusMessage { Message = "Сonnecting to server. . ." });
 
                 await Task.Delay(250);
-
-                StatusMessage = "Сonnect to server. . .";
-
-               await Task.Delay(250);
 
                ModalStatus = false;
 
@@ -413,15 +417,15 @@ namespace LiteCall.ViewModels.Pages
 
                VisibilitiStatus=Visibility.Visible;
             }
-            
-            StatusMessage = string.Empty;
+
+           
 
         }
 
 
         #endregion
 
-        #region Данные с
+        #region Данные 
 
 
         private bool _CheckStatus;
@@ -515,29 +519,11 @@ namespace LiteCall.ViewModels.Pages
 
         private readonly INavigationService ServerPageNavigationService;
 
+        private readonly IStatusServices StatusServices;
+
         public MainPageServerNavigationStore MainPageServerNavigationStore;
 
         public BaseVMD selectedViewModel =>  MainPageServerNavigationStore.MainPageServerCurrentViewModel;
-
-
-
-        //Сообщение об ошибке
-        private string _statusMessage;
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                Set(ref _statusMessage, value);
-                OnPropertyChanged(nameof(HasStatusMessage));
-            }
-        }
-
-
-        //Есть ли сообщение об ошибке
-        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
-
-
 
 
         #endregion

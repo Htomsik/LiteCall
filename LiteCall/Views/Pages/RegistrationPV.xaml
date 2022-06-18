@@ -17,9 +17,6 @@
             <converters:Boolinverter x:Key="Boolinvert" />
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
-            <system:String x:Key="UsernameText">USERNAME</system:String>
-            <system:String x:Key="PasswordText">PASSWORD</system:String>
-            <system:String x:Key="PasswordConfirmText">PASSWORD CONFIRM</system:String>
             <system:String x:Key="CaptchaText">Captcha</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -40,11 +37,10 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="1*" />
-
             </Grid.RowDefinitions>
 
-
             <Border
+                MinWidth="200"
                 Grid.Row="1"
                 Grid.Column="1"
                 Background="{StaticResource Background2(Solid)}"
@@ -69,7 +65,8 @@
                         x:Name="UsernameTB"
                         Grid.Row="1"
                         Margin="20,8"
-                        Style="{StaticResource LogPassTextBox}">
+                        Style="{StaticResource LogPassTextBox}"
+                        Tag="USERNAME">
 
                         <TextBox.Text>
                             <Binding
@@ -82,9 +79,6 @@
                             </Binding>
                         </TextBox.Text>
 
-                        <TextBox.Resources>
-                            <StaticResource x:Key="BackText" ResourceKey="UsernameText" />
-                        </TextBox.Resources>
 
                     </TextBox>
 
@@ -92,7 +86,8 @@
                         x:Name="PasswordTB"
                         Grid.Row="2"
                         Margin="20,8"
-                        Style="{StaticResource PassTextBox}">
+                        Style="{StaticResource PassTextBox}"
+                        Tag="PASSWORD">
                         <Binding
                             Mode="TwoWay"
                             Path="Password"
@@ -102,9 +97,7 @@
                             </Binding.ValidationRules>
                         </Binding>
 
-                        <TextBox.Resources>
-                            <StaticResource x:Key="BackText" ResourceKey="PasswordText" />
-                        </TextBox.Resources>
+
                     </TextBox>
 
                     <TextBox
@@ -112,13 +105,8 @@
                         Grid.Row="3"
                         Margin="20,8"
                         Style="{StaticResource PassTextBox}"
-                        Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}">
-
-                        <TextBox.Resources>
-                            <StaticResource x:Key="BackText" ResourceKey="PasswordConfirmText" />
-                        </TextBox.Resources>
-
-                    </TextBox>
+                        Tag="PASSWORD CONFIRM"
+                        Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}" />
 
 
 

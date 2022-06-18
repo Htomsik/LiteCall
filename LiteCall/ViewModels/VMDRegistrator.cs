@@ -61,23 +61,25 @@ namespace LiteCall.ViewModels
                     CreateSettingPageNavigationService(s),
                     CreateServerPageNavigationService(s),
                     CreateModalAuthorisationPageNavigationService(s),
-                    CreateAuthCheckApiServerSevices(s)));
+                    CreateAuthCheckApiServerSevices(s),
+                    s.GetRequiredService<IStatusServices>()));
 
             services.AddTransient<SettingVMD>(s => new SettingVMD(s.GetRequiredService<AccountStore>(), s.GetRequiredService<ServersAccountsStore>(),
-                s.GetRequiredService<CloseAdditionalNavigationServices>(),
                 CreateAutPageNavigationServices(s), s.GetRequiredService<SettingsAccNavigationStore>()
             ));
 
 
             services.AddTransient<ServerVMD>(s =>
-                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>()));
+                new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),s.GetRequiredService<IStatusServices>()));
 
 
 
             services.AddSingleton<MainWindowVMD>(s => new MainWindowVMD(
                 s.GetRequiredService<MainWindowNavigationStore>(), s.GetRequiredService<AdditionalNavigationStore>(),
-                s.GetRequiredService<ModalNavigationStore>()
-                , s.GetRequiredService<CloseModalNavigationServices>()));
+                s.GetRequiredService<ModalNavigationStore>(),
+                s.GetRequiredService<StatusMessageStore>(),
+                s.GetRequiredService<CloseModalNavigationServices>(),
+                s.GetRequiredService<CloseAdditionalNavigationServices>()));
 
             #endregion
 

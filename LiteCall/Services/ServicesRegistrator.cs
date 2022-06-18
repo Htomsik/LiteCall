@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteCall.Services.Interfaces;
 using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,8 @@ namespace LiteCall.Services
             services.AddSingleton<CloseAdditionalNavigationServices>();
 
             services.AddSingleton<CloseModalNavigationServices>();
+
+            services.AddSingleton<IStatusServices,StatusServices>();
 
             #endregion
 

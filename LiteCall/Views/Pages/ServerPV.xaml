@@ -20,19 +20,28 @@
 
 
     <UserControl.Resources>
+
         <ResourceDictionary>
+
             <ResourceDictionary.MergedDictionaries>
+
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
+
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+
             <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
+
             <system:Double x:Key="SendMassegeButtonScale">1.0</system:Double>
+
             <system:Double x:Key="MicrophoneButtonscale">0.8</system:Double>
-            <system:String x:Key="RoomNameText">ROOM NAME</system:String>
-            <system:String x:Key="RoomPassword">PASSWORD</system:String>
+
 
         </ResourceDictionary>
+
     </UserControl.Resources>
 
 
@@ -51,53 +60,6 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-
-
-
-        <!--  Верхняя панель
-        <Border
-            Grid.Column="1"
-            Grid.ColumnSpan="3"
-            Background="{DynamicResource Background23(Solid)}">
-            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-
-
-                <Button
-                    Width="25"
-                    Height="25"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    Command="{Binding OpenCreateRoomModalCommand}"
-                    CommandParameter="1"
-                    Style="{DynamicResource IMGButton}"
-                    ToolTip="Create new group">
-                    <Button.Resources>
-                        <StaticResource x:Key="Img" ResourceKey="PlusPath" />
-                    </Button.Resources>
-
-                </Button>
-
-                <Button
-                    Width="25"
-                    Height="25"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    Command="{Binding DisconectGroupCommand}"
-                    IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                    Style="{StaticResource IMGButton}"
-                    ToolTip="Disconnect from group">
-                    <Button.Resources>
-                        <StaticResource x:Key="Fill" ResourceKey="Fonts(Solid)" />
-                        <StaticResource x:Key="Img" ResourceKey="ClosePath" />
-                    </Button.Resources>
-
-                </Button>
-
-
-
-            </StackPanel>
-        </Border>
-        -->
 
 
         <!--  Статус загрузки  -->
@@ -543,7 +505,8 @@
                         Grid.Row="1"
                         Margin="20,8"
                         MaxLength="15"
-                        Style="{StaticResource LogPassTextBox}">
+                        Style="{StaticResource LogPassTextBox}"
+                        Tag="ROOM NAME">
 
                         <TextBox.Text>
 
@@ -560,16 +523,14 @@
 
                         </TextBox.Text>
 
-                        <TextBox.Resources>
-                            <StaticResource x:Key="BackText" ResourceKey="RoomNameText" />
-                        </TextBox.Resources>
                     </TextBox>
 
                     <TextBox
                         Grid.Row="2"
                         Margin="20,8"
                         MaxLength="15"
-                        Style="{StaticResource LogPassTextBox}">
+                        Style="{StaticResource LogPassTextBox}"
+                        Tag="PASSWORD">
 
                         <TextBox.Text>
 
@@ -580,9 +541,6 @@
 
                         </TextBox.Text>
 
-                        <TextBox.Resources>
-                            <StaticResource x:Key="BackText" ResourceKey="RoomPassword" />
-                        </TextBox.Resources>
                     </TextBox>
 
 
@@ -666,7 +624,8 @@
                         Grid.Row="1"
                         Margin="20,8"
                         MaxLength="15"
-                        Style="{StaticResource LogPassTextBox}">
+                        Style="{StaticResource LogPassTextBox}"
+                        Tag="PASSWORD">
 
                         <TextBox.Text>
 
@@ -682,9 +641,6 @@
                             </Binding>
                         </TextBox.Text>
 
-                        <TextBox.Resources>
-                            <StaticResource x:Key="BackText" ResourceKey="RoomPassword" />
-                        </TextBox.Resources>
                     </TextBox>
 
 

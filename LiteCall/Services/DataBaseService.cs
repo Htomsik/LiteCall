@@ -22,6 +22,9 @@ namespace LiteCall.Services
 {
     internal static class DataBaseService
     {
+
+      
+
         private static Guid ProgramCaptchaID = Guid.NewGuid();
 
         const string apikey = "ACbaAS324hnaASD324bzZwq41";
@@ -275,6 +278,8 @@ namespace LiteCall.Services
 
       public static async Task<bool> CheckServerStatus(string serverAdress)
         {
+
+           
 
             string[] ServerAddresArray = serverAdress.Split(':');
 

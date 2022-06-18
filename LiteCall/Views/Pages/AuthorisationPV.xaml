@@ -16,8 +16,6 @@
         <ResourceDictionary>
             <converters:Boolinverter x:Key="Boolinverter" />
             <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
-            <system:String x:Key="UsernameText">USERNAME</system:String>
-            <system:String x:Key="PasswordText">PASSWORD</system:String>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -28,38 +26,38 @@
 
             <ColumnDefinition Width="1*" />
 
-            <ColumnDefinition Width="Auto" MaxWidth="400" />
+            <ColumnDefinition Width="Auto" MaxWidth="250" />
 
             <ColumnDefinition Width="1*" />
 
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="Auto" MinHeight="235" />
-            <RowDefinition Height="Auto" MinHeight="70" />
-            <RowDefinition Height="1*" MinHeight="50" />
+
+            <RowDefinition Height="Auto" />
+
+            <RowDefinition Height="Auto" />
 
         </Grid.RowDefinitions>
 
-
         <Border
-            Grid.Row="1"
+            Grid.Row="0"
             Grid.Column="1"
+            Margin="5"
             Background="{StaticResource Background2(Solid)}"
-            CornerRadius="10">
+            CornerRadius="15">
             <Grid>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1.6*" />
-                    <RowDefinition Height="1.6*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.2*" />
                 </Grid.RowDefinitions>
 
                 <TextBlock
-                    Margin="5,10,0,0"
+                    Margin="8"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="LOGIN" />
@@ -69,8 +67,9 @@
                 <TextBox
                     x:Name="USERNAME"
                     Grid.Row="1"
-                    Margin="20,8"
-                    Style="{StaticResource LogPassTextBox}">
+                    Margin="20,5"
+                    Style="{StaticResource LogPassTextBox}"
+                    Tag="USERNAME">
 
                     <TextBox.Text>
                         <Binding
@@ -83,17 +82,15 @@
                         </Binding>
                     </TextBox.Text>
 
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="UsernameText" />
-                    </TextBox.Resources>
                 </TextBox>
 
                 <TextBox
                     x:Name="PASSWORD"
                     Grid.Row="2"
-                    Margin="20,8"
+                    Margin="20,5"
                     IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
-                    Style="{StaticResource PassTextBox}">
+                    Style="{StaticResource PassTextBox}"
+                    Tag="PASSWORD">
                     <TextBox.Text>
                         <Binding
                             Mode="OneWayToSource"
@@ -105,14 +102,11 @@
                         </Binding>
                     </TextBox.Text>
 
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="PasswordText" />
-                    </TextBox.Resources>
                 </TextBox>
 
                 <StackPanel
                     Grid.Row="3"
-                    Margin="15,0,15,0"
+                    Margin="4"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
@@ -130,16 +124,16 @@
 
                 <StackPanel
                     Grid.Row="4"
-                    Margin="10,0,10,0"
+                    Margin="8,5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
 
-                    <TextBlock>
+                    <TextBlock FontSize="16">
                         don't have account?
                     </TextBlock>
 
-                    <TextBlock Margin="5,0,5,0">
+                    <TextBlock Margin="5,0,5,0" FontSize="16">
                         Registration
                         <TextBlock.Style>
 
@@ -171,11 +165,11 @@
         </Border>
 
         <Button
-            Grid.Row="2"
+            Grid.Row="1"
             Grid.Column="1"
             MaxWidth="235"
             MaxHeight="40"
-            Margin="15"
+            Margin="5"
             Command="{Binding AuthCommand, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
             <TextBlock Style="{DynamicResource Bigtext}" Text="LOGIN" />
 
@@ -186,20 +180,6 @@
                 </MultiBinding>
             </Button.CommandParameter>
         </Button>
-
-        <!--  Показывает статус загрузки  -->
-        <CustomLoading:LoadingCustom
-            Grid.Row="3"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Margin="5"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Diameter="30"
-            IsLoading="{Binding HasStatusMessage}"
-            MainText="{Binding StatusMessage}"
-            Color="{DynamicResource Fonts(Solid)}" />
-
 
     </Grid>
 

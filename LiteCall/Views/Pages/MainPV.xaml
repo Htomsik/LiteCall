@@ -34,8 +34,6 @@
 
             <system:Double x:Key="PlusScale">1</system:Double>
 
-            <system:String x:Key="tittleOrIpText">SERVER NAME OR IP</system:String>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -387,22 +385,19 @@
             Grid.ColumnSpan="3"
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
-            <Grid
-                MinWidth="200"
-                MinHeight="180"
-                Background="{DynamicResource Background2(Solid)}">
+            <Grid MinWidth="200" Background="{DynamicResource Background2(Solid)}">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.15*" />
-                    <RowDefinition Height="0.1*" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="0.1*" />
-                    <RowDefinition Height="0.1*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
 
                 <TextBlock
                     Grid.Row="0"
+                    Margin="0,5"
                     HorizontalAlignment="Center"
                     Style="{DynamicResource Bigtext}"
                     Text="CONNECT" />
@@ -410,20 +405,15 @@
                 <TextBox
                     x:Name="Iptb"
                     Grid.Row="1"
-                    Margin="5"
+                    Margin="8"
                     MaxLength="20"
                     Style="{StaticResource LogPassTextBox}"
-                    Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}">
-
-                    <TextBox.Resources>
-                        <StaticResource x:Key="BackText" ResourceKey="tittleOrIpText" />
-                    </TextBox.Resources>
-
-                </TextBox>
+                    Tag="SERVER NAME OR IP"
+                    Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}" />
 
                 <StackPanel
                     Grid.Row="2"
-                    Margin="15,0,15,0"
+                    Margin="5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Orientation="Horizontal">
@@ -439,7 +429,7 @@
 
                 </StackPanel>
 
-                <Grid Row="3">
+                <Grid Margin="8" Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
@@ -469,17 +459,6 @@
                         <TextBlock Text="EXIT" />
                     </Button>
                 </Grid>
-
-                <!--  Показывает статус загрузки  -->
-                <loadingCustom:LoadingCustom
-                    Grid.Row="4"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Diameter="20"
-                    IsLoading="{Binding HasStatusMessage}"
-                    MainText="{Binding StatusMessage}"
-                    Color="{DynamicResource Fonts(Solid)}" />
 
             </Grid>
 
