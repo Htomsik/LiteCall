@@ -184,8 +184,6 @@ namespace LiteCall.ViewModels.Pages
             }
 
 
-        
-
             ServerStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
             if (ServerStatus)
@@ -210,7 +208,6 @@ namespace LiteCall.ViewModels.Pages
         private bool CanSaveServerCommandExecute(object p)
         {
 
-
             if (CurrentServerStore.CurrentServer == null)
             {
                 return false;
@@ -218,9 +215,7 @@ namespace LiteCall.ViewModels.Pages
 
             try
             {
-                var IsCurrentServerSaved = ServersAccountsStore.SavedServerAccounts.FirstOrDefault(x => x.SavedServer.ApiIp == CurrentServerStore.CurrentServer.ApiIp);
-
-                return IsCurrentServerSaved is null;
+                return ServersAccountsStore.SavedServerAccounts.FirstOrDefault(x => x.SavedServer.ApiIp == CurrentServerStore.CurrentServer.ApiIp) is null;
             }
             catch (Exception e)
             {
@@ -230,7 +225,7 @@ namespace LiteCall.ViewModels.Pages
         }
         private async Task OnSaveServerCommandExecuted(object p)
         {
-            ServersAccountsStore.add(new ServerAccount{Account = ServerAccountStore.CurrentAccount,SavedServer = CurrentServerStore.CurrentServer});
+            ServersAccountsStore.Add(new ServerAccount{Account = ServerAccountStore.CurrentAccount,SavedServer = CurrentServerStore.CurrentServer});
         }
 
 
@@ -242,7 +237,7 @@ namespace LiteCall.ViewModels.Pages
 
         private async Task OnDeleteServerSavedExecuted(object p)
         {
-            ServersAccountsStore.remove(SelectedServerAccount);
+            ServersAccountsStore.Remove(SelectedServerAccount);
         }
 
 

@@ -22,10 +22,11 @@ namespace LiteCall.Stores
         }
 
 
-       public bool add(ServerAccount newServerAccount)
+       public bool Add(ServerAccount newServerAccount)
        {
 
            ServerAccount FindAccount = null;
+
            try
            {
                FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == newServerAccount.SavedServer.ApiIp);
@@ -45,7 +46,7 @@ namespace LiteCall.Stores
 
        }
 
-       public void remove(ServerAccount deletedServer)
+       public void Remove(ServerAccount deletedServer)
        {
 
            ServerAccount FindAccount = null;
@@ -65,13 +66,12 @@ namespace LiteCall.Stores
 
        }
 
-       public void replace(Server ReplacedServer, Account newAccount)
+       public void Replace(Server ReplacedServer, Account newAccount)
        {
 
            ServerAccount FindAccount = null;
 
 
-         
                try
                {
                    FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
@@ -81,7 +81,7 @@ namespace LiteCall.Stores
                    FindAccount.Account = newAccount;
 
                    SavedServerAccounts.Add(FindAccount);
-            }
+               }
                catch (Exception e)
                {
                    FindAccount = new ServerAccount();

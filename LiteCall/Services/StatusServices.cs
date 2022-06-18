@@ -18,19 +18,20 @@ namespace LiteCall.Services
             _statusMessageStore = statusMessageStore;
         }
 
-        public  void ChangeStatus(StatusMessage newStatusMessage)
+        public async  void ChangeStatus(StatusMessage newStatusMessage)
         {
             _statusMessageStore.CurentStatusMessage = newStatusMessage;
 
             if (newStatusMessage.isError)
             {
-                TimerDelete();
+              await  TimerDelete(7000);
             }
+           
         }
 
-        private async void TimerDelete()
+        private async Task TimerDelete(int Delay)
         {
-             await Task.Delay(7000);
+             await Task.Delay(Delay);
 
              DeleteStatus();
         }

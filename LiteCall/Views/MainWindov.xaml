@@ -21,20 +21,15 @@
     MinHeight="450"
     d:DesignHeight="400"
     d:DesignWidth="400"
+    AllowsTransparency="True"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
 
 
-    <WindowChrome.WindowChrome>
-        <WindowChrome
-            CaptionHeight="0"
-            CornerRadius="2"
-            GlassFrameThickness="0,0,0,1"
-            NonClientFrameEdges="None"
-            ResizeBorderThickness="3" />
-    </WindowChrome.WindowChrome>
+
+
 
     <Window.Resources>
         <ResourceDictionary>
@@ -49,10 +44,37 @@
 
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
+
+
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border BorderBrush="Transparent" BorderThickness="1">
+
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome
+                        CaptionHeight="0"
+                        CornerRadius="0"
+                        GlassFrameThickness="1"
+                        ResizeBorderThickness="6" />
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="WindowState" Value="Maximized">
+                    <Setter Property="BorderThickness" Value="6" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Style>
+
+
+    <Border>
+
         <Grid Background="{StaticResource Background4(Solid)}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="35" />

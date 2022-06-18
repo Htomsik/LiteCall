@@ -65,7 +65,6 @@ namespace LiteCall.Services
 
                 if (Response == "invalid")
                 {
-                    MessageBox.Show("Server is not available. Try again later", "Сообщение");
                     return 0;
                 }
                 else
@@ -79,7 +78,7 @@ namespace LiteCall.Services
 
 
 
-            _ServersAccountsStore.replace(_CurrentServerStore.CurrentServer, _NewAccount);
+            _ServersAccountsStore.Replace(_CurrentServerStore.CurrentServer, _NewAccount);
 
             _CloseModalNavigationService.Navigate();
 

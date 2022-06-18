@@ -26,6 +26,8 @@ namespace LiteCall.ViewModels.Pages
 
         private readonly INavigationService _authNavigationService;
 
+        private readonly IStatusServices _statusServices;
+
 
         public SettingVMD(AccountStore accountStore,ServersAccountsStore serversAccountsStore, INavigationService authNavigationService, IhttpDataServices httpDataServices,IStatusServices statusServices, SettingsAccNavigationStore settingsAccNavigationStore)
         {
@@ -41,9 +43,9 @@ namespace LiteCall.ViewModels.Pages
 
             _httpDataServices = httpDataServices;
 
-            LogoutAccCommand = new AccountLogoutCommand(_accountStore);
+            _statusServices = statusServices;
 
-         
+            LogoutAccCommand = new AccountLogoutCommand(accountStore);
 
             AccountStore.CurrentAccountChange += AcoountStatusChange;
 
@@ -135,19 +137,23 @@ namespace LiteCall.ViewModels.Pages
 
             };
 
-            if ( await _httpDataServices.CheckServerStatus(NewServerApiIp))
+
+           var serverStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(NewServerApiIp));
+
+            if (serverStatus)
             {
 
-               var newServer = await _httpDataServices.ApiServerGetInfo(NewServerApiIp);
+               Server newServer = await _httpDataServices.ApiServerGetInfo(NewServerApiIp);
 
                if (newServer == null) return;
 
                newServer.ApiIp = NewServerApiIp;
 
                newSavedSeverAccount.SavedServer = newServer;
-                if (!ServersAccountsStore.add(newSavedSeverAccount))
+
+                if (!ServersAccountsStore.Add(newSavedSeverAccount))
                 {
-                    MessageBox.Show("this server already saved", "Сообщение");
+                  _statusServices.ChangeStatus(new StatusMessage{Message = "Server already exists", isError = true});
                 }
 
             }

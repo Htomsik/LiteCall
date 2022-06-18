@@ -23,11 +23,6 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-
-            <system:String x:Key="Ip">SERVER IP</system:String>
-
-            <system:String x:Key="Login">LOGIN</system:String>
-
             <converters:IsAuthoriseToStingConverter x:Key="IsAuthoriseToStingConverter" />
 
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -309,7 +304,8 @@
                                         x:Name="Ip"
                                         Grid.Row="1"
                                         Margin="20,8"
-                                        Style="{StaticResource LogPassTextBox}">
+                                        Style="{StaticResource LogPassTextBox}"
+                                        Tag="SERVER IP">
 
                                         <Binding Path="NewServerApiIp" UpdateSourceTrigger="PropertyChanged">
 
@@ -319,17 +315,14 @@
 
                                         </Binding>
 
-
-                                        <TextBox.Resources>
-                                            <StaticResource x:Key="BackText" ResourceKey="Ip" />
-                                        </TextBox.Resources>
                                     </TextBox>
 
                                     <TextBox
                                         x:Name="Login"
                                         Grid.Row="2"
                                         Margin="20,8"
-                                        Style="{StaticResource LogPassTextBox}">
+                                        Style="{StaticResource LogPassTextBox}"
+                                        Tag="LOGIN">
 
                                         <TextBox.Text>
                                             <Binding Path="NewSeverLogin" UpdateSourceTrigger="PropertyChanged">
@@ -340,10 +333,6 @@
 
                                             </Binding>
                                         </TextBox.Text>
-
-                                        <TextBox.Resources>
-                                            <StaticResource x:Key="BackText" ResourceKey="Login" />
-                                        </TextBox.Resources>
                                     </TextBox>
 
 

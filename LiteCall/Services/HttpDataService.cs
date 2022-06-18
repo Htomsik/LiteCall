@@ -65,7 +65,7 @@ namespace LiteCall.Services
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = new HttpResponseMessage();
+            HttpResponseMessage response;
 
             
             try
@@ -183,7 +183,7 @@ namespace LiteCall.Services
 
             _statusServices.ChangeStatus(new StatusMessage { Message = "Get server info. . ." });
 
-            var response = new HttpResponseMessage();
+            HttpResponseMessage response;
 
             try
             {
@@ -199,12 +199,9 @@ namespace LiteCall.Services
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
+                _statusServices.DeleteStatus();
 
-                var a = response.Content.ReadAsStringAsync().Result;
-
-                var str = JsonSerializer.Deserialize<Server>(a);
-
-                return str;
+                return JsonSerializer.Deserialize<Server>(response.Content.ReadAsStringAsync().Result);
             }
             else
             {
@@ -222,10 +219,9 @@ namespace LiteCall.Services
         public  async Task<ImagePacket> GetCaptcha(string serverIp = DefaultMainIp)
         {
 
-
             _statusServices.ChangeStatus(new StatusMessage { Message = "Get captcha from server. . ."});
 
-            var httpResponseMessage = new HttpResponseMessage();
+            HttpResponseMessage httpResponseMessage;
 
             var serialize = JsonSerializer.Serialize(ProgramCaptchaID.ToString());
 
@@ -269,7 +265,7 @@ namespace LiteCall.Services
             {
                 try
                 {
-                    using (var client = new TcpClient(serverAddresArray[0], Convert.ToInt32(serverAddresArray[1]))); 
+                   using (var client =  new TcpClient(serverAddresArray[0], Convert.ToInt32(serverAddresArray[1]))); 
                         
                     _statusServices.DeleteStatus();
 
@@ -285,6 +281,7 @@ namespace LiteCall.Services
             else
             {
                 _statusServices.ChangeStatus(new StatusMessage { Message = "Incorrect Ip adrress", isError = true });
+
                 return false;
 
             }

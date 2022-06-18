@@ -53,7 +53,7 @@ namespace LiteCall.Services
 
             _NewAccount.IsAuthorise = true;
 
-            _serversAccountsStore.replace(_currentServerStore.CurrentServer,_NewAccount);
+            _serversAccountsStore.Replace(_currentServerStore.CurrentServer,_NewAccount);
 
             _closeModalNavigationService.Navigate();
 

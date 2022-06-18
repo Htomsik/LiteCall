@@ -15,9 +15,6 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class AuthorisationPageVMD : BaseVMD
     {
-        #region Команды
-
-
         public AuthorisationPageVMD(INavigationService registrationNavigationServices, IAuthorisationServices authorisationServices)
         {
 
@@ -28,6 +25,9 @@ namespace LiteCall.ViewModels.Pages
 
             OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationServices);
         }
+
+
+        #region Команды
 
         public ICommand AuthCommand { get; }
 
@@ -79,33 +79,32 @@ namespace LiteCall.ViewModels.Pages
         #region Данные с формы
 
 
-
         public IAuthorisationServices AuthorisationServices { get; }
 
 
 
-        private bool _CheckStatus;
+        private bool _checkStatus;
         public bool CheckStatus
         {
-            get => _CheckStatus;
-            set => Set(ref _CheckStatus, value);
+            get => _checkStatus;
+            set => Set(ref _checkStatus, value);
         }
 
 
-        private string _Login;
+        private string _login;
         public string Login
         {
-            get => _Login;
-            set => Set(ref _Login, value);
+            get => _login;
+            set => Set(ref _login, value);
         }
 
 
-        private string _Password;
+        private string _password;
 
         public string Password
         {
-            get => _Password;
-            set => Set(ref _Password, value);
+            get => _password;
+            set => Set(ref _password, value);
         }
 
 
