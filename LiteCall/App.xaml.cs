@@ -80,7 +80,7 @@ namespace LiteCall
             });
 
             services
-                .RegisterrServices()
+                .RegisterServices()
                 .RegisterStores()
                 .RegisterVMD();
 

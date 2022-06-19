@@ -12,7 +12,7 @@ namespace LiteCall.Services
 {
     internal static class ServicesRegistrator
     {
-        public static IServiceCollection RegisterrServices(this IServiceCollection services)
+        public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
 
             #region Сервисы
@@ -21,15 +21,15 @@ namespace LiteCall.Services
 
             services.AddSingleton<MainAccountFileServices>(s => new MainAccountFileServices(s.GetRequiredService<AccountStore>(), s.GetRequiredService<SettingsStore>()));
 
-            services.AddSingleton<CloseAdditionalNavigationServices>();
+            services.AddTransient<CloseAdditionalNavigationServices>();
 
-            services.AddSingleton<CloseModalNavigationServices>();
+            services.AddTransient<CloseModalNavigationServices>();
 
             services.AddSingleton<IStatusServices,StatusServices>();
 
-            services.AddSingleton<IEncryptServices, EncryptServices>();
+            services.AddTransient<IEncryptServices, EncryptServices>();
 
-            services.AddSingleton<IimageServices, ImageServices>();
+            services.AddTransient<IimageServices, ImageServices>();
 
             services.AddSingleton<IhttpDataServices, HttpDataService>();
 
