@@ -34,9 +34,9 @@ namespace LiteCall.Services
             _httpDataServices = httpDataServices;
         }
 
-        public async Task<int> Registration(Account _NewAccount, string _Captcha)
+        public async Task<int> Registration( RegistrationModel registrationModel)
         {
-            var Response = await _httpDataServices.Registration(_NewAccount, _Captcha,_currentServerStore.CurrentServer.ApiIp);
+            var Response = await _httpDataServices.Registration(registrationModel, _currentServerStore.CurrentServer.ApiIp);
 
             if (Response.Replace(" ", "") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
@@ -49,11 +49,13 @@ namespace LiteCall.Services
                 return 1;
             }
 
-            _NewAccount.Token = Response;
+            Account newAccount = (Account)registrationModel.recoveryAccount;
 
-            _NewAccount.IsAuthorise = true;
+            newAccount.Token = Response;
 
-            _serversAccountsStore.Replace(_currentServerStore.CurrentServer,_NewAccount);
+            newAccount.IsAuthorise = true;
+
+            _serversAccountsStore.Replace(_currentServerStore.CurrentServer,newAccount);
 
             _closeModalNavigationService.Navigate();
 

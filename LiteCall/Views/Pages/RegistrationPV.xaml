@@ -55,6 +55,9 @@
                         <RowDefinition Height="0.2*" />
                         <RowDefinition Height="0.2*" />
                         <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="0.2*" />
+
                     </Grid.RowDefinitions>
 
                     <TextBlock
@@ -111,10 +114,51 @@
                         Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}" />
 
 
+                    <ComboBox
+                        x:Name="QuestionCB"
+                        Grid.Row="4"
+                        Margin="20,5,1,5"
+                        IsEnabled="{Binding CanServerConnect, UpdateSourceTrigger=PropertyChanged}"
+                        ItemsSource="{Binding QestionsCollection}"
+                        SelectedItem="{Binding SelectedQestion}"
+                        Tag="QUESTION">
+
+                        <ComboBox.ItemTemplate>
+
+                            <DataTemplate>
+                                <Grid>
+
+                                    <TextBlock Text="{Binding _Question}" />
+                                </Grid>
+                            </DataTemplate>
+
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+
+                    <TextBox
+                        x:Name="AnswerTB"
+                        Grid.Row="5"
+                        Margin="20,5"
+                        Style="{StaticResource PassTextBox}"
+                        Tag="ANSWER">
+                        <TextBox.Text>
+                            <Binding
+                                Mode="OneWayToSource"
+                                Path="QuestionAnswer"
+                                UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validationRule:AnswerValidation />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+
+                    </TextBox>
+
 
                     <!--  Переход на логин  -->
                     <StackPanel
-                        Grid.Row="4"
+                        Grid.Row="6"
                         Margin="6"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
@@ -168,12 +212,46 @@
                 Command="{Binding OpenModalCommand}">
                 <TextBlock Style="{DynamicResource Bigtext}" Text="REGISTRATION" />
 
-                <Button.CommandParameter>
+                <!-- <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
                         <Binding ElementName="UsernameTB" Path="(Validation.HasError)" />
                         <Binding ElementName="PasswordTB" Path="(Validation.HasError)" />
                     </MultiBinding>
-                </Button.CommandParameter>
+                </Button.CommandParameter>-->
+
+
+                <Button.Style>
+                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+
+                        <Setter Property="IsEnabled" Value="True" />
+
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+
+                                <MultiDataTrigger.Conditions>
+
+                                    <Condition Binding="{Binding ElementName=UsernameTB, Path=(Validation.HasError)}" Value="True" />
+
+                                    <Condition Binding="{Binding ElementName=PasswordTB, Path=(Validation.HasError)}" Value="True" />
+
+                                    <Condition Binding="{Binding ElementName=PasswordConfirmTB, Path=(Validation.HasError)}" Value="True" />
+
+                                    <Condition Binding="{Binding ElementName=AnswerTB, Path=(Validation.HasError)}" Value="True" />
+
+                                    <Condition Binding="{Binding ElementName=QuestionCB, Path=SelectedIndex}" Value="-1" />
+
+                                </MultiDataTrigger.Conditions>
+
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </MultiDataTrigger.Setters>
+
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+
+
+                    </Style>
+                </Button.Style>
             </Button>
 
             <modalCutom:ModalCustom

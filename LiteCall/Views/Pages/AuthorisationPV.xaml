@@ -54,6 +54,7 @@
                     <RowDefinition Height="0.2*" />
                     <RowDefinition Height="0.2*" />
                     <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.2*" />
                 </Grid.RowDefinitions>
 
                 <TextBlock
@@ -122,6 +123,7 @@
 
                 </StackPanel>
 
+                <!--  регистрация  -->
                 <StackPanel
                     Grid.Row="4"
                     Margin="8,5"
@@ -156,6 +158,43 @@
                         <TextBlock.InputBindings>
                             <MouseBinding
                                 Command="{Binding OpenRegistrationPageCommand}"
+                                CommandParameter="2"
+                                MouseAction="LeftClick" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </StackPanel>
+
+                <!--  Восстановление пароля  -->
+                <StackPanel
+                    Grid.Row="5"
+                    Margin="8,5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal">
+
+                    <TextBlock Margin="5,0,5,0" FontSize="16">
+                        Forgot password?
+                        <TextBlock.Style>
+
+                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
+                                <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
+
+
+                                <Style.Triggers>
+
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="TextDecorations" Value="UnderLine" />
+                                    </Trigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+                        </TextBlock.Style>
+
+                        <TextBlock.InputBindings>
+                            <MouseBinding
+                                Command="{Binding OpenRecoveryPasswordPageCommand}"
                                 CommandParameter="2"
                                 MouseAction="LeftClick" />
                         </TextBlock.InputBindings>

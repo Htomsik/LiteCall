@@ -203,7 +203,6 @@
                     <ControlTemplate.Triggers>
 
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-                            <Setter TargetName="Block" Property="Text" Value="{DynamicResource ResourceKey=BackText}" />
                             <Setter TargetName="Block" Property="Visibility" Value="Visible" />
                         </DataTrigger>
 

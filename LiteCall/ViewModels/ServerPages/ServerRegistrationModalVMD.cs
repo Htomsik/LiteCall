@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,25 @@ namespace LiteCall.ViewModels.ServerPages
 
             OpenModalCommand = new AsyncLamdaCommand(OnOpenModalCommamdExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanOpenModalCommamdExecute);
 
+
+            GetQuestionList();
+
+        }
+
+
+        private async void GetQuestionList()
+        {
+            try
+            {
+                QestionsCollection =
+                    new ObservableCollection<Question>(await _httpDataServices.GetPasswordRecoveryQestions(_currentServerStore.CurrentServer.ApiIp));
+
+                CanServerConnect = true;
+            }
+            catch (Exception e)
+            {
+                CanServerConnect = false;
+            }
         }
 
         public ICommand RegistrationCommand { get; }
@@ -49,7 +69,17 @@ namespace LiteCall.ViewModels.ServerPages
                 Password = this.Password,
             };
 
-            var Response = await _registrationSevices.Registration(newAccount, CapthcaString);
+
+
+            var newRegistrationmodel = new RegistrationModel()
+            {
+                Captcha = CapthcaString,
+                QestionAnswer = QuestionAnswer,
+                Question = SelectedQestion,
+                recoveryAccount = newAccount
+            };
+
+            var Response = await _registrationSevices.Registration(newRegistrationmodel);
 
             switch (Response)
             {
@@ -93,31 +123,25 @@ namespace LiteCall.ViewModels.ServerPages
 
         private bool CanOpenModalCommamdExecute(object p)
         {
-            var param = (Tuple<object, object>)p;
-
-            var logintb = !Convert.ToBoolean(param?.Item1);
-
-            var passtb = !Convert.ToBoolean(param?.Item2);
-
             if (Password != ConfirmPassword)
             {
                 return false;
             }
 
-            return logintb && passtb && !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword);
+            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) && !string.IsNullOrEmpty(QuestionAnswer);
 
         }
         public async Task<bool> GetCaptcha()
         {
             
-            var receive_bytes = await _httpDataServices.GetCaptcha(_currentServerStore.CurrentServer.ApiIp);
+            var receiveBytes = await _httpDataServices.GetCaptcha(_currentServerStore.CurrentServer.ApiIp);
 
-            if (receive_bytes != null)
+            if (receiveBytes != null)
             {
 
-                var CaptchaFromServer = ImageBox.BytesToImage(receive_bytes.GetRawData());
+                var captchaFromServer = ImageBox.BytesToImage(receiveBytes.GetRawData());
 
-                Capthca = _imageServices.GetImageStream(CaptchaFromServer);
+                Capthca = _imageServices.GetImageStream(captchaFromServer);
 
                 return true;
             }
@@ -130,59 +154,93 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
-        private bool _ModalStatus;
+
+        private bool _CanServerConnect;
+
+        public bool CanServerConnect
+        {
+            get => _CanServerConnect;
+            set => Set(ref _CanServerConnect, value);
+        }
+
+
+        private bool _modalStatus;
 
         public bool ModalStatus
         {
-            get => _ModalStatus;
-            set => Set(ref _ModalStatus, value);
+            get => _modalStatus;
+            set => Set(ref _modalStatus, value);
         }
 
 
-        private string _CapthcaString;
+        private string _capthcaString;
 
         public string CapthcaString
         {
-            get => _CapthcaString;
-            set => Set(ref _CapthcaString, value);
+            get => _capthcaString;
+            set => Set(ref _capthcaString, value);
         }
 
 
-        private ImageSource _Capthca;
+        private ImageSource _capthca;
 
         public ImageSource Capthca
         {
-            get => _Capthca;
-            set => Set(ref _Capthca, value);
+            get => _capthca;
+            set => Set(ref _capthca, value);
         }
 
 
 
-        private string _Login;
+        private string _login;
         public string Login
         {
-            get => _Login;
-            set => Set(ref _Login, value);
+            get => _login;
+            set => Set(ref _login, value);
         }
 
 
-        private string _Password;
+        private string _password;
         public string Password
         {
-            get => _Password;
-            set => Set(ref _Password, value);
+            get => _password;
+            set => Set(ref _password, value);
         }
 
 
-        private string _ConfirmPassword;
+        private string _confirmPassword;
         public string ConfirmPassword
         {
-            get => _ConfirmPassword;
-            set => Set(ref _ConfirmPassword, value);
+            get => _confirmPassword;
+            set => Set(ref _confirmPassword, value);
+        }
+
+        private string _questionAnswer;
+
+        public string QuestionAnswer
+        {
+            get => _questionAnswer;
+            set => Set(ref _questionAnswer, value);
+        }
+
+        private ObservableCollection<Question> _qestionsCollection;
+
+        public ObservableCollection<Question> QestionsCollection
+        {
+            get => _qestionsCollection;
+            set => Set(ref _qestionsCollection, value);
         }
 
 
-        
+        private Question _selectedQestion;
+
+        public Question SelectedQestion
+        {
+            get => _selectedQestion;
+            set => Set(ref _selectedQestion, value);
+        }
+
+
         private readonly CurrentServerStore _currentServerStore;
 
         private readonly IRegistrationSevices _registrationSevices;

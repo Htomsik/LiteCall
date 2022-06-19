@@ -14,27 +14,26 @@ namespace LiteCall.Infrastructure.Commands
    
     
         internal class NavigationCommand : BaseCommand
-           
         {
 
             private readonly INavigationService _NavigationService;
 
             private readonly Func<bool> _CanExecute;
 
-        public NavigationCommand(INavigationService navigationService, Func<bool> CanExecute = null)
+            public NavigationCommand(INavigationService navigationService, Func<bool> CanExecute = null)
             {
-                _NavigationService = navigationService;
-                _CanExecute = CanExecute;
-        }
+                    _NavigationService = navigationService;
+                    _CanExecute = CanExecute;
+            }
 
 
-        public override bool CanExecute(object parameter) => _CanExecute?.Invoke() ?? true;
+            public override bool CanExecute(object parameter) => _CanExecute?.Invoke() ?? true;
 
 
-        public override void Execute(object parameter)
+            public override void Execute(object parameter)
             {
-               
-                _NavigationService.Navigate();
+                   
+                    _NavigationService.Navigate();
             }
         }
     

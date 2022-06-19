@@ -9,6 +9,6 @@ namespace LiteCall.Services.Interfaces
 {
     public interface IRegistrationSevices
     {
-        Task<int> Registration(Account _NewAccount,string Captcha);
+        Task<int> Registration(RegistrationModel registrationModel);
     }
 }

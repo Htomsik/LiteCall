@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
 using LiteCall.Services.Interfaces;
+using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.Services
 {
@@ -23,6 +24,7 @@ namespace LiteCall.Services
             _CreateViewModel = createViewModel;
         }
 
+        
         public void Navigate()
         {
             _mainWindowNavigationStore.MainWindowCurrentViewModel = _CreateViewModel();

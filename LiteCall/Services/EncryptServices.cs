@@ -12,11 +12,11 @@ namespace LiteCall.Services
 {
     public  class EncryptServices:IEncryptServices
     {
-        public string Encrypt(string content)
+        public string Sha1Encrypt(string content)
         {
             if (string.IsNullOrEmpty(content)) return null;
 
-            using var sha1 = new SHA256Managed();
+            using var sha1 = new SHA1Managed();
 
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
 

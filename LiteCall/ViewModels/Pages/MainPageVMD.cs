@@ -323,7 +323,7 @@ namespace LiteCall.ViewModels.Pages
             if (!CheckStatus)
             {
                 //Получить информацию о сервере из главной базы по имени
-                ApiIp = await _httpDataServices.MainServerGetApiIP(ServernameOrIp);
+                ApiIp = await _httpDataServices.MainServerGetApiIp(ServernameOrIp);
 
                 if (ApiIp == null)
                 {

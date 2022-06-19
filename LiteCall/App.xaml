@@ -15,7 +15,8 @@
                 <ResourceDictionary Source="Resources/Styles/Buttons.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ContextMenu.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ToolTips.xaml" />
-                <ResourceDictionary Source="Resources/Styles/ToggleButtobs.xaml" />
+                <ResourceDictionary Source="Resources/Styles/ToggleButtons.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Combobox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

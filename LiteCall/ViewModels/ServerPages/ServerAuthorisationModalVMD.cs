@@ -15,7 +15,7 @@ namespace LiteCall.ViewModels.ServerPages
 {
     internal class ServerAuthorisationModalVMD : AuthorisationPageVMD
     {
-        public ServerAuthorisationModalVMD(INavigationService registrationNavigationServices, IAuthorisationServices authorisationServices) : base(registrationNavigationServices, authorisationServices)
+        public ServerAuthorisationModalVMD(INavigationService registrationNavigationServices,INavigationService passwordRecoveryNavigationService, IAuthorisationServices authorisationServices) : base(registrationNavigationServices,passwordRecoveryNavigationService, authorisationServices)
         {
 
         }

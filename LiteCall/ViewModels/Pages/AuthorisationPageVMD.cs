@@ -15,7 +15,7 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class AuthorisationPageVMD : BaseVMD
     {
-        public AuthorisationPageVMD(INavigationService registrationNavigationServices, IAuthorisationServices authorisationServices)
+        public AuthorisationPageVMD(INavigationService registrationNavigationServices,INavigationService passwordRecoveryNavigationService, IAuthorisationServices authorisationServices)
         {
 
             AuthorisationServices = authorisationServices;
@@ -24,6 +24,9 @@ namespace LiteCall.ViewModels.Pages
                 new AsyncLamdaCommand(OnAuthExecuteExecuted, (ex) => StatusMessage = ex.Message, CanAuthExecute);
 
             OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationServices);
+
+            OpenRecoveryPasswordPageCommand = new NavigationCommand(passwordRecoveryNavigationService);
+
         }
 
 
@@ -72,6 +75,8 @@ namespace LiteCall.ViewModels.Pages
         }
 
         public ICommand OpenRegistrationPageCommand { get; }
+
+        public ICommand OpenRecoveryPasswordPageCommand { get; }
 
 
         #endregion

@@ -18,7 +18,7 @@
     Width="800"
     Height="450"
     MinWidth="500"
-    MinHeight="450"
+    MinHeight="500"
     d:DesignHeight="400"
     d:DesignWidth="400"
     AllowsTransparency="True"
@@ -27,11 +27,8 @@
     WindowStyle="None"
     mc:Ignorable="d">
 
-
-
-
-
     <Window.Resources>
+
         <ResourceDictionary>
 
             <commands:CloseAppCommand x:Key="CloseAppComm" />
@@ -40,15 +37,11 @@
 
             <system:Double x:Key="MinScale">1.4</system:Double>
 
-
-
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-
-
         </ResourceDictionary>
-    </Window.Resources>
 
+    </Window.Resources>
 
     <Window.Style>
         <Style TargetType="{x:Type Window}">
@@ -71,7 +64,6 @@
         </Style>
 
     </Window.Style>
-
 
     <Border>
 
@@ -98,7 +90,6 @@
 
                 </ContentControl.Resources>
             </ContentControl>
-
 
             <!--  Для настроек, отрывается поверх остальных окон  -->
 
@@ -182,6 +173,10 @@
                                 <pages:AuthorisationPV />
                             </DataTemplate>
 
+                            <DataTemplate DataType="{x:Type server:ServerRegistrationModalVMD}">
+                                <pages:PasswordRecoveryPV />
+                            </DataTemplate>
+
                         </ContentControl.Resources>
 
 
@@ -252,7 +247,7 @@
                 </loadingCustom:LoadingCustom>
 
 
-           
+
 
             </Border>
 

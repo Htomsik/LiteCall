@@ -8,6 +8,6 @@ namespace LiteCall.Services.Interfaces
 {
     public interface IEncryptServices
     {
-        public  string Encrypt(string content);
+        public  string Sha1Encrypt(string content);
     }
 }

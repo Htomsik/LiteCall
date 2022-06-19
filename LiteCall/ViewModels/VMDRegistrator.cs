@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ABI.Windows.Media.Capture;
 using LiteCall.Services;
 using LiteCall.Services.Authorisation;
 using LiteCall.Services.Interfaces;
@@ -24,18 +25,21 @@ namespace LiteCall.ViewModels
 
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
 
-            #region Регистрация/Авторизация на мейн сервере
+            #region Регистрация/Авторизация/Восстановление пароля на мейн сервере
 
             services.AddTransient<AuthorisationPageVMD>(s => new AuthorisationPageVMD(
-                CreateRegistrationPageNavigationServices(s), CreateMainAuthorisationServices(s)));
+                CreateRegistrationPageNavigationServices(s),CreatePasswordRecoveryPageNavigationService(s), CreateMainAuthorisationServices(s)));
 
 
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
-                s.GetRequiredService<AccountStore>(),
                 CreateAutPageNavigationServices(s),
                 CreateMainRegistrationSevices(s),
                 s.GetRequiredService<IhttpDataServices>(),
                 s.GetRequiredService<IimageServices>(),s.GetRequiredService<IStatusServices>()));
+
+            services.AddTransient<PasswordRecoveryVMD>(
+                s=> new PasswordRecoveryVMD(
+                    CreateAutPageNavigationServices(s), s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>()));
 
             #endregion
 
@@ -50,7 +54,12 @@ namespace LiteCall.ViewModels
 
 
             services.AddTransient<ServerAuthorisationModalVMD>(s => new ServerAuthorisationModalVMD(
-                CreateModalRegistrationPageNavigationServices(s), CreateApiAuthorisationServices(s)));
+                CreateModalRegistrationPageNavigationServices(s),
+                CreateModalPasswordRecoveryPageNavigationService(s),
+                CreateApiAuthorisationServices(s)));
+
+
+            services.AddTransient<ServerPasswordRecoveryModalVMD>();
 
 
             #endregion
@@ -112,6 +121,13 @@ namespace LiteCall.ViewModels
                 () => serviceProvider.GetRequiredService<RegistrationPageVMD>());
         }
 
+        private static INavigationService CreatePasswordRecoveryPageNavigationService(IServiceProvider serviceProvider)
+        {
+            return new SettingAccNavigationServices<PasswordRecoveryVMD>
+                (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
+                    () => serviceProvider.GetRequiredService<PasswordRecoveryVMD>());
+        }
+
         private static INavigationService CreateMainPageNavigationServices(IServiceProvider serviceProvider)
         {
             return new NavigationServices<MainPageVMD>(serviceProvider.GetRequiredService<MainWindowNavigationStore>(),
@@ -144,10 +160,14 @@ namespace LiteCall.ViewModels
             return new ModalNavigateServices<ServerAuthorisationModalVMD>(serviceProvider.GetRequiredService<ModalNavigationStore>(), () => serviceProvider.GetRequiredService<ServerAuthorisationModalVMD>());
         }
 
+        private static INavigationService CreateModalPasswordRecoveryPageNavigationService(IServiceProvider serviceProvider)
+        {
+            return new ModalNavigateServices<ServerPasswordRecoveryModalVMD>(serviceProvider.GetRequiredService<ModalNavigationStore>(), () => serviceProvider.GetRequiredService<ServerPasswordRecoveryModalVMD>());
+        }
 
         #endregion
 
-        #region Авторизация/Регистрация VMD
+        #region Авторизация/Регистрация/восстановление пароля сервисы
         private static IRegistrationSevices CreateApiRegistrationSevices(IServiceProvider serviceProvider)
         {
             return new RegistrationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
@@ -160,7 +180,6 @@ namespace LiteCall.ViewModels
         {
             return new RegistrationMainServerService(serviceProvider.GetRequiredService<AccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
         }
-
 
 
         private static IAuthorisationServices CreateApiAuthorisationServices(IServiceProvider serviceProvider)

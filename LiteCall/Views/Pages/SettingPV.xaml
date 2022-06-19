@@ -172,6 +172,10 @@
                                     <local:RegistrationPV />
                                 </DataTemplate>
 
+                                <DataTemplate DataType="{x:Type viewModel:PasswordRecoveryVMD}">
+                                    <local:PasswordRecoveryPV />
+                                </DataTemplate>
+
                             </ContentControl.Resources>
 
 

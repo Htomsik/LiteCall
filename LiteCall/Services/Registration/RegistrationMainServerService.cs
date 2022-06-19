@@ -23,28 +23,33 @@ namespace LiteCall.Services
             _httpDataServices = httpDataServices;
         }
 
-        public async Task<int> Registration(Account _NewAccount,string _Captcha)
+        public async Task<int> Registration( RegistrationModel registrationModel)
         {
             
-            var Response = await _httpDataServices.Registration(_NewAccount,_Captcha);
+            var response = await _httpDataServices.Registration(registrationModel);
 
-            if (Response.Replace(" ", "") == System.Net.HttpStatusCode.BadRequest.ToString())
+            if (response.Replace(" ", "") == System.Net.HttpStatusCode.BadRequest.ToString())
             {
                 return 0;
             }
-            else if (Response == System.Net.HttpStatusCode.Conflict.ToString())
+            else if (response == System.Net.HttpStatusCode.Conflict.ToString())
             {
                 return 1;
             }
 
-            _NewAccount.Token = Response;
+            Account newAccount = (Account)registrationModel.recoveryAccount;
 
-            _NewAccount.IsAuthorise = true;
+            newAccount.Token = response;
 
-            _mainAccountStore.CurrentAccount = _NewAccount;
+            newAccount.IsAuthorise = true;
+
+            _mainAccountStore.CurrentAccount = newAccount;
+
 
             return 2;
 
         }
+
+      
     }
 }

@@ -55,11 +55,18 @@ namespace LiteCall.Services
        };
 
 
-       public async Task<string> GetAuthorizeToken(Account newAcc, string apiServerIp= DefaultMainIp)
+       public async Task<string> GetAuthorizeToken(Reg_Rec_PasswordAccount newAcc, string apiServerIp = DefaultMainIp)
         {
+
+
+            if (apiServerIp == null)
+            {
+                apiServerIp = DefaultMainIp;
+            }
+
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
-            var authModel = new { Login = newAcc.Login, Password = _encryptServices.Encrypt(newAcc.Password),Guid = ProgramCaptchaID };
+            var authModel = new { Login = newAcc.Login, Password = _encryptServices.Sha1Encrypt(newAcc.Password),Guid = ProgramCaptchaID };
 
             var json = JsonSerializer.Serialize(authModel);
 
@@ -74,7 +81,7 @@ namespace LiteCall.Services
             }
             catch (Exception ex)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = ex.Message, isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the server", isError = true });
 
                 return "invalid";
             }
@@ -95,11 +102,20 @@ namespace LiteCall.Services
 
         }
 
-        public  async Task<string> Registration(Account newAcc, string capthca, string apiServerIp = DefaultMainIp)
+
+
+        public  async Task<string> Registration(RegistrationModel registrationModel, string apiServerIp = DefaultMainIp)
         {
+
+
+            if (apiServerIp == null)
+            {
+                apiServerIp = DefaultMainIp;
+            }
+
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
-            var authModel = new { Login = newAcc.Login, Password = _encryptServices.Encrypt(newAcc.Password), Guid = ProgramCaptchaID,Captcha = capthca };
+            var authModel = new { Login = registrationModel.recoveryAccount.Login, Password = _encryptServices.Sha1Encrypt(registrationModel.recoveryAccount.Password), Guid = ProgramCaptchaID, Captcha = registrationModel.Captcha, QuestionsId = registrationModel.Question.Id, AnswersecurityQ = registrationModel.QestionAnswer};
 
             var json = JsonSerializer.Serialize(authModel);
 
@@ -109,12 +125,12 @@ namespace LiteCall.Services
 
             try
             {
-                 response = await httpClient.PostAsync($"https://{apiServerIp}/api/auth/Registration", content).ConfigureAwait(false);
+                 response = await httpClient.PostAsync($"https://{apiServerIp}/api/Auth/Registration", content).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
 
-                _statusServices.ChangeStatus(new StatusMessage { Message = ex.Message, isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
 
                 return null;
             }
@@ -137,7 +153,7 @@ namespace LiteCall.Services
 
 
 
-        public async Task<string> MainServerGetApiIP(string serverName)
+        public async Task<string> MainServerGetApiIp(string serverName)
         {
             _statusServices.ChangeStatus(new StatusMessage { Message = "Get API server ip. . ." });
 
@@ -153,7 +169,9 @@ namespace LiteCall.Services
             }
             catch (Exception ex)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = ex.Message, isError = true });
+
+
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
 
                 return null;
             }
@@ -191,7 +209,7 @@ namespace LiteCall.Services
             }
             catch (Exception ex)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = ex.Message, isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
 
                 return null;
             }
@@ -216,8 +234,12 @@ namespace LiteCall.Services
 
 
 
-        public  async Task<ImagePacket> GetCaptcha(string serverIp = DefaultMainIp)
+        public  async Task<ImagePacket?> GetCaptcha(string apiServerIp = DefaultMainIp)
         {
+            if (apiServerIp == null)
+            {
+                apiServerIp = DefaultMainIp;
+            }
 
             _statusServices.ChangeStatus(new StatusMessage { Message = "Get captcha from server. . ."});
 
@@ -229,11 +251,11 @@ namespace LiteCall.Services
 
             try
             {
-                 httpResponseMessage = await httpClient.PostAsync($"https://{serverIp}/api/auth/CaptchaGenerator", stringContent).ConfigureAwait(false);
+                 httpResponseMessage = await httpClient.PostAsync($"https://{apiServerIp}/api/auth/CaptchaGenerator", stringContent).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = ex.Message, isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
 
                 return null;
             }
@@ -273,7 +295,7 @@ namespace LiteCall.Services
                 }
                 catch (SocketException ex)
                 {
-                    _statusServices.ChangeStatus(new StatusMessage { Message = ex.Message,isError = true});
+                    _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
 
                     return false;
                 }
@@ -286,13 +308,103 @@ namespace LiteCall.Services
 
             }
 
-           
-
       }
 
+      public async Task<List<Question>> GetPasswordRecoveryQestions(string apiServerIp = DefaultMainIp)
+      {
 
-          public  async Task<string> GetRoleFromJwtToken(string token)
+          if (apiServerIp == null)
           {
+              apiServerIp = DefaultMainIp;
+          }
+
+
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Get Qestions from server. . ." });
+
+          HttpResponseMessage response;
+
+          try
+          {
+              response = await httpClient.GetAsync($"https://{apiServerIp}/api/auth/SecurityQuestions").ConfigureAwait(false);
+          }
+          catch (Exception ex)
+          {
+
+              _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+
+              return null;
+          }
+
+
+          if (response.StatusCode == System.Net.HttpStatusCode.OK)
+          {
+              _statusServices.DeleteStatus();
+
+              return JsonSerializer.Deserialize<List<Question>>(response.Content.ReadAsStringAsync().Result);
+          }
+          else
+          {
+
+              _statusServices.ChangeStatus(new StatusMessage { Message = "Unknown error", isError = true });
+
+              return new List<Question>();
+          }
+
+
+        
+      }
+
+        public async Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiServerIp = DefaultMainIp)
+        {
+
+
+            if (apiServerIp == null)
+            {
+                apiServerIp = DefaultMainIp;
+            }
+
+
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
+
+          var authModel = new { Login = recoveryModel.recoveryAccount.Login, newPassword = _encryptServices.Sha1Encrypt(recoveryModel.recoveryAccount.Password), QuestionsId = recoveryModel.Question.Id, AnswersecurityQ = recoveryModel.QestionAnswer};
+
+          var json = JsonSerializer.Serialize(authModel);
+
+          var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+          HttpResponseMessage response;
+
+          try
+          {
+              response = await httpClient.PostAsync($"https://{apiServerIp}/api/Auth/СhangePasswordbySecurityQuestions", content).ConfigureAwait(false);
+          }
+          catch (Exception ex)
+          {
+
+              _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+
+              return false;
+          }
+
+
+          if (response.StatusCode == System.Net.HttpStatusCode.OK)
+          {
+              _statusServices.DeleteStatus();
+
+              return true;
+          }
+          else
+          {
+
+              _statusServices.ChangeStatus(new StatusMessage { Message = "Unknown error", isError = true });
+
+              return false;
+          }
+        }
+
+
+      public  async Task<string> GetRoleFromJwtToken(string token)
+      {
               try
               {
                   dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])));
@@ -302,9 +414,9 @@ namespace LiteCall.Services
               {
                   return "User";
               }
-          }
 
+      }
 
-
+          
     }
 }
