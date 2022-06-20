@@ -20,8 +20,8 @@ namespace LiteCall.ViewModels.ServerPages
         public ServerPasswordRecoveryModalVMD(INavigationService authPagenavigationservices,
             IStatusServices statusServices, 
             IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,
-            IRecoveryPasswordServices recoveryPasswordServices) 
-            : base(authPagenavigationservices, statusServices, getPassRecoveryQuestionsServices, recoveryPasswordServices)
+            IRecoveryPasswordServices recoveryPasswordServices, IEncryptServices encryptServices) 
+            : base(authPagenavigationservices, statusServices, getPassRecoveryQuestionsServices, recoveryPasswordServices, encryptServices)
         {
 
 

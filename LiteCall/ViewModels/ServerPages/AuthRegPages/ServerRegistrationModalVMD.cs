@@ -23,8 +23,8 @@ namespace LiteCall.ViewModels.ServerPages
             IRegistrationSevices registrationSevices,
             IStatusServices statusServices,
             ICaptchaServices captchaServices,
-            IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices) 
-            : base(authPagenavigationservices, registrationSevices, statusServices, captchaServices, getPassRecoveryQuestionsServices)
+            IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IEncryptServices encryptServices) 
+            : base(authPagenavigationservices, registrationSevices, statusServices, captchaServices, getPassRecoveryQuestionsServices,encryptServices)
         {
 
           

@@ -35,7 +35,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             CurrentServerStore = _CurrentServerStore;
 
-            StatusServices = statusServices;
+            _statusServices = statusServices;
 
             #endregion
 
@@ -63,14 +63,14 @@ namespace LiteCall.ViewModels.ServerPages
 
             #region команды
 
-            SendMessageCommand = new AsyncLamdaCommand(OnSendMessageExecuted, (ex) => StatusMessage = ex.Message, CanSendMessageExecuted);
+            SendMessageCommand = new AsyncLamdaCommand(OnSendMessageExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanSendMessageExecuted);
 
-            CreateNewRoomCommand = new AsyncLamdaCommand(OnCreateNewRoomExecuted,(ex) => StatusMessage = ex.Message,CanCreateNewRoomExecute);
+            CreateNewRoomCommand = new AsyncLamdaCommand(OnCreateNewRoomExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanCreateNewRoomExecute);
 
-            ConnectCommand = new AsyncLamdaCommand(OnConnectExecuted, (ex) => StatusMessage = ex.Message, CanConnectExecute);
+            ConnectCommand = new AsyncLamdaCommand(OnConnectExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanConnectExecute);
 
             ConnectWithPasswordCommand = new AsyncLamdaCommand(OnConnectWithPasswordCommandExecuted,
-                (ex) => StatusMessage = ex.Message, CanConectWithPasswordExecute);
+                ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanConectWithPasswordExecute);
 
             OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
 
@@ -85,10 +85,10 @@ namespace LiteCall.ViewModels.ServerPages
             #region Админ команды
 
             AdminDeleteRoomCommand = new AsyncLamdaCommand(OnAdminDeleteRoomExecuted,
-                (ex) => StatusMessage = ex.Message, CanAdminDeleteRoomExecute);
+                ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanAdminDeleteRoomExecute);
 
             AdminDisconnectUserFromRoomCommand = new AsyncLamdaCommand(OnAdminDisconnectUserFromRoomExecuted,
-                (ex) => StatusMessage = ex.Message, CanAdminDisconnectUserFromRoomExecute);
+                ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanAdminDisconnectUserFromRoomExecute);
 
             #endregion
 
@@ -170,7 +170,7 @@ namespace LiteCall.ViewModels.ServerPages
             try
             {
 
-                await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount, StatusServices);
+                await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount, _statusServices);
             }
             catch (Exception e)
             {
@@ -179,7 +179,7 @@ namespace LiteCall.ViewModels.ServerPages
             }
            
 
-            StatusServices.DeleteStatus();
+            _statusServices.DeleteStatus();
         }
 
 
@@ -315,7 +315,7 @@ namespace LiteCall.ViewModels.ServerPages
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show($"Error:{e.Message}");
+                    
 
                 }
 
@@ -443,7 +443,7 @@ namespace LiteCall.ViewModels.ServerPages
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Error:{e.Message}");
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", isError = true });
             }
         }
 
@@ -472,7 +472,7 @@ namespace LiteCall.ViewModels.ServerPages
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Error:{e.Message}");
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", isError = true });
             }
 
             CurrentMessage = string.Empty;
@@ -504,12 +504,7 @@ namespace LiteCall.ViewModels.ServerPages
         public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
-            
             // _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
-
-
-            StatusMessage = _playBuffer.BufferedBytes.ToString();
-
 
             if (_playBuffer.BufferedBytes < 3200)
             {
@@ -579,7 +574,10 @@ namespace LiteCall.ViewModels.ServerPages
             {
                 var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
 
+
                 ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
+
+
             }
             catch (Exception e)
             {
@@ -604,7 +602,8 @@ namespace LiteCall.ViewModels.ServerPages
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Error:{e.Message}");
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed disconnect from group", isError = true });
+
             }
 
         }
@@ -717,31 +716,31 @@ namespace LiteCall.ViewModels.ServerPages
 
 
         #region Данные с формы
-        private ObservableCollection<Message> _MessagesColCollection;
+        private ObservableCollection<Message> _messagesColCollection;
 
         public ObservableCollection<Message> MessagesColCollection
         {
-            get => _MessagesColCollection;
-            set => Set(ref _MessagesColCollection, value);
+            get => _messagesColCollection;
+            set => Set(ref _messagesColCollection, value);
         }
 
 
 
-        private CurrentServerStore _CurrentServerStore;
+        private CurrentServerStore _currentServerStore;
 
         public CurrentServerStore CurrentServerStore
         {
-            get => _CurrentServerStore;
-            set => Set(ref _CurrentServerStore, value);
+            get => _currentServerStore;
+            set => Set(ref _currentServerStore, value);
         }
 
 
-        private string _CurrentMessage;
+        private string _currentMessage;
 
         public string CurrentMessage
         {
-            get => _CurrentMessage;
-            set => Set(ref _CurrentMessage, value);
+            get => _currentMessage;
+            set => Set(ref _currentMessage, value);
         }
 
 
@@ -754,98 +753,82 @@ namespace LiteCall.ViewModels.ServerPages
         }
 
 
-        private string _NewRoomName;
+        private string _newRoomName;
 
         public string NewRoomName
         {
-            get => _NewRoomName;
-            set => Set(ref _NewRoomName, value);
+            get => _newRoomName;
+            set => Set(ref _newRoomName, value);
         }
 
 
 
-        private string _NewRoomPassword;
+        private string _newRoomPassword;
 
         public string NewRoomPassword
         {
-            get => _NewRoomPassword;
-            set => Set(ref _NewRoomPassword, value);
+            get => _newRoomPassword;
+            set => Set(ref _newRoomPassword, value);
         }
 
 
 
 
-        private bool _RoomPasswordModalStatus;
+        private bool _roomPasswordModalStatus;
 
         public bool RoomPasswordModalStatus
         {
-            get => _RoomPasswordModalStatus;
-            set => Set(ref _RoomPasswordModalStatus, value);
+            get => _roomPasswordModalStatus;
+            set => Set(ref _roomPasswordModalStatus, value);
         }
 
 
-        private string _RoomPassword;
+        private string _roomPassword;
 
         public string RoomPassword
         {
-            get => _RoomPassword;
-            set => Set(ref _RoomPassword, value);
+            get => _roomPassword;
+            set => Set(ref _roomPassword, value);
         }
 
-        private ServerRooms _SelRooms;
+        private ServerRooms _selRooms;
 
         public ServerRooms SelRooms
         {
-            get => _SelRooms;
-            set => Set(ref _SelRooms, value);
+            get => _selRooms;
+            set => Set(ref _selRooms, value);
         }
 
 
-        private ServerUser _SelServerUser;
+        private ServerUser _selServerUser;
 
         public ServerUser SelServerUser
         {
-            get => _SelServerUser;
-            set => Set(ref _SelServerUser, value);
+            get => _selServerUser;
+            set => Set(ref _selServerUser, value);
         }
 
 
 
-        private ObservableCollection<ServerRooms> _ServerRooms;
+        private ObservableCollection<ServerRooms> _serverRooms;
 
         public ObservableCollection<ServerRooms> ServerRooms
         {
-            get => _ServerRooms;
-            set => Set(ref _ServerRooms, value);
+            get => _serverRooms;
+            set => Set(ref _serverRooms, value);
         }
 
 
 
-        private ServerRooms _CurrentGroup;
+        private ServerRooms _currentGroup;
 
         public ServerRooms CurrentGroup
         {
-            get => _CurrentGroup;
-            set => Set(ref _CurrentGroup, value);
+            get => _currentGroup;
+            set => Set(ref _currentGroup, value);
         }
 
-        private string _statusMessage;
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                Set(ref _statusMessage, value);
-                OnPropertyChanged(nameof(HasStatusMessage));
-            }
-        }
-
-        public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
-
-
-
-
-
+     
 
         #endregion
 
@@ -858,7 +841,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         #region Сервисы
 
-        private readonly IStatusServices StatusServices;
+        private readonly IStatusServices _statusServices;
 
         #endregion
 

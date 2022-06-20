@@ -22,7 +22,7 @@ namespace LiteCall.Model
 
     public class Reg_Rec_PasswordAccount : User
     {
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 
 
@@ -32,7 +32,6 @@ namespace LiteCall.Model
         
         public string CurrentServerLogin { get; set; }
 
-        
         public string Role { get; set; }
 
         public string Token { get; set; }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.Stores;
 
 namespace LiteCall.Services.Interfaces
 {
@@ -15,7 +17,7 @@ namespace LiteCall.Services.Interfaces
 
         public Task<string> MainServerGetApiIp(string serverName);
 
-        public Task<Server> ApiServerGetInfo(string apiServerIp);
+        public Task<Server?> ApiServerGetInfo(string apiServerIp);
 
         public Task<ImagePacket?> GetCaptcha(string serverIp = null);
 
@@ -23,8 +25,12 @@ namespace LiteCall.Services.Interfaces
 
         public Task<string> GetRoleFromJwtToken(string token);
 
-        public Task<List<Question>> GetPasswordRecoveryQestions(string apiServerIp = null);
+        public Task<List<Question>?> GetPasswordRecoveryQestions(string apiServerIp = null);
 
         public Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiIp= null);
+
+        public Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, ObservableCollection<ServerAccount> savedServerAccounts);
+
+        public Task<ObservableCollection<ServerAccount>?> GetSaveServersUserOnMainServer(Account currentAccount);
     }
 }

@@ -16,11 +16,16 @@ namespace LiteCall.Services
         private readonly AccountStore _mainAccountStore;
 
         private readonly IhttpDataServices _httpDataServices;
-        public AuthoisationMainServerServices(AccountStore accountStore, IhttpDataServices httpDataServices)
+
+        private readonly IStatusServices _statusServices;
+
+        public AuthoisationMainServerServices(AccountStore accountStore, IhttpDataServices httpDataServices,IStatusServices statusServices)
         {
             _mainAccountStore = accountStore;
 
             _httpDataServices = httpDataServices;
+
+            _statusServices = statusServices;
         }
         public async Task<int> Login(bool isSeverAuthorise, Account newAccount, string severIp = null)
         {
@@ -37,23 +42,14 @@ namespace LiteCall.Services
                 newAccount.Token = Response;
 
                 newAccount.IsAuthorise = true;
+
+
             }
             else
             {
                 newAccount.IsAuthorise = false;
 
                 newAccount.Password = "";
-
-                var Response = await _httpDataServices.GetAuthorizeToken(newAccount);
-
-                if(Response == "invalid")
-                {
-                    MessageBox.Show("The server is not responding. The account will be local", "Сообщение");
-                }
-                else
-                {
-                    newAccount.Token= Response;
-                }
 
             }
 

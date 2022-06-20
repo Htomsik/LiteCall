@@ -15,8 +15,11 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class AuthorisationPageVMD : BaseVMD
     {
-        public AuthorisationPageVMD(INavigationService registrationNavigationServices,INavigationService passwordRecoveryNavigationService, IAuthorisationServices authorisationServices)
+        private readonly IEncryptServices _encryptServices;
+
+        public AuthorisationPageVMD(INavigationService registrationNavigationServices,INavigationService passwordRecoveryNavigationService, IAuthorisationServices authorisationServices,IEncryptServices encryptServices)
         {
+            _encryptServices = encryptServices;
 
             AuthorisationServices = authorisationServices;
 
@@ -54,10 +57,14 @@ namespace LiteCall.ViewModels.Pages
 
         private async Task OnAuthExecuteExecuted(object p)
         {
+            var Base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
+
+            Base64Sha1Password = await _encryptServices.Base64Encypt(Base64Sha1Password);
+
             var newAccount = new Account
             {
                 Login = this.Login,
-                Password = this.Password,
+                Password = Base64Sha1Password
             };
 
             var Response = await AuthorisationServices.Login(!CheckStatus, newAccount);

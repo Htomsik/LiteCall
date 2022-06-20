@@ -18,11 +18,15 @@ namespace LiteCall.ViewModels.Pages
 
         private readonly IRecoveryPasswordServices _recoveryPasswordServices;
 
-        public PasswordRecoveryVMD(INavigationService authPagenavigationservices,IStatusServices statusServices,IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IRecoveryPasswordServices recoveryPasswordServices)
+        private readonly IEncryptServices _encryptServices;
+
+        public PasswordRecoveryVMD(INavigationService authPagenavigationservices,IStatusServices statusServices,IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IRecoveryPasswordServices recoveryPasswordServices,IEncryptServices encryptServices)
         {
             _getPassRecoveryQuestionsServices = getPassRecoveryQuestionsServices;
 
             _recoveryPasswordServices = recoveryPasswordServices;
+
+            _encryptServices = encryptServices;
 
 
             #region Команды
@@ -79,12 +83,15 @@ namespace LiteCall.ViewModels.Pages
 
         private async Task OnRecoveryPasswordCommandExecuted(object p)
         {
+            var Base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
+
+            Base64Sha1Password = await _encryptServices.Base64Encypt(Base64Sha1Password);
 
             var recoveryModel = new RecoveryModel
             {
                 QestionAnswer = QuestionAnswer,
                 Question = SelectedQestion,
-                recoveryAccount = new Reg_Rec_PasswordAccount { Login = Login,Password = Password}
+                recoveryAccount = new Reg_Rec_PasswordAccount { Login = Login,Password = Base64Sha1Password}
             };
 
 

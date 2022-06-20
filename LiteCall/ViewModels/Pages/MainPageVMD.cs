@@ -197,7 +197,7 @@ internal class MainPageVMD : BaseVMD
         }
         catch (Exception e)
         {
-            return false;
+            return true;
         }
     }
 
@@ -333,7 +333,7 @@ internal class MainPageVMD : BaseVMD
 
             if (AuthoriseStatus == 0)
             {
-                MessageBox.Show("Authorization error. You will be logged without account", "Сообщение");
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Authorization error. You will be logged without account", isError = true });
 
                 await AuthorisationServices.Login(false, ServerAccount, newServer.ApiIp);
             }

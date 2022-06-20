@@ -31,8 +31,6 @@
 
         <ResourceDictionary>
 
-            <commands:CloseAppCommand x:Key="CloseAppComm" />
-
             <system:Double x:Key="MinimaizeScale">1.6</system:Double>
 
             <system:Double x:Key="MinScale">1.4</system:Double>
@@ -275,7 +273,7 @@
                             Height="25"
                             Margin="5,0,0,0"
                             VerticalAlignment="Top"
-                            Command="{StaticResource CloseAppComm}"
+                            Command="{Binding CloseAppCommand}"
                             Style="{DynamicResource IMGButton}">
 
                             <Button.Resources>

@@ -35,6 +35,8 @@
 
     <SolidColorBrush x:Key="Important(Solid)" Color="#FFE019" />
 
+    <SolidColorBrush x:Key="Blue(Solid)" Color="#7481D2" />
+
 
 
 

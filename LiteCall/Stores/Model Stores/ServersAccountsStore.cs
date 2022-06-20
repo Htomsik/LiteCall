@@ -69,28 +69,28 @@ namespace LiteCall.Stores
        public void Replace(Server ReplacedServer, Account newAccount)
        {
 
-           ServerAccount FindAccount = null;
+           ServerAccount? findAccount = null;
 
 
                try
                {
-                   FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
+                   findAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
 
-                   SavedServerAccounts.Remove(FindAccount);
+                   SavedServerAccounts.Remove(findAccount);
 
-                   FindAccount.Account = newAccount;
+                   findAccount.Account = newAccount;
 
-                   SavedServerAccounts.Add(FindAccount);
+                   SavedServerAccounts.Add(findAccount);
                }
                catch (Exception e)
                {
-                   FindAccount = new ServerAccount();
+                   findAccount = new ServerAccount();
 
-                   FindAccount.Account = newAccount;
+                   findAccount.Account = newAccount;
 
-                   FindAccount.SavedServer = ReplacedServer;
+                   findAccount.SavedServer = ReplacedServer;
 
-                   SavedServerAccounts.Add(FindAccount);
+                   SavedServerAccounts.Add(findAccount);
                }
 
             
@@ -102,14 +102,14 @@ namespace LiteCall.Stores
 
         }
 
-        private ObservableCollection<ServerAccount> _SavedServerAccounts = new ObservableCollection<ServerAccount>();
+        private ObservableCollection<ServerAccount> _savedServerAccounts = new ObservableCollection<ServerAccount>();
 
         public ObservableCollection<ServerAccount> SavedServerAccounts 
         {
-            get => _SavedServerAccounts;
+            get => _savedServerAccounts;
             set
             {
-                Set(ref _SavedServerAccounts, value);
+                Set(ref _savedServerAccounts, value);
                 OnCurrentSeverAccountChanged();
             }
         }

@@ -16,7 +16,14 @@ namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
-        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, AdditionalNavigationStore additionalNavigationStore,ModalNavigationStore modalNavigationStore,StatusMessageStore statusMessageStore, INavigationService closeModalNavigationServices, INavigationService CloseAdditioNavigationService)
+        public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, 
+            AdditionalNavigationStore additionalNavigationStore,
+            ModalNavigationStore modalNavigationStore,
+            StatusMessageStore statusMessageStore,
+            INavigationService closeModalNavigationServices,
+            INavigationService CloseAdditioNavigationService,
+            IStatusServices statusServices,
+            ICloseAppSevices closeAppSevices)
         {
             _MainWindowNavigationStore = mainWindowNavigationStore;
 
@@ -25,6 +32,7 @@ namespace LiteCall.ViewModels
             _ModalNavigationStore = modalNavigationStore;
 
             _StatusMessageStore = statusMessageStore;
+            _closeAppSevices = closeAppSevices;
 
             _MainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
@@ -37,8 +45,21 @@ namespace LiteCall.ViewModels
             CloseModalCommand = new NavigationCommand(closeModalNavigationServices);
 
             CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);
+
+            CloseAppCommand = new AsyncLamdaCommand(OnCloseAppExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),CanCloseAppExecute);
         }
 
+
+
+
+        public ICommand CloseAppCommand { get; }
+
+        private bool CanCloseAppExecute(object p) => true;
+
+        private async Task OnCloseAppExecuted(object p)
+        {
+            _closeAppSevices.Close();
+        }
 
         public ICommand CloseModalCommand { get; }
 
@@ -51,6 +72,8 @@ namespace LiteCall.ViewModels
         private readonly ModalNavigationStore _ModalNavigationStore;
 
         private  readonly StatusMessageStore _StatusMessageStore;
+
+        private readonly ICloseAppSevices _closeAppSevices;
 
 
         public BaseVMD CurrentViewModel => _MainWindowNavigationStore.MainWindowCurrentViewModel;

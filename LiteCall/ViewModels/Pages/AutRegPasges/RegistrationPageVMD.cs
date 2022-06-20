@@ -19,7 +19,7 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class RegistrationPageVMD:BaseVMD
     {
-        public RegistrationPageVMD(INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices,IStatusServices statusServices, ICaptchaServices captchaServices, IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices)
+        public RegistrationPageVMD(INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices,IStatusServices statusServices, ICaptchaServices captchaServices, IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IEncryptServices encryptServices)
         {
             
             _registrationSevices = registrationSevices;
@@ -28,6 +28,8 @@ namespace LiteCall.ViewModels.Pages
             _captchaServices = captchaServices;
 
             _getPassRecoveryQuestionsServices = getPassRecoveryQuestionsServices;
+
+            _encryptServices = encryptServices;
 
 
             RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
@@ -66,10 +68,16 @@ namespace LiteCall.ViewModels.Pages
 
         private async Task OnRegistrationExecuted(object p)
         {
+
+
+            var Base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
+
+            Base64Sha1Password = await _encryptServices.Base64Encypt(Base64Sha1Password);
+
             var newAccount = new Account()
             {
                 Login = this.Login,
-                Password = this.Password
+                Password = Base64Sha1Password
             };
 
             var newRegistrationmodel = new RegistrationModel()
@@ -250,7 +258,6 @@ namespace LiteCall.ViewModels.Pages
         private readonly ICaptchaServices _captchaServices;
 
         private readonly IGetPassRecoveryQuestionsServices _getPassRecoveryQuestionsServices;
-
-     
+        private readonly IEncryptServices _encryptServices;
     }
 }

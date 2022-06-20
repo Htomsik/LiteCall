@@ -1,64 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Newtonsoft.Json;
 
-namespace LiteCall.Services
+namespace LiteCall.Services;
+
+internal class ServersAccountsFileServices : IFileReadServices
 {
-    internal class ServersAccountsFileServices: IFileReadServices
-    { 
-        private  const string _FilePath = @"SavedServersAccounts.json";
+    private const string _FilePath = @"SavedServersAccounts.json";
+
+    private readonly AccountStore _accountStore;
 
 
-        private ServersAccountsStore _ServersAccountsStore;
+    private readonly ServersAccountsStore _serversAccountsStore;
 
-        public ServersAccountsFileServices(ServersAccountsStore serversAccountsStore)
+    public ServersAccountsFileServices(ServersAccountsStore serversAccountsStore, AccountStore accountStore)
+    {
+        _serversAccountsStore = serversAccountsStore;
+
+        _accountStore = accountStore;
+
+        _serversAccountsStore.ServersAccountsChange += SaveDataInFile;
+    }
+
+
+    public async void GetDataFromFile()
+    {
+        try
         {
-            _ServersAccountsStore = serversAccountsStore;
+            var FileText = await File.ReadAllTextAsync(_FilePath);
 
-            _ServersAccountsStore.ServersAccountsChange += SaveDataInFile;
+            var AllUsers = JsonConvert.DeserializeObject<List<SavedServers>>(FileText);
 
-         
+            var currentUserServerStore = AllUsers.Find(s =>
+                s.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise &&
+                s.MainServerAccount.Login == _accountStore.CurrentAccount.Login);
+
+            _serversAccountsStore.SavedServerAccounts = currentUserServerStore?.ServersAccounts;
         }
-
-       
-
-        public async void GetDataFromFile()
-       {
-
-           try
-           {
-               var FileText = await File.ReadAllTextAsync(_FilePath);
-
-               _ServersAccountsStore.SavedServerAccounts =
-                   JsonConvert.DeserializeObject<ObservableCollection<ServerAccount>>(FileText);
-           }
-           catch (Exception e){}
-           
-           
-       }
-
-       public async void SaveDataInFile()
-       {
-           try
-           {
-               var jsonSerializeObject = JsonConvert.SerializeObject(_ServersAccountsStore.SavedServerAccounts);
-
-               await File.WriteAllTextAsync(_FilePath, jsonSerializeObject);
-           }
-           catch (Exception e){}
-         
-          
-       }
+        catch (Exception e)
+        {
+        }
+    }
 
 
+    public async void SaveDataInFile()
+    {
+        try
+        {
+            var fileText = string.Empty;
+
+            var allUsers = new List<SavedServers>();
+
+            try
+            {
+                fileText = await File.ReadAllTextAsync(_FilePath);
+
+                allUsers = JsonConvert.DeserializeObject<List<SavedServers>>(fileText);
+
+                foreach (var elem in allUsers)
+                    if (elem.MainServerAccount.Login == _accountStore.CurrentAccount.Login &&
+                        (elem.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise))
+
+                        allUsers.Remove(elem);
+            }
+            catch (Exception e)
+            {
+            }
+
+
+            if (_serversAccountsStore.SavedServerAccounts != null)
+            {
+                foreach (var elem in _serversAccountsStore?.SavedServerAccounts) elem.Account.Token = null;
+
+                var newSavedServers = new SavedServers
+                {
+                    LastUpdated = DateTime.Now,
+                    MainServerAccount = _accountStore.CurrentAccount,
+                    ServersAccounts = _serversAccountsStore.SavedServerAccounts
+                };
+
+                allUsers.Add(newSavedServers);
+            }
+
+
+            var jsonSerializeObject = JsonConvert.SerializeObject(allUsers,
+                new JsonSerializerSettings
+                    { NullValueHandling = (NullValueHandling)1, Formatting = (Formatting)1 });
+
+
+            await File.WriteAllTextAsync(_FilePath, jsonSerializeObject);
+        }
+        catch (Exception e)
+        {
+        }
     }
 }

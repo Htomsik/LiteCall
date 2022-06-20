@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http;
@@ -17,7 +18,9 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
-using MessageBox = System.Windows.MessageBox;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
 
 namespace LiteCall.Services
 {
@@ -39,6 +42,9 @@ namespace LiteCall.Services
             _statusServices = statusServices;
 
             _encryptServices = encryptServices;
+
+  
+            
         }
 
 
@@ -66,7 +72,7 @@ namespace LiteCall.Services
 
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
-            var authModel = new { Login = newAcc.Login, Password = _encryptServices.Sha1Encrypt(newAcc.Password),Guid = ProgramCaptchaID };
+            var authModel = new { Login = newAcc.Login, Password = await _encryptServices.Base64Decrypt(newAcc.Password),Guid = ProgramCaptchaID };
 
             var json = JsonSerializer.Serialize(authModel);
 
@@ -116,7 +122,7 @@ namespace LiteCall.Services
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
             var authModel = new { Login = registrationModel.recoveryAccount.Login,
-                Password = _encryptServices.Sha1Encrypt(registrationModel.recoveryAccount.Password), 
+                Password = await _encryptServices.Base64Decrypt(registrationModel.recoveryAccount.Password), 
                 Guid = ProgramCaptchaID,
                 Captcha = registrationModel.Captcha,
                 QuestionsId = registrationModel.Question.Id, 
@@ -405,8 +411,88 @@ namespace LiteCall.Services
           }
         }
 
+        public async Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, ObservableCollection<ServerAccount?> savedServerAccounts)
+        {
 
-      public  async Task<string> GetRoleFromJwtToken(string token)
+            if (string.IsNullOrEmpty(currentAccount.Password) && savedServerAccounts?.Count > 0 )
+            {
+                return false;
+            }
+
+            var jsonServers = JsonSerializer.Serialize(savedServerAccounts, new JsonSerializerOptions { WriteIndented = true, IgnoreNullValues = true });
+            
+            var saveModel = new
+            {
+                Login = currentAccount.Login,
+                Password = await _encryptServices.Base64Decrypt(currentAccount.Password),
+                SaveServers = jsonServers
+            };
+
+            var json = JsonSerializer.Serialize(saveModel);
+
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await httpClient.PostAsync($"https://{DefaultMainIp}/api/Server/SaveServersUser", content).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+
+            return (response.StatusCode == System.Net.HttpStatusCode.OK);
+        }
+
+        public async Task<ObservableCollection<ServerAccount>?> GetSaveServersUserOnMainServer(Account currentAccount)
+        {
+
+            if (string.IsNullOrEmpty(currentAccount.Password))
+            {
+                return null;
+            }
+
+            var authModel = new { Login = currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password)};
+
+            var json = JsonSerializer.Serialize(authModel);
+
+            var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            HttpResponseMessage response;
+
+
+            try
+            {
+                response = await httpClient.PostAsync($"https://{DefaultMainIp}/api/Server/GetServersUser", content).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                
+                return null;
+            }
+
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                
+                var jsonNonServerResponse = await response.Content.ReadAsStringAsync();
+
+                return JsonSerializer.Deserialize<ObservableCollection<ServerAccount>>(jsonNonServerResponse);
+
+
+            }
+            else
+            {
+                
+                return null;
+            }
+        }
+
+
+        public  async Task<string> GetRoleFromJwtToken(string token)
       {
               try
               {

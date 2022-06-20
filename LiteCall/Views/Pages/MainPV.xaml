@@ -157,7 +157,6 @@
                                 Text="{Binding SavedServer.Title[0]}" />
 
 
-
                         </Border>
 
                         <DataTemplate.Triggers>

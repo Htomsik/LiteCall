@@ -17,7 +17,7 @@ namespace LiteCall.Services
 
             #region Сервисы
 
-            services.AddSingleton<ServersAccountsFileServices>(s => new ServersAccountsFileServices(s.GetRequiredService<ServersAccountsStore>()));
+            services.AddSingleton<ServersAccountsFileServices>(s => new ServersAccountsFileServices(s.GetRequiredService<ServersAccountsStore>(),s.GetRequiredService<AccountStore>()));
 
             services.AddSingleton<MainAccountFileServices>(s => new MainAccountFileServices(s.GetRequiredService<AccountStore>(), s.GetRequiredService<SettingsStore>()));
 
@@ -31,7 +31,7 @@ namespace LiteCall.Services
 
             services.AddTransient<IimageServices, ImageServices>();
 
-            services.AddSingleton<IhttpDataServices, HttpDataService>();
+            services.AddSingleton<IhttpDataServices,HttpDataService>();
 
             #endregion
 

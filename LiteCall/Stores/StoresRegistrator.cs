@@ -21,7 +21,7 @@ namespace LiteCall.Stores
 
             services.AddSingleton<ServerAccountStore>();
 
-            services.AddSingleton<ServersAccountsStore>();
+            services.AddSingleton<ServersAccountsStore,ServersAccountsStore>();
 
             services.AddSingleton<CurrentServerStore>();
 

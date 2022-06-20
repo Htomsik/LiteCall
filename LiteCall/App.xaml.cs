@@ -40,9 +40,11 @@ namespace LiteCall
 
             var host = Host;
 
+            host.Services.GetRequiredService<MainAccountFileServices>().GetDataFromFile();
+
             host.Services.GetRequiredService<ServersAccountsFileServices>().GetDataFromFile();
 
-            host.Services.GetRequiredService<MainAccountFileServices>().GetDataFromFile();
+      //     host.Services.GetRequiredService<ServersAccountsStore>().SavedServerAccounts = await host.Services.GetRequiredService<IhttpDataServices>().GetSaveServersUserOnMainServer(host.Services.GetRequiredService<AccountStore>().CurrentAccount);
 
             INavigationService InitialNavigationService = host.Services.GetRequiredService<INavigationService>();
 
@@ -62,6 +64,13 @@ namespace LiteCall
         protected override async void OnExit(ExitEventArgs e)
         {
             var host = Host;
+
+            //var accountStore = host.Services.GetRequiredService<AccountStore>();
+
+            //var ServersStore = host.Services.GetRequiredService<ServersAccountsStore>();
+
+
+            //host.Services.GetRequiredService<IhttpDataServices>().PostSaveServersUserOnMainServer(accountStore.CurrentAccount, ServersStore.SavedServerAccounts);
 
             base.OnExit(e);
 
@@ -85,7 +94,7 @@ namespace LiteCall
                 .RegisterVMD();
 
         }
-
+        
     }
 
 

@@ -16,37 +16,38 @@ namespace LiteCall.Services
     internal class MainAccountFileServices:IFileReadServices
     {
 
-        private const string _FilePath = $@"MainAccount.json";
+        private const string FilePath = $@"MainAccount.json";
 
-        private AccountStore _AccountStore;
+        private readonly AccountStore _accountStore;
 
-        private SettingsStore _SettingsStore;
+        private readonly SettingsStore _settingsStore;
 
+        
         public MainAccountFileServices(AccountStore accountStore, SettingsStore settingsStore)
         {
-            _AccountStore = accountStore;
+            _accountStore = accountStore;
 
-            _SettingsStore = settingsStore;
+            _settingsStore = settingsStore;
 
-            _AccountStore.CurrentAccountChange += SaveDataInFile;
+            _accountStore.CurrentAccountChange += SaveDataInFile;
 
-            _SettingsStore.CurentSettingChanged += SaveDataInFile;
+            _settingsStore.CurentSettingChanged += SaveDataInFile;
         }
 
         public async void GetDataFromFile()
         {
             try
             {
-                var FileText = await File.ReadAllTextAsync(_FilePath);
+                var FileText =  File.ReadAllTextAsync(FilePath);
 
-                SavedMainAccount savedAccount = JsonConvert.DeserializeObject<SavedMainAccount>(FileText);
+                SavedMainAccount savedAccount = JsonConvert.DeserializeObject<SavedMainAccount>(FileText.Result);
 
                 if (savedAccount?._MainAccount != null)
                 {
-                    _AccountStore.CurrentAccount = savedAccount._MainAccount;
+                    _accountStore.CurrentAccount = savedAccount._MainAccount;
                 }
                 
-                _SettingsStore.CurrentSettings = savedAccount._Settings;
+                _settingsStore.CurrentSettings = savedAccount._Settings;
             }
             catch (Exception e) { }
         }
@@ -56,15 +57,21 @@ namespace LiteCall.Services
             try
             {
 
-                var jsonNoNConvertedAccount =  _AccountStore.isDefaultAccount ? null : _AccountStore.CurrentAccount ;
+                var jsonNoNConvertedAccount =  _accountStore.isDefaultAccount ? null : _accountStore.CurrentAccount ;
+
+                if (jsonNoNConvertedAccount is not null)
+                {
+                    jsonNoNConvertedAccount.Token = null;
+                }
+               
 
                 var jsonSerializeObject = JsonConvert.SerializeObject(new SavedMainAccount
                 {
                     _MainAccount = jsonNoNConvertedAccount,
-                    _Settings = _SettingsStore.CurrentSettings
+                    _Settings = _settingsStore.CurrentSettings
                 });
 
-                await File.WriteAllTextAsync(_FilePath, jsonSerializeObject);
+                await File.WriteAllTextAsync(FilePath, jsonSerializeObject);
             }
             catch (Exception e) { }
         }

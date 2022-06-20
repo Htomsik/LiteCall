@@ -228,7 +228,6 @@
                                                 x:Name="UserPath"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Fill="{DynamicResource Fonts(Solid)}"
                                                 RenderTransformOrigin="0.5, 0.5"
                                                 Style="{DynamicResource Person}">
                                                 <Path.RenderTransform>
@@ -250,6 +249,18 @@
                                         </Grid>
 
                                         <DataTemplate.Triggers>
+
+                                            <DataTrigger Binding="{Binding Role}" Value="Admin">
+                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Dangerous(Solid)}" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Role}" Value="User">
+                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Blue(Solid)}" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Role}" Value="Anonymous">
+                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Fonts(Solid)}" />
+                                            </DataTrigger>
 
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter TargetName="UserPath" Property="Fill" Value="White" />

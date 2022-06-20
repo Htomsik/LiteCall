@@ -12,7 +12,10 @@ namespace LiteCall.Services
 {
     public  class EncryptServices:IEncryptServices
     {
-        public string Sha1Encrypt(string content)
+
+        readonly static byte[] Entropy = { 1,2,3,4,5,6,7,8,9,10 };
+
+        public async Task<string> Sha1Encrypt(string content)
         {
             if (string.IsNullOrEmpty(content)) return null;
 
@@ -23,6 +26,30 @@ namespace LiteCall.Services
             return string.Concat(hash.Select(b => b.ToString("x2")));
         }
 
-     
+        public async Task<string> Base64Encypt(string content)
+        {
+            if (string.IsNullOrEmpty(content)) return content;
+
+            byte[] originalText = Encoding.Unicode.GetBytes(content);
+
+         
+            byte[] encryptedText = ProtectedData.Protect(originalText, Entropy, DataProtectionScope.CurrentUser);
+
+            return Convert.ToBase64String(encryptedText);
+        }
+
+        public async Task<string> Base64Decrypt(string content)
+        {
+         
+            if(string.IsNullOrEmpty(content)) return content;
+
+            byte[] encryptedText = Convert.FromBase64String(content);
+
+           
+            byte[] originalText = ProtectedData.Unprotect(encryptedText, Entropy, DataProtectionScope.CurrentUser);
+
+           
+            return Encoding.Unicode.GetString(originalText);
+        }
     }
 }
