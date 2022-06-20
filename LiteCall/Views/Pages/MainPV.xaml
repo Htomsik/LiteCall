@@ -383,84 +383,94 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
+            BorderBrush="{DynamicResource Fonts(Solid)}"
+            BorderThickness="1"
+            Corner="10"
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
-            <Grid MinWidth="200" Background="{DynamicResource Background2(Solid)}">
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-
-                <TextBlock
-                    Grid.Row="0"
-                    Margin="0,5"
-                    HorizontalAlignment="Center"
-                    Style="{DynamicResource Bigtext}"
-                    Text="CONNECT" />
-
-                <TextBox
-                    x:Name="Iptb"
-                    Grid.Row="1"
-                    Margin="8"
-                    MaxLength="20"
-                    Style="{StaticResource LogPassTextBox}"
-                    Tag="SERVER NAME OR IP"
-                    Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}" />
-
-                <StackPanel
-                    Grid.Row="2"
+            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
+                <Grid
+                    MinWidth="200"
                     Margin="5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Orientation="Horizontal">
+                    Background="{DynamicResource Background2(Solid)}">
 
-                    <CheckBox
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,5"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged}" />
+                        Style="{DynamicResource Bigtext}"
+                        Text="CONNECT" />
 
-                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
-                        Join by ip
-                    </TextBlock>
+                    <TextBox
+                        x:Name="Iptb"
+                        Grid.Row="1"
+                        Margin="8"
+                        MaxLength="20"
+                        Style="{StaticResource LogPassTextBox}"
+                        Tag="SERVER NAME OR IP"
+                        Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}" />
 
-                </StackPanel>
-
-                <Grid Margin="8" Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-
-                    <Button
-                        MinHeight="35"
-                        MaxWidth="125"
-                        MaxHeight="40"
+                    <StackPanel
+                        Grid.Row="2"
                         Margin="5"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        BorderBrush="{DynamicResource Green(Solid)}"
-                        Command="{Binding ConnectServerCommand}">
-                        <TextBlock Text="OK" />
-                    </Button>
+                        Orientation="Horizontal">
 
-                    <Button
-                        Grid.Column="1"
-                        MinHeight="35"
-                        MaxWidth="125"
-                        MaxHeight="40"
-                        Margin="5"
-                        VerticalAlignment="Top"
-                        BorderBrush="{DynamicResource Dangerous(Solid)}"
-                        Command="{Binding OpenModalCommaCommand}"
-                        CommandParameter="0">
-                        <TextBlock Text="EXIT" />
-                    </Button>
+                        <CheckBox
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
+                            Join by ip
+                        </TextBlock>
+
+                    </StackPanel>
+
+                    <Grid Margin="8" Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            MinHeight="35"
+                            MaxWidth="125"
+                            MaxHeight="40"
+                            Margin="5"
+                            VerticalAlignment="Top"
+                            BorderBrush="{DynamicResource Green(Solid)}"
+                            Command="{Binding ConnectServerCommand}">
+                            <TextBlock Text="OK" />
+                        </Button>
+
+                        <Button
+                            Grid.Column="1"
+                            MinHeight="35"
+                            MaxWidth="125"
+                            MaxHeight="40"
+                            Margin="5"
+                            VerticalAlignment="Top"
+                            BorderBrush="{DynamicResource Dangerous(Solid)}"
+                            Command="{Binding OpenModalCommaCommand}"
+                            CommandParameter="0">
+                            <TextBlock Text="EXIT" />
+                        </Button>
+                    </Grid>
+
                 </Grid>
+            </Border>
 
-            </Grid>
 
         </modalCutom:ModalCustom>
 

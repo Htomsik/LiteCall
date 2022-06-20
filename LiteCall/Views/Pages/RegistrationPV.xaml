@@ -14,8 +14,7 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-
-            <converters:LoginPassValidatConverter x:Key="LoginPassValidatConverter" />
+            <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -363,6 +362,13 @@
             </Border>
 
         </modalCutom:ModalCustom>
+
+        <Border
+            Grid.RowSpan="2"
+            Background="Black"
+            CornerRadius="10"
+            Opacity="0.3"
+            Visibility="{Binding CanServerConnect, Converter={StaticResource BooleanToVisibilityInverter}, UpdateSourceTrigger=PropertyChanged}" />
 
 
     </Grid>

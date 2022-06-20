@@ -156,7 +156,6 @@ namespace LiteCall.ViewModels.Pages
 
 
         private bool _CanServerConnect;
-
         public bool CanServerConnect
         {
             get => _CanServerConnect;

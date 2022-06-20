@@ -15,9 +15,6 @@
                         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                     </ControlTemplate.Resources>
 
-
-
-
                     <Grid ClipToBounds="True">
                         <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.Effect>
@@ -25,9 +22,6 @@
                             </Grid.Effect>
                         </Grid>
                         <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-
-
 
                             <Border
                                 HorizontalAlignment="Center"

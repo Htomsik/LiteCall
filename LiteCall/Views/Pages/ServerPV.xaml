@@ -478,14 +478,15 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="4"
             Grid.ColumnSpan="3"
+            BorderBrush="{DynamicResource Fonts(Solid)}"
+            BorderThickness="1"
+            Corner="10"
             IsOpen="{Binding CreateRoomModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
             <Border
                 MinWidth="250"
                 MinHeight="250"
                 Background="{DynamicResource Background2(Solid)}"
-                BorderBrush="{DynamicResource Fonts(Solid)}"
-                BorderThickness="1"
                 CornerRadius="10">
                 <Grid>
 
@@ -596,16 +597,15 @@
         <modalCutom:ModalCustom
             Grid.RowSpan="4"
             Grid.ColumnSpan="3"
+            BorderBrush="{DynamicResource Fonts(Solid)}"
+            BorderThickness="1"
+            Corner="10"
             IsOpen="{Binding RoomPasswordModalStatus, UpdateSourceTrigger=PropertyChanged}">
-
-
 
             <Border
                 MinWidth="250"
                 MinHeight="200"
                 Background="{DynamicResource Background2(Solid)}"
-                BorderBrush="{DynamicResource Fonts(Solid)}"
-                BorderThickness="1"
                 CornerRadius="10">
                 <Grid>
 
