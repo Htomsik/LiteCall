@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ABI.Windows.Media.Capture;
 using LiteCall.Services;
 using LiteCall.Services.Authorisation;
-using LiteCall.Services.AuthRegServices.PasswordRecovery;
 using LiteCall.Services.Interfaces;
 using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
@@ -40,7 +39,10 @@ namespace LiteCall.ViewModels
 
             services.AddTransient<PasswordRecoveryVMD>(
                 s=> new PasswordRecoveryVMD(
-                    CreateAutPageNavigationServices(s), s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>()));
+                    CreateAutPageNavigationServices(s),
+                    s.GetRequiredService<IStatusServices>(),
+                    CreateMainServerGetPasswordRecoveryQuestions(s),
+                    CreateMainRecoveryPasswordServices(s)));
 
             #endregion
 
@@ -62,7 +64,10 @@ namespace LiteCall.ViewModels
 
             services.AddTransient<ServerPasswordRecoveryModalVMD>(
                 s=> new ServerPasswordRecoveryModalVMD(
-                    CreateModalAuthorisationPageNavigationService(s),s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>(),s.GetRequiredService<CurrentServerStore>()));
+                    CreateModalAuthorisationPageNavigationService(s),
+                    s.GetRequiredService<IStatusServices>(),
+                    CreateApiServerGetPasswordRecoveryQuestions(s),
+                    CreateApiRecoveryPasswordServices(s)));
 
 
             #endregion
@@ -214,14 +219,25 @@ namespace LiteCall.ViewModels
                 serviceProvider.GetRequiredService<IimageServices>(),serviceProvider.GetRequiredService<CurrentServerStore>());
         }
 
-        private static IGetPasswordRecoveryQuestions CreateMainServerGetPasswordRecoveryQuestions(IServiceProvider serviceProvider)
+        private static IGetPassRecoveryQuestionsServices CreateMainServerGetPasswordRecoveryQuestions(IServiceProvider serviceProvider)
         {
-            return new MainServerGetPassRecQestions(serviceProvider.GetRequiredService<IhttpDataServices>());
+            return new MainServerGetPassRecQestionsServices(serviceProvider.GetRequiredService<IhttpDataServices>());
         }
 
-        private static IGetPasswordRecoveryQuestions CreateApiServerGetPasswordRecoveryQuestions(IServiceProvider serviceProvider)
+        private static IGetPassRecoveryQuestionsServices CreateApiServerGetPasswordRecoveryQuestions(IServiceProvider serviceProvider)
         {
-            return new ApiServerGetPassRecQestions(serviceProvider.GetRequiredService<IhttpDataServices>(),serviceProvider.GetRequiredService<CurrentServerStore>());
+            return new ApiServerGetPassRecQestionsServices(serviceProvider.GetRequiredService<IhttpDataServices>(),serviceProvider.GetRequiredService<CurrentServerStore>());
+        }
+
+
+        private static IRecoveryPasswordServices CreateMainRecoveryPasswordServices(IServiceProvider serviceProvider)
+        {
+            return new MainServerRecoveryPasswordServices(serviceProvider.GetRequiredService<IhttpDataServices>());
+        }
+
+        private static IRecoveryPasswordServices CreateApiRecoveryPasswordServices(IServiceProvider serviceProvider)
+        {
+            return new ApiServerRecoveryPasswordServices(serviceProvider.GetRequiredService<IhttpDataServices>(),serviceProvider.GetRequiredService<CurrentServerStore>());
         }
 
         #endregion

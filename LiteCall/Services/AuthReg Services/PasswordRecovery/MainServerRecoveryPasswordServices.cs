@@ -8,19 +8,20 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services
 {
-    internal class MainServerGetPassRecQestions:IGetPasswordRecoveryQuestions
+    internal class MainServerRecoveryPasswordServices:IRecoveryPasswordServices
     {
         private readonly IhttpDataServices _httpDataServices;
 
-
-        public MainServerGetPassRecQestions(IhttpDataServices httpDataServices)
+        public MainServerRecoveryPasswordServices(IhttpDataServices httpDataServices)
         {
             _httpDataServices = httpDataServices;
         }
 
-        public async Task<List<Question>> GetQestions()
+        public async Task<bool> RecoveryPassword(RecoveryModel recoveryModel)
         {
-            return await _httpDataServices.GetPasswordRecoveryQestions();
+            return await _httpDataServices.PasswordRecovery(recoveryModel);
         }
+
+       
     }
 }

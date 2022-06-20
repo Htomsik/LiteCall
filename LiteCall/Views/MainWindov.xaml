@@ -142,15 +142,9 @@
 
             <!--  IsOpen="{Binding ModalIsOpen}">  -->
 
-            <modalCutom:ModalCustom
-                Grid.Row="1"
-                BorderBrush="{DynamicResource Fonts(Solid)}"
-                BorderThickness="1"
-                Corner="0"
-                IsOpen="{Binding ModalIsOpen}">
+            <modalCutom:ModalCustom Grid.Row="1" IsOpen="{Binding ModalIsOpen}">
 
-
-                <Grid Background="{DynamicResource Background3(Solid)}">
+                <Grid>
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
@@ -162,9 +156,7 @@
                         Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        Content="{Binding ModalCurrentViewModel}"
-                        LostFocus="LostFocus"
-                        SizeChanged="SizeChanged">
+                        Content="{Binding ModalCurrentViewModel}">
 
                         <ContentControl.Resources>
 
@@ -214,7 +206,7 @@
                 Background="{DynamicResource Background3(Solid)}"
                 BorderBrush="{DynamicResource Important(Solid)}"
                 BorderThickness="0,2.5,0,2.5"
-                CornerRadius="15 0 0 15"
+                CornerRadius="16 0 0 16"
                 Visibility="{Binding StatusMessageIsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                 <loadingCustom:LoadingCustom

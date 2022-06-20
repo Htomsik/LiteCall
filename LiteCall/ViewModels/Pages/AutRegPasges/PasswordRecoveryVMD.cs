@@ -14,19 +14,16 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class PasswordRecoveryVMD:BaseVMD
     {
-        private readonly INavigationService _authPagenavigationservices;
+        private readonly IGetPassRecoveryQuestionsServices _getPassRecoveryQuestionsServices;
 
-        private readonly IhttpDataServices _httpDataServices;
+        private readonly IRecoveryPasswordServices _recoveryPasswordServices;
 
-        private readonly IStatusServices _statusServices;
-
-        public PasswordRecoveryVMD(INavigationService authPagenavigationservices, IhttpDataServices httpDataServices, IStatusServices statusServices)
+        public PasswordRecoveryVMD(INavigationService authPagenavigationservices,IStatusServices statusServices,IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IRecoveryPasswordServices recoveryPasswordServices)
         {
-            _authPagenavigationservices = authPagenavigationservices;
+            _getPassRecoveryQuestionsServices = getPassRecoveryQuestionsServices;
 
-            _httpDataServices = httpDataServices;
+            _recoveryPasswordServices = recoveryPasswordServices;
 
-            _statusServices = statusServices;
 
             #region Команды
 
@@ -49,9 +46,6 @@ namespace LiteCall.ViewModels.Pages
             GetQuestionList();
         }
 
-   
-
-
         #region Методы
 
         private async void GetQuestionList()
@@ -59,7 +53,7 @@ namespace LiteCall.ViewModels.Pages
             try
             {
                 QestionsCollection =
-                    new ObservableCollection<Question>(await _httpDataServices.GetPasswordRecoveryQestions());
+                    new ObservableCollection<Question>(await _getPassRecoveryQuestionsServices.GetQestions());
 
                 CanServerConnect = true;
             }
@@ -93,7 +87,12 @@ namespace LiteCall.ViewModels.Pages
                 recoveryAccount = new Reg_Rec_PasswordAccount { Login = Login,Password = Password}
             };
 
-            await _httpDataServices.PasswordRecovery(recoveryModel);
+
+            if (await _recoveryPasswordServices.RecoveryPassword(recoveryModel))
+            {
+                OpenAuthPageCommand.Execute(null);
+            }
+           
         }
 
         #endregion

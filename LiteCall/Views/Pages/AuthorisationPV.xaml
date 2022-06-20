@@ -19,7 +19,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Transparent">
+    <Grid MaxWidth="250" Background="Transparent">
 
 
         <Grid.ColumnDefinitions>
@@ -45,7 +45,10 @@
             Grid.Column="1"
             Margin="5"
             Background="{StaticResource Background2(Solid)}"
+            BorderBrush="{DynamicResource Fonts(Solid)}"
+            BorderThickness="0.5"
             CornerRadius="15">
+
             <Grid>
 
                 <Grid.RowDefinitions>

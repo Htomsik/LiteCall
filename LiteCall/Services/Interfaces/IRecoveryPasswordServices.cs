@@ -7,8 +7,9 @@ using LiteCall.Model;
 
 namespace LiteCall.Services.Interfaces
 {
-    public interface IGetPasswordRecoveryQuestions
+    internal interface IRecoveryPasswordServices
     {
-        public Task<List<Question>> GetQestions();
+        public Task<bool> RecoveryPassword(RecoveryModel recoveryModel);
+
     }
 }

@@ -16,33 +16,48 @@
                     </ControlTemplate.Resources>
 
 
-                    <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+
+                    <Grid ClipToBounds="True">
+                        <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.Effect>
+                                <BlurEffect Radius="10" />
+                            </Grid.Effect>
+                        </Grid>
+                        <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
 
 
 
-                        <Border
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            UseLayoutRounding="True">
-                            <Grid>
 
-                                <Grid.OpacityMask>
-                                    <VisualBrush Visual="{Binding ElementName=border}" />
-                                </Grid.OpacityMask>
+                            <Border
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                ClipToBounds="True"
+                                CornerRadius="{TemplateBinding Corner}">
 
-                                <Border
-                                    x:Name="border"
-                                    Background="White"
-                                    CornerRadius="{TemplateBinding Corner}" />
+                                <Grid>
 
-                                <ContentControl Content="{TemplateBinding Content}" />
-                            </Grid>
+                                    <Grid.OpacityMask>
+                                        <VisualBrush Visual="{Binding ElementName=border}" />
+                                    </Grid.OpacityMask>
 
-                        </Border>
 
+
+                                    <ContentControl
+                                        x:Name="border"
+                                        ClipToBounds="True"
+                                        Content="{TemplateBinding Content}" />
+                                </Grid>
+
+                            </Border>
+
+                        </Grid>
                     </Grid>
+
+
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

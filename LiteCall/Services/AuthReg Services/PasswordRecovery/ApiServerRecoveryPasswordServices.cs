@@ -7,25 +7,26 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores.ModelStores;
 
-namespace LiteCall.Services.AuthRegServices.PasswordRecovery
+namespace LiteCall.Services
 {
-    internal class ApiServerGetPassRecQestions:IGetPasswordRecoveryQuestions
+    internal class ApiServerRecoveryPasswordServices:IRecoveryPasswordServices
     {
         private readonly IhttpDataServices _httpDataServices;
 
         private readonly CurrentServerStore _currentServerStore;
 
 
-        public ApiServerGetPassRecQestions(IhttpDataServices httpDataServices, CurrentServerStore currentServerStore)
+        public ApiServerRecoveryPasswordServices(IhttpDataServices httpDataServices,CurrentServerStore currentServerStore)
         {
             _httpDataServices = httpDataServices;
-
             _currentServerStore = currentServerStore;
         }
 
-        public async Task<List<Question>> GetQestions()
+        public async Task<bool> RecoveryPassword(RecoveryModel recoveryModel)
         {
-            return await _httpDataServices.GetPasswordRecoveryQestions(_currentServerStore.CurrentServer.ApiIp);
+            return await _httpDataServices.PasswordRecovery(recoveryModel,_currentServerStore.CurrentServer.ApiIp);
         }
+
+      
     }
 }

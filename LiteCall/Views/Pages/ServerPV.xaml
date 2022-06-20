@@ -408,8 +408,11 @@
                                     VerticalAlignment="Bottom"
                                     Background="Transparent"
                                     Orientation="Horizontal">
+
                                     <TextBlock Margin="0,0,2,0" Text="{Binding DateSend, StringFormat=HH:mm}" />
+
                                     <TextBlock Margin="0,0,2,0" Text="{Binding Sender}" />
+
                                     <TextBlock Text="{Binding Text, StringFormat=: {0}}" />
 
                                 </VirtualizingStackPanel>

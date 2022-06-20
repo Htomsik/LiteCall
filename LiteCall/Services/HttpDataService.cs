@@ -115,7 +115,12 @@ namespace LiteCall.Services
 
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
-            var authModel = new { Login = registrationModel.recoveryAccount.Login, Password = _encryptServices.Sha1Encrypt(registrationModel.recoveryAccount.Password), Guid = ProgramCaptchaID, Captcha = registrationModel.Captcha, QuestionsId = registrationModel.Question.Id, AnswersecurityQ = registrationModel.QestionAnswer};
+            var authModel = new { Login = registrationModel.recoveryAccount.Login,
+                Password = _encryptServices.Sha1Encrypt(registrationModel.recoveryAccount.Password), 
+                Guid = ProgramCaptchaID,
+                Captcha = registrationModel.Captcha,
+                QuestionsId = registrationModel.Question.Id, 
+                AnswersecurityQ = registrationModel.QestionAnswer};
 
             var json = JsonSerializer.Serialize(authModel);
 
@@ -152,7 +157,6 @@ namespace LiteCall.Services
         }
 
 
-
         public async Task<string> MainServerGetApiIp(string serverName)
         {
             _statusServices.ChangeStatus(new StatusMessage { Message = "Get API server ip. . ." });
@@ -171,7 +175,7 @@ namespace LiteCall.Services
             {
 
 
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the server", isError = true });
 
                 return null;
             }
@@ -362,7 +366,6 @@ namespace LiteCall.Services
             {
                 apiServerIp = DefaultMainIp;
             }
-
 
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 

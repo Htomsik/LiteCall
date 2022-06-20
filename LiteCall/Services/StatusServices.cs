@@ -13,6 +13,7 @@ namespace LiteCall.Services
     {
         private StatusMessageStore _statusMessageStore;
 
+        private static bool _isDelete = false;
         public StatusServices(StatusMessageStore statusMessageStore)
         {
             _statusMessageStore = statusMessageStore;
@@ -20,25 +21,45 @@ namespace LiteCall.Services
 
         public async  void ChangeStatus(StatusMessage newStatusMessage)
         {
-            _statusMessageStore.CurentStatusMessage = newStatusMessage;
 
-            if (newStatusMessage.isError)
+            if (!_isDelete)
             {
-              await  TimerDelete(7000);
+                _statusMessageStore.CurentStatusMessage = newStatusMessage;
+            }
+            else
+            {
+                return;
+            }
+            if (newStatusMessage.isError) 
+            {
+                _isDelete = true;
+
+                await  TimerDelete(4000);
+
+              
             }
            
         }
 
         private async Task TimerDelete(int Delay)
         {
-             await Task.Delay(Delay);
 
-             DeleteStatus();
+            await Task.Delay(Delay);
+
+            _isDelete = false;
+
+            DeleteStatus();
+
         }
 
-        public void DeleteStatus()
+        public async void DeleteStatus()
         {
+                
+            if(_isDelete) return;
+
             _statusMessageStore.CurentStatusMessage = null;
+
+            
         }
     }
 }

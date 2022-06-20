@@ -9,6 +9,8 @@
         <Setter Property="FontFamily" Value="{DynamicResource OswaldRegular}" />
         <Setter Property="Foreground" Value="{DynamicResource Fonts(Solid)}" />
         <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
 
     </Style>
 
