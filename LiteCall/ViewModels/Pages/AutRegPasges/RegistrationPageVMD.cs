@@ -19,17 +19,17 @@ namespace LiteCall.ViewModels.Pages
 {
     internal class RegistrationPageVMD:BaseVMD
     {
-        public RegistrationPageVMD(INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices, IhttpDataServices httpDataServices, IimageServices imageServices, IStatusServices statusServices)
+        public RegistrationPageVMD(INavigationService authPagenavigationservices, IRegistrationSevices registrationSevices,IStatusServices statusServices, ICaptchaServices captchaServices, IGetPasswordRecoveryQuestions getPasswordRecoveryQuestions)
         {
-            _authPagenavigationservices = authPagenavigationservices;
-
+            
             _registrationSevices = registrationSevices;
 
-            _httpDataServices = httpDataServices;
-
-            _imageServices = imageServices;
-
             
+            _captchaServices = captchaServices;
+
+            _getPasswordRecoveryQuestions = getPasswordRecoveryQuestions;
+
+
             RegistrationCommand = new AsyncLamdaCommand(OnRegistrationExecuted, (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
                 CanRegistrationExecute);
 
@@ -47,7 +47,7 @@ namespace LiteCall.ViewModels.Pages
             try
             {
                 QestionsCollection =
-                    new ObservableCollection<Question>(await _httpDataServices.GetPasswordRecoveryQestions());
+                    new ObservableCollection<Question>(await _getPasswordRecoveryQuestions.GetQestions());
 
                 CanServerConnect = true;
             }
@@ -109,8 +109,7 @@ namespace LiteCall.ViewModels.Pages
 
                if (!Status)
                {
-                  
-                    return;
+                   return;
                }
 
                ModalStatus = true;
@@ -138,19 +137,15 @@ namespace LiteCall.ViewModels.Pages
 
         public async Task<bool> GetCaptcha()
         {
-            
-            var receiveBytes = await _httpDataServices.GetCaptcha();
 
-            if (receiveBytes !=null)
+            Capthca = await _captchaServices.GetCaptcha();
+
+            if (Capthca == null)
             {
-                var captchaFromServer = ImageBox.BytesToImage(receiveBytes.GetRawData());
-
-                Capthca = _imageServices.GetImageStream(captchaFromServer);
-
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
 
@@ -189,7 +184,7 @@ namespace LiteCall.ViewModels.Pages
 
         private ImageSource _capthca;
 
-        public ImageSource Capthca
+        public ImageSource? Capthca
         {
             get => _capthca;
             set => Set(ref _capthca, value);
@@ -250,14 +245,13 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private readonly INavigationService _authPagenavigationservices;
 
         private readonly IRegistrationSevices _registrationSevices;
 
-        private readonly IhttpDataServices _httpDataServices;
+        private readonly ICaptchaServices _captchaServices;
 
-        private readonly IimageServices _imageServices;
+        private readonly IGetPasswordRecoveryQuestions _getPasswordRecoveryQuestions;
 
-
+     
     }
 }

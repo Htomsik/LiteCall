@@ -61,6 +61,8 @@
                     <Setter Property="BorderThickness" Value="6" />
                 </Trigger>
             </Style.Triggers>
+
+
         </Style>
 
     </Window.Style>
@@ -135,6 +137,7 @@
                     </Button.Resources>
 
                 </Button>
+
             </Grid>
 
             <!--  IsOpen="{Binding ModalIsOpen}">  -->
@@ -173,7 +176,7 @@
                                 <pages:AuthorisationPV />
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type server:ServerRegistrationModalVMD}">
+                            <DataTemplate DataType="{x:Type server:ServerPasswordRecoveryModalVMD}">
                                 <pages:PasswordRecoveryPV />
                             </DataTemplate>
 

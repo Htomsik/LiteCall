@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ABI.Windows.Media.Capture;
 using LiteCall.Services;
 using LiteCall.Services.Authorisation;
+using LiteCall.Services.AuthRegServices.PasswordRecovery;
 using LiteCall.Services.Interfaces;
 using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
@@ -34,8 +35,8 @@ namespace LiteCall.ViewModels
             services.AddTransient<RegistrationPageVMD>(s => new RegistrationPageVMD(
                 CreateAutPageNavigationServices(s),
                 CreateMainRegistrationSevices(s),
-                s.GetRequiredService<IhttpDataServices>(),
-                s.GetRequiredService<IimageServices>(),s.GetRequiredService<IStatusServices>()));
+                s.GetRequiredService<IStatusServices>(),
+                CreateMainServeCaptchaServices(s),CreateMainServerGetPasswordRecoveryQuestions(s)));
 
             services.AddTransient<PasswordRecoveryVMD>(
                 s=> new PasswordRecoveryVMD(
@@ -48,9 +49,9 @@ namespace LiteCall.ViewModels
             services.AddTransient<ServerRegistrationModalVMD>(s => new ServerRegistrationModalVMD(
                 CreateModalAuthorisationPageNavigationService(s),
                 CreateApiRegistrationSevices(s),
-                s.GetRequiredService<IhttpDataServices>(),
-                s.GetRequiredService<IimageServices>(),s.GetRequiredService<IStatusServices>(),
-                s.GetRequiredService<CurrentServerStore>()));
+                s.GetRequiredService<IStatusServices>(),
+                CreateApiServeCaptchaServices(s),CreateApiServerGetPasswordRecoveryQuestions(s)
+                ));
 
 
             services.AddTransient<ServerAuthorisationModalVMD>(s => new ServerAuthorisationModalVMD(
@@ -59,7 +60,9 @@ namespace LiteCall.ViewModels
                 CreateApiAuthorisationServices(s)));
 
 
-            services.AddTransient<ServerPasswordRecoveryModalVMD>();
+            services.AddTransient<ServerPasswordRecoveryModalVMD>(
+                s=> new ServerPasswordRecoveryModalVMD(
+                    CreateModalAuthorisationPageNavigationService(s),s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>(),s.GetRequiredService<CurrentServerStore>()));
 
 
             #endregion
@@ -181,7 +184,6 @@ namespace LiteCall.ViewModels
             return new RegistrationMainServerService(serviceProvider.GetRequiredService<AccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
         }
 
-
         private static IAuthorisationServices CreateApiAuthorisationServices(IServiceProvider serviceProvider)
         {
             return new AuthorisationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
@@ -191,13 +193,35 @@ namespace LiteCall.ViewModels
         }
 
        private static IAuthorisationServices CreateMainAuthorisationServices(IServiceProvider serviceProvider)
-        {
+       {
             return new AuthoisationMainServerServices(serviceProvider.GetRequiredService<AccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
-        }
+       }
       
         private static IAuthorisationServices CreateAuthCheckApiServerSevices(IServiceProvider serviceProvider)
         {
             return new AuthCheckApiServerSevices(serviceProvider.GetRequiredService<ServerAccountStore>(),serviceProvider.GetRequiredService<IhttpDataServices>());
+        }
+
+        private static ICaptchaServices CreateMainServeCaptchaServices(IServiceProvider serviceProvider)
+        {
+            return new MainServerCaptchaServices(serviceProvider.GetRequiredService<IhttpDataServices>(),
+                serviceProvider.GetRequiredService<IimageServices>());
+        }
+
+        private static ICaptchaServices CreateApiServeCaptchaServices(IServiceProvider serviceProvider)
+        {
+            return new ApiServerCaptchaServices(serviceProvider.GetRequiredService<IhttpDataServices>(),
+                serviceProvider.GetRequiredService<IimageServices>(),serviceProvider.GetRequiredService<CurrentServerStore>());
+        }
+
+        private static IGetPasswordRecoveryQuestions CreateMainServerGetPasswordRecoveryQuestions(IServiceProvider serviceProvider)
+        {
+            return new MainServerGetPassRecQestions(serviceProvider.GetRequiredService<IhttpDataServices>());
+        }
+
+        private static IGetPasswordRecoveryQuestions CreateApiServerGetPasswordRecoveryQuestions(IServiceProvider serviceProvider)
+        {
+            return new ApiServerGetPassRecQestions(serviceProvider.GetRequiredService<IhttpDataServices>(),serviceProvider.GetRequiredService<CurrentServerStore>());
         }
 
         #endregion
