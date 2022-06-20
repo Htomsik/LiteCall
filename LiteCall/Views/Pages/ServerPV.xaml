@@ -150,6 +150,7 @@
                 </ListView.ContextMenu>
 
                 <ListView.ItemTemplate>
+
                     <DataTemplate>
                         <Grid Margin="0,0,0,5">
 
@@ -159,7 +160,9 @@
                             </Grid.RowDefinitions>
 
                             <Border
+                                x:Name="RoomBorder"
                                 MinWidth="200"
+                                Margin="5,0"
                                 BorderBrush="{DynamicResource Fonts(Solid)}"
                                 BorderThickness="1"
                                 CornerRadius="8">
@@ -187,11 +190,23 @@
 
                                 </Grid>
 
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource Button2(Solid)}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
                             </Border>
 
 
                             <ListView
                                 Grid.Row="1"
+                                Margin="0,5,0,0"
                                 HorizontalContentAlignment="Stretch"
                                 ItemsSource="{Binding Users}"
                                 SelectedItem="{Binding DataContext.SelServerUser, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}, UpdateSourceTrigger=PropertyChanged}">
@@ -210,6 +225,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <Path
+                                                x:Name="UserPath"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Fill="{DynamicResource Fonts(Solid)}"
@@ -223,12 +239,24 @@
                                             </Path>
 
                                             <TextBlock
+                                                x:Name="UserText"
                                                 Grid.Column="1"
                                                 Margin="5,0,0,0"
                                                 Text="{Binding Login}" />
 
 
+
+
                                         </Grid>
+
+                                        <DataTemplate.Triggers>
+
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="UserPath" Property="Fill" Value="White" />
+                                                <Setter TargetName="UserText" Property="Foreground" Value="White" />
+                                            </Trigger>
+
+                                        </DataTemplate.Triggers>
 
 
                                     </DataTemplate>
@@ -238,7 +266,10 @@
                             </ListView>
                         </Grid>
 
+
+
                     </DataTemplate>
+
                 </ListView.ItemTemplate>
 
 

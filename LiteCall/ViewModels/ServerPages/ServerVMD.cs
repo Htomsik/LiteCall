@@ -578,6 +578,7 @@ namespace LiteCall.ViewModels.ServerPages
             try
             {
                 var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
+
                 ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
             }
             catch (Exception e)
@@ -611,8 +612,11 @@ namespace LiteCall.ViewModels.ServerPages
         private void GroupDisconnected()
         {
             CurrentGroup = null;
+
             MessagesColCollection = new ObservableCollection<Message>();
+
             _waveOut.Stop();
+
             input.StopRecording();
         }
 
