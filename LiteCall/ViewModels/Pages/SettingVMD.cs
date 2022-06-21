@@ -17,35 +17,26 @@ internal class SettingVMD : BaseVMD
 
     private readonly IhttpDataServices _httpDataServices;
 
-
     private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
-
-   
 
     private readonly IStatusServices _statusServices;
 
-
     private AccountStore _accountStore;
-
 
     private ObservableCollection<string> _inputDevice;
 
-
     private bool _isDefault;
 
-    private string _NewServerApiIp;
+    private string _newServerApiIp;
 
-
-    private string _NewSeverLogin;
-
+    private string _newSeverLogin;
 
     private ObservableCollection<string> _outputDevice;
-
 
     private SavedServersStore _savedServersStore;
 
 
-    public SettingVMD(AccountStore accountStore, SavedServersStore savedServersStore, SettingsStore settingsStore,
+    public  SettingVMD(AccountStore accountStore, SavedServersStore savedServersStore, SettingsStore settingsStore,
         INavigationService authNavigationService, IhttpDataServices httpDataServices, IStatusServices statusServices,
         SettingsAccNavigationStore settingsAccNavigationStore)
     {
@@ -82,35 +73,42 @@ internal class SettingVMD : BaseVMD
 
         outputDevice = new ObservableCollection<string>();
 
+        GetInputOutput();
+       
+    }
+
+
+    async void GetInputOutput()
+    {
         for (var n = 0; n < WaveIn.DeviceCount; n++)
         {
-            var capabilities = WaveIn.GetCapabilities(n);
-            inputDevice.Add(capabilities.ProductName);
+            var capabilities = WaveIn.GetCapabilities(n).ProductName;
+            inputDevice.Add(capabilities);
         }
 
         for (var n = 0; n < WaveOut.DeviceCount; n++)
         {
-            var capabilities = WaveOut.GetCapabilities(n);
-            outputDevice.Add(capabilities.ProductName);
+            var capabilities = WaveOut.GetCapabilities(n).ProductName;
+            outputDevice.Add(capabilities);
         }
 
 
         try
         {
-            var capabilities = WaveIn.GetCapabilities(settingsStore.CurrentSettings.CaptureDeviceId);
+            var capabilities = WaveIn.GetCapabilities(SettingsStore.CurrentSettings.CaptureDeviceId);
         }
         catch (Exception e)
         {
-            settingsStore.CurrentSettings.CaptureDeviceId = 0;
+            SettingsStore.CurrentSettings.CaptureDeviceId = 0;
         }
 
         try
         {
-            var capabilities = WaveOut.GetCapabilities(settingsStore.CurrentSettings.OutputDeviceId);
+            var capabilities = WaveOut.GetCapabilities(SettingsStore.CurrentSettings.OutputDeviceId);
         }
         catch (Exception e)
         {
-            settingsStore.CurrentSettings.OutputDeviceId = 0;
+            SettingsStore.CurrentSettings.OutputDeviceId = 0;
         }
     }
 
@@ -134,14 +132,14 @@ internal class SettingVMD : BaseVMD
 
     public string NewServerApiIp
     {
-        get => _NewServerApiIp;
-        set => Set(ref _NewServerApiIp, value);
+        get => _newServerApiIp;
+        set => Set(ref _newServerApiIp, value);
     }
 
     public string NewSeverLogin
     {
-        get => _NewSeverLogin;
-        set => Set(ref _NewSeverLogin, value);
+        get => _newSeverLogin;
+        set => Set(ref _newSeverLogin, value);
     }
 
     public bool IsDefault
@@ -163,12 +161,12 @@ internal class SettingVMD : BaseVMD
     }
 
 
-    private SettingsStore _SettingsStore;
+    private SettingsStore _settingsStore;
 
     public SettingsStore SettingsStore
     {
-        get => _SettingsStore;
-        set => Set(ref _SettingsStore, value);
+        get => _settingsStore;
+        set => Set(ref _settingsStore, value);
     }
 
 

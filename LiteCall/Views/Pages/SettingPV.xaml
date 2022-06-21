@@ -424,7 +424,7 @@
                 <TabItem.Content>
                     <Grid
                         Margin="5,0,0,0"
-                        HorizontalAlignment="Left"
+                        HorizontalAlignment="Stretch"
                         VerticalAlignment="Top">
 
                         <Grid.RowDefinitions>

@@ -25,10 +25,6 @@ namespace LiteCall.ViewModels
       {
 
 
-          var appsettings = new Appsettings();
-
-          configuration.GetSection(Appsettings.AppSettings).Bind(appsettings);
-
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
 
             #region Регистрация/Авторизация/Восстановление пароля на мейн сервере
@@ -110,7 +106,7 @@ namespace LiteCall.ViewModels
                 s.GetRequiredService<ModalNavigationStore>(),
                 s.GetRequiredService<StatusMessageStore>(),
                 s.GetRequiredService<CloseModalNavigationServices>(),
-                s.GetRequiredService<CloseAdditionalNavigationServices>(),s.GetRequiredService<IStatusServices>(),s.GetRequiredService<ICloseAppSevices>(),appsettings));
+                s.GetRequiredService<CloseAdditionalNavigationServices>(),s.GetRequiredService<IStatusServices>(),s.GetRequiredService<ICloseAppSevices>(), configuration));
 
             #endregion
 

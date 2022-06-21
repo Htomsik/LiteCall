@@ -18,6 +18,7 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -32,24 +33,24 @@ namespace LiteCall.Services
 
         const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
 
-        private string DefaultMainIp = "localhost:5005";
+        private string DefaultMainIp => _configuration!.GetSection("AppSettings")["VesionBranch"] ?? "localhost:5005";
 
         private readonly IStatusServices _statusServices;
 
         private readonly IEncryptServices _encryptServices;
 
-       
+        private readonly IConfiguration _configuration;
 
-        public HttpDataService(IStatusServices statusServices,IEncryptServices encryptServices, Appsettings appOptions)
+
+        public HttpDataService(IStatusServices statusServices,IEncryptServices encryptServices, IConfiguration configuration)
         {
             _statusServices = statusServices;
 
             _encryptServices = encryptServices;
 
-            if (appOptions.MainServerIp != null)
-            {
-                DefaultMainIp = appOptions.MainServerIp;
-            }
+            _configuration = configuration;
+
+            
             
 
         }

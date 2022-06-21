@@ -18,7 +18,7 @@ namespace LiteCall.Model
 
     internal class SavedServers: AppSavedServers
     {
-        public Account MainServerAccount { get; set; }
+        public Account MainServerAccount { get; set; } = null;
     }
 
     internal class AppSavedServers:BaseVMD

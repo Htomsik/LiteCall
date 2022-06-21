@@ -21,7 +21,7 @@ namespace LiteCall.Services
         public async Task Close()
         {
 
-          await  _synhronyzeDataOnServerServices?.SaveOnServer()!;
+             await  _synhronyzeDataOnServerServices?.SaveOnServer()!;
 
             Application.Current.Shutdown();
         }

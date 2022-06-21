@@ -11,12 +11,19 @@ using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
 using LiteCall.Stores.ModelStores;
 using LiteCall.ViewModels.Base;
+using Microsoft.Extensions.Configuration;
 
 namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
-        public Appsettings Appsettings { get; }
+
+        
+
+        public string Version => _configuration!.GetSection("AppSettings")["AppVersions"] ?? "0.1.0";
+
+        public string Vetka => _configuration!.GetSection("AppSettings")["Branch"] ?? "NonStable";
+
 
         public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, 
             AdditionalNavigationStore additionalNavigationStore,
@@ -25,9 +32,9 @@ namespace LiteCall.ViewModels
             INavigationService closeModalNavigationServices,
             INavigationService CloseAdditioNavigationService,
             IStatusServices statusServices,
-            ICloseAppSevices closeAppSevices,Appsettings appsettings)
+            ICloseAppSevices closeAppSevices,IConfiguration configuration)
         {
-            Appsettings = appsettings;
+            
 
             _mainWindowNavigationStore = mainWindowNavigationStore;
 
@@ -38,6 +45,8 @@ namespace LiteCall.ViewModels
             _statusMessageStore = statusMessageStore;
 
             _closeAppSevices = closeAppSevices;
+
+            _configuration = configuration;
 
             _mainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
@@ -79,6 +88,7 @@ namespace LiteCall.ViewModels
         private  readonly StatusMessageStore _statusMessageStore;
 
         private readonly ICloseAppSevices _closeAppSevices;
+        private readonly IConfiguration _configuration;
 
 
         public BaseVMD CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;

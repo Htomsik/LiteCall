@@ -88,7 +88,7 @@
             <ListView
                 Grid.Row="1"
                 ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts}"
-                SelectedItem="{Binding SelectedServerAccount}">
+                SelectedItem="{Binding SelectedServerAccount, UpdateSourceTrigger=PropertyChanged}">
 
                 <ListView.ContextMenu>
 
@@ -222,9 +222,6 @@
             MinWidth="200"
             Background="{StaticResource Background3(Solid)}">
 
-
-
-
             <Border.Style>
 
                 <Style TargetType="{x:Type Border}">
@@ -235,7 +232,7 @@
 
                     <Style.Triggers>
 
-                        <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
+                        <DataTrigger Binding="{Binding SelectedViewModel, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
 
                             <Setter Property="CornerRadius" Value="0 0 15 0" />
 
@@ -369,7 +366,7 @@
             Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Content="{Binding selectedViewModel}">
+            Content="{Binding SelectedViewModel}">
 
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewModel:ServerVMD}">

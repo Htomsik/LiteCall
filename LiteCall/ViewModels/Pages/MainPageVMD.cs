@@ -56,7 +56,7 @@ internal class MainPageVMD : BaseVMD
         OpenModalCommaCommand = new LambdaCommand(OnOpenModalCommaExecuted);
 
 
-        DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted, CanDisconnectServerExecute);
+        DisconnectServerCommand = new LambdaCommand(OnDisconnectServerExecuted);
 
         AccountLogoutCommand = new LambdaCommand(OnAccountLogoutExecuted); //Не работает
 
@@ -88,14 +88,14 @@ internal class MainPageVMD : BaseVMD
 
     private void OnCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(selectedViewModel));
+        OnPropertyChanged(nameof(SelectedViewModel));
     }
 
     private void DisconectServer()
     {
-        if (selectedViewModel == null) return;
+        if (SelectedViewModel == null) return;
 
-        selectedViewModel.Dispose();
+        SelectedViewModel.Dispose();
 
         VisibilitiStatus = Visibility.Collapsed;
 
@@ -110,9 +110,8 @@ internal class MainPageVMD : BaseVMD
 
     private bool CanModalRegistrationOpenCommandExecuted()
     {
-        if (ServerAccountStore.CurrentAccount != default) return !ServerAccountStore.CurrentAccount.IsAuthorise;
+         return !ServerAccountStore.CurrentAccount.IsAuthorise;
 
-        return false;
     }
 
 
@@ -120,21 +119,18 @@ internal class MainPageVMD : BaseVMD
 
     private bool CanConnectServerSavedExecute(object p)
     {
-        if (CurrentServerStore.CurrentServer == default && SelectedServerAccount is not null)
-            return SelectedServerAccount.SavedServer.ApiIp != CurrentServerStore.CurrentServer?.ApiIp;
-        return false;
+        return SelectedServerAccount?.SavedServer?.ApiIp != CurrentServerStore?.CurrentServer?.ApiIp;
     }
 
     private async Task OnConnectServerSavedExecuted(object p)
     {
-        // _statusServices.ChangeStatus(new StatusMessage { Message = "Check API server status. . ." });
-
+        
         var ServerStatus =
             await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
         if (!ServerStatus) return;
 
-        if (selectedViewModel != default) DisconectServer();
+        if (SelectedViewModel != default) DisconectServer();
 
 
         var newServerAccount = new Account
@@ -188,17 +184,9 @@ internal class MainPageVMD : BaseVMD
 
     private bool CanSaveServerCommandExecute(object p)
     {
-        if (CurrentServerStore.CurrentServer == null) return false;
-
-        try
-        {
-            return SavedServersStore.SavedServerAccounts.ServersAccounts.FirstOrDefault(x =>
-                x.SavedServer.ApiIp == CurrentServerStore.CurrentServer.ApiIp) is null;
-        }
-        catch (Exception e)
-        {
-            return true;
-        }
+        return SavedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+                x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
+        
     }
 
     private async Task OnSaveServerCommandExecuted(object p)
@@ -233,11 +221,7 @@ internal class MainPageVMD : BaseVMD
 
     public ICommand DisconnectServerCommand { get; }
 
-    private bool CanDisconnectServerExecute(object p)
-    {
-        return true;
-    }
-
+    
     private void OnDisconnectServerExecuted(object p)
     {
         DisconectServer();
@@ -276,7 +260,7 @@ internal class MainPageVMD : BaseVMD
 
     private void OnAccountLogoutExecuted(object p)
     {
-        if (selectedViewModel != null) MainPageServerNavigationStore.Close();
+        if (SelectedViewModel != null) MainPageServerNavigationStore.Close();
 
         CurrentServerStore.CurrentServer = default;
 
@@ -357,9 +341,9 @@ internal class MainPageVMD : BaseVMD
         //Заглушка на случай если Артём забудет убрать из сервера
         newServer.Ip = newServer.Ip.Replace("https://", "");
 
-        var ServerStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(newServer.Ip));
+        var serverStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(newServer.Ip));
 
-        if (newServer is not null && ServerStatus)
+        if (newServer is not null && serverStatus)
         {
             CurrentServerStore.CurrentServer = newServer;
 
@@ -478,7 +462,7 @@ internal class MainPageVMD : BaseVMD
 
     public MainPageServerNavigationStore MainPageServerNavigationStore;
 
-    public BaseVMD selectedViewModel => MainPageServerNavigationStore.MainPageServerCurrentViewModel;
+    public BaseVMD SelectedViewModel => MainPageServerNavigationStore.MainPageServerCurrentViewModel;
 
     #endregion
 }
