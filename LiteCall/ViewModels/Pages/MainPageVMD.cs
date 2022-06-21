@@ -17,7 +17,7 @@ namespace LiteCall.ViewModels.Pages;
 internal class MainPageVMD : BaseVMD
 {
     public MainPageVMD(AccountStore accountStore, ServerAccountStore serverAccountStore,
-        ServersAccountsStore serversAccountsStore,
+        SavedServersStore savedServersStore,
         CurrentServerStore currentServerStore,
         MainPageServerNavigationStore mainPageServerNavigationStore,
         INavigationService settingsPageNavigationService,
@@ -31,7 +31,7 @@ internal class MainPageVMD : BaseVMD
 
         ServerAccountStore = serverAccountStore;
 
-        ServersAccountsStore = serversAccountsStore;
+        SavedServersStore = savedServersStore;
 
         CurrentServerStore = currentServerStore;
 
@@ -192,7 +192,7 @@ internal class MainPageVMD : BaseVMD
 
         try
         {
-            return ServersAccountsStore.SavedServerAccounts.ServersAccounts.FirstOrDefault(x =>
+            return SavedServersStore.SavedServerAccounts.ServersAccounts.FirstOrDefault(x =>
                 x.SavedServer.ApiIp == CurrentServerStore.CurrentServer.ApiIp) is null;
         }
         catch (Exception e)
@@ -205,7 +205,7 @@ internal class MainPageVMD : BaseVMD
     {
         try
         {
-            ServersAccountsStore.Add(new ServerAccount
+            SavedServersStore.Add(new ServerAccount
                 { Account = ServerAccountStore.CurrentAccount, SavedServer = CurrentServerStore.CurrentServer });
         }
         catch (Exception e)
@@ -227,7 +227,7 @@ internal class MainPageVMD : BaseVMD
 
     private async Task OnDeleteServerSavedExecuted(object p)
     {
-        ServersAccountsStore.Remove(SelectedServerAccount);
+        SavedServersStore.Remove(SelectedServerAccount);
     }
 
 
@@ -306,15 +306,11 @@ internal class MainPageVMD : BaseVMD
             ApiIp = await _httpDataServices.MainServerGetApiIp(ServernameOrIp);
 
             if (ApiIp == null)
-                //  _statusServices.DeleteStatus();
-
                 return;
 
             newServer = await _httpDataServices.ApiServerGetInfo(ApiIp);
 
             if (newServer == null)
-                //  _statusServices.DeleteStatus();
-
                 return;
 
             newServer.ApiIp = ApiIp;
@@ -336,7 +332,7 @@ internal class MainPageVMD : BaseVMD
         try
         {
             var DictionaryServerAccount =
-                ServersAccountsStore.SavedServerAccounts.ServersAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
+                SavedServersStore.SavedServerAccounts.ServersAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
 
             var AuthoriseStatus = await AuthorisationServices.Login(DictionaryServerAccount.Account.IsAuthorise,
                 DictionaryServerAccount.Account, newServer.ApiIp);
@@ -438,12 +434,12 @@ internal class MainPageVMD : BaseVMD
     }
 
 
-    private ServersAccountsStore _ServersAccountsStore;
+    private SavedServersStore _savedServersStore;
 
-    public ServersAccountsStore ServersAccountsStore
+    public SavedServersStore SavedServersStore
     {
-        get => _ServersAccountsStore;
-        set => Set(ref _ServersAccountsStore, value);
+        get => _savedServersStore;
+        set => Set(ref _savedServersStore, value);
     }
 
 

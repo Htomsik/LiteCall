@@ -10,7 +10,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores
 {
-    internal class ServersAccountsStore:BaseVMD
+    internal class SavedServersStore:BaseVMD
     {
 
 
@@ -55,18 +55,18 @@ namespace LiteCall.Stores
        public void Remove(ServerAccount deletedServer)
        {
 
-           ServerAccount FindAccount = null;
+           ServerAccount findAccount = null;
 
            try
            {
-               FindAccount = SavedServerAccounts.ServersAccounts?.First(x => x.SavedServer.ApiIp == deletedServer.SavedServer.ApiIp);
+               findAccount = SavedServerAccounts?.ServersAccounts?.First(x => x.SavedServer!.ApiIp == deletedServer.SavedServer!.ApiIp)!;
            }
            catch (Exception e) { }
 
 
-           if (FindAccount != null)
+           if (findAccount != null)
            {
-               SavedServerAccounts.ServersAccounts?.Remove(FindAccount);
+               SavedServerAccounts?.ServersAccounts?.Remove(findAccount);
                OnCurrentSeverAccountChanged();
            }
 
@@ -96,7 +96,7 @@ namespace LiteCall.Stores
 
                    findAccount.SavedServer = ReplacedServer;
 
-                   SavedServerAccounts.ServersAccounts?.Add(findAccount);
+                   SavedServerAccounts?.ServersAccounts?.Add(findAccount);
                }
 
             
@@ -107,9 +107,9 @@ namespace LiteCall.Stores
 
        }
 
-        private AppSavedServers _savedServerAccounts = new AppSavedServers{ServersAccounts = new ObservableCollection<ServerAccount>()};
+        private AppSavedServers? _savedServerAccounts = new AppSavedServers{ServersAccounts = new ObservableCollection<ServerAccount>()};
 
-        public AppSavedServers SavedServerAccounts 
+        public AppSavedServers? SavedServerAccounts 
         {
             get => _savedServerAccounts;
             set

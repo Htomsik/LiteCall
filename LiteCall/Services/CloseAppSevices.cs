@@ -11,25 +11,17 @@ namespace LiteCall.Services
 {
     internal class CloseAppSevices:ICloseAppSevices
     {
-        private readonly IhttpDataServices _httpDataServices;
+        private readonly ISynhronyzeDataOnServerServices _synhronyzeDataOnServerServices;
 
-        private readonly AccountStore _accountStore;
 
-        private readonly ServersAccountsStore _serversAccountsStore;
-
-        public CloseAppSevices(IhttpDataServices httpDataServices,AccountStore accountStore, ServersAccountsStore serversAccountsStore)
+        public CloseAppSevices(ISynhronyzeDataOnServerServices synhronyzeDataOnServerServices)
         {
-            _httpDataServices = httpDataServices;
-
-            _accountStore = accountStore;
-
-            _serversAccountsStore = serversAccountsStore;
+            _synhronyzeDataOnServerServices = synhronyzeDataOnServerServices;
         }
         public async Task Close()
         {
 
-           var test = await _httpDataServices.PostSaveServersUserOnMainServer(_accountStore.CurrentAccount,
-                _serversAccountsStore.SavedServerAccounts);
+          await  _synhronyzeDataOnServerServices?.SaveOnServer()!;
 
             Application.Current.Shutdown();
         }

@@ -19,18 +19,18 @@ namespace LiteCall.Services.Interfaces
 
         public Task<Server?> ApiServerGetInfo(string apiServerIp);
 
-        public Task<ImagePacket?> GetCaptcha(string serverIp = null);
+        public Task<ImagePacket?> GetCaptcha(string? serverIp = null);
 
         public Task<bool> CheckServerStatus(string serverIp);
 
         public Task<string> GetRoleFromJwtToken(string token);
 
-        public Task<List<Question>?> GetPasswordRecoveryQestions(string apiServerIp = null);
+        public Task<List<Question>?> GetPasswordRecoveryQestions(string? apiServerIp = null);
 
-        public Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiIp= null);
+        public Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string? apiIp= null);
 
         public Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts);
 
-        public Task<AppSavedServers> GetSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts);
+        public Task<AppSavedServers> GetSaveServersUserOnMainServer(Account currentAccount, DateTime? dateSynch);
     }
 }

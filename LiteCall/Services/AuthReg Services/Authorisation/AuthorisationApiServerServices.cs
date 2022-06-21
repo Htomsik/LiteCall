@@ -15,7 +15,7 @@ namespace LiteCall.Services
     internal class AuthorisationApiServerServices : IAuthorisationServices
     {
 
-        private ServersAccountsStore _ServersAccountsStore;
+        private SavedServersStore _savedServersStore;
 
         private readonly CurrentServerStore _CurrentServerStore;
 
@@ -23,10 +23,10 @@ namespace LiteCall.Services
 
         private readonly IhttpDataServices _HttpDataServices;
 
-        public AuthorisationApiServerServices(ServersAccountsStore serversAccountsStore,
+        public AuthorisationApiServerServices(SavedServersStore savedServersStore,
             CurrentServerStore currentServerStore, INavigationService closeModalNavigationService, IhttpDataServices httpDataServices)
         {
-            _ServersAccountsStore = serversAccountsStore;
+            _savedServersStore = savedServersStore;
 
             _CurrentServerStore = currentServerStore;
 
@@ -78,7 +78,7 @@ namespace LiteCall.Services
 
 
 
-            _ServersAccountsStore.Replace(_CurrentServerStore.CurrentServer, _NewAccount);
+            _savedServersStore.Replace(_CurrentServerStore.CurrentServer, _NewAccount);
 
             _CloseModalNavigationService.Navigate();
 

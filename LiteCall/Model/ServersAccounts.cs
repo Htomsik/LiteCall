@@ -11,9 +11,9 @@ namespace LiteCall.Model
 {
     internal class ServerAccount
     {
-        public Server SavedServer { get; set; }
+        public Server? SavedServer { get; set; }
 
-        public Account Account { get; set; }
+        public Account? Account { get; set; }
     }
 
     internal class SavedServers: AppSavedServers
@@ -25,16 +25,16 @@ namespace LiteCall.Model
     {
 
         [JsonIgnore]
-        private ObservableCollection<ServerAccount> _serversAccounts = new ObservableCollection<ServerAccount>();
+        private ObservableCollection<ServerAccount>? _serversAccounts = new ObservableCollection<ServerAccount>();
 
-        public ObservableCollection<ServerAccount> ServersAccounts
+        public ObservableCollection<ServerAccount>? ServersAccounts
         {
             get => _serversAccounts;
             set => Set(ref _serversAccounts, value);
         }
 
 
-        public DateTime LastUpdated   { get; set; }
+        public DateTime? LastUpdated   { get; set; }
     }
 
 

@@ -82,7 +82,7 @@ namespace LiteCall.ViewModels
             services.AddTransient<MainPageVMD>(
                 s => new MainPageVMD(s.GetRequiredService<AccountStore>(),
                     s.GetRequiredService<ServerAccountStore>(),
-                    s.GetRequiredService<ServersAccountsStore>(),
+                    s.GetRequiredService<SavedServersStore>(),
                     s.GetRequiredService<CurrentServerStore>(),
                     s.GetRequiredService<MainPageServerNavigationStore>(),
                     CreateSettingPageNavigationService(s),
@@ -94,7 +94,7 @@ namespace LiteCall.ViewModels
 
             services.AddTransient<SettingVMD>(s => new SettingVMD(
                 s.GetRequiredService<AccountStore>(),
-                s.GetRequiredService<ServersAccountsStore>(),s.GetRequiredService<SettingsStore>(),
+                s.GetRequiredService<SavedServersStore>(),s.GetRequiredService<SettingsStore>(),
                 CreateAutPageNavigationServices(s),s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>(),
                 s.GetRequiredService<SettingsAccNavigationStore>()
             ));
@@ -110,7 +110,7 @@ namespace LiteCall.ViewModels
                 s.GetRequiredService<ModalNavigationStore>(),
                 s.GetRequiredService<StatusMessageStore>(),
                 s.GetRequiredService<CloseModalNavigationServices>(),
-                s.GetRequiredService<CloseAdditionalNavigationServices>(),s.GetRequiredService<IStatusServices>(),CreateCloseAppSevices(s),appsettings));
+                s.GetRequiredService<CloseAdditionalNavigationServices>(),s.GetRequiredService<IStatusServices>(),s.GetRequiredService<ICloseAppSevices>(),appsettings));
 
             #endregion
 
@@ -183,7 +183,7 @@ namespace LiteCall.ViewModels
         #region Авторизация/Регистрация/восстановление пароля сервисы
         private static IRegistrationSevices CreateApiRegistrationSevices(IServiceProvider serviceProvider)
         {
-            return new RegistrationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
+            return new RegistrationApiServerServices(serviceProvider.GetRequiredService<SavedServersStore>(),
                 serviceProvider.GetRequiredService<CurrentServerStore>(), 
                 serviceProvider.GetRequiredService<CloseModalNavigationServices>(),
                 serviceProvider.GetRequiredService<IhttpDataServices>());
@@ -196,7 +196,7 @@ namespace LiteCall.ViewModels
 
         private static IAuthorisationServices CreateApiAuthorisationServices(IServiceProvider serviceProvider)
         {
-            return new AuthorisationApiServerServices(serviceProvider.GetRequiredService<ServersAccountsStore>(),
+            return new AuthorisationApiServerServices(serviceProvider.GetRequiredService<SavedServersStore>(),
                 serviceProvider.GetRequiredService<CurrentServerStore>(),
                 serviceProvider.GetRequiredService<CloseModalNavigationServices>(),
                 serviceProvider.GetRequiredService<IhttpDataServices>());
@@ -247,9 +247,6 @@ namespace LiteCall.ViewModels
 
         #endregion
 
-        private static  ICloseAppSevices CreateCloseAppSevices(IServiceProvider serviceProvider)
-        {
-            return new CloseAppSevices(serviceProvider.GetRequiredService<IhttpDataServices>(),serviceProvider.GetRequiredService<AccountStore>(),serviceProvider.GetRequiredService<ServersAccountsStore>());
-        }
+      
     }
 }

@@ -29,22 +29,23 @@ namespace LiteCall.ViewModels
         {
             Appsettings = appsettings;
 
-            _MainWindowNavigationStore = mainWindowNavigationStore;
+            _mainWindowNavigationStore = mainWindowNavigationStore;
 
-            _AdditionalNavigationStore = additionalNavigationStore;
+            _additionalNavigationStore = additionalNavigationStore;
 
-            _ModalNavigationStore = modalNavigationStore;
+            _modalNavigationStore = modalNavigationStore;
 
-            _StatusMessageStore = statusMessageStore;
+            _statusMessageStore = statusMessageStore;
+
             _closeAppSevices = closeAppSevices;
 
-            _MainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+            _mainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
-            _AdditionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
+            _additionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
 
-            _ModalNavigationStore.CurrentViewModelChanged += OnModalCurrentViewModelChanged;
+            _modalNavigationStore.CurrentViewModelChanged += OnModalCurrentViewModelChanged;
 
-            _StatusMessageStore.CurentStatusMessageChanged += OnCurentStatusMessageChanged;
+            _statusMessageStore.CurentStatusMessageChanged += OnCurentStatusMessageChanged;
 
             CloseModalCommand = new NavigationCommand(closeModalNavigationServices);
 
@@ -62,31 +63,31 @@ namespace LiteCall.ViewModels
 
         private async Task OnCloseAppExecuted(object p)
         {
-            _closeAppSevices.Close();
+            _closeAppSevices?.Close();
         }
 
         public ICommand CloseModalCommand { get; }
 
         public ICommand CloseSettingsCommand { get; }
 
-        private readonly MainWindowNavigationStore _MainWindowNavigationStore;
+        private readonly MainWindowNavigationStore _mainWindowNavigationStore;
 
-        private readonly AdditionalNavigationStore _AdditionalNavigationStore;
+        private readonly AdditionalNavigationStore _additionalNavigationStore;
 
-        private readonly ModalNavigationStore _ModalNavigationStore;
+        private readonly ModalNavigationStore _modalNavigationStore;
 
-        private  readonly StatusMessageStore _StatusMessageStore;
+        private  readonly StatusMessageStore _statusMessageStore;
 
         private readonly ICloseAppSevices _closeAppSevices;
 
 
-        public BaseVMD CurrentViewModel => _MainWindowNavigationStore.MainWindowCurrentViewModel;
+        public BaseVMD CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;
 
-        public BaseVMD ModalCurrentViewModel => _ModalNavigationStore.ModalMainWindowCurrentViewModel;
+        public BaseVMD ModalCurrentViewModel => _modalNavigationStore.ModalMainWindowCurrentViewModel;
 
-        public BaseVMD AdditionalCurrentViewModel => _AdditionalNavigationStore.AdditionalMainWindowCurrentViewModel;
+        public BaseVMD AdditionalCurrentViewModel => _additionalNavigationStore.AdditionalMainWindowCurrentViewModel;
 
-        public StatusMessage CurrentStatusMessage => _StatusMessageStore.CurentStatusMessage;
+        public StatusMessage CurrentStatusMessage => _statusMessageStore.CurentStatusMessage;
 
 
 
@@ -118,11 +119,11 @@ namespace LiteCall.ViewModels
             OnPropertyChanged(nameof(StatusMessageIsOpen));
         }
 
-        public bool AdditionalIsOpen => _AdditionalNavigationStore.IsOpen;
+        public bool AdditionalIsOpen => _additionalNavigationStore.IsOpen;
 
-        public bool ModalIsOpen => _ModalNavigationStore.IsOpen;
+        public bool ModalIsOpen => _modalNavigationStore.IsOpen;
 
-        public bool StatusMessageIsOpen => _StatusMessageStore.IsOpen;
+        public bool StatusMessageIsOpen => _statusMessageStore.IsOpen;
 
 
 

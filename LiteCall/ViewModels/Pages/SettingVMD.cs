@@ -42,16 +42,16 @@ internal class SettingVMD : BaseVMD
     private ObservableCollection<string> _outputDevice;
 
 
-    private ServersAccountsStore _serversAccountsStore;
+    private SavedServersStore _savedServersStore;
 
 
-    public SettingVMD(AccountStore accountStore, ServersAccountsStore serversAccountsStore, SettingsStore settingsStore,
+    public SettingVMD(AccountStore accountStore, SavedServersStore savedServersStore, SettingsStore settingsStore,
         INavigationService authNavigationService, IhttpDataServices httpDataServices, IStatusServices statusServices,
         SettingsAccNavigationStore settingsAccNavigationStore)
     {
         AccountStore = accountStore;
 
-        ServersAccountsStore = serversAccountsStore;
+        SavedServersStore = savedServersStore;
 
         SettingsStore = settingsStore;
 
@@ -156,10 +156,10 @@ internal class SettingVMD : BaseVMD
         set => Set(ref _accountStore, value);
     }
 
-    public ServersAccountsStore ServersAccountsStore
+    public SavedServersStore SavedServersStore
     {
-        get => _serversAccountsStore;
-        set => Set(ref _serversAccountsStore, value);
+        get => _savedServersStore;
+        set => Set(ref _savedServersStore, value);
     }
 
 
@@ -240,7 +240,7 @@ internal class SettingVMD : BaseVMD
 
             newSavedSeverAccount.SavedServer = newServer;
 
-            if (!ServersAccountsStore.Add(newSavedSeverAccount))
+            if (!SavedServersStore.Add(newSavedSeverAccount))
                 _statusServices.ChangeStatus(new StatusMessage { Message = "Server already exists", isError = true });
         }
     }

@@ -420,14 +420,6 @@ namespace LiteCall.Services
         public async Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts)
         {
 
-            if (string.IsNullOrEmpty(currentAccount.Password))
-            {
-                return false;
-            }
-            else if (savedServerAccounts?.ServersAccounts?.Count == 0)
-            {
-                return false;
-            }
 
             var jsonServers = JsonSerializer.Serialize(savedServerAccounts, new JsonSerializerOptions { WriteIndented = true, IgnoreNullValues = true });
             
@@ -458,15 +450,11 @@ namespace LiteCall.Services
             return (response.StatusCode == System.Net.HttpStatusCode.OK);
         }
 
-        public async Task<AppSavedServers> GetSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts)
+        public async Task<AppSavedServers> GetSaveServersUserOnMainServer(Account currentAccount, DateTime? dateSynch)
         {
 
-            if (string.IsNullOrEmpty(currentAccount.Password))
-            {
-                return null;
-            }
-
-            var authModel = new { Login = currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password), DateSynch = savedServerAccounts.LastUpdated };
+            
+            var authModel = new { Login = currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password), DateSynch = dateSynch };
 
             var json = JsonSerializer.Serialize(authModel);
 

@@ -223,7 +223,7 @@
                             Background="{DynamicResource Background23(Solid)}"
                             CornerRadius="10">
 
-                            <ListView x:Name="ServesListView" ItemsSource="{Binding ServersAccountsStore.SavedServerAccounts, UpdateSourceTrigger=PropertyChanged}">
+                            <ListView x:Name="ServesListView" ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts, UpdateSourceTrigger=PropertyChanged}">
 
                                 <ListView.ItemTemplate>
 
@@ -422,7 +422,10 @@
                 </TabItem.Header>
 
                 <TabItem.Content>
-                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
 
                         <Grid.RowDefinitions>
                             <RowDefinition />

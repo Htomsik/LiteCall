@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
@@ -15,15 +16,15 @@ internal class ServersAccountsFileServices : IFileReadServices
     private readonly AccountStore _accountStore;
 
 
-    private readonly ServersAccountsStore _serversAccountsStore;
+    private readonly SavedServersStore _savedServersStore;
 
-    public ServersAccountsFileServices(ServersAccountsStore serversAccountsStore, AccountStore accountStore)
+    public ServersAccountsFileServices(SavedServersStore savedServersStore, AccountStore accountStore)
     {
-        _serversAccountsStore = serversAccountsStore;
+        _savedServersStore = savedServersStore;
 
         _accountStore = accountStore;
 
-        _serversAccountsStore.ServersAccountsChange += SaveDataInFile;
+        _savedServersStore.ServersAccountsChange += SaveDataInFile;
 
         _accountStore.CurrentAccountChange += GetDataFromFile;
     }
@@ -33,7 +34,7 @@ internal class ServersAccountsFileServices : IFileReadServices
     {
         try
         {
-            var FileText = await File.ReadAllTextAsync(_FilePath);
+            string? FileText = await File.ReadAllTextAsync(_FilePath);
 
             var AllUsers = JsonConvert.DeserializeObject<List<SavedServers>>(FileText);
 
@@ -41,11 +42,11 @@ internal class ServersAccountsFileServices : IFileReadServices
                 s.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise &&
                 s.MainServerAccount.Login == _accountStore.CurrentAccount.Login);
 
-            _serversAccountsStore.SavedServerAccounts.ServersAccounts = currentUserServerStore?.ServersAccounts;
+            _savedServersStore.SavedServerAccounts!.ServersAccounts = currentUserServerStore?.ServersAccounts ?? new ObservableCollection<ServerAccount>();
         }
         catch (Exception e)
         {
-            _serversAccountsStore.SavedServerAccounts = new AppSavedServers();
+            _savedServersStore.SavedServerAccounts = new AppSavedServers();
         }
     }
 
@@ -84,15 +85,15 @@ internal class ServersAccountsFileServices : IFileReadServices
             }
 
 
-            if (_serversAccountsStore.SavedServerAccounts.ServersAccounts?.Count !=0 && _serversAccountsStore.SavedServerAccounts.ServersAccounts is not null)
+            if (_savedServersStore.SavedServerAccounts.ServersAccounts?.Count !=0 && _savedServersStore.SavedServerAccounts.ServersAccounts is not null)
             {
-                foreach (var elem in _serversAccountsStore?.SavedServerAccounts?.ServersAccounts) elem.Account.Token = null;
+                foreach (var elem in _savedServersStore?.SavedServerAccounts?.ServersAccounts) elem.Account.Token = null;
 
                 var newSavedServers = new SavedServers
                 {
                     LastUpdated = DateTime.Now,
                     MainServerAccount = _accountStore.CurrentAccount,
-                    ServersAccounts = _serversAccountsStore.SavedServerAccounts.ServersAccounts
+                    ServersAccounts = _savedServersStore.SavedServerAccounts.ServersAccounts
                 };
 
                 allUsers.Add(newSavedServers);

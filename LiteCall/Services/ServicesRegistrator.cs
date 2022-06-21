@@ -24,7 +24,7 @@ namespace LiteCall.Services
 
 
 
-            services.AddSingleton<ServersAccountsFileServices>(s => new ServersAccountsFileServices(s.GetRequiredService<ServersAccountsStore>(),s.GetRequiredService<AccountStore>()));
+            services.AddSingleton<ServersAccountsFileServices>(s => new ServersAccountsFileServices(s.GetRequiredService<SavedServersStore>(),s.GetRequiredService<AccountStore>()));
 
             services.AddSingleton<MainAccountFileServices>(s => new MainAccountFileServices(s.GetRequiredService<AccountStore>(), s.GetRequiredService<SettingsStore>()));
 
@@ -44,7 +44,9 @@ namespace LiteCall.Services
 
             services.AddSingleton<IhttpDataServices,HttpDataService>( s => new HttpDataService(s.GetRequiredService<IStatusServices>(),s.GetRequiredService<IEncryptServices>(),appsettings));
 
+            services.AddTransient<ICloseAppSevices, CloseAppSevices>();
 
+            services.AddTransient<ISynhronyzeDataOnServerServices, SynchronizeDataOnServerServices>();
             #endregion
 
             return services;

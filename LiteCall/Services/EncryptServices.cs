@@ -38,7 +38,7 @@ namespace LiteCall.Services
             return Convert.ToBase64String(encryptedText);
         }
 
-        public async Task<string> Base64Decrypt(string content)
+        public async Task<string?> Base64Decrypt(string? content)
         {
          
             if(string.IsNullOrEmpty(content)) return content;

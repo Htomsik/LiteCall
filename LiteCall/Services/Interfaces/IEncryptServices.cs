@@ -12,6 +12,6 @@ namespace LiteCall.Services.Interfaces
 
         public  Task<string> Base64Encypt(string content);
 
-        public  Task<string> Base64Decrypt(string content);
+        public  Task<string?> Base64Decrypt(string? content);
     }
 }

@@ -13,7 +13,7 @@ namespace LiteCall.Services
     internal class RegistrationApiServerServices:IRegistrationSevices
     {
 
-        private readonly ServersAccountsStore _serversAccountsStore;
+        private readonly SavedServersStore _savedServersStore;
 
         private readonly CurrentServerStore _currentServerStore;
 
@@ -23,11 +23,11 @@ namespace LiteCall.Services
         private readonly IhttpDataServices _httpDataServices;
 
 
-        public RegistrationApiServerServices(ServersAccountsStore serversAccountsStore, CurrentServerStore currentServerStore, INavigationService closeModalNavigationService, IhttpDataServices httpDataServices)
+        public RegistrationApiServerServices(SavedServersStore savedServersStore, CurrentServerStore currentServerStore, INavigationService closeModalNavigationService, IhttpDataServices httpDataServices)
         {
             _closeModalNavigationService = closeModalNavigationService;
 
-            _serversAccountsStore = serversAccountsStore;
+            _savedServersStore = savedServersStore;
 
             _currentServerStore = currentServerStore;
 
@@ -55,7 +55,7 @@ namespace LiteCall.Services
 
             newAccount.IsAuthorise = true;
 
-            _serversAccountsStore.Replace(_currentServerStore.CurrentServer,newAccount);
+            _savedServersStore.Replace(_currentServerStore.CurrentServer,newAccount);
 
             _closeModalNavigationService.Navigate();
 

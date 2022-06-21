@@ -11,22 +11,21 @@ namespace LiteCall.Stores
     internal class ServerAccountStore:BaseVMD
     {
         
-
-        public event Action CurrentAccountChange;
+        public event Action? CurrentAccountChange;
 
         private void OnCurrentAccountChangeChanged()
         {
             CurrentAccountChange?.Invoke();
         }
 
-        private Account _CurrentAccount;
+        private Account _currentAccount;
 
         public  Account CurrentAccount 
         {
-            get => _CurrentAccount;
+            get => _currentAccount;
             set
             {
-                Set(ref _CurrentAccount, value);
+                Set(ref _currentAccount, value);
                 OnCurrentAccountChangeChanged();
             }
         }
