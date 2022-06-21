@@ -44,7 +44,7 @@
   <Class Name="LiteCall.Services.AuthoisationMainServerServices" BaseTypeListCollapsed="true">
     <Position X="8" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQJAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAQJAAAAAA=</HashCode>
       <FileName>Services\AuthReg Services\Authorisation\AuthoisationMainServerServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -124,7 +124,7 @@
   <Class Name="LiteCall.Services.MainAccountFileServices" BaseTypeListCollapsed="true">
     <Position X="6.25" Y="15.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACgCAAAAAAAAAAAAACAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAAAAAAAACACAAAAAAAAAAAABAAAAAQAA=</HashCode>
       <FileName>Services\FileServices\MainAccountFileServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -132,7 +132,7 @@
   <Class Name="LiteCall.Services.ServersAccountsFileServices" BaseTypeListCollapsed="true">
     <Position X="25.5" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACgAAAAAAAAAAAAAACAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACgAAAAAAAAAAAAAACAAAIAAAAAAAAAAAAAAAAQAA=</HashCode>
       <FileName>Services\FileServices\ServersAccountsFileServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -180,7 +180,7 @@
   <Class Name="LiteCall.Services.EncryptServices" BaseTypeListCollapsed="true">
     <Position X="15" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAAAAAAAEAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\EncryptServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -188,7 +188,7 @@
   <Class Name="LiteCall.Services.HttpDataService" BaseTypeListCollapsed="true">
     <Position X="2.75" Y="13.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAABAAAAAgAAiAggQAEAgAgAAAAAAQAEgEA=</HashCode>
+      <HashCode>AAAAAAQAAAABAAAAAgAAigggQAEAgAgAAAgAAQAEgEA=</HashCode>
       <FileName>Services\HttpDataService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -250,13 +250,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAEAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Infrastructure\Commands\AccountLogoutCommand.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="LiteCall.Infrastructure.Commands.CloseAppCommand">
-    <Position X="9.75" Y="7" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Infrastructure\Commands\CloseAppCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.Infrastructure.Commands.NavigationCommand">
@@ -384,14 +377,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.Infrastructure.ValidationRule.PasswordValidator">
-    <Position X="9.75" Y="4" Width="1.5" />
+    <Position X="9.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Infrastructure\ValidationRule\PasswordValidator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.Infrastructure.ValidationRule.RoomNameValidation">
-    <Position X="9.75" Y="5.5" Width="1.5" />
+    <Position X="9.75" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Infrastructure\ValidationRule\RoomNameValidation.cs</FileName>
@@ -512,7 +505,7 @@
   <Class Name="LiteCall.Model.Settings">
     <Position X="11.5" Y="15" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAIACAAAyAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Settings.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -578,7 +571,7 @@
   <Class Name="LiteCall.Stores.ServersAccountsStore">
     <Position X="9.75" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAgAAAAAAJAAAAAAAAACgAAAAAAAAACA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAgCAAAAAJAAAAAAAAAAgAAAAAAAAACA=</HashCode>
       <FileName>Stores\Model Stores\ServersAccountsStore.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -656,21 +649,21 @@
   <Class Name="LiteCall.ViewModels.Pages.AuthorisationPageVMD">
     <Position X="11.5" Y="10.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAgAAAIAAAAAAAAAAAABQAEAoABCAAAQIIAAEAA=</HashCode>
+      <HashCode>AAQAAAgAAAIAAAAAAAAAAAABQAEAoABCAAAQIIAAkAA=</HashCode>
       <FileName>ViewModels\Pages\AutRegPasges\AuthorisationPageVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.ViewModels.Pages.PasswordRecoveryVMD">
     <Position X="15" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABQAAAYIAAAAwAAAAAAACBKAABAAAAACAAgQIAEAAAU=</HashCode>
+      <HashCode>ABQAAAYIAAAAwAAAAAAACBKAABAAAAACAAgQIAEAgAU=</HashCode>
       <FileName>ViewModels\Pages\AutRegPasges\PasswordRecoveryVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.ViewModels.Pages.RegistrationPageVMD">
     <Position X="18.5" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AJQAAGYYAhIAwAIBAgCABACQABAAAAQiAAgQIAEAIIQ=</HashCode>
+      <HashCode>AJQAAGYYAhIAwAIBAgCABACQABAAAAQiAAgQIAEAoIQ=</HashCode>
       <FileName>ViewModels\Pages\AutRegPasges\RegistrationPageVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -684,7 +677,7 @@
   <Class Name="LiteCall.ViewModels.Pages.SettingVMD">
     <Position X="22" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IBAAQSQAAAMAIAACIAJABAgIAABAAAAEAAQAIAAAwhA=</HashCode>
+      <HashCode>IBAAQSYAAAMAIAACIAJABAoICABAQAAkAAQAIAAAwhA=</HashCode>
       <FileName>ViewModels\Pages\SettingVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -712,14 +705,14 @@
   <Class Name="LiteCall.ViewModels.ServerPages.ServerVMD">
     <Position X="22" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>FYMgO4jAQigAQgAgAQCBA2TscBQdQxgIBGICBJAIhCQ=</HashCode>
+      <HashCode>FYMgOqjAQiEAQgAgIAKAB0ksMBRdQRgIBGIDQBAIhCA=</HashCode>
       <FileName>ViewModels\ServerPages\ServerVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.ViewModels.MainWindowVMD">
     <Position X="15" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAgggACAAAAgIEAIAAAAAACAAAAMAAgAQAgAAAACAAI=</HashCode>
+      <HashCode>CAgggACAAAAgMEAIQQAAAACAAAAMAAgAQAgAAgACAAI=</HashCode>
       <FileName>ViewModels\MainWindowVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -817,7 +810,7 @@
   <Interface Name="LiteCall.Services.Interfaces.IEncryptServices">
     <Position X="23.75" Y="18.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Interfaces\IEncryptServices.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -838,7 +831,7 @@
   <Interface Name="LiteCall.Services.Interfaces.IhttpDataServices">
     <Position X="25.5" Y="19.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAABAAAAAgAAAAAgQAEAAAAAAAAAAQAEAAA=</HashCode>
+      <HashCode>AAAAAAQAAAABAAAAAgAAAgAgQAEAAAAAAAgAAQAEAAA=</HashCode>
       <FileName>Services\Interfaces\IhttpDataServices.cs</FileName>
     </TypeIdentifier>
   </Interface>

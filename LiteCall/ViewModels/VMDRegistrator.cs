@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ABI.Windows.Media.Capture;
+using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Services.Authorisation;
 using LiteCall.Services.Interfaces;
@@ -13,15 +14,20 @@ using LiteCall.Stores.ModelStores;
 using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Pages;
 using LiteCall.ViewModels.ServerPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LiteCall.ViewModels
 {
     internal static class VMDRegistrator
     {
-      public  static IServiceCollection RegisterVMD(this IServiceCollection services)
+      public  static IServiceCollection RegisterVMD(this IServiceCollection services, IConfiguration configuration)
       {
 
+
+          var appsettings = new Appsettings();
+
+          configuration.GetSection(Appsettings.AppSettings).Bind(appsettings);
 
             services.AddSingleton<INavigationService>(s => CreateMainPageNavigationServices(s));
 
@@ -104,7 +110,7 @@ namespace LiteCall.ViewModels
                 s.GetRequiredService<ModalNavigationStore>(),
                 s.GetRequiredService<StatusMessageStore>(),
                 s.GetRequiredService<CloseModalNavigationServices>(),
-                s.GetRequiredService<CloseAdditionalNavigationServices>(),s.GetRequiredService<IStatusServices>(),CreateCloseAppSevices(s)));
+                s.GetRequiredService<CloseAdditionalNavigationServices>(),s.GetRequiredService<IStatusServices>(),CreateCloseAppSevices(s),appsettings));
 
             #endregion
 

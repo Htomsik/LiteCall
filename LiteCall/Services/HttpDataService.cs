@@ -18,6 +18,7 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -31,20 +32,26 @@ namespace LiteCall.Services
 
         const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
 
-        private const string DefaultMainIp = "localhost:5005";
+        private string DefaultMainIp = "localhost:5005";
 
         private readonly IStatusServices _statusServices;
 
         private readonly IEncryptServices _encryptServices;
 
-        public HttpDataService(IStatusServices statusServices,IEncryptServices encryptServices)
+       
+
+        public HttpDataService(IStatusServices statusServices,IEncryptServices encryptServices, Appsettings appOptions)
         {
             _statusServices = statusServices;
 
             _encryptServices = encryptServices;
 
-  
+            if (appOptions.MainServerIp != null)
+            {
+                DefaultMainIp = appOptions.MainServerIp;
+            }
             
+
         }
 
 
@@ -61,7 +68,7 @@ namespace LiteCall.Services
        };
 
 
-       public async Task<string> GetAuthorizeToken(Reg_Rec_PasswordAccount newAcc, string apiServerIp = DefaultMainIp)
+       public async Task<string> GetAuthorizeToken(Reg_Rec_PasswordAccount newAcc, string apiServerIp = null)
         {
 
 
@@ -110,7 +117,7 @@ namespace LiteCall.Services
 
 
 
-        public  async Task<string> Registration(RegistrationModel registrationModel, string apiServerIp = DefaultMainIp)
+        public  async Task<string> Registration(RegistrationModel registrationModel, string apiServerIp = null)
         {
 
 
@@ -244,7 +251,7 @@ namespace LiteCall.Services
 
 
 
-        public  async Task<ImagePacket?> GetCaptcha(string apiServerIp = DefaultMainIp)
+        public  async Task<ImagePacket?> GetCaptcha(string apiServerIp = null)
         {
             if (apiServerIp == null)
             {
@@ -320,7 +327,7 @@ namespace LiteCall.Services
 
       }
 
-      public async Task<List<Question>> GetPasswordRecoveryQestions(string apiServerIp = DefaultMainIp)
+      public async Task<List<Question>> GetPasswordRecoveryQestions(string apiServerIp = null)
       {
 
           if (apiServerIp == null)
@@ -364,7 +371,7 @@ namespace LiteCall.Services
         
       }
 
-        public async Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiServerIp = DefaultMainIp)
+        public async Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiServerIp = null)
         {
 
             if (apiServerIp == null)

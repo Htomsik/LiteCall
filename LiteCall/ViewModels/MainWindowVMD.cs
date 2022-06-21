@@ -16,6 +16,8 @@ namespace LiteCall.ViewModels
 {   
     internal class MainWindowVMD:BaseVMD
     {
+        public Appsettings Appsettings { get; }
+
         public MainWindowVMD(MainWindowNavigationStore mainWindowNavigationStore, 
             AdditionalNavigationStore additionalNavigationStore,
             ModalNavigationStore modalNavigationStore,
@@ -23,8 +25,10 @@ namespace LiteCall.ViewModels
             INavigationService closeModalNavigationServices,
             INavigationService CloseAdditioNavigationService,
             IStatusServices statusServices,
-            ICloseAppSevices closeAppSevices)
+            ICloseAppSevices closeAppSevices,Appsettings appsettings)
         {
+            Appsettings = appsettings;
+
             _MainWindowNavigationStore = mainWindowNavigationStore;
 
             _AdditionalNavigationStore = additionalNavigationStore;

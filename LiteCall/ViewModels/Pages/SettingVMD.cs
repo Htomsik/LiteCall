@@ -20,6 +20,8 @@ internal class SettingVMD : BaseVMD
 
     private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
 
+   
+
     private readonly IStatusServices _statusServices;
 
 
@@ -53,8 +55,8 @@ internal class SettingVMD : BaseVMD
 
         SettingsStore = settingsStore;
 
-
         _settingsAccNavigationStore = settingsAccNavigationStore;
+        
 
 
         _authNavigationService = authNavigationService;
@@ -168,9 +170,6 @@ internal class SettingVMD : BaseVMD
         get => _SettingsStore;
         set => Set(ref _SettingsStore, value);
     }
-
-
-
 
 
     private int _CaptureDeviceId;

@@ -59,6 +59,7 @@ namespace LiteCall
 
             base.OnStartup(e);
 
+            
            await host.StartAsync().ConfigureAwait(false);
 
 
@@ -92,9 +93,9 @@ namespace LiteCall
             });
 
             services
-                .RegisterServices()
+                .RegisterServices(host.Configuration)
                 .RegisterStores()
-                .RegisterVMD();
+                .RegisterVMD(host.Configuration);
 
         }
         
