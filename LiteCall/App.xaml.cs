@@ -45,10 +45,16 @@ namespace LiteCall
             host.Services.GetRequiredService<ServersAccountsFileServices>().GetDataFromFile();
 
 
-           host.Services.GetRequiredService<ServersAccountsStore>().SavedServerAccounts =
-               await host.Services.GetRequiredService<IhttpDataServices>().GetSaveServersUserOnMainServer(host.Services.GetRequiredService<AccountStore>().CurrentAccount, host.Services.GetRequiredService<ServersAccountsStore>().SavedServerAccounts
-              );
 
+
+           var test =
+               await host.Services.GetRequiredService<IhttpDataServices>().GetSaveServersUserOnMainServer(host.Services.GetRequiredService<AccountStore>().CurrentAccount, host.Services.GetRequiredService<ServersAccountsStore>().SavedServerAccounts
+               );
+
+           if (test != null)
+           {
+               host.Services.GetRequiredService<ServersAccountsStore>().SavedServerAccounts = test;
+           }
             INavigationService InitialNavigationService = host.Services.GetRequiredService<INavigationService>();
 
             InitialNavigationService.Navigate();

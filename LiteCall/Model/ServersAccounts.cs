@@ -21,7 +21,7 @@ namespace LiteCall.Model
         public Account MainServerAccount { get; set; }
     }
 
-    internal class AppSavedServers:BaseVMD  
+    internal class AppSavedServers:BaseVMD
     {
 
         [JsonIgnore]

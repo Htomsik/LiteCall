@@ -38,8 +38,13 @@ namespace LiteCall.Stores
            
            if (FindAccount == null)
            {
+               if (SavedServerAccounts.ServersAccounts is null)
+               {
+                   SavedServerAccounts.ServersAccounts = new ObservableCollection<ServerAccount>();
+               }
+
                SavedServerAccounts.ServersAccounts.Add(newServerAccount);
-                 OnCurrentSeverAccountChanged();
+               OnCurrentSeverAccountChanged();
                  return true;
            }
 

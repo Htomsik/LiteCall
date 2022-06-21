@@ -107,7 +107,7 @@ namespace LiteCall.ViewModels.ServerPages
             input.WaveFormat = _waveFormat;
 
 
-            _playBuffer = new BufferedWaveProvider(_waveFormat);
+           // _playBuffer = new BufferedWaveProvider(_waveFormat);
 
             mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1));
 
@@ -115,7 +115,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             _waveOut.DeviceNumber = 0;
 
-            mixer.AddMixerInput(_playBuffer);
+           // mixer.AddMixerInput(_playBuffer);
 
             _waveOut.Init(mixer);
 
@@ -496,22 +496,41 @@ namespace LiteCall.ViewModels.ServerPages
         {
 
             MessagesColCollection.Add(newMessage);
-
+            
         }
 
-
+        private Dictionary<string, BufferedWaveProvider> bufferUsers = new Dictionary<string, BufferedWaveProvider>();
 
         public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
+            if (HeadphoneMute) return;
 
-            if(HeadphoneMute) return;
-            // _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
-
-            if (_playBuffer.BufferedBytes < 3200)
+            try
             {
-                _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+                var userbuffer = bufferUsers[newVoiceMes.Name];
+
+                userbuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+
             }
+            catch (Exception e)
+            {
+                
+                bufferUsers.Add(newVoiceMes.Name,new BufferedWaveProvider(_waveFormat));
+
+                var userbuffer = bufferUsers[newVoiceMes.Name];
+
+                mixer.AddMixerInput(userbuffer);
+            }
+
+
+
+          
+            
+            //if (_playBuffer.BufferedBytes < 3200)
+            //{
+            //    _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+            //}
                
             
           

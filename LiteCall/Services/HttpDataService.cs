@@ -463,7 +463,7 @@ namespace LiteCall.Services
 
             if (string.IsNullOrEmpty(currentAccount.Password))
             {
-                return new AppSavedServers();
+                return null;
             }
 
             var authModel = new { Login = currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password), DateSynch = savedServerAccounts.LastUpdated };
@@ -480,8 +480,8 @@ namespace LiteCall.Services
             }
             catch (Exception ex)
             {
-                
-                return new AppSavedServers();
+
+                return null;
             }
 
 
@@ -503,7 +503,7 @@ namespace LiteCall.Services
             else
             {
 
-                return new AppSavedServers();
+                return null;
             }
         }
 

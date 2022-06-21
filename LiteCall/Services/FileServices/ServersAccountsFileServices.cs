@@ -45,6 +45,7 @@ internal class ServersAccountsFileServices : IFileReadServices
         }
         catch (Exception e)
         {
+            _serversAccountsStore.SavedServerAccounts = new AppSavedServers();
         }
     }
 
@@ -71,7 +72,7 @@ internal class ServersAccountsFileServices : IFileReadServices
 
                             allUsers.Remove(elem);
                 }
-                else
+                else if (allUsers == null)
                 {
                     allUsers = new List<SavedServers>();
                 }
