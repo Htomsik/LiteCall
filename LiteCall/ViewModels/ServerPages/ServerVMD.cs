@@ -632,7 +632,6 @@ namespace LiteCall.ViewModels.ServerPages
                 Dispose();
             }
 
-            //Если пользователь с таким аком уже есть на серве
             if (NewName == "non")
             {
                 Dispose();
@@ -663,7 +662,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private bool VAD(WaveInEventArgs e)
         {
-            double porog = 0.007;
+            double porog = 0.005;
 
             bool Tr = false;
 

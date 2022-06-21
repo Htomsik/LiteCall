@@ -203,8 +203,18 @@ internal class MainPageVMD : BaseVMD
 
     private async Task OnSaveServerCommandExecuted(object p)
     {
-        ServersAccountsStore.Add(new ServerAccount
-            { Account = ServerAccountStore.CurrentAccount, SavedServer = CurrentServerStore.CurrentServer });
+        try
+        {
+            ServersAccountsStore.Add(new ServerAccount
+                { Account = ServerAccountStore.CurrentAccount, SavedServer = CurrentServerStore.CurrentServer });
+        }
+        catch (Exception e)
+        {
+            _statusServices.ChangeStatus(new StatusMessage
+                { Message = "Serve save error", isError = true });
+
+        }
+       
     }
 
 
