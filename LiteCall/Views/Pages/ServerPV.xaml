@@ -265,7 +265,7 @@
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="Anonymous">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Dangerous(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Fonts(Solid)}" />
                                             </DataTrigger>
 
 

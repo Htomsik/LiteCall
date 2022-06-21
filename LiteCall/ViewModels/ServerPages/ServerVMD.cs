@@ -159,7 +159,6 @@ namespace LiteCall.ViewModels.ServerPages
 
         MixingSampleProvider mixer;
 
-
         private WaveFormat _waveFormat = new WaveFormat(8000, 16, 1);
 
 
