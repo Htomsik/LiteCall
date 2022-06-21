@@ -7,6 +7,7 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace LiteCall.ViewModels.Pages;
@@ -74,23 +75,6 @@ internal class SettingVMD : BaseVMD
         outputDevice = new ObservableCollection<string>();
 
         GetInputOutput();
-       
-    }
-
-
-    async void GetInputOutput()
-    {
-        for (var n = 0; n < WaveIn.DeviceCount; n++)
-        {
-            var capabilities = WaveIn.GetCapabilities(n).ProductName;
-            inputDevice.Add(capabilities);
-        }
-
-        for (var n = 0; n < WaveOut.DeviceCount; n++)
-        {
-            var capabilities = WaveOut.GetCapabilities(n).ProductName;
-            outputDevice.Add(capabilities);
-        }
 
 
         try
@@ -110,6 +94,63 @@ internal class SettingVMD : BaseVMD
         {
             SettingsStore.CurrentSettings.OutputDeviceId = 0;
         }
+    }
+
+
+    async void GetInputOutput()
+    {
+        await Task.Run((() => inputDevice =  AsyncGetInput().Result));
+
+      await  Task.Run((() => outputDevice = AsyncGetOutput().Result));
+
+    }
+
+    async Task<ObservableCollection<string>> AsyncGetInput()
+    {
+
+        var _inputDevice = new ObservableCollection<string>();
+
+        MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+
+        for (int waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
+        {
+            WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveInDevice);
+
+            foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
+            {
+                if (device.FriendlyName.StartsWith(deviceInfo.ProductName))
+                {
+                    _inputDevice.Add(device.FriendlyName);
+                }
+            }
+        }
+
+
+        return _inputDevice;
+    }
+
+    async Task<ObservableCollection<string>> AsyncGetOutput()
+    {
+
+        var _Outputdevice = new ObservableCollection<string>();
+
+        MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+
+        for (int waveInDevice = 0; waveInDevice < WaveOut.DeviceCount; waveInDevice++)
+        {
+            WaveOutCapabilities deviceInfo = WaveOut.GetCapabilities(waveInDevice);
+
+            foreach (MMDevice device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+            {
+                _Outputdevice.Add(device.FriendlyName);
+            }
+        }
+
+
+        return _Outputdevice;
+
+
+
     }
 
     public ObservableCollection<string> inputDevice
