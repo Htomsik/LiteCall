@@ -10,7 +10,12 @@ namespace LiteCall.Stores
 {
     internal class SettingsStore:BaseVMD
     {
-        
+
+        public SettingsStore()
+        {
+            CurrentSettings.CurrentsettingsChanged += OnCurentSettingChanged;
+        }
+
         public event Action CurentSettingChanged;
 
         private void OnCurentSettingChanged()
@@ -18,7 +23,7 @@ namespace LiteCall.Stores
             CurentSettingChanged?.Invoke();
         }
 
-        private Settings _CurrentSettings;
+        private Settings _CurrentSettings = new Settings{ };
 
         public virtual Settings CurrentSettings
         {

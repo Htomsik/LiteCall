@@ -88,7 +88,7 @@ namespace LiteCall.ViewModels
 
             services.AddTransient<SettingVMD>(s => new SettingVMD(
                 s.GetRequiredService<AccountStore>(),
-                s.GetRequiredService<ServersAccountsStore>(),
+                s.GetRequiredService<ServersAccountsStore>(),s.GetRequiredService<SettingsStore>(),
                 CreateAutPageNavigationServices(s),s.GetRequiredService<IhttpDataServices>(),s.GetRequiredService<IStatusServices>(),
                 s.GetRequiredService<SettingsAccNavigationStore>()
             ));

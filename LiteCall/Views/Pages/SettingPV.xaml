@@ -431,13 +431,19 @@
 
                         <StackPanel>
                             <TextBlock Text="Input device:" />
-                            <ComboBox ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}" Tag="Default" />
+                            <ComboBox
+                                ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedIndex="{Binding CaptureDeviceId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                Tag="Default" />
                         </StackPanel>
 
 
                         <StackPanel Grid.Row="1">
                             <TextBlock Text="Output device:" />
-                            <ComboBox ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}" Tag="Default" />
+                            <ComboBox
+                                ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedIndex="{Binding OutputDeviceId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                Tag="Default" />
                         </StackPanel>
 
                     </Grid>

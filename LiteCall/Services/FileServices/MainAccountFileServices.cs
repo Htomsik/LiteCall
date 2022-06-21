@@ -47,6 +47,7 @@ namespace LiteCall.Services
                     _accountStore.CurrentAccount = savedAccount._MainAccount;
                 }
                 
+                if(savedAccount?._Settings != null)
                 _settingsStore.CurrentSettings = savedAccount._Settings;
             }
             catch (Exception e) { }

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
@@ -15,6 +16,7 @@ internal class SettingVMD : BaseVMD
     private readonly INavigationService _authNavigationService;
 
     private readonly IhttpDataServices _httpDataServices;
+
 
     private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
 
@@ -41,13 +43,16 @@ internal class SettingVMD : BaseVMD
     private ServersAccountsStore _serversAccountsStore;
 
 
-    public SettingVMD(AccountStore accountStore, ServersAccountsStore serversAccountsStore,
+    public SettingVMD(AccountStore accountStore, ServersAccountsStore serversAccountsStore, SettingsStore settingsStore,
         INavigationService authNavigationService, IhttpDataServices httpDataServices, IStatusServices statusServices,
         SettingsAccNavigationStore settingsAccNavigationStore)
     {
         AccountStore = accountStore;
 
         ServersAccountsStore = serversAccountsStore;
+
+        SettingsStore = settingsStore;
+
 
         _settingsAccNavigationStore = settingsAccNavigationStore;
 
@@ -83,8 +88,27 @@ internal class SettingVMD : BaseVMD
 
         for (var n = 0; n < WaveOut.DeviceCount; n++)
         {
-            var capabilities = WaveIn.GetCapabilities(n);
+            var capabilities = WaveOut.GetCapabilities(n);
             outputDevice.Add(capabilities.ProductName);
+        }
+
+
+        try
+        {
+            var capabilities = WaveIn.GetCapabilities(settingsStore.CurrentSettings.CaptureDeviceId);
+        }
+        catch (Exception e)
+        {
+            settingsStore.CurrentSettings.CaptureDeviceId = 0;
+        }
+
+        try
+        {
+            var capabilities = WaveOut.GetCapabilities(settingsStore.CurrentSettings.OutputDeviceId);
+        }
+        catch (Exception e)
+        {
+            settingsStore.CurrentSettings.OutputDeviceId = 0;
         }
     }
 
@@ -134,6 +158,46 @@ internal class SettingVMD : BaseVMD
     {
         get => _serversAccountsStore;
         set => Set(ref _serversAccountsStore, value);
+    }
+
+
+    private SettingsStore _SettingsStore;
+
+    public SettingsStore SettingsStore
+    {
+        get => _SettingsStore;
+        set => Set(ref _SettingsStore, value);
+    }
+
+
+
+
+
+    private int _CaptureDeviceId;
+
+    public int CaptureDeviceId
+    {
+        get => SettingsStore.CurrentSettings.CaptureDeviceId;
+        set
+        {
+            Set(ref _OutputDeviceId, value);
+
+            SettingsStore.CurrentSettings.CaptureDeviceId = value;
+        }
+    }
+
+
+    private int _OutputDeviceId;
+
+    public int OutputDeviceId
+    {
+        get => SettingsStore.CurrentSettings.OutputDeviceId;
+        set
+        {
+            Set(ref _OutputDeviceId, value);
+
+            SettingsStore.CurrentSettings.OutputDeviceId = value;
+        }
     }
 
 

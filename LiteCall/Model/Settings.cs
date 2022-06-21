@@ -3,13 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteCall.ViewModels.Base;
+using Newtonsoft.Json;
 
 namespace LiteCall.Model
 {
-    public class Settings
+    internal class Settings:BaseVMD
     {
-        int OutputDeviceId { get; set; }
 
-        int CaptureDeviceId { get; set; }
+        [JsonIgnore]
+        private int _OutputDeviceId;
+
+        public int OutputDeviceId
+        {
+            get => _OutputDeviceId;
+            set
+            {
+                Set(ref _OutputDeviceId, value);
+                OnCurrentSettingsChanged();
+            }
+        }
+
+        [JsonIgnore]
+        private int _CaptureDeviceId;
+
+        public int CaptureDeviceId
+        {
+            get => _CaptureDeviceId;
+            set
+            {
+                Set(ref _CaptureDeviceId, value);
+                OnCurrentSettingsChanged();
+
+            }
+           
+        }
+
+       
+        private void OnCurrentSettingsChanged()
+        {
+            CurrentsettingsChanged?.Invoke();
+        }
+    
+        public event Action? CurrentsettingsChanged;
+
+
     }
 }

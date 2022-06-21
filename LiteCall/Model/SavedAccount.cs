@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiteCall.Model
 {
-    public class SavedMainAccount
+    internal class SavedMainAccount
     {
        public Account? _MainAccount { get; set; }
 
