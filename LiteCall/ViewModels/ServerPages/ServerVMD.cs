@@ -80,7 +80,7 @@ namespace LiteCall.ViewModels.ServerPages
 
             DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
 
-            VoiceInputCommand = new LambdaCommand(OnVoiceInputExecuted);
+      
 
 
 
@@ -104,7 +104,7 @@ namespace LiteCall.ViewModels.ServerPages
             
             input.DataAvailable += InputDataAvailable;
 
-            input.BufferMilliseconds = 20;
+            input.BufferMilliseconds = 10;
 
             input.WaveFormat = _waveFormat;
 
@@ -117,11 +117,10 @@ namespace LiteCall.ViewModels.ServerPages
 
             _waveOut.DeviceNumber = 0;
 
-           // mixer.AddMixerInput(_playBuffer);
 
             _waveOut.Init(mixer);
 
-            _waveOut.Play();
+           
 
             
 
@@ -187,35 +186,7 @@ namespace LiteCall.ViewModels.ServerPages
         #endregion
 
       
-        public ICommand VoiceInputCommand { get; }
-
-        private  void OnVoiceInputExecuted(object p)
-        {
-            if (!(bool)p)
-            {
-                try
-                {
-                    input.StartRecording();
-                }
-                catch (Exception e)
-                {
-
-                }
-
-            }
-            else
-            {
-                try
-                {
-                    input.StopRecording();
-                }
-                catch (Exception e)
-                {
-
-                }
-
-            }
-        }
+      
 
 
 
@@ -439,7 +410,8 @@ namespace LiteCall.ViewModels.ServerPages
                 if (ConnetGroupStatus)
                 {
                     CurrentGroup = ConnectedGroup;
-                   
+                    _waveOut.Play();
+                    MicophoneMute = false;
                 }
             }
             catch (Exception e)
@@ -502,7 +474,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private Dictionary<string, BufferedWaveProvider> bufferUsers = new Dictionary<string, BufferedWaveProvider>();
 
-        public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
+        public async  void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
             if (HeadphoneMute) return;
@@ -513,78 +485,26 @@ namespace LiteCall.ViewModels.ServerPages
 
                 userbuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
 
+                
             }
             catch (Exception e)
             {
+
+                try
+                {
+                    bufferUsers.Add(newVoiceMes.Name, new BufferedWaveProvider(_waveFormat));
+
+                    var userb1uffer = bufferUsers[newVoiceMes.Name];
+
+                    mixer.AddMixerInput(userb1uffer);
+                }
+                catch (Exception exception){}
                 
-                bufferUsers.Add(newVoiceMes.Name,new BufferedWaveProvider(_waveFormat));
-
-                var userbuffer = bufferUsers[newVoiceMes.Name];
-
-                mixer.AddMixerInput(userbuffer);
             }
 
 
-
-          
-            
-            //if (_playBuffer.BufferedBytes < 3200)
-            //{
-            //    _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
-            //}
-               
-            
-          
-
-
         }
 
-        /*
-        public async Task AsyncGetAudio(VoiceMessage newVoiceMes)
-        {
-        // _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
-
-              var memoryStreamReader = new MemoryStream(newVoiceMes.AudioByteArray);
-
-                byte[] buffer = new byte[180];
-
-                bool readCompleted = false;
-
-                while (!readCompleted)
-                {
-
-                    if (bufferedWaveProvider.BufferedBytes <= bufferedWaveProvider.BufferLength - buffer.Length*2)
-                    {
-                        int read =  memoryStreamReader.Read(buffer, 0, buffer.Length);
-
-
-                        if (read > 0)
-                        {
-
-                            bufferedWaveProvider.AddSamples(buffer, 0, read);
-                            Thread.Sleep(0);
-                        
-                        }
-                        else
-                        {
-                            readCompleted = true;
-                        }
-                    }
-
-                    
-            
-
-          
-
-                }
-           
-
-       //_mixingWaveProvider32.RemoveInputStream(wave16ToFloatProvider);
-
-       
-
-        }
-        */
 
         /// <summary>
         /// Информация о комнатах и пользователях на сервере
@@ -632,13 +552,18 @@ namespace LiteCall.ViewModels.ServerPages
 
         private void GroupDisconnected()
         {
+
+            mixer.RemoveAllMixerInputs();
+
+            bufferUsers.Clear();
+
             CurrentGroup = null;
 
             MessagesColCollection = new ObservableCollection<Message>();
 
             _waveOut.Stop();
 
-            input.StopRecording();
+            MicophoneMute = false;
         }
 
         
@@ -889,6 +814,48 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _headphoneMute, value);
         }
 
+
+        private bool _micophoneMute;
+
+        public bool MicophoneMute
+        {
+            get => _micophoneMute;
+            set
+            {
+                Set(ref _micophoneMute, value);
+                OmMicrophoneMuteChanged();
+            }
+        }
+
+
+        void OmMicrophoneMuteChanged()
+        {
+            if (MicophoneMute)
+            {
+                try
+                {
+                    input.StopRecording();
+                }
+                catch (Exception e)
+                {
+                  
+                }
+               
+            }
+            else
+            {
+                try
+                {
+                    input.StartRecording();
+                   
+                }
+                catch (Exception e)
+                {
+
+                }
+
+            }
+        }
 
         #endregion
 

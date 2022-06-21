@@ -302,9 +302,7 @@
             Orientation="Horizontal">
 
             <ToggleButton
-                Command="{Binding VoiceInputCommand}"
-                CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
-                IsChecked="True"
+                IsChecked="{Binding MicophoneMute, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                 Style="{DynamicResource ImgToggleButton}">
 

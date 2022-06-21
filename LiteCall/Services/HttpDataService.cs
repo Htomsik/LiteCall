@@ -33,7 +33,7 @@ namespace LiteCall.Services
 
         const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
 
-        private string DefaultMainIp => _configuration!.GetSection("AppSettings")["VesionBranch"] ?? "localhost:5005";
+        private string DefaultMainIp => _configuration!.GetSection("MainSever")["MainServerIp"] ?? "localhost:5005";
 
         private readonly IStatusServices _statusServices;
 
