@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteCall.ViewModels.Base;
+using Newtonsoft.Json;
 
 namespace LiteCall.Model
 {
@@ -14,13 +16,26 @@ namespace LiteCall.Model
         public Account Account { get; set; }
     }
 
-    internal class SavedServers
+    internal class SavedServers: AppSavedServers
     {
-        public ObservableCollection<ServerAccount> ServersAccounts { get; set; }
-
-        public DateTime LastUpdated { get; set; }
-
         public Account MainServerAccount { get; set; }
     }
+
+    internal class AppSavedServers:BaseVMD  
+    {
+
+        [JsonIgnore]
+        private ObservableCollection<ServerAccount> _serversAccounts;
+
+        public ObservableCollection<ServerAccount> ServersAccounts
+        {
+            get => _serversAccounts;
+            set => Set(ref _serversAccounts, value);
+        }
+
+
+        public DateTime LastUpdated   { get; set; }
+    }
+
 
 }

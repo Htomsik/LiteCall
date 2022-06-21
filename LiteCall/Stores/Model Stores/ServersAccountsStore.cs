@@ -18,6 +18,7 @@ namespace LiteCall.Stores
 
         private void OnCurrentSeverAccountChanged()
         {
+            
             ServersAccountsChange?.Invoke();
         }
 
@@ -29,7 +30,7 @@ namespace LiteCall.Stores
 
            try
            {
-               FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == newServerAccount.SavedServer.ApiIp);
+               FindAccount = SavedServerAccounts.ServersAccounts?.First(x => x.SavedServer.ApiIp == newServerAccount.SavedServer.ApiIp);
            }
            catch (Exception e){}
            
@@ -37,7 +38,7 @@ namespace LiteCall.Stores
            
            if (FindAccount == null)
            {
-                 SavedServerAccounts.Add(newServerAccount);
+               SavedServerAccounts.ServersAccounts.Add(newServerAccount);
                  OnCurrentSeverAccountChanged();
                  return true;
            }
@@ -53,14 +54,14 @@ namespace LiteCall.Stores
 
            try
            {
-               FindAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == deletedServer.SavedServer.ApiIp);
+               FindAccount = SavedServerAccounts.ServersAccounts?.First(x => x.SavedServer.ApiIp == deletedServer.SavedServer.ApiIp);
            }
            catch (Exception e) { }
 
 
            if (FindAccount != null)
            {
-               SavedServerAccounts.Remove(FindAccount);
+               SavedServerAccounts.ServersAccounts?.Remove(FindAccount);
                OnCurrentSeverAccountChanged();
            }
 
@@ -74,13 +75,13 @@ namespace LiteCall.Stores
 
                try
                {
-                   findAccount = SavedServerAccounts.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
+                   findAccount = SavedServerAccounts.ServersAccounts?.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
 
-                   SavedServerAccounts.Remove(findAccount);
+                   SavedServerAccounts.ServersAccounts?.Remove(findAccount);
 
                    findAccount.Account = newAccount;
 
-                   SavedServerAccounts.Add(findAccount);
+                   SavedServerAccounts.ServersAccounts?.Add(findAccount);
                }
                catch (Exception e)
                {
@@ -90,27 +91,27 @@ namespace LiteCall.Stores
 
                    findAccount.SavedServer = ReplacedServer;
 
-                   SavedServerAccounts.Add(findAccount);
+                   SavedServerAccounts.ServersAccounts?.Add(findAccount);
                }
 
             
 
 
-
            OnCurrentSeverAccountChanged();
 
 
-        }
+       }
 
-        private ObservableCollection<ServerAccount> _savedServerAccounts = new ObservableCollection<ServerAccount>();
+        private AppSavedServers _savedServerAccounts = new AppSavedServers{ServersAccounts = new ObservableCollection<ServerAccount>()};
 
-        public ObservableCollection<ServerAccount> SavedServerAccounts 
+        public AppSavedServers SavedServerAccounts 
         {
             get => _savedServerAccounts;
             set
             {
                 Set(ref _savedServerAccounts, value);
                 OnCurrentSeverAccountChanged();
+
             }
         }
 

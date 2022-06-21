@@ -24,6 +24,8 @@ internal class ServersAccountsFileServices : IFileReadServices
         _accountStore = accountStore;
 
         _serversAccountsStore.ServersAccountsChange += SaveDataInFile;
+
+        _accountStore.CurrentAccountChange += GetDataFromFile;
     }
 
 
@@ -39,7 +41,7 @@ internal class ServersAccountsFileServices : IFileReadServices
                 s.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise &&
                 s.MainServerAccount.Login == _accountStore.CurrentAccount.Login);
 
-            _serversAccountsStore.SavedServerAccounts = currentUserServerStore?.ServersAccounts;
+            _serversAccountsStore.SavedServerAccounts.ServersAccounts = currentUserServerStore?.ServersAccounts;
         }
         catch (Exception e)
         {
@@ -74,13 +76,13 @@ internal class ServersAccountsFileServices : IFileReadServices
 
             if (_serversAccountsStore.SavedServerAccounts != null)
             {
-                foreach (var elem in _serversAccountsStore?.SavedServerAccounts) elem.Account.Token = null;
+                foreach (var elem in _serversAccountsStore?.SavedServerAccounts.ServersAccounts) elem.Account.Token = null;
 
                 var newSavedServers = new SavedServers
                 {
                     LastUpdated = DateTime.Now,
                     MainServerAccount = _accountStore.CurrentAccount,
-                    ServersAccounts = _serversAccountsStore.SavedServerAccounts
+                    ServersAccounts = _serversAccountsStore.SavedServerAccounts.ServersAccounts
                 };
 
                 allUsers.Add(newSavedServers);

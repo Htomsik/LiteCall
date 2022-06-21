@@ -87,7 +87,7 @@
 
             <ListView
                 Grid.Row="1"
-                ItemsSource="{Binding ServersAccountsStore.SavedServerAccounts}"
+                ItemsSource="{Binding ServersAccountsStore.SavedServerAccounts.ServersAccounts}"
                 SelectedItem="{Binding SelectedServerAccount}">
 
                 <ListView.ContextMenu>

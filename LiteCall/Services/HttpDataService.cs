@@ -367,7 +367,6 @@ namespace LiteCall.Services
         public async Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiServerIp = DefaultMainIp)
         {
 
-
             if (apiServerIp == null)
             {
                 apiServerIp = DefaultMainIp;
@@ -411,10 +410,10 @@ namespace LiteCall.Services
           }
         }
 
-        public async Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, ObservableCollection<ServerAccount?> savedServerAccounts)
+        public async Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts)
         {
 
-            if (string.IsNullOrEmpty(currentAccount.Password) && savedServerAccounts?.Count > 0 )
+            if (string.IsNullOrEmpty(currentAccount.Password) && savedServerAccounts?.ServersAccounts.Count > 0 )
             {
                 return false;
             }
@@ -425,7 +424,8 @@ namespace LiteCall.Services
             {
                 Login = currentAccount.Login,
                 Password = await _encryptServices.Base64Decrypt(currentAccount.Password),
-                SaveServers = jsonServers
+                SaveServers = jsonServers,
+                DateSynch = savedServerAccounts.LastUpdated
             };
 
             var json = JsonSerializer.Serialize(saveModel);
@@ -447,22 +447,21 @@ namespace LiteCall.Services
             return (response.StatusCode == System.Net.HttpStatusCode.OK);
         }
 
-        public async Task<ObservableCollection<ServerAccount>?> GetSaveServersUserOnMainServer(Account currentAccount)
+        public async Task<AppSavedServers> GetSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts)
         {
 
             if (string.IsNullOrEmpty(currentAccount.Password))
             {
-                return null;
+                return new AppSavedServers();
             }
 
-            var authModel = new { Login = currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password)};
+            var authModel = new { Login = currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password), DateSynch = savedServerAccounts.LastUpdated };
 
             var json = JsonSerializer.Serialize(authModel);
 
             var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
             HttpResponseMessage response;
-
 
             try
             {
@@ -471,7 +470,7 @@ namespace LiteCall.Services
             catch (Exception ex)
             {
                 
-                return null;
+                return new AppSavedServers();
             }
 
 
@@ -480,14 +479,20 @@ namespace LiteCall.Services
                 
                 var jsonNonServerResponse = await response.Content.ReadAsStringAsync();
 
-                return JsonSerializer.Deserialize<ObservableCollection<ServerAccount>>(jsonNonServerResponse);
+                var jsonCollection = JsonSerializer.Deserialize<AppSavedServers>(jsonNonServerResponse);
 
+                AppSavedServers newAppSavedServers = new AppSavedServers
+                {
+                    LastUpdated = DateTime.Now,
+                    ServersAccounts = jsonCollection.ServersAccounts
+                };
 
+                return newAppSavedServers;
             }
             else
             {
-                
-                return null;
+
+                return new AppSavedServers();
             }
         }
 

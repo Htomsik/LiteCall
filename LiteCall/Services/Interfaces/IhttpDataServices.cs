@@ -29,8 +29,8 @@ namespace LiteCall.Services.Interfaces
 
         public Task<bool> PasswordRecovery(RecoveryModel recoveryModel, string apiIp= null);
 
-        public Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, ObservableCollection<ServerAccount> savedServerAccounts);
+        public Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts);
 
-        public Task<ObservableCollection<ServerAccount>?> GetSaveServersUserOnMainServer(Account currentAccount);
+        public Task<AppSavedServers> GetSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts);
     }
 }

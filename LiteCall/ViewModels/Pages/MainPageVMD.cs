@@ -192,7 +192,7 @@ internal class MainPageVMD : BaseVMD
 
         try
         {
-            return ServersAccountsStore.SavedServerAccounts.FirstOrDefault(x =>
+            return ServersAccountsStore.SavedServerAccounts.ServersAccounts.FirstOrDefault(x =>
                 x.SavedServer.ApiIp == CurrentServerStore.CurrentServer.ApiIp) is null;
         }
         catch (Exception e)
@@ -326,7 +326,7 @@ internal class MainPageVMD : BaseVMD
         try
         {
             var DictionaryServerAccount =
-                ServersAccountsStore.SavedServerAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
+                ServersAccountsStore.SavedServerAccounts.ServersAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
 
             var AuthoriseStatus = await AuthorisationServices.Login(DictionaryServerAccount.Account.IsAuthorise,
                 DictionaryServerAccount.Account, newServer.ApiIp);

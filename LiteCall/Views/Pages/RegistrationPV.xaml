@@ -103,6 +103,7 @@
                     Margin="20,5,1,5"
                     IsEnabled="{Binding CanServerConnect, UpdateSourceTrigger=PropertyChanged}"
                     ItemsSource="{Binding QestionsCollection}"
+                    SelectedIndex="-1"
                     SelectedItem="{Binding SelectedQestion}"
                     Tag="QUESTION">
 
@@ -188,7 +189,6 @@
 
         <Button
             Grid.Row="1"
-            Grid.Column="1"
             MaxWidth="235"
             MaxHeight="40"
             Margin="20,5"
@@ -221,7 +221,7 @@
 
                                 <Condition Binding="{Binding ElementName=AnswerTB, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=QuestionCB, Path=SelectedIndex}" Value="-1" />
+                                <Condition Binding="{Binding ElementName=QuestionCB, Path=SelectedIndex}" Value="0" />
 
                             </MultiDataTrigger.Conditions>
 
@@ -247,7 +247,6 @@
 
 
             <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
-
                 <Grid
                     MinWidth="200"
                     MinHeight="200"
