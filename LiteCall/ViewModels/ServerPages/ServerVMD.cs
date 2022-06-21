@@ -171,11 +171,11 @@ namespace LiteCall.ViewModels.ServerPages
             {
 
                 await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount, _statusServices);
+                CanServerConnect = true;
             }
             catch (Exception e)
             {
-                
-               
+                CanServerConnect = false;
             }
            
 
@@ -504,6 +504,8 @@ namespace LiteCall.ViewModels.ServerPages
         public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
         {
 
+
+            if(HeadphoneMute) return;
             // _playBuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
 
             if (_playBuffer.BufferedBytes < 3200)
@@ -827,7 +829,24 @@ namespace LiteCall.ViewModels.ServerPages
             set => Set(ref _currentGroup, value);
         }
 
-     
+
+
+        private bool _canServerConnect;
+        public bool CanServerConnect
+        {
+            get => _canServerConnect;
+            set => Set(ref _canServerConnect, value);
+        }
+
+
+        private bool _headphoneMute;
+
+        public bool HeadphoneMute
+        {
+            get => _headphoneMute;
+            set => Set(ref _headphoneMute, value);
+        }
+
 
         #endregion
 

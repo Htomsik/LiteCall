@@ -64,6 +64,8 @@ namespace LiteCall.ViewModels.Pages
             catch (Exception e)
             {
                 CanServerConnect = false;
+
+                OpenAuthPageCommand.Execute(null);
             }
 
         }

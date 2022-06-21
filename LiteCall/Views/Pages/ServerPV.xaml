@@ -31,6 +31,8 @@
 
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
+            <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
 
             <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
@@ -47,6 +49,7 @@
 
 
     <Grid>
+
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="70" />
@@ -304,6 +307,19 @@
                 <ToggleButton.Resources>
                     <StaticResource x:Key="Img" ResourceKey="Microphone" />
                     <StaticResource x:Key="Img2" ResourceKey="MicrophoneMute" />
+                    <StaticResource x:Key="Scale" ResourceKey="MicrophoneButtonscale" />
+                </ToggleButton.Resources>
+
+            </ToggleButton>
+
+            <ToggleButton
+                IsChecked="{Binding HeadphoneMute}"
+                IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                Style="{DynamicResource ImgToggleButton}">
+
+                <ToggleButton.Resources>
+                    <StaticResource x:Key="Img" ResourceKey="Headpphone" />
+                    <StaticResource x:Key="Img2" ResourceKey="HeadpphoneMute" />
                     <StaticResource x:Key="Scale" ResourceKey="MicrophoneButtonscale" />
                 </ToggleButton.Resources>
 
@@ -734,6 +750,16 @@
 
 
         </modalCutom:ModalCustom>
+
+        <Border
+            Grid.RowSpan="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Background="Black"
+            CornerRadius="10"
+            Opacity="0.3"
+            Visibility="{Binding CanServerConnect, Converter={StaticResource BooleanToVisibilityInverter}, UpdateSourceTrigger=PropertyChanged}" />
+
 
     </Grid>
 </UserControl>
