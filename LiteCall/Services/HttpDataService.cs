@@ -149,7 +149,7 @@ namespace LiteCall.Services
             catch (Exception ex)
             {
 
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
                 return null;
             }
@@ -189,7 +189,7 @@ namespace LiteCall.Services
             {
 
 
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the server", isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
                 return null;
             }
@@ -227,7 +227,7 @@ namespace LiteCall.Services
             }
             catch (Exception ex)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
                 return null;
             }
@@ -273,7 +273,7 @@ namespace LiteCall.Services
             }
             catch (Exception ex)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+                _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
                 return null;
             }
@@ -313,7 +313,7 @@ namespace LiteCall.Services
                 }
                 catch (SocketException ex)
                 {
-                    _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+                    _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
                     return false;
                 }
@@ -348,7 +348,7 @@ namespace LiteCall.Services
           catch (Exception ex)
           {
 
-              _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+              _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
               return null;
           }
@@ -397,7 +397,7 @@ namespace LiteCall.Services
           catch (Exception ex)
           {
 
-              _statusServices.ChangeStatus(new StatusMessage { Message = "Failed to connect to the server", isError = true });
+              _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", isError = true });
 
               return false;
           }

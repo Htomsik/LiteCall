@@ -50,28 +50,30 @@ namespace LiteCall
 
             InitialNavigationService.Navigate();
 
+            StartupWindow startupWindow = new StartupWindow();
+
+            startupWindow.Show();
+
+            Task.WaitAll();
+
+           await Task.Delay(2000);
+
             MainWindow = host.Services.GetRequiredService<MainWindov>();
 
             MainWindow.Show();
 
+            startupWindow.Close();
+
             base.OnStartup(e);
 
-            
-           await host.StartAsync().ConfigureAwait(false);
 
+            await host.StartAsync().ConfigureAwait(false);
 
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
             var host = Host;
-
-            //var accountStore = host.Services.GetRequiredService<AccountStore>();
-
-            //var ServersStore = host.Services.GetRequiredService<SavedServersStore>();
-
-
-            //host.Services.GetRequiredService<IhttpDataServices>().PostSaveServersUserOnMainServer(accountStore.CurrentAccount, ServersStore.SavedServerAccounts);
 
             base.OnExit(e);
 

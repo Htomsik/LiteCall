@@ -37,15 +37,26 @@ namespace LiteCall.Model
     }
 
 
-    internal class ServerRooms 
+    internal class ServerRooms:BaseVMD
     {
 
         public string RoomName { get; set; }
 
         public bool Guard { get; set; }
 
-        public ICollection<ServerUser> Users { get; set; }
-     
+        private ICollection<ServerUser> _Users;
+
+        public ICollection<ServerUser> Users
+        {
+            get => _Users;
+            set
+            {
+                Set(ref _Users, value);
+              
+            }
+        }
+
+
 
     }
 

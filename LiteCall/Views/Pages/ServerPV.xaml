@@ -171,7 +171,6 @@
                                 CornerRadius="8">
 
 
-
                                 <Grid>
 
 
@@ -253,6 +252,10 @@
 
                                         <DataTemplate.Triggers>
 
+                                            <DataTrigger Binding="{Binding Role}" Value="You">
+                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Green(Solid)}" />
+                                            </DataTrigger>
+
                                             <DataTrigger Binding="{Binding Role}" Value="Admin">
                                                 <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Dangerous(Solid)}" />
                                             </DataTrigger>
@@ -262,8 +265,9 @@
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="Anonymous">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Fonts(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Dangerous(Solid)}" />
                                             </DataTrigger>
+
 
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter TargetName="UserPath" Property="Fill" Value="White" />

@@ -58,6 +58,8 @@ namespace LiteCall.ViewModels.ServerPages
             DisconnectNotification.Notificator += GroupDisconnected;
 
 
+     
+
 
             #endregion
 
@@ -835,7 +837,10 @@ namespace LiteCall.ViewModels.ServerPages
         public ObservableCollection<ServerRooms> ServerRooms
         {
             get => _serverRooms;
-            set => Set(ref _serverRooms, value);
+            set
+            {
+                Set(ref _serverRooms, OnCurrentGoupChanged((ObservableCollection<ServerRooms>)value));
+            }
         }
 
 
@@ -845,10 +850,29 @@ namespace LiteCall.ViewModels.ServerPages
         public ServerRooms CurrentGroup
         {
             get => _currentGroup;
-            set => Set(ref _currentGroup, value);
+            set
+            {
+                Set(ref _currentGroup,value);
+                
+            }
         }
 
+        private ObservableCollection<ServerRooms> OnCurrentGoupChanged(ObservableCollection<ServerRooms> CurrentRoomUsers)
+        {
+            foreach (var rooms in CurrentRoomUsers)
+            {
+                foreach (var users in rooms.Users)
+                {
+                    if (users.Login == ServerAccountStore.CurrentAccount.CurrentServerLogin)
+                    {
+                        users.Role = "You";
+                    }
+                }
+            }
 
+
+            return CurrentRoomUsers;
+        }
 
         private bool _canServerConnect;
         public bool CanServerConnect
@@ -872,7 +896,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         #region Хранилища
 
-        public ServerAccountStore ServerAccountStore;
+        public ServerAccountStore ServerAccountStore { get; set; }
 
         #endregion
 
