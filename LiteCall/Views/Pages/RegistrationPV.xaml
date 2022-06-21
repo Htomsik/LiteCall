@@ -15,6 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+            <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -103,7 +104,6 @@
                     Margin="20,5,1,5"
                     IsEnabled="{Binding CanServerConnect, UpdateSourceTrigger=PropertyChanged}"
                     ItemsSource="{Binding QestionsCollection}"
-                    SelectedIndex="-1"
                     SelectedItem="{Binding SelectedQestion}"
                     Tag="QUESTION">
 
@@ -221,7 +221,7 @@
 
                                 <Condition Binding="{Binding ElementName=AnswerTB, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=QuestionCB, Path=SelectedIndex}" Value="0" />
+                                <Condition Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}" Value="True" />
 
                             </MultiDataTrigger.Conditions>
 

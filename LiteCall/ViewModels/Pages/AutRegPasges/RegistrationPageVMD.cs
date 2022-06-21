@@ -140,7 +140,7 @@ namespace LiteCall.ViewModels.Pages
             
             if (Password != ConfirmPassword) return false;
             
-            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) && !string.IsNullOrEmpty(QuestionAnswer);
+            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) && !string.IsNullOrEmpty(QuestionAnswer) && SelectedQestion is not null;
 
         }
 
