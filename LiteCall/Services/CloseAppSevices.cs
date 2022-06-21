@@ -28,7 +28,7 @@ namespace LiteCall.Services
         public async Task Close()
         {
 
-            await _httpDataServices.PostSaveServersUserOnMainServer(_accountStore.CurrentAccount,
+           var test = await _httpDataServices.PostSaveServersUserOnMainServer(_accountStore.CurrentAccount,
                 _serversAccountsStore.SavedServerAccounts);
 
             Application.Current.Shutdown();

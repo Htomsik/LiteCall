@@ -663,7 +663,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         private bool VAD(WaveInEventArgs e)
         {
-            double porog = 0.01;
+            double porog = 0.007;
 
             bool Tr = false;
 

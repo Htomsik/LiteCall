@@ -45,7 +45,7 @@
             Grid.Column="1"
             Margin="5"
             Background="{StaticResource Background2(Solid)}"
-            CornerRadius="15">
+            CornerRadius="15 15 15 15">
 
             <Grid>
 

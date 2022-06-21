@@ -431,13 +431,13 @@
 
                         <StackPanel>
                             <TextBlock Text="Input device:" />
-                            <ListView ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}" />
+                            <ComboBox ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}" Tag="Default" />
                         </StackPanel>
 
 
                         <StackPanel Grid.Row="1">
                             <TextBlock Text="Output device:" />
-                            <ListView ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}" />
+                            <ComboBox ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}" Tag="Default" />
                         </StackPanel>
 
                     </Grid>
@@ -451,19 +451,16 @@
                 Padding="0"
                 Background="{DynamicResource Background(Solid)}">
 
-
                 <TabItem.Header>
 
-
                     <TextBlock Text="About progam" />
-
 
                 </TabItem.Header>
 
                 <TabItem.Content>
                     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                        <Border BorderBrush="{DynamicResource Fonts(Solid)}" BorderThickness="1">
+                        <Border>
 
                             <Grid>
                                 <Grid.RowDefinitions>

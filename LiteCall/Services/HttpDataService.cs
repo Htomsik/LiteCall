@@ -413,7 +413,11 @@ namespace LiteCall.Services
         public async Task<bool> PostSaveServersUserOnMainServer(Account currentAccount, AppSavedServers savedServerAccounts)
         {
 
-            if (string.IsNullOrEmpty(currentAccount.Password) && savedServerAccounts?.ServersAccounts.Count > 0 )
+            if (string.IsNullOrEmpty(currentAccount.Password))
+            {
+                return false;
+            }
+            else if (savedServerAccounts?.ServersAccounts?.Count == 0)
             {
                 return false;
             }

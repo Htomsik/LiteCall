@@ -25,7 +25,7 @@ namespace LiteCall.Model
     {
 
         [JsonIgnore]
-        private ObservableCollection<ServerAccount> _serversAccounts;
+        private ObservableCollection<ServerAccount> _serversAccounts = new ObservableCollection<ServerAccount>();
 
         public ObservableCollection<ServerAccount> ServersAccounts
         {

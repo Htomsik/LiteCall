@@ -63,20 +63,29 @@ internal class ServersAccountsFileServices : IFileReadServices
 
                 allUsers = JsonConvert.DeserializeObject<List<SavedServers>>(fileText);
 
-                foreach (var elem in allUsers)
-                    if (elem.MainServerAccount.Login == _accountStore.CurrentAccount.Login &&
-                        (elem.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise))
+                if (allUsers != null)
+                {
+                    foreach (var elem in allUsers)
+                        if (elem.MainServerAccount.Login == _accountStore.CurrentAccount.Login &&
+                            (elem.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise))
 
-                        allUsers.Remove(elem);
+                            allUsers.Remove(elem);
+                }
+                else
+                {
+                    allUsers = new List<SavedServers>();
+                }
+               
             }
             catch (Exception e)
             {
+               
             }
 
 
-            if (_serversAccountsStore.SavedServerAccounts != null)
+            if (_serversAccountsStore.SavedServerAccounts.ServersAccounts?.Count !=0 && _serversAccountsStore.SavedServerAccounts.ServersAccounts is not null)
             {
-                foreach (var elem in _serversAccountsStore?.SavedServerAccounts.ServersAccounts) elem.Account.Token = null;
+                foreach (var elem in _serversAccountsStore?.SavedServerAccounts?.ServersAccounts) elem.Account.Token = null;
 
                 var newSavedServers = new SavedServers
                 {
@@ -95,7 +104,7 @@ internal class ServersAccountsFileServices : IFileReadServices
 
 
             await File.WriteAllTextAsync(_FilePath, jsonSerializeObject);
-        }
+         }
         catch (Exception e)
         {
         }
