@@ -50,7 +50,7 @@ namespace LiteCall.Services
                 if(savedAccount?._Settings != null)
                 _settingsStore.CurrentSettings = savedAccount._Settings;
             }
-            catch (Exception e) { }
+            catch{ }
         }
 
         public async void SaveDataInFile()
@@ -74,7 +74,7 @@ namespace LiteCall.Services
 
                 await File.WriteAllTextAsync(FilePath, jsonSerializeObject);
             }
-            catch (Exception e) { }
+            catch{ }
         }
     }
 }

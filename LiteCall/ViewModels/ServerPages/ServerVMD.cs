@@ -41,7 +41,6 @@ namespace LiteCall.ViewModels.ServerPages
 
             InitSignalRConnection(CurrentServerStore.CurrentServer, ServerAccountStore.CurrentAccount);
 
-            //Проверка на имя
             AsyncGetUserServerName();
 
             #region Шины сообщений
@@ -118,7 +117,6 @@ namespace LiteCall.ViewModels.ServerPages
             _waveOut = new WaveOut();
 
             _waveOut.DeviceNumber = 0;
-
 
             _waveOut.Init(mixer);
 

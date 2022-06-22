@@ -52,7 +52,7 @@
   <Class Name="LiteCall.Services.AuthorisationApiServerServices" BaseTypeListCollapsed="true">
     <Position X="22" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAACAAAAAAAAAAAAQAIAAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AQAAAAAAACAAAAAAAAAAAAQAAAAAAAAAAIAQAAAAAAA=</HashCode>
       <FileName>Services\AuthReg Services\Authorisation\AuthorisationApiServerServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -108,7 +108,7 @@
   <Class Name="LiteCall.Services.RegistrationApiServerServices" BaseTypeListCollapsed="true">
     <Position X="20.25" Y="20.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAIAAAAAAAAAAAAYAAEAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAYAAEAAA=</HashCode>
       <FileName>Services\AuthReg Services\Registration\RegistrationApiServerServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -132,7 +132,7 @@
   <Class Name="LiteCall.Services.ServersAccountsFileServices" BaseTypeListCollapsed="true">
     <Position X="25.5" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACgAAAAAAAAAAAAAACAAAIAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <HashCode>AAACgAAAAAAAAAAAAAACAAAAAAAAAAAAAIAAAAAAQAA=</HashCode>
       <FileName>Services\FileServices\ServersAccountsFileServices.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -188,7 +188,7 @@
   <Class Name="LiteCall.Services.HttpDataService" BaseTypeListCollapsed="true">
     <Position X="2.75" Y="13.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAABAAAAAgAAigggQAEAgAgAAAgAAQAEgEA=</HashCode>
+      <HashCode>AAAAAAQAAAABAAAAAgAAigggQAEAgAgAAAkAAQAEgEA=</HashCode>
       <FileName>Services\HttpDataService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -491,7 +491,7 @@
   <Class Name="LiteCall.Model.ServerRooms">
     <Position X="23.75" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAAAABAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <HashCode>AAAAACAAAAAAAJAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
       <FileName>Model\Server.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -564,15 +564,15 @@
   <Class Name="LiteCall.Stores.ServerAccountStore">
     <Position X="16.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAAAACAAAAAAIAAAAAAQAAAIAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAIAAAACAAAAAAIAAgAAAQAAAAAAAAAAAAA=</HashCode>
       <FileName>Stores\Model Stores\ServerAccountStore.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="LiteCall.Stores.ServersAccountsStore">
+  <Class Name="LiteCall.Stores.SavedServersStore">
     <Position X="9.75" Y="8.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAgCAAAAAJAAAAAAAAAAgAAAAAAAAACA=</HashCode>
-      <FileName>Stores\Model Stores\ServersAccountsStore.cs</FileName>
+      <FileName>Stores\Model Stores\SavedServersStore.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.Stores.SettingsStore">
@@ -670,14 +670,14 @@
   <Class Name="LiteCall.ViewModels.Pages.MainPageVMD">
     <Position X="20.25" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAACGAAWAIsA4AAIABJIAA6hIAoABBDCVAACpDAAggA=</HashCode>
+      <HashCode>AAAAGAAWAIsA4AAYABJIAg6hAAoABBDCRIACpDAAggA=</HashCode>
       <FileName>ViewModels\Pages\MainPageVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.ViewModels.Pages.SettingVMD">
     <Position X="22" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IBAAQSYAAAMAIAACIAJABAoICABAQAAkAAQAIAAAwhA=</HashCode>
+      <HashCode>ABAQQSIAAEMAIAACIAJABioECABAQAAkAIAAIAEEwhA=</HashCode>
       <FileName>ViewModels\Pages\SettingVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -705,14 +705,14 @@
   <Class Name="LiteCall.ViewModels.ServerPages.ServerVMD">
     <Position X="22" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>FYMgOqjAQiEAQgAgIAKAB0ksMBRdQRgIBGIDQBAIhCA=</HashCode>
+      <HashCode>FYMgOqjAQqEBQgAAIAKAD0ksMBhdQRgIBCIDYBEIhCA=</HashCode>
       <FileName>ViewModels\ServerPages\ServerVMD.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LiteCall.ViewModels.MainWindowVMD">
     <Position X="15" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAgggACAAAAgMEAIQQAAAACAAAAMAAgAQAgAAgACAAI=</HashCode>
+      <HashCode>KAggiACAAAAoMEAAQQAAAAAAAAAMAIgAQAkAAgAAAAI=</HashCode>
       <FileName>ViewModels\MainWindowVMD.cs</FileName>
     </TypeIdentifier>
   </Class>

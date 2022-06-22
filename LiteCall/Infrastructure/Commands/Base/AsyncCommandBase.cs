@@ -25,9 +25,9 @@ namespace LiteCall.Infrastructure.Commands.Base
             }
         }
 
-        public event EventHandler  CanExecuteChanged;
+        public new event EventHandler?  CanExecuteChanged;
 
-        public AsyncCommandBase(Action<Exception> onException)
+        protected AsyncCommandBase(Action<Exception> onException)
         {
             _onException = onException;
         }
