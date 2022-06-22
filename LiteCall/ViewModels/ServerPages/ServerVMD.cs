@@ -411,16 +411,26 @@ namespace LiteCall.ViewModels.ServerPages
 
                 if (ConnetGroupStatus)
                 {
-                    if (CurrentGroup is not null)
-                    {
-                        mixer.RemoveAllMixerInputs();
-                        bufferUsers.Clear();
-                    }
-                    
+                    mixer.RemoveAllMixerInputs();
+
+                    bufferUsers.Clear();
+
                     CurrentGroup = ConnectedGroup;
-                    _waveOut.Play();
+
                     MicophoneMute = false;
-                 
+
+                    _waveOut.Play();
+
+                    try
+                    {
+                        input.StartRecording();
+                    }
+                    catch (Exception e)
+                    {
+                        
+                    }
+                   
+
                 }
                 else
                 {
@@ -498,7 +508,7 @@ namespace LiteCall.ViewModels.ServerPages
 
                 userbuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
 
-                
+
             }
             catch (Exception e)
             {
@@ -516,7 +526,15 @@ namespace LiteCall.ViewModels.ServerPages
                 {
 
                 }
-                
+
+            }
+            finally
+            {
+                if (_waveOut.PlaybackState == PlaybackState.Stopped)
+                {
+                    _waveOut.Play();
+                }
+             
             }
 
         }
@@ -580,6 +598,10 @@ namespace LiteCall.ViewModels.ServerPages
             _waveOut.Stop();
 
             MicophoneMute = false;
+
+            mixer.RemoveAllMixerInputs();
+
+            bufferUsers.Clear();
         }
 
         
@@ -616,6 +638,10 @@ namespace LiteCall.ViewModels.ServerPages
                         if (VAD(e))
                             await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
 
+                }
+                else
+                {
+                    MicophoneMute = true;
                 }
 
             }
@@ -839,12 +865,12 @@ namespace LiteCall.ViewModels.ServerPages
             set
             {
                 Set(ref _micophoneMute, value);
-                OmMicrophoneMuteChanged();
+                OnMicrophoneMuteChanged();
             }
         }
 
 
-        void OmMicrophoneMuteChanged()
+        void OnMicrophoneMuteChanged()
         {
             if (MicophoneMute)
             {

@@ -315,7 +315,7 @@
             </ToggleButton>
 
             <ToggleButton
-                IsChecked="{Binding HeadphoneMute}"
+                IsChecked="{Binding HeadphoneMute, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                 Style="{DynamicResource ImgToggleButton}">
 
