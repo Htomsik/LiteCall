@@ -2,921 +2,782 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Bus;
-using LiteCall.Infrastructure.Commands;
+using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
-using LiteCall.Stores.ModelStores;
 using LiteCall.ViewModels.Base;
 using Microsoft.AspNetCore.SignalR.Client;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
-using SignalRServ;
 
+namespace LiteCall.ViewModels.ServerPages;
 
-namespace LiteCall.ViewModels.ServerPages
+internal class ServerVMD : BaseVmd
 {
+    #region Services
 
-  
-    internal class ServerVMD : BaseVMD
+    private readonly IStatusServices _statusServices;
+
+    #endregion
+
+    public ServerVMD(ServerAccountStore serverAccountStore, CurrentServerStore currentServerStore,
+        IStatusServices statusServices)
     {
-        public ServerVMD(ServerAccountStore _ServerAccountStore, CurrentServerStore _CurrentServerStore, IStatusServices statusServices)
-        {
+        _serverAccountStore = serverAccountStore;
 
-            #region Создание данных
+        MessagesColCollection = new ObservableCollection<Message>();
 
-            ServerAccountStore = _ServerAccountStore;
+        CurrentServerStore = currentServerStore;
 
-            MessagesColCollection = new ObservableCollection<Message>();
+        _statusServices = statusServices;
 
-            CurrentServerStore = _CurrentServerStore;
+        InitSignalRConnection(CurrentServerStore.CurrentServer, _serverAccountStore.CurrentAccount);
 
-            _statusServices = statusServices;
+        AsyncGetUserServerName();
 
-            #endregion
+        MessageBus.Bus += AsyncGetMessageBus;
 
-            InitSignalRConnection(CurrentServerStore.CurrentServer, ServerAccountStore.CurrentAccount);
 
-            AsyncGetUserServerName();
+        ReloadServerRooms.Reloader += AsynGetServerRoomsBus;
 
-            #region Шины сообщений
+        VoiceMessageBus.Bus += AsyncGetAudioBus;
 
-            //Сообщения
-            MessageBus.Bus += AsyncGetMessageBUS;
+        DisconnectNotification.Notificator += GroupDisconnected;
 
-            //Обновение комнат
-            ReloadServerRooms.Reloader += AsynGetServerRoomsBUS;
+        #region команды
 
-            //Приход сообщений
-            VoiceMessageBus.Bus += AsyncGetAudioBus;
+        SendMessageCommand = new AsyncLambdaCommand(OnSendMessageExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanSendMessageExecuted);
 
-            DisconnectNotification.Notificator += GroupDisconnected;
+        CreateNewRoomCommand = new AsyncLambdaCommand(OnCreateNewRoomExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanCreateNewRoomExecute);
 
+        ConnectCommand = new AsyncLambdaCommand(OnConnectExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanConnectExecute);
 
-     
+        ConnectWithPasswordCommand = new AsyncLambdaCommand(OnConnectWithPasswordCommandExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanConnectWithPasswordExecute);
 
+        OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
 
-            #endregion
+        OpenPasswordModalCommand = new LambdaCommand(OnOpenPasswordModalCommandCommandExecuted);
 
-            #region команды
-
-            SendMessageCommand = new AsyncLamdaCommand(OnSendMessageExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanSendMessageExecuted);
-
-            CreateNewRoomCommand = new AsyncLamdaCommand(OnCreateNewRoomExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanCreateNewRoomExecute);
-
-            ConnectCommand = new AsyncLamdaCommand(OnConnectExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanConnectExecute);
-
-            ConnectWithPasswordCommand = new AsyncLamdaCommand(OnConnectWithPasswordCommandExecuted,
-                ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanConectWithPasswordExecute);
-
-            OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
-
-            OpenPasswordModalCommand = new LambdaCommand(OnOpenPasswordModalCommandCommandExecuted);
-
-            DisconectGroupCommand = new LambdaCommand(OnDisconectGroupExecuted);
-
-      
-
-
-
-            #region Админ команды
-
-            AdminDeleteRoomCommand = new AsyncLamdaCommand(OnAdminDeleteRoomExecuted,
-                ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanAdminDeleteRoomExecute);
-
-            AdminDisconnectUserFromRoomCommand = new AsyncLamdaCommand(OnAdminDisconnectUserFromRoomExecuted,
-                ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }), CanAdminDisconnectUserFromRoomExecute);
-
-            #endregion
-
-
-            #endregion
-
-            #region Настройка Naduio
-
-            input = new WaveIn();
-
-            
-            input.DataAvailable += InputDataAvailable;
-
-            input.BufferMilliseconds = 10;
-
-            input.WaveFormat = _waveFormat;
-
-
-           // _playBuffer = new BufferedWaveProvider(_waveFormat);
-
-            mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1));
-
-            mixer.ReadFully = true;
-
-            _waveOut = new WaveOut();
-
-            _waveOut.DeviceNumber = 0;
-
-            _waveOut.Init(mixer);
-
-            _waveOut.Play();
-
-           
-
-            
-
-            /*
-
-                        bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat(8000, 16, 1)) { ReadFully = false };
-
-                        wave16ToFloatProvider = new Wave16ToFloatProvider(bufferedWaveProvider);
-
-                        _mixingWaveProvider32 = new MixingWaveProvider32(new[] { new DummyWaveProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1)), });
-
-                        _mixingWaveProvider32.AddInputStream(wave16ToFloatProvider);
-
-                        _output = new WaveFloatTo16Provider(_mixingWaveProvider32);
-
-                        _waveOutEvent = new WaveOut(WaveCallbackInfo.FunctionCallback());
-
-                        _waveOutEvent.Init(_output);
-
-                        _waveOutEvent.Play();
-
-            */
-            #endregion
-
-
-
-        }
-
-
-        WaveIn input;
-
-        private WaveOut _waveOut;
-
-        MixingSampleProvider mixer;
-
-        private WaveFormat _waveFormat = new WaveFormat(8000, 16, 1);
-
-
-        #region Подключение к серверу
-
-
-     
-        public async void InitSignalRConnection(Server CurrentServer, Account CurrentAccount)
-        {
-            try
-            {
-
-                await ServerService.ConnectionHub($"https://{CurrentServer.Ip}/LiteCall", CurrentAccount, _statusServices);
-                CanServerConnect = true;
-            }
-            catch (Exception e)
-            {
-                CanServerConnect = false;
-            }
-           
-
-            _statusServices.DeleteStatus();
-        }
-
-
-        #endregion
-
-      
-      
-
-
+        DisconnectGroupCommand = new LambdaCommand(OnDisconnectGroupExecuted);
 
 
         #region Админ команды
 
+        AdminDeleteRoomCommand = new AsyncLambdaCommand(OnAdminDeleteRoomExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanAdminDeleteRoomExecute);
 
-        public ICommand AdminDeleteRoomCommand { get; }
-
-        private bool CanAdminDeleteRoomExecute(object p)
-        {
-            if (ServerAccountStore.CurrentAccount.Role != "Admin") return false;
-
-            if (p is not Model.ServerRooms) return false;
-
-            if (p == null) return false;
-
-            return true;
-        }
-
-       private async Task OnAdminDeleteRoomExecuted(object p)
-       {
-             var deletedRoom = (ServerRooms)p;
-
-            try
-            {
-                await ServerService.hubConnection.SendAsync("AdminDeleteRoom", deletedRoom.RoomName);
-            }
-            catch (Exception ex){}
-            
-       }
-
-
-        public ICommand AdminDisconnectUserFromRoomCommand { get; }
-
-        private bool CanAdminDisconnectUserFromRoomExecute(object p)
-        {
-            if (ServerAccountStore.CurrentAccount.Role != "Admin") return false;
-
-            if (p is not ServerUser) return false;
-
-            if (p == null) return false;
-
-            return true;
-        }
-
-        private async Task OnAdminDisconnectUserFromRoomExecuted(object p)
-        {
-            var disconnectedUser = (ServerUser)p;
-
-            try
-            {
-                await ServerService.hubConnection.SendAsync("AdminKickUser", disconnectedUser.Login);
-            }
-            catch (Exception ex) { }
-        }
+        AdminDisconnectUserFromRoomCommand = new AsyncLambdaCommand(OnAdminDisconnectUserFromRoomExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanAdminDisconnectUserFromRoomExecute);
 
         #endregion
 
+        #endregion
 
+        #region Naudio Settings
 
+        _input = new WaveIn();
 
+        _input.DataAvailable += InputDataAvailable!;
 
-        /// <summary>
-        /// Выход из группы
-        /// </summary>
-        public ICommand DisconectGroupCommand { get; }
+        _input.BufferMilliseconds = 10;
 
-        private void OnDisconectGroupExecuted(object p)
+        _input.WaveFormat = _waveFormat;
+
+        _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1))
         {
-            AsyncGroupDisconect();
+            ReadFully = true
+        };
+
+        _waveOut = new WaveOut();
+
+        _waveOut.DeviceNumber = 0;
+
+        _waveOut.Init(_mixer);
+
+        _waveOut.Play();
+
+        #endregion
+    }
+
+    #region Server hub connecting
+
+    public async void InitSignalRConnection(Server? currentServer, Account? currentAccount)
+    {
+        try
+        {
+            await ServerService.ConnectionHub($"https://{currentServer!.Ip}/LiteCall", currentAccount, _statusServices);
+            CanServerConnect = true;
+        }
+        catch
+        {
+            CanServerConnect = false;
         }
 
 
+        _statusServices.DeleteStatus();
+    }
 
-        public ICommand CreateNewRoomCommand { get; }
+    #endregion
 
-        private bool CanCreateNewRoomExecute(object p) => !Convert.ToBoolean(p) && !string.IsNullOrEmpty(NewRoomName);
+    #region Stores
 
-        private async Task OnCreateNewRoomExecuted(object p)
+    public  CurrentServerStore CurrentServerStore { get; set; }
+
+    private readonly ServerAccountStore _serverAccountStore;
+
+    #endregion
+
+    #region NAudio
+
+    private readonly WaveFormat _waveFormat = new(8000, 16, 1);
+
+    private readonly WaveOut _waveOut;
+
+    private readonly WaveIn _input;
+
+    private readonly MixingSampleProvider _mixer;
+
+    #endregion
+
+    #region Commands
+
+    #region DiconnecFromGroup
+
+    public ICommand DisconnectGroupCommand { get; }
+
+    private void OnDisconnectGroupExecuted(object p)
+    {
+        AsyncGroupDisconect();
+    }
+
+    #endregion
+
+    #region CreateNewRoom
+
+    public ICommand CreateNewRoomCommand { get; }
+
+    private bool CanCreateNewRoomExecute(object p)
+    {
+        return !Convert.ToBoolean(p) && !string.IsNullOrEmpty(NewRoomName);
+    }
+
+    private async Task OnCreateNewRoomExecuted(object p)
+    {
+        try
         {
-            
-                try
+            var groupStatus =
+                await ServerService.HubConnection!.InvokeAsync<bool>("GroupCreate", NewRoomName, NewRoomPassword);
+
+            if (groupStatus)
+                CurrentGroup = new ServerRooms
                 {
-                    var GroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupCreate", NewRoomName, NewRoomPassword);
-
-                    if (GroupStatus)
-                    {
-
-                        CurrentGroup = new ServerRooms
-                        {
-                            RoomName = NewRoomName,
-                            Users = await ServerService.hubConnection.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
-                        };
-
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    
-
-                }
-
-                NewRoomName = string.Empty;
-                NewRoomPassword = string.Empty;
-                CreateRoomModalStatus = false;
+                    RoomName = NewRoomName,
+                    Users = await ServerService.HubConnection!.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
+                };
+        }
+        catch 
+        {
+            // ignored
         }
 
+        NewRoomName = string.Empty;
+        NewRoomPassword = string.Empty;
+        CreateRoomModalStatus = false;
+    }
 
+    #endregion
 
+    #region SendMessage
 
+    public ICommand SendMessageCommand { get; }
 
-        public ICommand OpenCreateRoomModalCommand { get; }
+    public bool CanSendMessageExecuted(object p)
+    {
+        return CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
+    }
 
-        private void OnOpenCreateRoomModalCommandExecuted(object p)
+    private async Task OnSendMessageExecuted(object p)
+    {
+        var newMessage = new Message
         {
+            DateSend = DateTime.Now,
+            Text = CurrentMessage,
+            Sender = _serverAccountStore.CurrentAccount!.CurrentServerLogin
+        };
 
-            if ((string)p == "1")
-            {
-                CreateRoomModalStatus = true;
-            }
-            else
-            {
-                CreateRoomModalStatus = false;
-                NewRoomName = string.Empty;
-                NewRoomPassword=string.Empty;
-            }
-
-
+        try
+        {
+            await ServerService.HubConnection!.InvokeAsync("SendMessage", newMessage);
+            MessagesColCollection!.Add(newMessage);
+        }
+        catch 
+        {
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", IsError = true });
         }
 
+        CurrentMessage = string.Empty;
+    }
 
+    #endregion
 
+    #region OpenCreateRoomModal
 
+    public ICommand OpenCreateRoomModalCommand { get; }
 
-
-        public ICommand OpenPasswordModalCommand { get; }
-
-        private void OnOpenPasswordModalCommandCommandExecuted(object p)
+    private void OnOpenCreateRoomModalCommandExecuted(object p)
+    {
+        if ((string)p == "1")
         {
+            CreateRoomModalStatus = true;
+        }
+        else
+        {
+            CreateRoomModalStatus = false;
+            NewRoomName = string.Empty;
+            NewRoomPassword = string.Empty;
+        }
+    }
 
-            if ((string)p == "1")
-            {
-                RoomPasswordModalStatus = true;
-            }
-            else
-            {
-                RoomPasswordModalStatus = false;
-                RoomPassword = string.Empty;
-            }
+    #endregion
 
+    #region ConnectRoom
 
+    public ICommand ConnectCommand { get; }
+
+    private bool CanConnectExecute(object p)
+    {
+        if (p is not ServerRooms rooms) return false;
+
+        var ConnectedGroup = rooms;
+
+        if (CurrentGroup is not null)
+            return !String.Equals(ConnectedGroup.RoomName!, CurrentGroup.RoomName!, StringComparison.CurrentCultureIgnoreCase);
+        return true;
+    }
+
+    private async Task OnConnectExecuted(object p)
+    {
+        var connectedGroup = (ServerRooms)p;
+
+        if (connectedGroup.Guard)
+        {
+            RoomPasswordModalStatus = true;
+            return;
         }
 
+        await AsyncRoomConnect(connectedGroup);
+    }
 
+    #endregion
 
+    #region OpenPasswordModal
 
-        public ICommand ConnectCommand { get; }
+    public ICommand OpenPasswordModalCommand { get; }
 
-        private bool CanConnectExecute(object p)
+    private void OnOpenPasswordModalCommandCommandExecuted(object p)
+    {
+        if ((string)p == "1")
         {
-            if (p is not Model.ServerRooms) return false;
-                
-            if (p == null) return false;
-
-            var ConnectedGroup = (ServerRooms)p;
-
-            if (CurrentGroup is not null)
-            {
-                return ConnectedGroup.RoomName.ToLower() != CurrentGroup.RoomName.ToLower();
-            }
-            else
-            {
-                return true;
-            }
-           
-           
+            RoomPasswordModalStatus = true;
         }
-
-        private async Task OnConnectExecuted(object p)
+        else
         {
-
-            var ConnectedGroup = (ServerRooms)p;
-
-
-            if (ConnectedGroup.Guard)
-            {
-                RoomPasswordModalStatus = true;
-                return;
-            }
-            else
-            {
-                await AsyncConnectCommand(ConnectedGroup);
-            }
-
-          
-        }
-
-        public ICommand ConnectWithPasswordCommand { get; }
-
-        private bool CanConectWithPasswordExecute(object p) => !Convert.ToBoolean(p) && !string.IsNullOrEmpty(RoomPassword);
-
-        private async Task OnConnectWithPasswordCommandExecuted(object p)
-        {
-            await AsyncConnectCommand(SelRooms, RoomPassword);
-            RoomPassword = string.Empty;
             RoomPasswordModalStatus = false;
-
+            RoomPassword = string.Empty;
         }
+    }
 
+    #endregion
 
+    #region ConnectWithPasswordRooms
 
-        async Task AsyncConnectCommand(ServerRooms ConnectedGroup,string RoomPassword = "")
+    public ICommand ConnectWithPasswordCommand { get; }
+
+    private bool CanConnectWithPasswordExecute(object p)
+    {
+        return !Convert.ToBoolean(p) && !string.IsNullOrEmpty(RoomPassword);
+    }
+
+    private async Task OnConnectWithPasswordCommandExecuted(object p)
+    {
+        await AsyncRoomConnect(SelRooms, RoomPassword);
+        RoomPassword = string.Empty;
+        RoomPasswordModalStatus = false;
+    }
+
+    #endregion
+
+    #region AdminDeleteRoom
+
+    public ICommand AdminDeleteRoomCommand { get; }
+
+    private bool CanAdminDeleteRoomExecute(object p)
+    {
+        if (_serverAccountStore.CurrentAccount!.Role != "Admin") return false;
+
+        return p is ServerRooms;
+    }
+
+    private async Task OnAdminDeleteRoomExecuted(object p)
+    {
+        var deletedRoom = (ServerRooms)p;
+
+        try
         {
-            try
-            {
-                var ConnetGroupStatus = await ServerService.hubConnection.InvokeAsync<bool>("GroupConnect",
-                    $"{ConnectedGroup.RoomName}", RoomPassword);
-
-                if (ConnetGroupStatus)
-                {
-                    mixer.RemoveAllMixerInputs();
-
-                    bufferUsers.Clear();
-
-                    CurrentGroup = ConnectedGroup;
-
-                    MicophoneMute = false;
-
-                    _waveOut.Play();
-
-                    try
-                    {
-                        input.StartRecording();
-                    }
-                    catch (Exception e)
-                    {
-                        
-                    }
-                   
-
-                }
-                else
-                {
-                    _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", isError = true });
-                }
-            }
-            catch (Exception e)
-            {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", isError = true });
-            }
+            await ServerService.HubConnection!.SendAsync("AdminDeleteRoom", deletedRoom.RoomName);
         }
-
-
-
-        #region Отправка сообщений
-
-        public ICommand SendMessageCommand { get; }
-
-        public bool CanSendMessageExecuted(object p) => CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
-
-        private async Task OnSendMessageExecuted(object p)
+        catch
         {
-
-            Message newMessage = new Message
-            {
-                DateSend = DateTime.Now,
-                Text = CurrentMessage,
-                Sender = ServerAccountStore.CurrentAccount.CurrentServerLogin
-            };
-
-            try
-            {
-                await ServerService.hubConnection.InvokeAsync("SendMessage", newMessage);
-                MessagesColCollection.Add(newMessage);
-            }
-            catch (Exception e)
-            {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", isError = true });
-            }
-
-            CurrentMessage = string.Empty;
-
+            // ignored
         }
+    }
 
+    #endregion
 
+    #region AdminKickUserFromRoom
 
-        #endregion
+    public ICommand AdminDisconnectUserFromRoomCommand { get; }
 
-        #region Методы
+    private bool CanAdminDisconnectUserFromRoomExecute(object p)
+    {
+        if (_serverAccountStore.CurrentAccount!.Role != "Admin") return false;
 
-        #region Подписки
+        return p is ServerUser;
+    }
 
+    private async Task OnAdminDisconnectUserFromRoomExecuted(object p)
+    {
+        var disconnectedUser = (ServerUser)p;
 
-        /// <summary>
-        /// Приём сообщений
-        /// </summary>
-        /// <param name=""></param>
-        private void AsyncGetMessageBUS(Message newMessage)
+        try
         {
-
-            MessagesColCollection.Add(newMessage);
-            
+            await ServerService.HubConnection!.SendAsync("AdminKickUser", disconnectedUser.Login);
         }
-
-        private Dictionary<string, BufferedWaveProvider> bufferUsers = new Dictionary<string, BufferedWaveProvider>();
-
-        public async  void AsyncGetAudioBus(VoiceMessage newVoiceMes)
+        catch
         {
+            // ignored
+        }
+    }
 
-            if (HeadphoneMute) return;
+    #endregion
 
-            try
+    #endregion
+
+    #region Methods
+
+    #region ControlMethods
+
+    private async Task AsyncRoomConnect(ServerRooms? ConnectedGroup, string? RoomPassword = "")
+    {
+        try
+        {
+            var connectRoomStatus = await ServerService.HubConnection!.InvokeAsync<bool>("GroupConnect",
+                $"{ConnectedGroup!.RoomName}", RoomPassword);
+
+            if (connectRoomStatus)
             {
-                var userbuffer = bufferUsers[newVoiceMes.Name];
+                _mixer.RemoveAllMixerInputs();
 
-                userbuffer.AddSamples(newVoiceMes.AudioByteArray, 0, newVoiceMes.AudioByteArray.Length);
+                _bufferUsers.Clear();
 
+                CurrentGroup = ConnectedGroup;
 
-            }
-            catch (Exception e)
-            {
+                MicrophoneMute = false;
+
+                _waveOut.Play();
 
                 try
                 {
-                    bufferUsers.Add(newVoiceMes.Name, new BufferedWaveProvider(_waveFormat));
-
-                    var userb1uffer = bufferUsers[newVoiceMes.Name];
-
-                    mixer.AddMixerInput(userb1uffer);
-
+                    _input.StartRecording();
                 }
-                catch (Exception exception)
+                catch
                 {
-
+                    // ignored
                 }
-
-            }
-            finally
-            {
-                if (_waveOut.PlaybackState == PlaybackState.Stopped)
-                {
-                    _waveOut.Play();
-                }
-             
-            }
-
-        }
-
-
-        /// <summary>
-        /// Информация о комнатах и пользователях на сервере
-        /// </summary>
-        private async void AsynGetServerRoomsBUS()
-        {
-
-            try
-            {
-                var RoomListFromServer = await ServerService.hubConnection.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
-
-
-                ServerRooms = new ObservableCollection<ServerRooms>(RoomListFromServer);
-
-
-            }
-            catch (Exception e)
-            {
-                ServerRooms = new ObservableCollection<ServerRooms>();
-            }
-            
-        }
-
-
-        #endregion
-
-
-        /// <summary>
-        /// Выход из комнаты
-        /// </summary>
-        private async void AsyncGroupDisconect()
-        {
-            try
-            {
-                await ServerService.hubConnection.InvokeAsync("GroupDisconnect");
-                GroupDisconnected();
-            }
-            catch (Exception e)
-            {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Failed disconnect from group", isError = true });
-
-            }
-
-        }
-
-        private void GroupDisconnected()
-        {
-
-            mixer.RemoveAllMixerInputs();
-
-            bufferUsers.Clear();
-
-            CurrentGroup = null;
-
-            MessagesColCollection = new ObservableCollection<Message>();
-
-            _waveOut.Stop();
-
-            MicophoneMute = false;
-
-            mixer.RemoveAllMixerInputs();
-
-            bufferUsers.Clear();
-        }
-
-        
-        private async void AsyncGetUserServerName()
-        {
-            var NewName = string.Empty;
-            try
-            {
-                NewName = await ServerService.hubConnection.InvokeAsync<string>("SetName", ServerAccountStore.CurrentAccount.Login).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Dispose();
-            }
-
-            if (NewName == "non")
-            {
-                Dispose();
-            }
-            
-            ServerAccountStore.CurrentAccount.CurrentServerLogin = NewName;
-            
-
-        }
-
-        private async  void InputDataAvailable(object sender, WaveInEventArgs e)
-        {
-
-            try
-            {
-
-                if (CurrentGroup != null)
-                {
-                        if (VAD(e))
-                            await ServerService.hubConnection.SendAsync("SendAudio", e.Buffer);
-
-                }
-                else
-                {
-                    MicophoneMute = true;
-                }
-
-            }
-            catch (Exception ex) { }
-
-        }
-
-        private bool VAD(WaveInEventArgs e)
-        {
-            double porog = 0.005;
-
-            bool Tr = false;
-
-            double Sum2 = 0;
-            int Count = e.BytesRecorded / 2;
-
-
-            for (int index = 0; index < e.BytesRecorded; index += 2)
-            {
-                double Tmp = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
-
-                Tmp /= 32768.0;
-
-                Sum2 += Tmp * Tmp;
-
-                if (Tmp > porog)
-
-                    Tr = true;
-            }
-
-            Sum2 /= Count;
-
-            return Tr || Sum2 > porog;
-        }
-
-
-        public override void Dispose()
-        {
-            ServerService.hubConnection.StopAsync();
-
-            MessageBus.Bus -= AsyncGetMessageBUS;
-
-            ReloadServerRooms.Reloader -= AsynGetServerRoomsBUS;
-
-            VoiceMessageBus.Bus -= AsyncGetAudioBus;
-
-            input.StopRecording();
-
-            _waveOut.Stop();
-
-            CurrentServerStore.Delete();
-
-            ServerAccountStore.Logout();
-
-            base.Dispose();
-        }
-
-
-        #endregion
-
-
-        #region Данные с формы
-        private ObservableCollection<Message> _messagesColCollection;
-
-        public ObservableCollection<Message> MessagesColCollection
-        {
-            get => _messagesColCollection;
-            set => Set(ref _messagesColCollection, value);
-        }
-
-
-
-        private CurrentServerStore _currentServerStore;
-
-        public CurrentServerStore CurrentServerStore
-        {
-            get => _currentServerStore;
-            set => Set(ref _currentServerStore, value);
-        }
-
-
-        private string _currentMessage;
-
-        public string CurrentMessage
-        {
-            get => _currentMessage;
-            set => Set(ref _currentMessage, value);
-        }
-
-
-        private bool _createRoomModalStatus;
-
-        public bool CreateRoomModalStatus
-        {
-            get => _createRoomModalStatus;
-            set => Set(ref _createRoomModalStatus, value);
-        }
-
-
-        private string _newRoomName;
-
-        public string NewRoomName
-        {
-            get => _newRoomName;
-            set => Set(ref _newRoomName, value);
-        }
-
-
-
-        private string _newRoomPassword;
-
-        public string NewRoomPassword
-        {
-            get => _newRoomPassword;
-            set => Set(ref _newRoomPassword, value);
-        }
-
-
-
-
-        private bool _roomPasswordModalStatus;
-
-        public bool RoomPasswordModalStatus
-        {
-            get => _roomPasswordModalStatus;
-            set => Set(ref _roomPasswordModalStatus, value);
-        }
-
-
-        private string _roomPassword;
-
-        public string RoomPassword
-        {
-            get => _roomPassword;
-            set => Set(ref _roomPassword, value);
-        }
-
-        private ServerRooms _selRooms;
-
-        public ServerRooms SelRooms
-        {
-            get => _selRooms;
-            set => Set(ref _selRooms, value);
-        }
-
-
-        private ServerUser _selServerUser;
-
-        public ServerUser SelServerUser
-        {
-            get => _selServerUser;
-            set => Set(ref _selServerUser, value);
-        }
-
-
-
-        private ObservableCollection<ServerRooms> _serverRooms;
-
-        public ObservableCollection<ServerRooms> ServerRooms
-        {
-            get => _serverRooms;
-            set
-            {
-                Set(ref _serverRooms, OnCurrentGoupChanged((ObservableCollection<ServerRooms>)value));
-            }
-        }
-
-
-
-        private ServerRooms _currentGroup;
-
-        public ServerRooms CurrentGroup
-        {
-            get => _currentGroup;
-            set
-            {
-                Set(ref _currentGroup,value);
-                
-            }
-        }
-
-        private ObservableCollection<ServerRooms> OnCurrentGoupChanged(ObservableCollection<ServerRooms> CurrentRoomUsers)
-        {
-            foreach (var rooms in CurrentRoomUsers)
-            {
-                foreach (var users in rooms.Users)
-                {
-                    if (users.Login == ServerAccountStore.CurrentAccount.CurrentServerLogin)
-                    {
-                        users.Role = "You";
-                    }
-                }
-            }
-
-
-            return CurrentRoomUsers;
-        }
-
-        private bool _canServerConnect;
-        public bool CanServerConnect
-        {
-            get => _canServerConnect;
-            set => Set(ref _canServerConnect, value);
-        }
-
-
-        private bool _headphoneMute;
-
-        public bool HeadphoneMute
-        {
-            get => _headphoneMute;
-            set => Set(ref _headphoneMute, value);
-        }
-
-
-        private bool _micophoneMute;
-
-        public bool MicophoneMute
-        {
-            get => _micophoneMute;
-            set
-            {
-                Set(ref _micophoneMute, value);
-                OnMicrophoneMuteChanged();
-            }
-        }
-
-
-        void OnMicrophoneMuteChanged()
-        {
-            if (MicophoneMute)
-            {
-                try
-                {
-                    input.StopRecording();
-                }
-                catch (Exception e)
-                {
-                  
-                }
-               
             }
             else
             {
-                try
-                {
-                    input.StartRecording();
-                   
-                }
-                catch (Exception e)
-                {
-
-                }
-
+                _statusServices.ChangeStatus(new StatusMessage
+                    { Message = "Failed connect to the room", IsError = true });
             }
         }
-
-        #endregion
-
-
-        #region Хранилища
-
-        public ServerAccountStore ServerAccountStore { get; set; }
-
-        #endregion
-
-        #region Сервисы
-
-        private readonly IStatusServices _statusServices;
-
-        #endregion
-
-
-
-
-
+        catch
+        {
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", IsError = true });
+        }
     }
 
 
+    private async void AsyncGroupDisconect()
+    {
+        try
+        {
+            await ServerService.HubConnection!.InvokeAsync("GroupDisconnect");
+            GroupDisconnected();
+        }
+        catch 
+        {
+            _statusServices.ChangeStatus(new StatusMessage
+                { Message = "Failed disconnect from group", IsError = true });
+        }
+    }
+
+
+    private void GroupDisconnected()
+    {
+        _mixer.RemoveAllMixerInputs();
+
+        _bufferUsers.Clear();
+
+        CurrentGroup = null;
+
+        MessagesColCollection = new ObservableCollection<Message>();
+
+        _waveOut.Stop();
+
+        MicrophoneMute = false;
+
+        _mixer.RemoveAllMixerInputs();
+
+        _bufferUsers.Clear();
+    }
+
+    private async void AsyncGetUserServerName()
+    {
+        string? newName = null;
+        try
+        {
+            newName = await ServerService.HubConnection!
+                .InvokeAsync<string>("SetName", _serverAccountStore.CurrentAccount!.Login).ConfigureAwait(false);
+        }
+        catch 
+        {
+            Dispose();
+        }
+
+        if (newName == "non") Dispose();
+
+        _serverAccountStore.CurrentAccount!.CurrentServerLogin = newName;
+    }
+
+    #endregion
+
+    #region Audio
+
+    private async void InputDataAvailable(object sender, WaveInEventArgs e)
+    {
+        try
+        {
+            if (CurrentGroup != null)
+            {
+                if (VAD(e))
+                    await ServerService.HubConnection!.SendAsync("SendAudio", e.Buffer);
+            }
+            else
+            {
+                MicrophoneMute = true;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private bool VAD(WaveInEventArgs e)
+    {
+        var porog = 0.005;
+
+        var tr = false;
+
+        double sum2 = 0;
+
+        var count = e.BytesRecorded / 2;
+
+
+        for (var index = 0; index < e.BytesRecorded; index += 2)
+        {
+            double Tmp = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
+
+            Tmp /= 32768.0;
+
+            sum2 += Tmp * Tmp;
+
+            if (Tmp > porog)
+
+                tr = true;
+        }
+
+        sum2 /= count;
+
+        return tr || sum2 > porog;
+    }
+
+    public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
+    {
+        if (HeadphoneMute) return;
+
+        try
+        {
+            var bufferUser = _bufferUsers[newVoiceMes.Name!];
+
+            bufferUser.AddSamples(newVoiceMes.Audio, 0, newVoiceMes.Audio!.Length);
+        }
+        catch 
+        {
+            try
+            {
+                _bufferUsers.Add(newVoiceMes.Name!, new BufferedWaveProvider(_waveFormat));
+
+                var bufferUser = _bufferUsers[newVoiceMes.Name!];
+
+                _mixer.AddMixerInput(bufferUser);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+        finally
+        {
+            if (_waveOut.PlaybackState == PlaybackState.Stopped) _waveOut.Play();
+        }
+    }
+
+    #endregion
+
+    #region Subscriptions
+
+    private void AsyncGetMessageBus(Message newMessage)
+    {
+        MessagesColCollection!.Add(newMessage);
+    }
+
+    private async void AsynGetServerRoomsBus()
+    {
+        try
+        {
+            var roomListFromServer =
+                await ServerService.HubConnection!.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
+
+
+            ServerRooms = new ObservableCollection<ServerRooms>(roomListFromServer);
+        }
+        catch 
+        {
+            ServerRooms = new ObservableCollection<ServerRooms>();
+        }
+    }
+
+    #endregion
+
+    #region Changed
+
+    private ObservableCollection<ServerRooms>? OnCurrentGoupChanged(ObservableCollection<ServerRooms>? CurrentRoomUsers)
+    {
+        foreach (var rooms in CurrentRoomUsers!)
+        foreach (var users in rooms.Users!)
+            if (users.Login == _serverAccountStore.CurrentAccount!.CurrentServerLogin)
+                users.Role = "You";
+
+
+        return CurrentRoomUsers;
+    }
+
+
+    private void OnMicrophoneMuteChanged()
+    {
+        if (MicrophoneMute)
+            try
+            {
+                _input.StopRecording();
+            }
+            catch
+            {
+                // ignored
+            }
+        else
+            try
+            {
+                _input.StartRecording();
+            }
+            catch
+            {
+                // ignored
+            }
+    }
+
+    #endregion
+
+    public override void Dispose()
+    {
+        ServerService.HubConnection!.StopAsync();
+
+        MessageBus.Bus -= AsyncGetMessageBus;
+
+        ReloadServerRooms.Reloader -= AsynGetServerRoomsBus;
+
+        VoiceMessageBus.Bus -= AsyncGetAudioBus;
+
+        _input.StopRecording();
+
+        _waveOut.Stop();
+
+        CurrentServerStore.Delete();
+
+        _serverAccountStore.Logout();
+
+        base.Dispose();
+    }
+
+    #endregion
+
+
+    #region Data
+
+    private readonly Dictionary<string, BufferedWaveProvider> _bufferUsers = new();
+
+    private ObservableCollection<Message>? _messagesColCollection;
+
+    public ObservableCollection<Message>? MessagesColCollection
+    {
+        get => _messagesColCollection;
+        set => Set(ref _messagesColCollection, value);
+    }
+
+
+    private string? _currentMessage;
+
+    public string? CurrentMessage
+    {
+        get => _currentMessage;
+        set => Set(ref _currentMessage, value);
+    }
+
+
+    private bool _createRoomModalStatus;
+
+    public bool CreateRoomModalStatus
+    {
+        get => _createRoomModalStatus;
+        set => Set(ref _createRoomModalStatus, value);
+    }
+
+
+    private string? _newRoomName;
+
+    public string? NewRoomName
+    {
+        get => _newRoomName;
+        set => Set(ref _newRoomName, value);
+    }
+
+
+    private string? _newRoomPassword;
+
+    public string? NewRoomPassword
+    {
+        get => _newRoomPassword;
+        set => Set(ref _newRoomPassword, value);
+    }
+
+
+    private bool _roomPasswordModalStatus;
+
+    public bool RoomPasswordModalStatus
+    {
+        get => _roomPasswordModalStatus;
+        set => Set(ref _roomPasswordModalStatus, value);
+    }
+
+
+    private string? _roomPassword;
+
+    public string? RoomPassword
+    {
+        get => _roomPassword;
+        set => Set(ref _roomPassword, value);
+    }
+
+    private ServerRooms? _selRooms;
+
+    public ServerRooms? SelRooms
+    {
+        get => _selRooms;
+        set => Set(ref _selRooms, value);
+    }
+
+
+    private ServerUser? _selServerUser;
+
+    public ServerUser? SelServerUser
+    {
+        get => _selServerUser;
+        set => Set(ref _selServerUser, value);
+    }
+
+
+    private ObservableCollection<ServerRooms>? _serverRooms;
+
+    public ObservableCollection<ServerRooms>? ServerRooms
+    {
+        get => _serverRooms;
+        set => Set(ref _serverRooms, OnCurrentGoupChanged(value));
+    }
+
+
+    private ServerRooms? _currentGroup;
+
+    public ServerRooms? CurrentGroup
+    {
+        get => _currentGroup;
+        set => Set(ref _currentGroup, value);
+    }
+
+
+    private bool _canServerConnect;
+
+    public bool CanServerConnect
+    {
+        get => _canServerConnect;
+        set => Set(ref _canServerConnect, value);
+    }
+
+
+    private bool _headphoneMute;
+
+    public bool HeadphoneMute
+    {
+        get => _headphoneMute;
+        set => Set(ref _headphoneMute, value);
+    }
+
+
+    private bool _microphoneMute;
+
+    public bool MicrophoneMute
+    {
+        get => _microphoneMute;
+        set
+        {
+            Set(ref _microphoneMute, value);
+            OnMicrophoneMuteChanged();
+        }
+    }
+
+    #endregion
 }

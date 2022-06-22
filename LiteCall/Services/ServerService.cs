@@ -1,143 +1,112 @@
-﻿
-using Microsoft.AspNetCore.SignalR.Client;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
 using LiteCall.Infrastructure.Bus;
 using LiteCall.Model;
-using LiteCall.Services;
 using LiteCall.Services.Interfaces;
-using LiteCall.Stores;
+using Microsoft.AspNetCore.SignalR.Client;
 
-namespace SignalRServ
+namespace LiteCall.Services;
+
+internal class ServerService
 {
-    internal class ServerService
+    public static HubConnection? HubConnection;
+
+
+    private static bool _isReconnectingDisconnect;
+
+    public static Task ConnectionHub(string url, Account? currentAccount, IStatusServices statusServices)
     {
-        public static HubConnection hubConnection;
+        statusServices.ChangeStatus(new StatusMessage { Message = "Connecting to server. . .", IsError = false });
 
+        HubConnection = new HubConnectionBuilder()
+            .WithUrl($"{url}?token={currentAccount.Token}", options =>
+            {
+                options.WebSocketConfiguration = conf =>
+                {
+                    conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                };
+                options.HttpMessageHandlerFactory = factory => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                };
+                options.AccessTokenProvider = () => Task.FromResult(currentAccount.Token);
+            })
+            .WithAutomaticReconnect(new[]
+            {
+                TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)
+            })
+            .Build();
 
-        private static bool _isRecconectingDisconnect;
+        HubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);
 
-        public static Task ConnectionHub(string url, Account currentAccount, IStatusServices statusServices)
+        HubConnection.On<Message>("Send", message =>
         {
+            MessageBus.Send(message);
+            return Task.CompletedTask;
+        });
 
-            statusServices.ChangeStatus(new StatusMessage{Message = "Connecting to server. . .", isError = false});
+        HubConnection.On<bool>("Notification", flag =>
+        {
+            statusServices.ChangeStatus(
+                new StatusMessage { IsError = true, Message = "You have been kicked from room" });
 
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl($"{url}?token={currentAccount.Token}", options =>
-                {
-                    options.WebSocketConfiguration = conf =>
-                    {
-                        conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
-                    };
-                    options.HttpMessageHandlerFactory = factory => new HttpClientHandler
-                    {
-                        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
-                    };
-                    options.AccessTokenProvider = () => Task.FromResult(currentAccount.Token);
-                })
-                .WithAutomaticReconnect(new[]
-                {
-                    TimeSpan.Zero,TimeSpan.FromSeconds(5),TimeSpan.FromSeconds(10)
-                })
-                .Build();
+            DisconnectNotification.Reload();
+        });
 
-            hubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);
+        HubConnection.On("UpdateRooms", () =>
+        {
+            ReloadServerRooms.Reload();
 
-            hubConnection.On<Message>("Send", message =>
-            {
+            return Task.CompletedTask;
+        });
 
-                MessageBus.Send(message);
-                return Task.CompletedTask;
+        HubConnection.On("SendAudio", (string name, byte[] MessageAudio) =>
+        {
+            var newMessage = new VoiceMessage { Name = name, Audio = MessageAudio };
 
-            });
-
-            hubConnection.On<bool>("Notification", flag =>
-            {
-                statusServices.ChangeStatus(new StatusMessage{isError = true,Message = "You have been kicked from room"});
-
-                DisconnectNotification.Reload();
-
-                
-            });
-
-            hubConnection.On("UpdateRooms", () =>
-            {
-
-                ReloadServerRooms.Reload();
-
-                return Task.CompletedTask;
-
-            });
-
-            hubConnection.On("SendAudio", (string name, byte[] MessageAudio) =>
-            {
-                VoiceMessage newMessage = new VoiceMessage {Name = name, AudioByteArray = MessageAudio};
-
-                VoiceMessageBus.Send(newMessage);
-
-            });
+            VoiceMessageBus.Send(newMessage);
+        });
 
 
-            //если соединение закрыто
-            hubConnection.Closed += error =>
-            {
-
-                if (_isRecconectingDisconnect)
-                {
-                    statusServices.ChangeStatus(new StatusMessage
-                        { isError = true, Message = "Reconnecting failed" });
-                }
-                else
-                {
-                    statusServices.DeleteStatus();
-                }
-
-                DisconectServerReloader.Reload();
-
-                _isRecconectingDisconnect = false;
-
-                return Task.CompletedTask;
-            };
-
-     
-
-            //возникает когда получается обратно подключится
-            hubConnection.Reconnected += id =>
-            {
+        //если соединение закрыто
+        HubConnection.Closed += error =>
+        {
+            if (_isReconnectingDisconnect)
+                statusServices.ChangeStatus(new StatusMessage
+                    { IsError = true, Message = "Reconnecting failed" });
+            else
                 statusServices.DeleteStatus();
 
-                _isRecconectingDisconnect = false;
+            DisconnectServerReloader.Reload();
 
-                return Task.CompletedTask;
-            };
+            _isReconnectingDisconnect = false;
 
-
-         
-
-            //возникает в момент переподключения
-            hubConnection.Reconnecting += error =>
-            {
-                _isRecconectingDisconnect = true;
-
-                statusServices.ChangeStatus(new StatusMessage { Message = $"Reconecting to server. . ." });
-
-                return Task.CompletedTask;
-            };
-
-            return hubConnection.StartAsync();
-
-        }
+            return Task.CompletedTask;
+        };
 
 
+        //возникает когда получается обратно подключится
+        HubConnection.Reconnected += id =>
+        {
+            statusServices.DeleteStatus();
 
-        
+            _isReconnectingDisconnect = false;
 
-        
+            return Task.CompletedTask;
+        };
+
+
+        //возникает в момент переподключения
+        HubConnection.Reconnecting += error =>
+        {
+            _isReconnectingDisconnect = true;
+
+            statusServices.ChangeStatus(new StatusMessage { Message = "Reconecting to server. . ." });
+
+            return Task.CompletedTask;
+        };
+
+        return HubConnection.StartAsync();
     }
 }

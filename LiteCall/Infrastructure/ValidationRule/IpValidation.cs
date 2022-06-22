@@ -1,61 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace LiteCall.Infrastructure.ValidationRule
+namespace LiteCall.Infrastructure.ValidationRule;
+
+public class IpValidation : System.Windows.Controls.ValidationRule
 {
-    public class IpValidation : System.Windows.Controls.ValidationRule
+    public override ValidationResult Validate(object value, CultureInfo cultureInfo)
     {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        var stringValue = value.ToString();
+
+        char[] splitValue = { '.', ':' };
+
+        var splitArray = stringValue!.Split(splitValue).ToArray();
+
+        if (splitArray.Length != 2)
         {
-
-
-
-            var StringValue = value.ToString();
-
-
-            char[] splitValue = { '.', ':' };
-
-            var SplitArray = StringValue.Split(splitValue).ToList();
-
-            if (SplitArray.Count != 2)
-            {
-                if (SplitArray.Count != 5) return new ValidationResult(false, "Incorrect Ip");
-            }
-            else
-            {
-                if(SplitArray[0].ToLower() != "localhost") return new ValidationResult(false, "Incorrect Ip");
-            }
-
-            int Port;
-
-            try
-            {
-                Port = Convert.ToInt32(SplitArray[^1]);
-            }
-            catch (Exception e)
-            {
-                return new ValidationResult(false, "Incorrect Port");
-            }
-            
-            if (Port < 1 || Port > 65536) return new ValidationResult(false, "Incorrect Port");
-
-            SplitArray.Remove(SplitArray.Last());
-
-            if (SplitArray[0].ToLower() != "localhost")
-            {
-                foreach (var segment in SplitArray)
-                {
-
-                    if (Convert.ToInt32(segment) < 0 || Convert.ToInt32(segment) > 256) return new ValidationResult(false, "Incorrect Ip");
-                }
-            }
-            
-            return new ValidationResult(true, null);
+            if (splitArray.Length != 5) return new ValidationResult(false, "Incorrect Ip");
         }
+        else
+        {
+            if (splitArray[0].ToLower() != "localhost") return new ValidationResult(false, "Incorrect Ip");
+        }
+
+        int port;
+
+        try
+        {
+            port = Convert.ToInt32(splitArray[^1]);
+        }
+        catch
+        {
+            return new ValidationResult(false, "Incorrect Port");
+        }
+
+        if (port < 1 || port > 65536) return new ValidationResult(false, "Incorrect Port");
+
+        splitArray = splitArray.SkipLast(1).ToArray();
+
+        if (splitArray[0].ToLower() != "localhost")
+            for (var i = 0; i < splitArray.Length; i++)
+                if (Convert.ToInt32(i) < 0 || Convert.ToInt32(i) > 256)
+                    return new ValidationResult(false, "Incorrect Ip");
+
+
+        return new ValidationResult(true, null);
     }
 }

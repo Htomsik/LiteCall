@@ -11,7 +11,7 @@ namespace LiteCall.Services;
 
 internal class ServersAccountsFileServices : IFileReadServices
 {
-    private const string _FilePath = @"SavedServersAccounts.json";
+    private const string FilePath = @"SavedServersAccounts.json";
 
     private readonly AccountStore _accountStore;
 
@@ -34,17 +34,18 @@ internal class ServersAccountsFileServices : IFileReadServices
     {
         try
         {
-            string? FileText = await File.ReadAllTextAsync(_FilePath);
+            var fileText = await File.ReadAllTextAsync(FilePath);
 
-            var AllUsers = JsonConvert.DeserializeObject<List<SavedServers>>(FileText);
+            var allUsers = JsonConvert.DeserializeObject<List<SavedServers>>(fileText);
 
-            var currentUserServerStore = AllUsers.Find(s =>
-                s.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise &&
+            var currentUserServerStore = allUsers!.Find(s =>
+                s.MainServerAccount!.IsAuthorized == _accountStore.CurrentAccount.IsAuthorized &&
                 s.MainServerAccount.Login == _accountStore.CurrentAccount.Login);
 
-            _savedServersStore.SavedServerAccounts!.ServersAccounts = currentUserServerStore?.ServersAccounts ?? new ObservableCollection<ServerAccount>();
+            _savedServersStore.SavedServerAccounts!.ServersAccounts = currentUserServerStore?.ServersAccounts ??
+                                                                      new ObservableCollection<ServerAccount>();
         }
-        catch (Exception e)
+        catch
         {
             _savedServersStore.SavedServerAccounts = new AppSavedServers();
         }
@@ -55,21 +56,19 @@ internal class ServersAccountsFileServices : IFileReadServices
     {
         try
         {
-            var fileText = string.Empty;
-
             var allUsers = new List<SavedServers>();
 
             try
             {
-                fileText = await File.ReadAllTextAsync(_FilePath);
+                var fileText = await File.ReadAllTextAsync(FilePath);
 
                 allUsers = JsonConvert.DeserializeObject<List<SavedServers>>(fileText);
 
                 if (allUsers != null)
                 {
                     foreach (var elem in allUsers)
-                        if (elem.MainServerAccount.Login == _accountStore.CurrentAccount.Login &&
-                            (elem.MainServerAccount.IsAuthorise == _accountStore.CurrentAccount.IsAuthorise))
+                        if (elem.MainServerAccount!.Login == _accountStore.CurrentAccount.Login &&
+                            elem.MainServerAccount.IsAuthorized == _accountStore.CurrentAccount.IsAuthorized)
 
                             allUsers.Remove(elem);
                 }
@@ -77,17 +76,18 @@ internal class ServersAccountsFileServices : IFileReadServices
                 {
                     allUsers = new List<SavedServers>();
                 }
-               
             }
-            catch (Exception e)
+            catch
             {
-               
+                // ignored
             }
 
 
-            if (_savedServersStore.SavedServerAccounts.ServersAccounts?.Count !=0 && _savedServersStore.SavedServerAccounts.ServersAccounts is not null)
+            if (_savedServersStore.SavedServerAccounts!.ServersAccounts?.Count != 0 &&
+                _savedServersStore.SavedServerAccounts.ServersAccounts is not null)
             {
-                foreach (var elem in _savedServersStore?.SavedServerAccounts?.ServersAccounts) elem.Account.Token = null;
+                foreach (var elem in _savedServersStore?.SavedServerAccounts?.ServersAccounts!)
+                    elem.Account!.Token = null;
 
                 var newSavedServers = new SavedServers
                 {
@@ -105,10 +105,11 @@ internal class ServersAccountsFileServices : IFileReadServices
                     { NullValueHandling = (NullValueHandling)1, Formatting = (Formatting)1 });
 
 
-            await File.WriteAllTextAsync(_FilePath, jsonSerializeObject);
-         }
-        catch (Exception e)
+            await File.WriteAllTextAsync(FilePath, jsonSerializeObject);
+        }
+        catch 
         {
+            // ignored
         }
     }
 }

@@ -1,36 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteCall.ViewModels.Base;
 
-namespace LiteCall.Stores
+namespace LiteCall.Stores;
+
+internal class SettingsAccNavigationStore
 {
-    internal class SettingsAccNavigationStore
+    private BaseVmd? _settingsAccCurrentViewModel;
+
+    public BaseVmd? SettingsAccCurrentViewModel
     {
-        private BaseVMD _SettingsAccCurrentViewModel;
-        public BaseVMD SettingsAccCurrentViewModel
+        get => _settingsAccCurrentViewModel;
+        set
         {
-            get => _SettingsAccCurrentViewModel;
-            set
-            {
-
-                _SettingsAccCurrentViewModel = value;
-                OnCurrentViewModelChanged();
-            }
+            _settingsAccCurrentViewModel = value;
+            OnCurrentViewModelChanged();
         }
+    }
 
-        public event Action CurrentViewModelChanged;
+    public event Action? CurrentViewModelChanged;
 
 
-        public void Close()
-        {
-            SettingsAccCurrentViewModel = null;
-        }
-        private void OnCurrentViewModelChanged()
-        {
-            CurrentViewModelChanged?.Invoke();
-        }
+    public void Close()
+    {
+        SettingsAccCurrentViewModel = null;
+    }
+
+    private void OnCurrentViewModelChanged()
+    {
+        CurrentViewModelChanged?.Invoke();
     }
 }

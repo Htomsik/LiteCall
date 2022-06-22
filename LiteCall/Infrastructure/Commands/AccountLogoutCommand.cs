@@ -1,28 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using LiteCall.Infrastructure.Commands.Base;
+﻿using LiteCall.Infrastructure.Commands.Base;
 using LiteCall.Stores;
 
-namespace LiteCall.Infrastructure.Commands
+namespace LiteCall.Infrastructure.Commands;
+
+internal class AccountLogoutCommand : BaseCommand
 {
-    internal class AccountLogoutCommand:BaseCommand
+    private readonly AccountStore? _currentAccountStore;
+
+    public AccountLogoutCommand(AccountStore? CurrentAccountStore)
     {
-        private AccountStore _CurrentAccountStore;
-        public AccountLogoutCommand(AccountStore CurrentAccountStore) 
-        {
-            _CurrentAccountStore = CurrentAccountStore;
-        }
+        _currentAccountStore = CurrentAccountStore;
+    }
 
-        public override bool CanExecute(object parameter) => true;
-       
+    public override bool CanExecute(object? parameter)
+    {
+        return true;
+    }
 
-        public override void Execute(object parameter)
-        {
-           _CurrentAccountStore.Logout();
-        }
+
+    public override void Execute(object? parameter)
+    {
+        _currentAccountStore.Logout();
     }
 }

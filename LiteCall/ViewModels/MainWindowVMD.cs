@@ -5,17 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
+using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
-using LiteCall.Stores.ModelStores;
+using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Base;
 using Microsoft.Extensions.Configuration;
 
 namespace LiteCall.ViewModels
 {   
-    internal class MainWindowVMD:BaseVMD
+    internal class MainWindowVMD:BaseVmd
     {
 
         
@@ -32,7 +33,7 @@ namespace LiteCall.ViewModels
             INavigationService closeModalNavigationServices,
             INavigationService CloseAdditioNavigationService,
             IStatusServices statusServices,
-            ICloseAppSevices closeAppSevices,IConfiguration configuration)
+            ICloseAppServices closeAppServices,IConfiguration configuration)
         {
             
 
@@ -44,7 +45,7 @@ namespace LiteCall.ViewModels
 
             _statusMessageStore = statusMessageStore;
 
-            _closeAppSevices = closeAppSevices;
+            _closeAppServices = closeAppServices;
 
             _configuration = configuration;
 
@@ -54,13 +55,13 @@ namespace LiteCall.ViewModels
 
             _modalNavigationStore.CurrentViewModelChanged += OnModalCurrentViewModelChanged;
 
-            _statusMessageStore.CurentStatusMessageChanged += OnCurentStatusMessageChanged;
+            _statusMessageStore.CurrentStatusMessageChanged += OnCurrentStatusMessageChanged;
 
             CloseModalCommand = new NavigationCommand(closeModalNavigationServices);
 
             CloseSettingsCommand = new NavigationCommand(CloseAdditioNavigationService);
 
-            CloseAppCommand = new AsyncLamdaCommand(OnCloseAppExecuted, ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),CanCloseAppExecute);
+            CloseAppCommand = new AsyncLambdaCommand(OnCloseAppExecuted, ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),CanCloseAppExecute);
         }
 
 
@@ -72,7 +73,7 @@ namespace LiteCall.ViewModels
 
         private async Task OnCloseAppExecuted(object p)
         {
-            _closeAppSevices?.Close();
+            _closeAppServices?.Close();
         }
 
         public ICommand CloseModalCommand { get; }
@@ -87,17 +88,17 @@ namespace LiteCall.ViewModels
 
         private  readonly StatusMessageStore _statusMessageStore;
 
-        private readonly ICloseAppSevices _closeAppSevices;
+        private readonly ICloseAppServices _closeAppServices;
         private readonly IConfiguration _configuration;
 
 
-        public BaseVMD CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;
+        public BaseVmd? CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;
 
-        public BaseVMD ModalCurrentViewModel => _modalNavigationStore.ModalMainWindowCurrentViewModel;
+        public BaseVmd? ModalCurrentViewModel => _modalNavigationStore.ModalMainWindowCurrentViewModel;
 
-        public BaseVMD AdditionalCurrentViewModel => _additionalNavigationStore.AdditionalMainWindowCurrentViewModel;
+        public BaseVmd? AdditionalCurrentViewModel => _additionalNavigationStore.AdditionalMainWindowCurrentViewModel;
 
-        public StatusMessage CurrentStatusMessage => _statusMessageStore.CurentStatusMessage;
+        public StatusMessage CurrentStatusMessage => _statusMessageStore.CurrentStatusMessage;
 
 
 
@@ -122,7 +123,7 @@ namespace LiteCall.ViewModels
             OnPropertyChanged(nameof(AdditionalIsOpen));
         }
 
-        private void OnCurentStatusMessageChanged()
+        private void OnCurrentStatusMessageChanged()
         {
             OnPropertyChanged(nameof(CurrentStatusMessage));
 

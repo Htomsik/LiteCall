@@ -66,7 +66,7 @@
                 Grid.Row="1"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Style="{DynamicResource Sun}">
+                Style="{DynamicResource SunPath}">
                 <Path.RenderTransform>
 
                     <ScaleTransform CenterX="12" CenterY="12" ScaleX="9" ScaleY="9" />
@@ -140,7 +140,7 @@
                                                 FontSize="15"
                                                 Foreground="{DynamicResource Dangerous(Solid)}"
                                                 Text="[NA]"
-                                                Visibility="{Binding Account.IsAuthorise, Converter={StaticResource BooleanToVisibilityInverter}}" />
+                                                Visibility="{Binding Account.IsAuthorized, Converter={StaticResource BooleanToVisibilityInverter}}" />
 
                                         </StackPanel>
 
@@ -179,7 +179,7 @@
                 BorderBrush="{StaticResource Important(Solid)}"
                 BorderThickness="1"
                 CornerRadius="25"
-                Visibility="{Binding VisibilitiStatus, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="{Binding ButtonVisibleStatus, UpdateSourceTrigger=PropertyChanged}">
 
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -194,7 +194,7 @@
 
                         <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
 
-                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorisation in current server" />
+                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorization in current server" />
                     </ContextMenu>
                 </Border.ContextMenu>
 
@@ -205,8 +205,8 @@
                 Height="35"
                 Command="{Binding OpenModalCommaCommand}"
                 CommandParameter="1"
-                Style="{StaticResource IMGButton}"
-                Visibility="{Binding VisibilitiStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                Style="{StaticResource ImgButton}"
+                Visibility="{Binding ButtonVisibleStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
                     <StaticResource x:Key="Img" ResourceKey="PlusPath" />
                     <StaticResource x:Key="Scale" ResourceKey="PlusScale" />
@@ -268,7 +268,7 @@
                             <Path
                                 Fill="{DynamicResource Fonts(Solid)}"
                                 Stretch="Uniform"
-                                Style="{DynamicResource Person}" />
+                                Style="{DynamicResource PersonPath}" />
                         </Viewbox>
 
 
@@ -315,13 +315,13 @@
 
                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
-                                <Setter Property="Visibility" Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                <Setter Property="Visibility" Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
                                 <Style.Triggers>
 
                                     <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="True">
 
-                                        <Setter Property="Visibility" Value="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                        <Setter Property="Visibility" Value="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -347,10 +347,10 @@
                     HorizontalAlignment="Right"
                     Command="{Binding OpenSettingsCommand}"
                     CommandParameter="1"
-                    Style="{DynamicResource IMGButton}"
+                    Style="{DynamicResource ImgButton}"
                     ToolTip="Create new group">
                     <Button.Resources>
-                        <StaticResource x:Key="Img" ResourceKey="Settings" />
+                        <StaticResource x:Key="Img" ResourceKey="SettingsPath" />
                     </Button.Resources>
 
                 </Button>
@@ -403,7 +403,7 @@
                         Grid.Row="0"
                         Margin="0,5"
                         HorizontalAlignment="Center"
-                        Style="{DynamicResource Bigtext}"
+                        Style="{DynamicResource BigTextBlock}"
                         Text="CONNECT" />
 
                     <TextBox
@@ -413,7 +413,7 @@
                         MaxLength="20"
                         Style="{StaticResource LogPassTextBox}"
                         Tag="SERVER NAME OR IP"
-                        Text="{Binding ServernameOrIp, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding ServerNameOrIp, UpdateSourceTrigger=PropertyChanged}" />
 
                     <StackPanel
                         Grid.Row="2"

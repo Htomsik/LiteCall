@@ -9,11 +9,11 @@ using System.Windows.Threading;
 
 namespace LiteCall.ViewModels.Base
 {
-    internal abstract class BaseVMD:INotifyPropertyChanged
+    internal abstract class BaseVmd:INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!)
         {
            
             var handlers = PropertyChanged;
@@ -22,23 +22,23 @@ namespace LiteCall.ViewModels.Base
 
             var invocationList = handlers.GetInvocationList();
 
-            var arg = new PropertyChangedEventArgs(PropertyName);
+            var arg = new PropertyChangedEventArgs(propertyName);
 
             foreach (var action in invocationList)
             {
-                if (action.Target is DispatcherObject disp_object)
-                    disp_object.Dispatcher.Invoke(action, this, arg);
+                if (action.Target is DispatcherObject dispObject)
+                    dispObject.Dispatcher.Invoke(action, this, arg);
                 else
                     action.DynamicInvoke(this, arg);
             }
         }
                
 
-        protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string PropertyName = null)
+        protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null!)
         {
             if (Equals(field, value)) return false;
             field = value;
-            OnPropertyChanged(PropertyName);
+            OnPropertyChanged(propertyName);
             return true;
         }
 

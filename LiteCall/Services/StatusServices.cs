@@ -1,65 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
-using LiteCall.Stores.ModelStores;
+using LiteCall.Stores;
 
-namespace LiteCall.Services
+namespace LiteCall.Services;
+
+internal class StatusServices : IStatusServices
 {
-    internal class StatusServices:IStatusServices
+    private static bool _isDelete;
+    private readonly StatusMessageStore _statusMessageStore;
+
+    public StatusServices(StatusMessageStore statusMessageStore)
     {
-        private StatusMessageStore _statusMessageStore;
+        _statusMessageStore = statusMessageStore;
+    }
 
-        private static bool _isDelete = false;
-        public StatusServices(StatusMessageStore statusMessageStore)
+    public async void ChangeStatus(StatusMessage newStatusMessage)
+    {
+        if (!_isDelete)
+            _statusMessageStore.CurrentStatusMessage = newStatusMessage;
+        else
+            return;
+        if (newStatusMessage.IsError)
         {
-            _statusMessageStore = statusMessageStore;
+            _isDelete = true;
+
+            await TimerDelete(4000);
         }
+    }
 
-        public async  void ChangeStatus(StatusMessage newStatusMessage)
-        {
+    public void DeleteStatus()
+    {
+        if (_isDelete) return;
 
-            if (!_isDelete)
-            {
-                _statusMessageStore.CurentStatusMessage = newStatusMessage;
-            }
-            else
-            {
-                return;
-            }
-            if (newStatusMessage.isError) 
-            {
-                _isDelete = true;
+        _statusMessageStore.CurrentStatusMessage = null;
+    }
 
-                await  TimerDelete(4000);
+    private async Task TimerDelete(int Delay)
+    {
+        await Task.Delay(Delay);
 
-              
-            }
-           
-        }
+        _isDelete = false;
 
-        private async Task TimerDelete(int Delay)
-        {
-
-            await Task.Delay(Delay);
-
-            _isDelete = false;
-
-            DeleteStatus();
-
-        }
-
-        public async void DeleteStatus()
-        {
-                
-            if(_isDelete) return;
-
-            _statusMessageStore.CurentStatusMessage = null;
-
-            
-        }
+        DeleteStatus();
     }
 }

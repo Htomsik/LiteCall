@@ -80,11 +80,11 @@
                 SizeChanged="SizeChanged">
                 <ContentControl.Resources>
 
-                    <DataTemplate DataType="{x:Type viewModel:MainPageVMD}">
+                    <DataTemplate DataType="{x:Type viewModel:MainPageVmd}">
                         <pages:MainPV />
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type viewModel:SettingVMD}">
+                    <DataTemplate DataType="{x:Type viewModel:SettingVmd}">
                         <pages:SettingPV />
                     </DataTemplate>
 
@@ -101,8 +101,10 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+
                 </Grid.RowDefinitions>
+
+
 
                 <ContentControl
                     Width="{Binding ElementName=AdditionalModal}"
@@ -111,7 +113,7 @@
 
                     <ContentControl.Resources>
 
-                        <DataTemplate DataType="{x:Type viewModel:SettingVMD}">
+                        <DataTemplate DataType="{x:Type viewModel:SettingVmd}">
                             <pages:SettingPV />
                         </DataTemplate>
 
@@ -123,20 +125,15 @@
 
 
 
-                <StackPanel Grid.Row="2">
+                <!--  Vesion Name  -->
+                <StackPanel Grid.Row="1" HorizontalAlignment="Right">
 
-                    <StackPanel
-                        Grid.Row="2"
-                        Margin="5,0,0,0"
-                        Orientation="Horizontal">
+                    <StackPanel Margin="0,0,25,0" Orientation="Horizontal">
                         <TextBlock FontSize="12">Branch:</TextBlock>
                         <TextBlock FontSize="12" Text="{Binding Vetka}" />
                     </StackPanel>
 
-                    <StackPanel
-                        Grid.Row="2"
-                        Margin="5,0,0,0"
-                        Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock FontSize="12">Version:</TextBlock>
                         <TextBlock FontSize="12" Text="{Binding Version}" />
                     </StackPanel>
@@ -153,14 +150,14 @@
                     VerticalAlignment="Bottom"
                     Command="{Binding CloseSettingsCommand}"
                     RenderTransformOrigin="0.5,0.5"
-                    Style="{DynamicResource IMGButton}">
+                    Style="{DynamicResource ImgButton}">
 
                     <Button.RenderTransform>
                         <RotateTransform Angle="-90" />
                     </Button.RenderTransform>
 
                     <Button.Resources>
-                        <StaticResource x:Key="Img" ResourceKey="Pointer" />
+                        <StaticResource x:Key="Img" ResourceKey="PointerPath" />
                     </Button.Resources>
 
                 </Button>
@@ -187,15 +184,15 @@
 
                         <ContentControl.Resources>
 
-                            <DataTemplate DataType="{x:Type server:ServerRegistrationModalVMD}">
+                            <DataTemplate DataType="{x:Type server:ServerRegistrationModalVmd}">
                                 <pages:RegistrationPV />
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type server:ServerAuthorisationModalVMD}">
+                            <DataTemplate DataType="{x:Type server:ServerAuthorizationModalVmd}">
                                 <pages:AuthorisationPV />
                             </DataTemplate>
 
-                            <DataTemplate DataType="{x:Type server:ServerPasswordRecoveryModalVMD}">
+                            <DataTemplate DataType="{x:Type server:ServerPasswordRecoveryModalVmd}">
                                 <pages:PasswordRecoveryPV />
                             </DataTemplate>
 
@@ -211,7 +208,7 @@
                         Margin="5"
                         VerticalAlignment="Top"
                         Command="{Binding CloseModalCommand}"
-                        Style="{DynamicResource IMGButton}">
+                        Style="{DynamicResource ImgButton}">
 
                         <Button.Resources>
                             <StaticResource x:Key="Img" ResourceKey="ClosePath" />
@@ -303,7 +300,7 @@
                             Margin="5,0,0,0"
                             VerticalAlignment="Top"
                             Command="{Binding CloseAppCommand}"
-                            Style="{DynamicResource IMGButton}">
+                            Style="{DynamicResource ImgButton}">
 
                             <Button.Resources>
                                 <StaticResource x:Key="Img" ResourceKey="ClosePath" />
@@ -318,7 +315,7 @@
                             VerticalAlignment="Top"
                             VerticalContentAlignment="Center"
                             Click="MaxButton_OnClick"
-                            Style="{DynamicResource IMGStrokeButton}">
+                            Style="{DynamicResource ImgStrokeButton}">
 
                             <Button.Resources>
                                 <StaticResource x:Key="Img" ResourceKey="MaxPath" />
@@ -334,7 +331,7 @@
                             HorizontalAlignment="Center"
                             VerticalContentAlignment="Center"
                             Click="MinButton_OnClick"
-                            Style="{DynamicResource IMGStrokeButton}">
+                            Style="{DynamicResource ImgStrokeButton}">
 
                             <Button.Resources>
                                 <StaticResource x:Key="Img" ResourceKey="MinPath" />

@@ -61,13 +61,13 @@
                 <TextBlock
                     Margin="5"
                     HorizontalAlignment="Center"
-                    Style="{DynamicResource Bigtext}"
+                    Style="{DynamicResource BigTextBlock}"
                     Text="LOGIN" />
 
 
 
                 <TextBox
-                    x:Name="USERNAME"
+                    x:Name="UserNameTextBox"
                     Grid.Row="1"
                     Margin="20,5"
                     Style="{StaticResource LogPassTextBox}"
@@ -87,7 +87,7 @@
                 </TextBox>
 
                 <TextBox
-                    x:Name="PASSWORD"
+                    x:Name="PasswordTextBox"
                     Grid.Row="2"
                     Margin="20,5"
                     IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
@@ -211,14 +211,35 @@
             MaxHeight="40"
             Margin="15,5"
             Command="{Binding AuthCommand, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
-            <TextBlock Style="{DynamicResource Bigtext}" Text="LOGIN" />
+            <TextBlock Style="{DynamicResource BigTextBlock}" Text="LOGIN" />
 
-            <Button.CommandParameter>
-                <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
-                    <Binding ElementName="USERNAME" Path="(Validation.HasError)" />
-                    <Binding ElementName="PASSWORD" Path="(Validation.HasError)" />
-                </MultiBinding>
-            </Button.CommandParameter>
+            <Button.Style>
+                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+
+                    <Setter Property="IsEnabled" Value="True" />
+
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+
+                            <MultiDataTrigger.Conditions>
+
+                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}" Value="True" />
+
+                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}" Value="True" />
+
+
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="IsEnabled" Value="False" />
+                            </MultiDataTrigger.Setters>
+
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+
+
+                </Style>
+            </Button.Style>
         </Button>
 
     </Grid>

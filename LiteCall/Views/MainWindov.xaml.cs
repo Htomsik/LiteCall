@@ -51,12 +51,12 @@ namespace LiteCall.Views
       
 
 
-        private void LostFocus(object sender, RoutedEventArgs e)
+        private new void LostFocus(object sender, RoutedEventArgs e)
         {
             Keyboard.ClearFocus();
         }
 
-        private void SizeChanged(object sender, SizeChangedEventArgs e)
+        private new void SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Keyboard.ClearFocus();
         }

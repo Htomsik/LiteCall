@@ -23,7 +23,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:IsAuthoriseToStingConverter x:Key="IsAuthoriseToStingConverter" />
+            <converters:IsAuthorizeToStingConverter x:Key="IsAuthorizeToStingConverter" />
 
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -37,7 +37,6 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         Background="{DynamicResource Background(Solid)}">
-
 
 
         <TabControl
@@ -77,7 +76,7 @@
 
                                 <TextBlock Text="Account type: " />
 
-                                <TextBlock Text="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource IsAuthoriseToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBlock Text="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource IsAuthorizeToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                                     <TextBlock.Style>
 
@@ -137,7 +136,7 @@
 
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding IsDefault}" Value="False" />
-                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}" Value="False" />
+                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}" Value="False" />
                                             </MultiDataTrigger.Conditions>
 
                                             <Setter Property="Visibility" Value="Visible" />
@@ -159,19 +158,19 @@
                             Margin="5"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Content="{Binding AccountCurrentVMD, UpdateSourceTrigger=PropertyChanged}">
+                            Content="{Binding AccountCurrentVmd, UpdateSourceTrigger=PropertyChanged}">
 
                             <ContentControl.Resources>
 
-                                <DataTemplate DataType="{x:Type viewModel:AuthorisationPageVMD}">
+                                <DataTemplate DataType="{x:Type viewModel:AuthorizationPageVmd}">
                                     <local:AuthorisationPV />
                                 </DataTemplate>
 
-                                <DataTemplate DataType="{x:Type viewModel:RegistrationPageVMD}">
+                                <DataTemplate DataType="{x:Type viewModel:RegistrationPageVmd}">
                                     <local:RegistrationPV />
                                 </DataTemplate>
 
-                                <DataTemplate DataType="{x:Type viewModel:PasswordRecoveryVMD}">
+                                <DataTemplate DataType="{x:Type viewModel:PasswordRecoveryVmd}">
                                     <local:PasswordRecoveryPV />
                                 </DataTemplate>
 
@@ -299,7 +298,7 @@
                                     <TextBlock
                                         Margin="5,10,0,0"
                                         HorizontalAlignment="Center"
-                                        Style="{DynamicResource Bigtext}"
+                                        Style="{DynamicResource BigTextBlock}"
                                         Text="ACCOUNT" />
 
 
@@ -353,7 +352,7 @@
                                 Margin="15"
                                 Command="{Binding AddNewServerCommand}">
 
-                                <TextBlock Style="{DynamicResource Bigtext}" Text="Add" />
+                                <TextBlock Style="{DynamicResource BigTextBlock}" Text="Add" />
 
 
                                 <Button.Style>
@@ -435,7 +434,7 @@
                         <StackPanel>
                             <TextBlock Text="Input device:" />
                             <ComboBox
-                                ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding InputDevices, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedIndex="{Binding CaptureDeviceId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 Tag="Default" />
                         </StackPanel>
@@ -444,7 +443,7 @@
                         <StackPanel Grid.Row="1">
                             <TextBlock Text="Output device:" />
                             <ComboBox
-                                ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding OutputDevices, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedIndex="{Binding OutputDeviceId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 Tag="Default" />
                         </StackPanel>

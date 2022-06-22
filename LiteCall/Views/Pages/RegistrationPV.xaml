@@ -47,11 +47,11 @@
                 <TextBlock
                     Margin="5"
                     HorizontalAlignment="Center"
-                    Style="{DynamicResource Bigtext}"
+                    Style="{DynamicResource BigTextBlock}"
                     Text="REGISTRATION" />
 
                 <TextBox
-                    x:Name="UsernameTB"
+                    x:Name="UserNameTextBox"
                     Grid.Row="1"
                     Margin="20,5"
                     Style="{StaticResource LogPassTextBox}"
@@ -72,7 +72,7 @@
                 </TextBox>
 
                 <TextBox
-                    x:Name="PasswordTB"
+                    x:Name="PasswordTextBox"
                     Grid.Row="2"
                     Margin="20,5"
                     Style="{StaticResource PassTextBox}"
@@ -90,7 +90,7 @@
                 </TextBox>
 
                 <TextBox
-                    x:Name="PasswordConfirmTB"
+                    x:Name="PasswordConfirmTextBox"
                     Grid.Row="3"
                     Margin="20,5"
                     Style="{StaticResource PassTextBox}"
@@ -103,8 +103,8 @@
                     Grid.Row="4"
                     Margin="20,5,1,5"
                     IsEnabled="{Binding CanServerConnect, UpdateSourceTrigger=PropertyChanged}"
-                    ItemsSource="{Binding QestionsCollection}"
-                    SelectedItem="{Binding SelectedQestion}"
+                    ItemsSource="{Binding QuestionsCollection}"
+                    SelectedItem="{Binding SelectedQuestion}"
                     Tag="QUESTION">
 
                     <ComboBox.ItemTemplate>
@@ -112,7 +112,7 @@
                         <DataTemplate>
                             <Grid>
 
-                                <TextBlock Text="{Binding _Question}" />
+                                <TextBlock Text="{Binding Text}" />
                             </Grid>
                         </DataTemplate>
 
@@ -121,7 +121,7 @@
 
 
                 <TextBox
-                    x:Name="AnswerTB"
+                    x:Name="AnswerTextBox"
                     Grid.Row="5"
                     Margin="20,5"
                     Style="{StaticResource PassTextBox}"
@@ -193,7 +193,7 @@
             MaxHeight="40"
             Margin="20,5"
             Command="{Binding OpenModalCommand}">
-            <TextBlock Style="{DynamicResource Bigtext}" Text="REGISTRATION" />
+            <TextBlock Style="{DynamicResource BigTextBlock}" Text="REGISTRATION" />
 
             <!-- <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
@@ -213,13 +213,13 @@
 
                             <MultiDataTrigger.Conditions>
 
-                                <Condition Binding="{Binding ElementName=UsernameTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordConfirmTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=PasswordConfirmTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=AnswerTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=AnswerTextBox, Path=(Validation.HasError)}" Value="True" />
 
                                 <Condition Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}" Value="True" />
 
@@ -272,7 +272,7 @@
                         BorderBrush="{DynamicResource Fonts(Solid)}"
                         BorderThickness="0.2"
                         CornerRadius="5">
-                        <Image Source="{Binding Capthca, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
+                        <Image Source="{Binding CaptсhaImageSource, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
                     </Border>
 
 
@@ -287,7 +287,7 @@
                         <TextBox.Text>
                             <Binding
                                 Mode="TwoWay"
-                                Path="CapthcaString"
+                                Path="CaptchaString"
                                 UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <validationRule:CaptchaValidation />

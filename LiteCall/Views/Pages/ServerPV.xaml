@@ -65,19 +65,6 @@
         </Grid.RowDefinitions>
 
 
-        <!--  Статус загрузки  -->
-        <Grid Background="{DynamicResource Background2(Solid)}" Column="1">
-
-            <loadingCustom:LoadingCustom
-                HorizontalAlignment="Left"
-                Diameter="15"
-                IsLoading="{Binding HasStatusMessage}"
-                MainText="{Binding StatusMessage}"
-                Color="{DynamicResource Fonts(Solid)}" />
-
-        </Grid>
-
-
 
         <!--  Список комнат на сервере  -->
         <Grid
@@ -94,7 +81,7 @@
 
                 <TextBlock
                     HorizontalAlignment="Center"
-                    Style="{DynamicResource Bigtext}"
+                    Style="{DynamicResource BigTextBlock}"
                     Text="{Binding CurrentServerStore.CurrentServer.Title}" />
 
                 <Border
@@ -131,7 +118,7 @@
                             Header="Create new room" />
 
                         <MenuItem
-                            Command="{Binding DisconectGroupCommand}"
+                            Command="{Binding DisconnectGroupCommand}"
                             Header="Disconect from room"
                             IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
@@ -231,7 +218,7 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 RenderTransformOrigin="0.5, 0.5"
-                                                Style="{DynamicResource Person}">
+                                                Style="{DynamicResource PersonPath}">
                                                 <Path.RenderTransform>
 
                                                     <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
@@ -302,13 +289,13 @@
             Orientation="Horizontal">
 
             <ToggleButton
-                IsChecked="{Binding MicophoneMute, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                IsChecked="{Binding MicrophoneMute, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 IsEnabled="{Binding CurrentGroup, Converter={StaticResource GroupNotNullBoolConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                 Style="{DynamicResource ImgToggleButton}">
 
                 <ToggleButton.Resources>
-                    <StaticResource x:Key="Img" ResourceKey="Microphone" />
-                    <StaticResource x:Key="Img2" ResourceKey="MicrophoneMute" />
+                    <StaticResource x:Key="Img" ResourceKey="MicrophonePath" />
+                    <StaticResource x:Key="Img2" ResourceKey="MicrophoneMutePath" />
                     <StaticResource x:Key="Scale" ResourceKey="MicrophoneButtonscale" />
                 </ToggleButton.Resources>
 
@@ -320,8 +307,8 @@
                 Style="{DynamicResource ImgToggleButton}">
 
                 <ToggleButton.Resources>
-                    <StaticResource x:Key="Img" ResourceKey="Headpphone" />
-                    <StaticResource x:Key="Img2" ResourceKey="HeadpphoneMute" />
+                    <StaticResource x:Key="Img" ResourceKey="HeadphonePath" />
+                    <StaticResource x:Key="Img2" ResourceKey="HeadphoneMutePath" />
                     <StaticResource x:Key="Scale" ResourceKey="MicrophoneButtonscale" />
                 </ToggleButton.Resources>
 
@@ -497,9 +484,9 @@
                         Margin="5"
                         HorizontalAlignment="Left"
                         Command="{Binding SendMessageCommand}"
-                        Style="{DynamicResource IMGButton}">
+                        Style="{DynamicResource ImgButton}">
                         <Button.Resources>
-                            <StaticResource x:Key="Img" ResourceKey="Pointer" />
+                            <StaticResource x:Key="Img" ResourceKey="PointerPath" />
                             <StaticResource x:Key="Scale" ResourceKey="SendMassegeButtonScale" />
                         </Button.Resources>
 
@@ -559,7 +546,7 @@
 
                     <TextBlock
                         HorizontalAlignment="Center"
-                        Style="{DynamicResource Bigtext}"
+                        Style="{DynamicResource BigTextBlock}"
                         Text="CREATE ROOM" />
 
 
@@ -677,7 +664,7 @@
 
                     <TextBlock
                         HorizontalAlignment="Center"
-                        Style="{DynamicResource Bigtext}"
+                        Style="{DynamicResource BigTextBlock}"
                         Text="Password" />
 
 

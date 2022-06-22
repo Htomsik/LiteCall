@@ -6,13 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
+using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.ViewModels.Pages
 {
-    internal class PasswordRecoveryVMD:BaseVMD
+    internal class PasswordRecoveryVmd:BaseVmd
     {
         private readonly IGetPassRecoveryQuestionsServices _getPassRecoveryQuestionsServices;
 
@@ -20,7 +21,7 @@ namespace LiteCall.ViewModels.Pages
 
         private readonly IEncryptServices _encryptServices;
 
-        public PasswordRecoveryVMD(INavigationService authPagenavigationservices,IStatusServices statusServices,IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IRecoveryPasswordServices recoveryPasswordServices,IEncryptServices encryptServices)
+        public PasswordRecoveryVmd(INavigationService authPageNavigationServices,IStatusServices statusServices,IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,IRecoveryPasswordServices recoveryPasswordServices,IEncryptServices encryptServices)
         {
             _getPassRecoveryQuestionsServices = getPassRecoveryQuestionsServices;
 
@@ -33,15 +34,15 @@ namespace LiteCall.ViewModels.Pages
 
             #region Асинхронные
 
-            RecoveryPasswordCommand = new AsyncLamdaCommand(OnRecoveryPasswordCommandExecuted,
-                (ex) => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
+            RecoveryPasswordCommand = new AsyncLambdaCommand(OnRecoveryPasswordCommandExecuted,
+                (ex) => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
                 CanRecoveryPasswordCommandExecute);
 
             #endregion
 
             #region Навигационные
 
-            OpenAuthPageCommand = new NavigationCommand(authPagenavigationservices);
+            OpenAuthPageCommand = new NavigationCommand(authPageNavigationServices);
 
             #endregion
 
@@ -56,12 +57,12 @@ namespace LiteCall.ViewModels.Pages
         {
             try
             {
-                QestionsCollection =
-                    new ObservableCollection<Question>(await _getPassRecoveryQuestionsServices.GetQestions());
+                QuestionsCollection =
+                    new ObservableCollection<Question>((await _getPassRecoveryQuestionsServices.GetQuestions())!);
 
                 CanServerConnect = true;
             }
-            catch (Exception e)
+            catch 
             {
                 CanServerConnect = false;
 
@@ -80,20 +81,20 @@ namespace LiteCall.ViewModels.Pages
         private bool CanRecoveryPasswordCommandExecute(object p)
         {
 
-            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(QuestionAnswer) && SelectedQestion is not null;
+            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(QuestionAnswer) && SelectedQuestion is not null;
         }
 
         private async Task OnRecoveryPasswordCommandExecuted(object p)
         {
-            var Base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
+            var base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
 
-            Base64Sha1Password = await _encryptServices.Base64Encypt(Base64Sha1Password);
+            base64Sha1Password = await _encryptServices.Base64Encrypt(base64Sha1Password);
 
             var recoveryModel = new RecoveryModel
             {
                 QestionAnswer = QuestionAnswer,
-                Question = SelectedQestion,
-                recoveryAccount = new Reg_Rec_PasswordAccount { Login = Login,Password = Base64Sha1Password}
+                Question = SelectedQuestion,
+                RecoveryAccount = new RegRecPasswordAccount { Login = Login,Password = base64Sha1Password}
             };
 
 
@@ -119,45 +120,45 @@ namespace LiteCall.ViewModels.Pages
         }
 
 
-        private string _login;
-        public string Login
+        private string? _login;
+        public string? Login
         {
             get => _login;
             set => Set(ref _login, value);
         }
 
 
-        private string _password;
-        public string Password
+        private string? _password;
+        public string? Password
         {
             get => _password;
             set => Set(ref _password, value);
         }
 
-        private string _questionAnswer;
+        private string? _questionAnswer;
 
-        public string QuestionAnswer
+        public string? QuestionAnswer
         {
             get => _questionAnswer;
             set => Set(ref _questionAnswer, value);
         }
 
 
-        private ObservableCollection<Question> _qestionsCollection;
+        private ObservableCollection<Question>? _questionsCollection;
 
-        public ObservableCollection<Question> QestionsCollection
+        public ObservableCollection<Question>? QuestionsCollection
         {
-            get => _qestionsCollection;
-            set => Set(ref _qestionsCollection, value);
+            get => _questionsCollection;
+            set => Set(ref _questionsCollection, value);
         }
 
 
-        private Question _selectedQestion;
+        private Question? _selectedQuestion;
 
-        public Question SelectedQestion
+        public Question? SelectedQuestion
         {
-            get => _selectedQestion;
-            set => Set(ref _selectedQestion, value);
+            get => _selectedQuestion;
+            set => Set(ref _selectedQuestion, value);
         }
 
         #endregion

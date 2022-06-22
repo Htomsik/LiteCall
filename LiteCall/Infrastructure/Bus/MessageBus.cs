@@ -5,7 +5,7 @@ namespace LiteCall.Infrastructure.Bus;
 
 internal static class MessageBus
 {
-    public static event Action<Message> Bus;
+    public static event Action<Message>? Bus;
 
     public static void Send(Message data)
     {
@@ -15,7 +15,7 @@ internal static class MessageBus
 
 internal static class VoiceMessageBus
 {
-    public static event Action<VoiceMessage> Bus;
+    public static event Action<VoiceMessage>? Bus;
 
     public static void Send(VoiceMessage data)
     {
@@ -25,7 +25,7 @@ internal static class VoiceMessageBus
 
 internal static class ReloadServerRooms
 {
-    public static event Action Reloader;
+    public static event Action? Reloader;
 
     public static void Reload()
     {
@@ -35,7 +35,7 @@ internal static class ReloadServerRooms
 
 internal static class DisconnectNotification
 {
-    public static event Action Notificator;
+    public static event Action? Notificator;
 
     public static void Reload()
     {
@@ -43,9 +43,9 @@ internal static class DisconnectNotification
     }
 }
 
-internal static class DisconectServerReloader
+internal static class DisconnectServerReloader
 {
-    public static event Action Reloader;
+    public static event Action? Reloader;
 
     public static void Reload()
     {

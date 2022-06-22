@@ -80,8 +80,8 @@
 
     </Style>
 
-    <!--  Для кнопок image с stroke  -->
-    <Style x:Key="IMGButton" TargetType="{x:Type Button}">
+
+    <Style x:Key="ImgButton" TargetType="{x:Type Button}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="0" />
@@ -170,10 +170,10 @@
 
     </Style>
 
-
+    <!--  Для кнопок image с stroke  -->
     <Style
-        x:Key="IMGStrokeButton"
-        BasedOn="{StaticResource IMGButton}"
+        x:Key="ImgStrokeButton"
+        BasedOn="{StaticResource ImgButton}"
         TargetType="{x:Type Button}">
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="Transparent" />
