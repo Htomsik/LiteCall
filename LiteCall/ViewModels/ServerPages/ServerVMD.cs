@@ -115,10 +115,14 @@ namespace LiteCall.ViewModels.ServerPages
 
             mixer.ReadFully = true;
 
+            _waveOut = new WaveOut();
+
             _waveOut.DeviceNumber = 0;
 
 
             _waveOut.Init(mixer);
+
+            _waveOut.Play();
 
            
 
@@ -152,9 +156,7 @@ namespace LiteCall.ViewModels.ServerPages
 
         WaveIn input;
 
-        private WaveOut _waveOut = new WaveOut();
-
-        BufferedWaveProvider _playBuffer;
+        private WaveOut _waveOut;
 
         MixingSampleProvider mixer;
 
@@ -400,7 +402,7 @@ namespace LiteCall.ViewModels.ServerPages
 
 
 
-        async Task AsyncConnectCommand(ServerRooms ConnectedGroup,string RoomPassword = null)
+        async Task AsyncConnectCommand(ServerRooms ConnectedGroup,string RoomPassword = "")
         {
             try
             {
@@ -409,9 +411,20 @@ namespace LiteCall.ViewModels.ServerPages
 
                 if (ConnetGroupStatus)
                 {
+                    if (CurrentGroup is not null)
+                    {
+                        mixer.RemoveAllMixerInputs();
+                        bufferUsers.Clear();
+                    }
+                    
                     CurrentGroup = ConnectedGroup;
                     _waveOut.Play();
                     MicophoneMute = false;
+                 
+                }
+                else
+                {
+                    _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", isError = true });
                 }
             }
             catch (Exception e)
@@ -497,11 +510,14 @@ namespace LiteCall.ViewModels.ServerPages
                     var userb1uffer = bufferUsers[newVoiceMes.Name];
 
                     mixer.AddMixerInput(userb1uffer);
+
                 }
-                catch (Exception exception){}
+                catch (Exception exception)
+                {
+
+                }
                 
             }
-
 
         }
 
