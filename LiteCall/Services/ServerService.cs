@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using LiteCall.Infrastructure.Bus;
 using LiteCall.Model;
 using LiteCall.Services;
 using LiteCall.Services.Interfaces;

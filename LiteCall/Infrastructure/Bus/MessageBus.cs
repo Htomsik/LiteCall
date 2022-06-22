@@ -1,64 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteCall.Model;
-using LiteCall.ViewModels.Base;
 
-namespace LiteCall.Services
+namespace LiteCall.Infrastructure.Bus;
+
+internal static class MessageBus
 {
-    internal static class MessageBus
+    public static event Action<Message> Bus;
+
+    public static void Send(Message data)
     {
-        public static event Action<Message> Bus;
-
-        public static void Send(Message data) => Bus?.Invoke(data);
+        Bus?.Invoke(data);
     }
+}
 
+internal static class VoiceMessageBus
+{
+    public static event Action<VoiceMessage> Bus;
 
-
-    internal static class VoiceMessageBus
+    public static void Send(VoiceMessage data)
     {
-        public static event Action<VoiceMessage> Bus;
-
-        public static void Send(VoiceMessage data) => Bus?.Invoke(data);
+        Bus?.Invoke(data);
     }
+}
 
+internal static class ReloadServerRooms
+{
+    public static event Action Reloader;
 
-    internal static class ReloadServerRooms
+    public static void Reload()
     {
-        public static event Action Reloader;
-
-        public static void Reload()
-        {
-            Reloader?.Invoke();
-        }
-
+        Reloader?.Invoke();
     }
+}
 
-    internal static class DisconnectNotification
+internal static class DisconnectNotification
+{
+    public static event Action Notificator;
+
+    public static void Reload()
     {
-        public static event Action Notificator;
-
-        public static void Reload()
-        {
-            Notificator?.Invoke();
-        }
-
+        Notificator?.Invoke();
     }
+}
 
+internal static class DisconectServerReloader
+{
+    public static event Action Reloader;
 
-    internal static class DisconectServerReloader
+    public static void Reload()
     {
-        public static event Action Reloader;
-
-        public static void Reload()
-        {
-            Reloader?.Invoke();
-        }
-
+        Reloader?.Invoke();
     }
-
-
-
 }
