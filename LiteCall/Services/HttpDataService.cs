@@ -382,7 +382,7 @@ namespace LiteCall.Services
 
             _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
-          var authModel = new { Login = recoveryModel.recoveryAccount.Login, newPassword = _encryptServices.Sha1Encrypt(recoveryModel.recoveryAccount.Password), QuestionsId = recoveryModel.Question.Id, AnswersecurityQ = recoveryModel.QestionAnswer};
+          var authModel = new { Login = recoveryModel.recoveryAccount.Login, newPassword = await _encryptServices.Base64Decrypt(recoveryModel.recoveryAccount.Password), QuestionsId = recoveryModel.Question.Id, AnswersecurityQ = recoveryModel.QestionAnswer};
 
           var json = JsonSerializer.Serialize(authModel);
 

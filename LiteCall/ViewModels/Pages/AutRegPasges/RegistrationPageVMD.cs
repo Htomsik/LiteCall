@@ -71,7 +71,6 @@ namespace LiteCall.ViewModels.Pages
         private async Task OnRegistrationExecuted(object p)
         {
 
-
             var Base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
 
             Base64Sha1Password = await _encryptServices.Base64Encypt(Base64Sha1Password);
@@ -260,6 +259,7 @@ namespace LiteCall.ViewModels.Pages
         private readonly ICaptchaServices _captchaServices;
 
         private readonly IGetPassRecoveryQuestionsServices _getPassRecoveryQuestionsServices;
+
         private readonly IEncryptServices _encryptServices;
     }
 }

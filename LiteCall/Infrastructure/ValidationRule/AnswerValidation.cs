@@ -13,8 +13,7 @@ namespace LiteCall.Infrastructure.ValidationRule
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
 
-            if (value.ToString().Length < 3) return new ValidationResult(true, null);
-           
+            if (value.ToString().Length == 0) return new ValidationResult(true, null);
 
             if (value.ToString().Length < 5) return new ValidationResult(false, "Answer can't less than 5");
 
