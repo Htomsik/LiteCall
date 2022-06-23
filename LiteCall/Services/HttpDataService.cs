@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
+using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
@@ -18,23 +19,14 @@ namespace LiteCall.Services;
 
 internal sealed class HttpDataService : IHttpDataServices
 {
-    private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
-
     private static readonly Guid ProgramCaptchaId = Guid.NewGuid();
 
 
-    private static readonly HttpClientHandler ClientHandler = new()
-    {
-        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
-    };
-
-    private static readonly HttpClient HttpClient = new(ClientHandler)
-    {
-        Timeout = TimeSpan.FromSeconds(10),
-        DefaultRequestHeaders = { { "ApiKey", ApiKey } }
-    };
+    
 
     private readonly IConfiguration _configuration;
+
+    private readonly HttpClientStore _httpClientStore;
 
     private readonly IEncryptServices _encryptServices;
 
@@ -42,13 +34,14 @@ internal sealed class HttpDataService : IHttpDataServices
 
 
     public HttpDataService(IStatusServices statusServices, IEncryptServices encryptServices,
-        IConfiguration configuration)
+        IConfiguration configuration, HttpClientStore httpClientStore)
     {
         _statusServices = statusServices;
 
         _encryptServices = encryptServices;
 
         _configuration = configuration;
+        _httpClientStore = httpClientStore;
     }
 
     private string? DefaultMainIp => _configuration!.GetSection("MainSever")["MainServerIp"] ?? "localhost:5005";
@@ -74,7 +67,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.PostAsync($"https://{apiServerIp}/api/Auth/Authorization", content)
+            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{apiServerIp}/api/Auth/Authorization", content)
                 .ConfigureAwait(false);
         }
         catch
@@ -123,7 +116,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.PostAsync($"https://{apiServerIp}/api/Auth/Registration", content)
+            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{apiServerIp}/api/Auth/Registration", content)
                 .ConfigureAwait(false);
         }
         catch
@@ -160,7 +153,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/ServerGetIP", content)
+            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/ServerGetIP", content)
                 .ConfigureAwait(false);
         }
         catch
@@ -192,7 +185,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.GetAsync($"https://{apiServerIp}/api/Server/ServerGetInfo")
+            response = await _httpClientStore.CurrentHttpClient.GetAsync($"https://{apiServerIp}/api/Server/ServerGetInfo")
                 .ConfigureAwait(false);
         }
         catch
@@ -230,7 +223,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            httpResponseMessage = await HttpClient
+            httpResponseMessage = await _httpClientStore.CurrentHttpClient
                 .PostAsync($"https://{apiServerIp}/api/auth/CaptchaGenerator", stringContent).ConfigureAwait(false);
         }
         catch
@@ -294,7 +287,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.GetAsync($"https://{apiServerIp}/api/auth/SecurityQuestions")
+            response = await _httpClientStore.CurrentHttpClient.GetAsync($"https://{apiServerIp}/api/auth/SecurityQuestions")
                 .ConfigureAwait(false);
         }
         catch
@@ -338,7 +331,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient
+            response = await _httpClientStore.CurrentHttpClient
                 .PostAsync($"https://{apiServerIp}/api/Auth/СhangePasswordbySecurityQuestions", content)
                 .ConfigureAwait(false);
         }
@@ -386,7 +379,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/SaveServersUser", content)
+            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/SaveServersUser", content)
                 .ConfigureAwait(false);
         }
         catch
@@ -413,7 +406,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await HttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/GetServersUser", content)
+            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/GetServersUser", content)
                 .ConfigureAwait(false);
         }
         catch

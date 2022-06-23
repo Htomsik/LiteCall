@@ -18,7 +18,7 @@ public class Progam
 
     public static IHostBuilder CreateHostBuilder(string[] Args)
     {
-        var host_builder = Host.CreateDefaultBuilder(Args)
+        var hostBuilder = Host.CreateDefaultBuilder(Args)
             .UseContentRoot(Environment.CurrentDirectory)
             .ConfigureServices(App.ConfigureServices)
             .ConfigureAppConfiguration((host, cfg) => cfg
@@ -27,6 +27,6 @@ public class Progam
             );
 
 
-        return host_builder;
+        return hostBuilder;
     }
 }

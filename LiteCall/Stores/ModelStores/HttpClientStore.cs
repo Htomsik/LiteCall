@@ -12,21 +12,20 @@ internal class HttpClientStore : BaseVmd
     {
         var clientHandler = new HttpClientHandler
         {
-            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
         };
 
 
         CurrentHttpClient = new HttpClient(clientHandler)
         {
             Timeout = TimeSpan.FromSeconds(10),
-                DefaultRequestHeaders = { { "ApiKey", "test" } }
+                DefaultRequestHeaders = { { "ApiKey", ApiKey } }
         };
-
-
-
 
     }
 
+    private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
 
-    
+
+
 }

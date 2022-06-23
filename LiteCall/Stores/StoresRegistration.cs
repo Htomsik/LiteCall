@@ -20,6 +20,8 @@ internal static class StoresRegistration
 
         services.AddSingleton<StatusMessageStore>();
 
+        services.AddSingleton<HttpClientStore>();
+
         #endregion
 
         #region NavigationStores
