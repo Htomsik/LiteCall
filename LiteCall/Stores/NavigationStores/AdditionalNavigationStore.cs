@@ -1,7 +1,7 @@
 ﻿using System;
 using LiteCall.ViewModels.Base;
 
-namespace LiteCall.Stores.NavigationStores;
+namespace LiteCall.Stores;
 
 internal sealed class AdditionalNavigationStore
 {

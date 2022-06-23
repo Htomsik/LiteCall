@@ -6,11 +6,19 @@ namespace LiteCall.Stores;
 
 internal sealed class AccountStore : BaseVmd
 {
-    private static readonly Account? DefaultAccount = new() { Login = "LC_User" };
+    private readonly Account? _defaultAccount;
 
-    private Account? _currentAccount = DefaultAccount;
 
-    public bool IsDefaultAccount => CurrentAccount == DefaultAccount;
+    public AccountStore()
+    {
+        _defaultAccount =  new Account { Login = "LC_User" };
+
+        _currentAccount = _defaultAccount;
+    }
+
+    private Account? _currentAccount;
+
+    public bool IsDefaultAccount => CurrentAccount == _defaultAccount;
 
     public Account? CurrentAccount
     {
@@ -32,6 +40,6 @@ internal sealed class AccountStore : BaseVmd
 
     public void Logout()
     {
-        CurrentAccount = DefaultAccount;
+        CurrentAccount = _defaultAccount;
     }
 }

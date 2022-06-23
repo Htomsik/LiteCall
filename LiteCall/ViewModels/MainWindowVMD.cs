@@ -5,7 +5,6 @@ using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
-using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Base;
 using Microsoft.Extensions.Configuration;
 
@@ -16,6 +15,7 @@ internal class MainWindowVmd : BaseVmd
     private readonly AdditionalNavigationStore _additionalNavigationStore;
 
     private readonly ICloseAppServices _closeAppServices;
+
     private readonly IConfiguration _configuration;
 
     private readonly MainWindowNavigationStore _mainWindowNavigationStore;
@@ -32,7 +32,8 @@ internal class MainWindowVmd : BaseVmd
         INavigationService closeModalNavigationServices,
         INavigationService closeAdditionalNavigationService,
         IStatusServices statusServices,
-        ICloseAppServices closeAppServices, IConfiguration configuration)
+        ICloseAppServices closeAppServices,
+        IConfiguration configuration)
     {
         _mainWindowNavigationStore = mainWindowNavigationStore;
 

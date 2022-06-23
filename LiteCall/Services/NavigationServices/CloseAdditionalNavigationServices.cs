@@ -1,5 +1,5 @@
 ﻿using LiteCall.Services.Interfaces;
-using LiteCall.Stores.NavigationStores;
+using LiteCall.Stores;
 
 namespace LiteCall.Services.NavigationServices;
 

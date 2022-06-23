@@ -7,7 +7,6 @@ using LiteCall.Services.AuthRegServices.Registration;
 using LiteCall.Services.Interfaces;
 using LiteCall.Services.NavigationServices;
 using LiteCall.Stores;
-using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Pages;
 using LiteCall.ViewModels.ServerPages;
 using Microsoft.Extensions.Configuration;
@@ -94,7 +93,7 @@ internal static class VmdRegistration
 
 
         services.AddTransient(s =>
-            new ServerVMD(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),
+            new ServerVmd(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),
                 s.GetRequiredService<IStatusServices>()));
 
 
@@ -149,9 +148,9 @@ internal static class VmdRegistration
 
     private static INavigationService CreateServerPageNavigationService(IServiceProvider serviceProvider)
     {
-        return new MainPageServerNavigationServices<ServerVMD>(
+        return new MainPageServerNavigationServices<ServerVmd>(
             serviceProvider.GetRequiredService<MainPageServerNavigationStore>(),
-            serviceProvider.GetRequiredService<ServerVMD>);
+            serviceProvider.GetRequiredService<ServerVmd>);
     }
 
     #endregion

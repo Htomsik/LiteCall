@@ -16,7 +16,7 @@ using NAudio.Wave.SampleProviders;
 
 namespace LiteCall.ViewModels.ServerPages;
 
-internal class ServerVMD : BaseVmd
+internal class ServerVmd : BaseVmd
 {
     #region Services
 
@@ -24,7 +24,7 @@ internal class ServerVMD : BaseVmd
 
     #endregion
 
-    public ServerVMD(ServerAccountStore serverAccountStore, CurrentServerStore currentServerStore,
+    public ServerVmd(ServerAccountStore serverAccountStore, CurrentServerStore currentServerStore,
         IStatusServices statusServices)
     {
         _serverAccountStore = serverAccountStore;
@@ -647,7 +647,6 @@ internal class ServerVMD : BaseVmd
     }
 
     #endregion
-
 
     #region Data
 

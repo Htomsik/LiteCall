@@ -2,9 +2,6 @@
 
 namespace LiteCall.Views;
 
-/// <summary>
-///     Логика взаимодействия для StartupWindow.xaml
-/// </summary>
 public partial class StartupWindow : Window
 {
     public StartupWindow()

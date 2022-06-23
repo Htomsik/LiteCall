@@ -12,10 +12,10 @@ public class ImagePacket
     {
     }
 
-    public ImagePacket(byte[] imgSources)
+    public ImagePacket(byte[]? imgSources)
     {
         Hash = ImageBox.StringHash(imgSources);
-        Len = imgSources.Length;
+        Len = imgSources!.Length;
         Image = ImageBox.EncodeBytes(imgSources);
     }
 
@@ -23,12 +23,20 @@ public class ImagePacket
     private int Len { get; }
     private string Image { get; } = string.Empty;
 
-    public byte[] GetRawData()
+    public byte[]? GetRawData()
     {
         var data = ImageBox.DecodeBytes(Image);
 
-        if (data.Length != Len) throw new Exception("Error data len");
-        if (!ImageBox.StringHash(data).Equals(Hash)) throw new Exception("Error hash");
+        if (data!.Length != Len)
+        {
+            return null;
+        }
+
+        if (!ImageBox.StringHash(data).Equals(Hash))
+        {
+            return null;
+        }
+
 
         return data;
     }
@@ -52,7 +60,7 @@ public static class ImageBox
     }
 
 
-    public static Image BytesToImage(byte[] value)
+    public static Image BytesToImage(byte[]? value)
     {
         using (var ms = new MemoryStream(value))
         {
@@ -60,23 +68,25 @@ public static class ImageBox
         }
     }
 
-    public static string EncodeBytes(byte[] value)
+    public static string EncodeBytes(byte[]? value)
     {
-        return Convert.ToBase64String(value);
+        return Convert.ToBase64String(value!);
     }
 
-    public static byte[] DecodeBytes(string value)
+    public static byte[]? DecodeBytes(string value)
     {
         return Convert.FromBase64String(value);
     }
 
-    public static string StringHash(byte[] value)
+    public static string StringHash(byte[]? value)
     {
         using (var md5 = MD5.Create())
         {
-            var hashBytes = md5.ComputeHash(value);
+            var hashBytes = md5.ComputeHash(value!);
             var sb = new StringBuilder();
-            for (var i = 0; i < hashBytes.Length; i++) sb.Append(hashBytes[i].ToString("X2"));
+            foreach (var t in hashBytes)
+                sb.Append(t.ToString("X2"));
+
             return sb.ToString().ToLower();
         }
     }

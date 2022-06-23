@@ -1,5 +1,4 @@
-﻿using LiteCall.Stores.NavigationStores;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace LiteCall.Stores;
 

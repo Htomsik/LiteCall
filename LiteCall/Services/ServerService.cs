@@ -10,16 +10,15 @@ namespace LiteCall.Services;
 
 internal class ServerService
 {
-    public static  HubConnection? HubConnection;
-
-
-    private static bool _isReconnectingDisconnect;
-
+    
     public static Task ConnectionHub(string url, Account? currentAccount, IStatusServices statusServices)
     {
+
+         bool isReconnectingDisconnect = false;
+
         statusServices.ChangeStatus(new StatusMessage { Message = "Connecting to server. . .", IsError = false });
 
-        HubConnection = new HubConnectionBuilder()
+       var hubConnection = new HubConnectionBuilder()
             .WithUrl($"{url}?token={currentAccount!.Token}", options =>
             {
                 options.WebSocketConfiguration = conf =>
@@ -38,15 +37,15 @@ internal class ServerService
             })
             .Build();
 
-        HubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);
+        hubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);
 
-        HubConnection.On<Message>("Send", message =>
+        hubConnection.On<Message>("Send", message =>
         {
             MessageBus.Send(message);
             return Task.CompletedTask;
         });
 
-        HubConnection.On<bool>("Notification", flag =>
+        hubConnection.On<bool>("Notification", flag =>
         {
             statusServices.ChangeStatus(
                 new StatusMessage { IsError = true, Message = "You have been kicked from room" });
@@ -54,14 +53,14 @@ internal class ServerService
             DisconnectNotification.Reload();
         });
 
-        HubConnection.On("UpdateRooms", () =>
+        hubConnection.On("UpdateRooms", () =>
         {
             ReloadServerRooms.Reload();
 
             return Task.CompletedTask;
         });
 
-        HubConnection.On("SendAudio", (string name, byte[] MessageAudio) =>
+        hubConnection.On("SendAudio", (string name, byte[] MessageAudio) =>
         {
             var newMessage = new VoiceMessage { Name = name, Audio = MessageAudio };
 
@@ -70,9 +69,9 @@ internal class ServerService
 
 
         //если соединение закрыто
-        HubConnection.Closed += error =>
+        hubConnection.Closed += error =>
         {
-            if (_isReconnectingDisconnect)
+            if (isReconnectingDisconnect)
                 statusServices.ChangeStatus(new StatusMessage
                     { IsError = true, Message = "Reconnecting failed" });
             else
@@ -80,33 +79,33 @@ internal class ServerService
 
             DisconnectServerReloader.Reload();
 
-            _isReconnectingDisconnect = false;
+            isReconnectingDisconnect = false;
 
             return Task.CompletedTask;
         };
 
 
         //возникает когда получается обратно подключится
-        HubConnection.Reconnected += id =>
+        hubConnection.Reconnected += id =>
         {
             statusServices.DeleteStatus();
 
-            _isReconnectingDisconnect = false;
+            isReconnectingDisconnect = false;
 
             return Task.CompletedTask;
         };
 
 
         //возникает в момент переподключения
-        HubConnection.Reconnecting += error =>
+        hubConnection.Reconnecting += error =>
         {
-            _isReconnectingDisconnect = true;
+            isReconnectingDisconnect = true;
 
             statusServices.ChangeStatus(new StatusMessage { Message = "Reconecting to server. . ." });
 
             return Task.CompletedTask;
         };
 
-        return HubConnection.StartAsync();
+        return hubConnection.StartAsync();
     }
 }

@@ -127,8 +127,7 @@
 
                                         <StackPanel Orientation="Horizontal">
 
-                                            <TextBlock Foreground="{DynamicResource Important(Solid)}"
-                                                       Text="Nickname: " />
+                                            <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Nickname: " />
 
                                             <TextBlock Text="{Binding Account.Login}" />
 
@@ -159,8 +158,7 @@
                         <DataTemplate.Triggers>
 
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="Background"
-                                        Value="{DynamicResource Button2(Solid)}" />
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource Button2(Solid)}" />
                             </Trigger>
 
                         </DataTemplate.Triggers>
@@ -192,8 +190,7 @@
 
                         <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
 
-                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}"
-                                  Header="Authorization in current server" />
+                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorization in current server" />
                     </ContextMenu>
                 </Border.ContextMenu>
 
@@ -231,9 +228,7 @@
 
                     <Style.Triggers>
 
-                        <DataTrigger
-                            Binding="{Binding SelectedViewModel, Converter={StaticResource IsCurrentServerNullConveter}}"
-                            Value="False">
+                        <DataTrigger Binding="{Binding SelectedViewModel, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
 
                             <Setter Property="CornerRadius" Value="0 0 15 0" />
 
@@ -286,12 +281,9 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger
-                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}"
-                                        Value="False">
+                                    <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="False">
 
-                                        <Setter Property="Text"
-                                                Value="{Binding ServerAccountStore.CurrentAccount.Login, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Setter Property="Text" Value="{Binding ServerAccountStore.CurrentAccount.Login, UpdateSourceTrigger=PropertyChanged}" />
 
                                         <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
 
@@ -318,17 +310,13 @@
 
                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
-                                <Setter Property="Visibility"
-                                        Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                <Setter Property="Visibility" Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
                                 <Style.Triggers>
 
-                                    <DataTrigger
-                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}"
-                                        Value="True">
+                                    <DataTrigger Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}" Value="True">
 
-                                        <Setter Property="Visibility"
-                                                Value="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                        <Setter Property="Visibility" Value="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -369,7 +357,7 @@
             Content="{Binding SelectedViewModel}">
 
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type viewModel:ServerVMD}">
+                <DataTemplate DataType="{x:Type viewModel:ServerVmd}">
                     <pages:ServerPV />
                 </DataTemplate>
             </ContentControl.Resources>
@@ -385,8 +373,7 @@
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
 
-            <Border Background="{DynamicResource Background2(Solid)}"
-                    CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
+            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
                 <Grid
                     MinWidth="200"
                     Margin="5"
