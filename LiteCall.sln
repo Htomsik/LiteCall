@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModalCutom", "ModalCutom\Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadingCustom", "LoadingCustom\LoadingCustom.csproj", "{3D99B53C-4AF9-405B-A53B-646F60AD8780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteCallTests", "LiteCallTests\LiteCallTests.csproj", "{EB60A900-0265-4C5A-8F2F-29669C6D1C3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteCallTests", "LiteCallTests\LiteCallTests.csproj", "{EB60A900-0265-4C5A-8F2F-29669C6D1C3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

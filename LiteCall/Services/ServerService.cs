@@ -10,7 +10,7 @@ namespace LiteCall.Services;
 
 internal class ServerService
 {
-    public static HubConnection? HubConnection;
+    public static  HubConnection? HubConnection;
 
 
     private static bool _isReconnectingDisconnect;

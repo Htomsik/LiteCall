@@ -7,7 +7,8 @@ namespace LiteCall.Services;
 
 internal class StatusServices : IStatusServices
 {
-    private static bool _isDelete;
+    private bool _isDelete;
+
     private readonly StatusMessageStore _statusMessageStore;
 
     public StatusServices(StatusMessageStore statusMessageStore)

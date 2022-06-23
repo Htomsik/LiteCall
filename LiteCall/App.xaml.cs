@@ -14,9 +14,9 @@ namespace LiteCall;
 
 public partial class App : Application
 {
-    private static IHost? _host;
+    private IHost? _host;
 
-    public static IHost Host => _host ?? Progam.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+    public  IHost Host => _host ?? Progam.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
 
     protected override async void OnStartup(StartupEventArgs e)
