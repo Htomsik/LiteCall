@@ -238,9 +238,7 @@ internal class RegistrationPageVmd : BaseVmd
     {
         CaptсhaImageSource = await _captchaServices.GetCaptcha();
 
-        if (CaptсhaImageSource == null) return false;
-
-        return true;
+        return CaptсhaImageSource != null;
     }
 
 

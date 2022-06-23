@@ -7,9 +7,9 @@ internal sealed class AccountLogoutCommand : BaseCommand
 {
     private readonly AccountStore? _currentAccountStore;
 
-    public AccountLogoutCommand(AccountStore? CurrentAccountStore)
+    public AccountLogoutCommand(AccountStore? currentAccountStore)
     {
-        _currentAccountStore = CurrentAccountStore;
+        _currentAccountStore = currentAccountStore;
     }
 
     public override bool CanExecute(object? parameter)

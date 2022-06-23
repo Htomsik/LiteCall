@@ -8,7 +8,6 @@ internal sealed class CloseAppServices : ICloseAppServices
 {
     private readonly ISynhronyzeDataOnServerServices _synchronizeDataOnServerServices;
 
-
     public CloseAppServices(ISynhronyzeDataOnServerServices synchronizeDataOnServerServices)
     {
         _synchronizeDataOnServerServices = synchronizeDataOnServerServices;
