@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
+    xmlns:loading="clr-namespace:LiteCall.Resources.CustomControls.Loading"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
@@ -227,14 +227,14 @@
                 CornerRadius="16 0 0 16"
                 Visibility="{Binding StatusMessageIsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <loadingCustom:LoadingCustom
+                <loading:LoadingCustomControl
                     x:Name="StatusLoading"
                     IsLoading="True"
                     MainText="{Binding CurrentStatusMessage.Message}">
 
-                    <loadingCustom:LoadingCustom.Style>
+                    <loading:LoadingCustomControl.Style>
 
-                        <Style TargetType="{x:Type loadingCustom:LoadingCustom}">
+                        <Style BasedOn="{StaticResource {x:Type loading:LoadingCustomControl}}" TargetType="{x:Type loading:LoadingCustomControl}">
 
                             <Setter Property="Color" Value="{DynamicResource Fonts(Solid)}" />
 
@@ -255,8 +255,8 @@
 
                         </Style>
 
-                    </loadingCustom:LoadingCustom.Style>
-                </loadingCustom:LoadingCustom>
+                    </loading:LoadingCustomControl.Style>
+                </loading:LoadingCustomControl>
 
 
             </Border>

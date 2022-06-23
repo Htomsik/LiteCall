@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
@@ -211,22 +210,15 @@
 
                             <MultiDataTrigger.Conditions>
 
-                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}"
-                                           Value="True" />
+                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}"
-                                           Value="True" />
+                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition
-                                    Binding="{Binding ElementName=PasswordConfirmTextBox, Path=(Validation.HasError)}"
-                                    Value="True" />
+                                <Condition Binding="{Binding ElementName=PasswordConfirmTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition Binding="{Binding ElementName=AnswerTextBox, Path=(Validation.HasError)}"
-                                           Value="True" />
+                                <Condition Binding="{Binding ElementName=AnswerTextBox, Path=(Validation.HasError)}" Value="True" />
 
-                                <Condition
-                                    Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}"
-                                    Value="True" />
+                                <Condition Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}" Value="True" />
 
                             </MultiDataTrigger.Conditions>
 
@@ -251,8 +243,7 @@
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
 
-            <Border Background="{DynamicResource Background2(Solid)}"
-                    CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
+            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
                 <Grid
                     MinWidth="200"
                     MinHeight="200"
@@ -277,8 +268,7 @@
                         BorderBrush="{DynamicResource Fonts(Solid)}"
                         BorderThickness="0.2"
                         CornerRadius="5">
-                        <Image Source="{Binding CaptсhaImageSource, UpdateSourceTrigger=PropertyChanged}"
-                               Stretch="Fill" />
+                        <Image Source="{Binding CaptсhaImageSource, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
                     </Border>
 
 
@@ -344,19 +334,6 @@
                             <TextBlock Text="EXIT" />
                         </Button>
                     </Grid>
-
-
-                    <!--  Показывает статус загрузки  -->
-                    <loadingCustom:LoadingCustom
-                        Grid.Row="4"
-                        Margin="5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Diameter="30"
-                        IsLoading="{Binding ModalHasStatusMessage}"
-                        MainText="{Binding ModalStatusMessage}"
-                        Color="{DynamicResource Fonts(Solid)}" />
-
 
                 </Grid>
             </Border>

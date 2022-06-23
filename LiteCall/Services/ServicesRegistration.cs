@@ -32,7 +32,7 @@ internal static class ServicesRegistration
 
         services.AddSingleton<IHttpDataServices, HttpDataService>(s =>
             new HttpDataService(s.GetRequiredService<IStatusServices>(), s.GetRequiredService<IEncryptServices>(),
-                configuration));
+                configuration, s.GetRequiredService<HttpClientStore>()));
 
         services.AddTransient<ICloseAppServices, CloseAppServices>();
 

@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
+    xmlns:loading="clr-namespace:LiteCall.Resources.CustomControls.Loading"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="StartupWindow"
     Width="200"
@@ -29,7 +29,7 @@
                 Stretch="Uniform" />
 
 
-            <loadingCustom:LoadingCustom
+            <loading:LoadingCustomControl
                 Grid.Row="1"
                 Margin="5,15"
                 HorizontalAlignment="Center"
