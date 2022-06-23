@@ -4,7 +4,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Model;
 
-internal class Server
+internal sealed class Server
 {
     [JsonPropertyName("ip")] public string? Ip { get; set; }
 
@@ -21,7 +21,7 @@ internal class Server
     [JsonPropertyName("description")] public string? Description { get; set; }
 }
 
-internal class ServerRooms : BaseVmd
+internal sealed class ServerRooms : BaseVmd
 {
     private ICollection<ServerUser>? _users;
 

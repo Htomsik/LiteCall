@@ -12,7 +12,7 @@ using NAudio.Wave;
 
 namespace LiteCall.ViewModels.Pages;
 
-internal class SettingVmd : BaseVmd
+internal sealed class SettingVmd : BaseVmd
 {
     public SettingVmd(AccountStore? accountStore, SavedServersStore? savedServersStore, SettingsStore? settingsStore,
         INavigationService authNavigationService, IHttpDataServices httpDataServices, IStatusServices statusServices,

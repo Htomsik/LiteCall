@@ -60,4 +60,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A4F69BA-FAE8-457F-882A-0D1F06DC457E}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\LiteCall1.ndproj"
+	EndGlobalSection
 EndGlobal

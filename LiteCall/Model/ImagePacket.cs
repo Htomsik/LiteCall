@@ -62,7 +62,7 @@ public static class ImageBox
 
     public static Image BytesToImage(byte[]? value)
     {
-        using (var ms = new MemoryStream(value))
+        using (var ms = new MemoryStream(value!))
         {
             return Image.FromStream(ms);
         }

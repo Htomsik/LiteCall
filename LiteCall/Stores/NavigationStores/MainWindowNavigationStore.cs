@@ -3,16 +3,16 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores;
 
-internal class MainWindowNavigationStore
+internal sealed class MainWindowNavigationStore
 {
-    private BaseVmd? _MainWindowCurrentViewModel;
+    private BaseVmd? _mainWindowCurrentViewModel;
 
     public BaseVmd? MainWindowCurrentViewModel
     {
-        get => _MainWindowCurrentViewModel;
+        get => _mainWindowCurrentViewModel;
         set
         {
-            _MainWindowCurrentViewModel = value;
+            _mainWindowCurrentViewModel = value;
             OnCurrentViewModelChanged();
         }
     }

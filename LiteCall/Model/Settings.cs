@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace LiteCall.Model;
 
-internal class Settings : BaseVmd
+internal sealed class Settings : BaseVmd
 {
     [JsonIgnore] private int _captureDeviceId;
 

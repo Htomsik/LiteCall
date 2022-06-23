@@ -3,7 +3,7 @@ using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.ViewModels.ServerPages;
 
-internal class ServerAuthorizationModalVmd : AuthorizationPageVmd
+internal sealed class ServerAuthorizationModalVmd : AuthorizationPageVmd
 {
     public ServerAuthorizationModalVmd(INavigationService registrationNavigationServices,
         INavigationService passwordRecoveryNavigationService, IAuthorizationServices authorizationServices,

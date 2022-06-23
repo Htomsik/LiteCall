@@ -4,7 +4,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services;
 
-internal class SynchronizeDataOnServerServices : ISynhronyzeDataOnServerServices
+internal sealed class SynchronizeDataOnServerServices : ISynhronyzeDataOnServerServices
 {
     private readonly AccountStore _accountStore;
 

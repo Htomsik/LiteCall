@@ -5,7 +5,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.AuthRegServices.Authorization;
 
-internal class AuthCheckApiServerServices : IAuthorizationServices
+internal sealed class AuthCheckApiServerServices : IAuthorizationServices
 {
     private readonly IHttpDataServices _httpDataServices;
 

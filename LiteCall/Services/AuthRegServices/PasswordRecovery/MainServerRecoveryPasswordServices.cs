@@ -4,7 +4,7 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services.AuthRegServices.PasswordRecovery;
 
-internal class MainServerRecoveryPasswordServices : IRecoveryPasswordServices
+internal sealed class MainServerRecoveryPasswordServices : IRecoveryPasswordServices
 {
     private readonly IHttpDataServices _httpDataServices;
 

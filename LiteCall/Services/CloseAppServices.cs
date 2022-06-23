@@ -4,7 +4,7 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services;
 
-internal class CloseAppServices : ICloseAppServices
+internal sealed class CloseAppServices : ICloseAppServices
 {
     private readonly ISynhronyzeDataOnServerServices _synchronizeDataOnServerServices;
 

@@ -5,7 +5,7 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services.AuthRegServices.PasswordRecovery;
 
-internal class MainServerGetPassRecQuestionsServices : IGetPassRecoveryQuestionsServices
+internal sealed class MainServerGetPassRecQuestionsServices : IGetPassRecoveryQuestionsServices
 {
     private readonly IHttpDataServices _httpDataServices;
 

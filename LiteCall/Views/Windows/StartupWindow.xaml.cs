@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace LiteCall.Views;
+namespace LiteCall.Views.Windows;
 
 public partial class StartupWindow : Window
 {

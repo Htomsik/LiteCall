@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace LiteCall.ViewModels;
 
-internal class MainWindowVmd : BaseVmd
+internal sealed class MainWindowVmd : BaseVmd
 {
     private readonly AdditionalNavigationStore _additionalNavigationStore;
 

@@ -5,7 +5,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.AuthRegServices.PasswordRecovery;
 
-internal class ApiServerRecoveryPasswordServices : IRecoveryPasswordServices
+internal sealed class ApiServerRecoveryPasswordServices : IRecoveryPasswordServices
 {
     private readonly CurrentServerStore _currentServerStore;
     private readonly IHttpDataServices _httpDataServices;

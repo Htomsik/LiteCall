@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace LiteCall.Infrastructure.Converters;
 
-internal class GroupNotNullBoolConverter : IValueConverter
+internal sealed class GroupNotNullBoolConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {

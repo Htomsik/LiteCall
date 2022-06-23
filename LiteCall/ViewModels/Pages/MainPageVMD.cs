@@ -13,7 +13,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.ViewModels.Pages;
 
-internal class MainPageVmd : BaseVmd
+internal sealed class MainPageVmd : BaseVmd
 {
     public MainPageVmd(AccountStore? accountStore, ServerAccountStore? serverAccountStore,
         SavedServersStore? savedServersStore,

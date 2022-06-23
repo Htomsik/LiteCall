@@ -3,7 +3,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Infrastructure.Commands;
 
-internal class AccountLogoutCommand : BaseCommand
+internal sealed class AccountLogoutCommand : BaseCommand
 {
     private readonly AccountStore? _currentAccountStore;
 

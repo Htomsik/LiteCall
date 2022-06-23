@@ -5,7 +5,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services;
 
-internal class StatusServices : IStatusServices
+internal sealed class StatusServices : IStatusServices
 {
     private bool _isDelete;
 

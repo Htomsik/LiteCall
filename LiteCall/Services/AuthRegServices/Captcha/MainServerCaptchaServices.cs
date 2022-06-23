@@ -5,7 +5,7 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services.AuthRegServices.Captcha;
 
-internal class MainServerCaptchaServices : ICaptchaServices
+internal sealed class MainServerCaptchaServices : ICaptchaServices
 {
     private readonly IHttpDataServices _httpDataServices;
     private readonly IImageServices _imageServices;

@@ -7,9 +7,9 @@ using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Newtonsoft.Json;
 
-namespace LiteCall.Services;
+namespace LiteCall.Services.FileServices;
 
-internal class ServersAccountsFileServices : IFileReadServices
+internal sealed class ServersAccountsFileServices : IFileReadServices
 {
     private const string FilePath = @"SavedServersAccounts.json";
 

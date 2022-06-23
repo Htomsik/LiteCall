@@ -3,7 +3,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores;
 
-internal class MainPageServerNavigationStore
+internal sealed class MainPageServerNavigationStore
 {
     private BaseVmd? _mainPageServerCurrentViewModel;
 

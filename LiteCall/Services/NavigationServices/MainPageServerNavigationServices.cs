@@ -5,7 +5,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Services.NavigationServices;
 
-internal class MainPageServerNavigationServices<TViewModel> : INavigationService where TViewModel : BaseVmd
+internal sealed class MainPageServerNavigationServices<TViewModel> : INavigationService where TViewModel : BaseVmd
 {
     private readonly Func<TViewModel> _createViewModel;
     private readonly MainPageServerNavigationStore _mainPageServerNavigationStore;

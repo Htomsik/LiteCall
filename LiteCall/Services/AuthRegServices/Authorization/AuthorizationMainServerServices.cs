@@ -3,9 +3,9 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 
-namespace LiteCall.Services;
+namespace LiteCall.Services.AuthRegServices.Authorization;
 
-internal class AuthorizationMainServerServices : IAuthorizationServices
+internal sealed class AuthorizationMainServerServices : IAuthorizationServices
 {
     private readonly IHttpDataServices _httpDataServices;
 

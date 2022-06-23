@@ -3,7 +3,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores;
 
-internal class ModalNavigationStore
+internal sealed class ModalNavigationStore
 {
     private BaseVmd? _modalMainWindowCurrentViewModel;
 

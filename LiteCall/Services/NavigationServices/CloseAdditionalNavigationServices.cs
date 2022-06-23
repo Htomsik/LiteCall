@@ -3,7 +3,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.NavigationServices;
 
-internal class CloseAdditionalNavigationServices : INavigationService
+internal sealed class CloseAdditionalNavigationServices : INavigationService
 {
     private readonly AdditionalNavigationStore _navigationStore;
 

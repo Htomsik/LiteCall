@@ -6,7 +6,7 @@ using System.Windows.Data;
 
 namespace LiteCall.Infrastructure.Converters;
 
-internal class IsHighterConverter : IValueConverter
+internal sealed class IsHighterConverter : IValueConverter
 {
     public static readonly IValueConverter Instance = new IsHighterConverter();
 

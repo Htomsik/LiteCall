@@ -4,7 +4,7 @@ using LiteCall.Infrastructure.Commands.Base;
 
 namespace LiteCall.Infrastructure.Commands.Lambda;
 
-internal class LambdaCommand : BaseCommand
+internal sealed class LambdaCommand : BaseCommand
 {
     private readonly Func<object, bool> _canExecute;
     private readonly Action<object> _execute;

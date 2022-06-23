@@ -6,7 +6,7 @@ using System.Windows.Data;
 
 namespace LiteCall.Infrastructure.Converters;
 
-internal class StringToStarConverter : IValueConverter
+internal sealed class StringToStarConverter : IValueConverter
 {
     public static readonly IValueConverter Instance = new StringToStarConverter();
 

@@ -4,7 +4,7 @@ using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Infrastructure.Commands;
 
-internal class NavigationCommand : BaseCommand
+internal sealed class NavigationCommand : BaseCommand
 {
     private readonly Func<bool>? _canExecute;
 

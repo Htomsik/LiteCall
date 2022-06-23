@@ -3,7 +3,7 @@ using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores;
 
-internal class SettingsAccNavigationStore
+internal sealed class SettingsAccNavigationStore
 {
     private BaseVmd? _settingsAccCurrentViewModel;
 

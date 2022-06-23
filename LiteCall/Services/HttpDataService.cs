@@ -16,7 +16,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace LiteCall.Services;
 
-internal class HttpDataService : IHttpDataServices
+internal sealed class HttpDataService : IHttpDataServices
 {
     private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
 

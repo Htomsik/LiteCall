@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace LiteCall.Services;
 
-internal class ServerService
+internal sealed class ServerService
 {
     
     public static Task ConnectionHub(string url, Account? currentAccount, IStatusServices statusServices)

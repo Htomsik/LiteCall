@@ -5,7 +5,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.AuthRegServices.Authorization;
 
-internal class AuthorizationApiServerServices : IAuthorizationServices
+internal sealed class AuthorizationApiServerServices : IAuthorizationServices
 {
     private readonly INavigationService _closeModalNavigationService;
 

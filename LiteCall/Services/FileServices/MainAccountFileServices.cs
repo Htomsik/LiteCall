@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace LiteCall.Services.FileServices;
 
-internal class MainAccountFileServices : IFileReadServices
+internal sealed class MainAccountFileServices : IFileReadServices
 {
     private const string FilePath = @"MainAccount.json";
 

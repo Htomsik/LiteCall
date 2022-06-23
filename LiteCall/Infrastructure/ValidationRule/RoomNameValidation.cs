@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace LiteCall.Infrastructure.ValidationRule;
 
-internal class RoomNameValidation : System.Windows.Controls.ValidationRule
+internal sealed class RoomNameValidation : System.Windows.Controls.ValidationRule
 {
     public override ValidationResult Validate(object value, CultureInfo cultureInfo)
     {
@@ -12,8 +12,6 @@ internal class RoomNameValidation : System.Windows.Controls.ValidationRule
 
         if (stringArray.Length == 0)
             return new ValidationResult(true, null);
-        if (stringArray.Length < 3) return new ValidationResult(false, "RoomName can`t be less than 3");
-
-        return new ValidationResult(true, null);
+        return stringArray.Length < 3 ? new ValidationResult(false, "RoomName can`t be less than 3") : new ValidationResult(true, null);
     }
 }

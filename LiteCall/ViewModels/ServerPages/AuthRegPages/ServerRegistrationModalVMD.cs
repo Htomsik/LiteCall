@@ -3,7 +3,7 @@ using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.ViewModels.ServerPages;
 
-internal class ServerRegistrationModalVmd : RegistrationPageVmd
+internal sealed class ServerRegistrationModalVmd : RegistrationPageVmd
 {
     public ServerRegistrationModalVmd(INavigationService authPageNavigationServices,
         IRegistrationServices registrationServices,

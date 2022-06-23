@@ -16,7 +16,7 @@ using NAudio.Wave.SampleProviders;
 
 namespace LiteCall.ViewModels.ServerPages;
 
-internal class ServerVmd : BaseVmd
+internal sealed class ServerVmd : BaseVmd
 {
     #region Services
 

@@ -6,7 +6,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.AuthRegServices.Registration;
 
-internal class RegistrationMainServerService : IRegistrationServices
+internal sealed class RegistrationMainServerService : IRegistrationServices
 {
     private readonly IHttpDataServices _httpDataServices;
 

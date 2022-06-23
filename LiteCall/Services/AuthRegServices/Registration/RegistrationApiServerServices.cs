@@ -6,7 +6,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.AuthRegServices.Registration;
 
-internal class RegistrationApiServerServices : IRegistrationServices
+internal sealed class RegistrationApiServerServices : IRegistrationServices
 {
     private readonly INavigationService _closeModalNavigationService;
 
@@ -32,17 +32,17 @@ internal class RegistrationApiServerServices : IRegistrationServices
 
     public async Task<int> Registration(RegistrationModel registrationModel)
     {
-        var Response =
+        var response =
             await _httpDataServices.Registration(registrationModel, _currentServerStore.CurrentServer!.ApiIp);
 
-        if (Response.Replace(" ", "") == HttpStatusCode.BadRequest.ToString())
+        if (response.Replace(" ", "") == HttpStatusCode.BadRequest.ToString())
             return 0; //если не верна капча
-        if (Response == HttpStatusCode.Conflict.ToString())
+        if (response == HttpStatusCode.Conflict.ToString())
             return 1; // если неверные данные регистрации
 
         var newAccount = (Account)registrationModel.RecoveryAccount!;
 
-        newAccount.Token = Response;
+        newAccount.Token = response;
 
         newAccount.IsAuthorized = true;
 

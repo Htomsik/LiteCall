@@ -6,7 +6,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services.AuthRegServices.Captcha;
 
-internal class ApiServerCaptchaServices : ICaptchaServices
+internal sealed class ApiServerCaptchaServices : ICaptchaServices
 {
     private readonly CurrentServerStore _currentServerStore;
 

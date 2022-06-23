@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace LiteCall.Views;
+namespace LiteCall.Views.Windows;
 
 public partial class MainWindow : Window
 {
@@ -19,6 +19,7 @@ public partial class MainWindow : Window
         }
         catch
         {
+            // ignored
         }
     }
 

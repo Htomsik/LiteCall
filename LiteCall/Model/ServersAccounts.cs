@@ -5,14 +5,14 @@ using Newtonsoft.Json;
 
 namespace LiteCall.Model;
 
-internal class ServerAccount
+internal sealed class ServerAccount
 {
     public Server? SavedServer { get; set; }
 
     public Account? Account { get; set; }
 }
 
-internal class SavedServers : AppSavedServers
+internal sealed class SavedServers : AppSavedServers
 {
     public Account? MainServerAccount { get; set; } = null;
 }

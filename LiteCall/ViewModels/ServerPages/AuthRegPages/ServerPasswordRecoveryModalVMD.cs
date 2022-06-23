@@ -3,7 +3,7 @@ using LiteCall.ViewModels.Pages;
 
 namespace LiteCall.ViewModels.ServerPages;
 
-internal class ServerPasswordRecoveryModalVmd : PasswordRecoveryVmd
+internal sealed class ServerPasswordRecoveryModalVmd : PasswordRecoveryVmd
 {
     public ServerPasswordRecoveryModalVmd(INavigationService authPageNavigationServices,
         IStatusServices statusServices,
