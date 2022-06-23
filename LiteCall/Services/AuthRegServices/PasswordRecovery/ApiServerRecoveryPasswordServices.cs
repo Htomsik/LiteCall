@@ -19,6 +19,6 @@ internal class ApiServerRecoveryPasswordServices : IRecoveryPasswordServices
 
     public async Task<bool> RecoveryPassword(RecoveryModel recoveryModel)
     {
-        return await _httpDataServices.PasswordRecovery(recoveryModel, _currentServerStore.CurrentServer.ApiIp);
+        return await _httpDataServices.PasswordRecovery(recoveryModel, _currentServerStore.CurrentServer!.ApiIp);
     }
 }

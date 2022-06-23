@@ -5,7 +5,7 @@ using LiteCall.Stores;
 
 namespace LiteCall.Services;
 
-internal class AuthoisationMainServerServices : IAuthorizationServices
+internal class AuthorizationMainServerServices : IAuthorizationServices
 {
     private readonly IHttpDataServices _httpDataServices;
 
@@ -13,7 +13,7 @@ internal class AuthoisationMainServerServices : IAuthorizationServices
 
     private readonly IStatusServices _statusServices;
 
-    public AuthoisationMainServerServices(AccountStore accountStore, IHttpDataServices httpDataServices,
+    public AuthorizationMainServerServices(AccountStore accountStore, IHttpDataServices httpDataServices,
         IStatusServices statusServices)
     {
         _mainAccountStore = accountStore;
@@ -27,17 +27,17 @@ internal class AuthoisationMainServerServices : IAuthorizationServices
     {
         if (isNotAnonymousAuthorize)
         {
-            var Response = await _httpDataServices.GetAuthorizeToken(newAccount);
+            var response = await _httpDataServices.GetAuthorizeToken(newAccount);
 
-            if (Response == "invalid") return 0;
+            if (response == "invalid") return 0;
 
-            newAccount.Token = Response;
+            newAccount!.Token = response;
 
             newAccount.IsAuthorized = true;
         }
         else
         {
-            newAccount.IsAuthorized = false;
+            newAccount!.IsAuthorized = false;
 
             newAccount.Password = "";
         }

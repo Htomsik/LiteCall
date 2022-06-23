@@ -3,15 +3,15 @@ using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 
-namespace LiteCall.Services;
+namespace LiteCall.Services.AuthRegServices.Authorization;
 
 internal class AuthorizationApiServerServices : IAuthorizationServices
 {
-    private readonly INavigationService _CloseModalNavigationService;
+    private readonly INavigationService _closeModalNavigationService;
 
-    private readonly CurrentServerStore _CurrentServerStore;
+    private readonly CurrentServerStore _currentServerStore;
 
-    private readonly IHttpDataServices _HttpDataServices;
+    private readonly IHttpDataServices _httpDataServices;
 
     private readonly SavedServersStore _savedServersStore;
 
@@ -21,49 +21,49 @@ internal class AuthorizationApiServerServices : IAuthorizationServices
     {
         _savedServersStore = savedServersStore;
 
-        _CurrentServerStore = currentServerStore;
+        _currentServerStore = currentServerStore;
 
-        _CloseModalNavigationService = closeModalNavigationService;
+        _closeModalNavigationService = closeModalNavigationService;
 
-        _HttpDataServices = httpDataServices;
+        _httpDataServices = httpDataServices;
     }
 
 
-    public async Task<int> Login(bool isNotAnonymousAuthorize, Account? _NewAccount, string? ApiSeverIp)
+    public async Task<int> Login(bool isNotAnonymousAuthorize, Account? newAccount, string? apiSeverIp)
     {
         if (isNotAnonymousAuthorize)
         {
-            var Response =
-                await _HttpDataServices.GetAuthorizeToken(_NewAccount, _CurrentServerStore.CurrentServer.ApiIp);
+            var response =
+                await _httpDataServices.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
 
-            if (Response == "invalid") return 0;
+            if (response == "invalid") return 0;
 
-            _NewAccount.Role = await _HttpDataServices.GetRoleFromJwtToken(Response);
+            newAccount!.Role = await _httpDataServices.GetRoleFromJwtToken(response);
 
-            _NewAccount.Token = Response;
+            newAccount.Token = response;
 
-            _NewAccount.IsAuthorized = true;
+            newAccount.IsAuthorized = true;
         }
         else
         {
-            _NewAccount.IsAuthorized = false;
+            newAccount!.IsAuthorized = false;
 
-            _NewAccount.Password = "";
+            newAccount.Password = "";
 
-            var Response =
-                await _HttpDataServices.GetAuthorizeToken(_NewAccount, _CurrentServerStore.CurrentServer.ApiIp);
+            var response =
+                await _httpDataServices.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
 
-            if (Response == "invalid") return 0;
+            if (response == "invalid") return 0;
 
-            _NewAccount.Role = await _HttpDataServices.GetRoleFromJwtToken(Response);
+            newAccount.Role = await _httpDataServices.GetRoleFromJwtToken(response);
 
-            _NewAccount.Token = Response;
+            newAccount.Token = response;
         }
 
 
-        _savedServersStore.Replace(_CurrentServerStore.CurrentServer, _NewAccount);
+        _savedServersStore.Replace(_currentServerStore.CurrentServer, newAccount);
 
-        _CloseModalNavigationService.Navigate();
+        _closeModalNavigationService.Navigate();
 
         return 1;
     }

@@ -14,7 +14,8 @@
                     </ControlTemplate.Resources>
 
 
-                    <StackPanel Orientation="Horizontal" Visibility="{TemplateBinding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal"
+                                Visibility="{TemplateBinding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 
 
                         <Ellipse
@@ -26,7 +27,8 @@
                             StrokeThickness="{TemplateBinding Thickness}">
 
                             <Ellipse.StrokeDashArray>
-                                <MultiBinding Converter="{StaticResource DiameterAndThicknessToStrokeDashArrayConverter}">
+                                <MultiBinding
+                                    Converter="{StaticResource DiameterAndThicknessToStrokeDashArrayConverter}">
                                     <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
                                     <Binding Path="Thickness" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
@@ -51,7 +53,6 @@
                             </Ellipse.Triggers>
 
 
-
                         </Ellipse>
 
 
@@ -74,9 +75,6 @@
 
 
                     </StackPanel>
-
-
-
 
 
                 </ControlTemplate>

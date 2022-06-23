@@ -1,7 +1,7 @@
 ﻿using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Pages;
 
-namespace LiteCall.ViewModels.ServerPages; 
+namespace LiteCall.ViewModels.ServerPages;
 
 internal class ServerRegistrationModalVmd : RegistrationPageVmd
 {

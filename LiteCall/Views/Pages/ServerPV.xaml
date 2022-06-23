@@ -4,19 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
-    xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
-    xmlns:serverPages="clr-namespace:LiteCall.ViewModels.ServerPages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
-    xmlns:viewmodels="clr-namespace:LiteCall.ViewModels.Pages"
     d:DesignHeight="450"
     d:DesignWidth="900"
     mc:Ignorable="d">
-
-
 
 
     <UserControl.Resources>
@@ -47,7 +41,6 @@
     </UserControl.Resources>
 
 
-
     <Grid>
 
 
@@ -63,7 +56,6 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-
 
 
         <!--  Список комнат на сервере  -->
@@ -134,8 +126,6 @@
                             Header="Disconnect selected user" />
 
 
-
-
                     </ContextMenu>
                 </ListView.ContextMenu>
 
@@ -174,7 +164,6 @@
                                         Foreground="{DynamicResource Dangerous(Solid)}"
                                         Text="P"
                                         Visibility="{Binding Guard, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
 
 
                                 </Grid>
@@ -233,26 +222,28 @@
                                                 Text="{Binding Login}" />
 
 
-
-
                                         </Grid>
 
                                         <DataTemplate.Triggers>
 
                                             <DataTrigger Binding="{Binding Role}" Value="You">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Green(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Green(Solid)}" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="Admin">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Dangerous(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Dangerous(Solid)}" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="User">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Blue(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Blue(Solid)}" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="Anonymous">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Fonts(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Fonts(Solid)}" />
                                             </DataTrigger>
 
 
@@ -270,7 +261,6 @@
 
                             </ListView>
                         </Grid>
-
 
 
                     </DataTemplate>
@@ -371,7 +361,8 @@
                         </StackPanel>
 
                         <!--  County  -->
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentServerStore.CurrentServer.Country, Converter={StaticResource NullToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding CurrentServerStore.CurrentServer.Country, Converter={StaticResource NullToVisibilityConverter}}">
 
                             <TextBlock Text="Country:" />
                             <TextBlock Text="{Binding CurrentServerStore.CurrentServer.Country}" />
@@ -379,7 +370,8 @@
                         </StackPanel>
 
                         <!--  City  -->
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentServerStore.CurrentServer.City, Converter={StaticResource NullToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding CurrentServerStore.CurrentServer.City, Converter={StaticResource NullToVisibilityConverter}}">
 
                             <TextBlock Text="City:" />
                             <TextBlock Text="{Binding CurrentServerStore.CurrentServer.City}" />
@@ -437,7 +429,8 @@
                 <!--  Сообщеия  -->
                 <Border Grid.Row="1" Background="{DynamicResource Background6(Solid)}">
 
-                    <ListView ItemContainerStyle="{DynamicResource MessageListItems}" ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
+                    <ListView ItemContainerStyle="{DynamicResource MessageListItems}"
+                              ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -513,7 +506,6 @@
                 </Grid>
 
 
-
             </Grid>
 
         </Grid>
@@ -548,7 +540,6 @@
                         HorizontalAlignment="Center"
                         Style="{DynamicResource BigTextBlock}"
                         Text="CREATE ROOM" />
-
 
 
                     <TextBox
@@ -593,8 +584,6 @@
                         </TextBox.Text>
 
                     </TextBox>
-
-
 
 
                     <Grid Row="3">
@@ -668,7 +657,6 @@
                         Text="Password" />
 
 
-
                     <TextBox
                         x:Name="RoomPasswordTb"
                         Grid.Row="1"
@@ -731,8 +719,6 @@
 
                 </Grid>
             </Border>
-
-
 
 
         </modalCutom:ModalCustom>

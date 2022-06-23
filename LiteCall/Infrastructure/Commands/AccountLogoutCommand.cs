@@ -20,6 +20,6 @@ internal class AccountLogoutCommand : BaseCommand
 
     public override void Execute(object? parameter)
     {
-        _currentAccountStore.Logout();
+        _currentAccountStore!.Logout();
     }
 }

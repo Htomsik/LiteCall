@@ -78,7 +78,6 @@
                     </ControlTemplate.Triggers>
 
 
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -107,7 +106,6 @@
                             HorizontalOffset="0"
                             Placement="Right"
                             VerticalOffset="0">
-
 
 
                             <StackPanel Orientation="Horizontal">
@@ -139,12 +137,16 @@
 
                     <ControlTemplate.Triggers>
 
-                        <DataTrigger Binding="{Binding ElementName=placeholder, Path=AdornedElement.IsMouseOver, Mode=OneWay}" Value="True">
+                        <DataTrigger
+                            Binding="{Binding ElementName=placeholder, Path=AdornedElement.IsMouseOver, Mode=OneWay}"
+                            Value="True">
                             <Setter TargetName="Popup" Property="IsOpen" Value="True" />
                         </DataTrigger>
 
 
-                        <DataTrigger Binding="{Binding ElementName=placeholder, Path=AdornedElement.IsKeyboardFocusWithin, Mode=OneWay}" Value="True">
+                        <DataTrigger
+                            Binding="{Binding ElementName=placeholder, Path=AdornedElement.IsKeyboardFocusWithin, Mode=OneWay}"
+                            Value="True">
                             <Setter TargetName="Popup" Property="IsOpen" Value="True" />
                         </DataTrigger>
 
@@ -156,7 +158,8 @@
         <Style.Triggers>
 
             <Trigger Property="Validation.HasError" Value="true">
-                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
             </Trigger>
 
         </Style.Triggers>
@@ -195,9 +198,6 @@
                         <ScrollViewer x:Name="PART_ContentHost" />
 
 
-
-
-
                     </Grid>
 
                     <ControlTemplate.Triggers>
@@ -209,18 +209,22 @@
                         <MultiDataTrigger>
 
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static converters:IsHighterConverter.Instance}, ConverterParameter=Text, UpdateSourceTrigger=PropertyChanged}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocusWithin, Mode=OneWay}" Value="False" />
+                                <Condition
+                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static converters:IsHighterConverter.Instance}, ConverterParameter=Text, UpdateSourceTrigger=PropertyChanged}"
+                                    Value="True" />
+                                <Condition
+                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocusWithin, Mode=OneWay}"
+                                    Value="False" />
                             </MultiDataTrigger.Conditions>
 
-                            <Setter TargetName="Block" Property="Text" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Converter={x:Static converters:StringToStarConverter.Instance}, ConverterParameter=Text}" />
+                            <Setter TargetName="Block" Property="Text"
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Converter={x:Static converters:StringToStarConverter.Instance}, ConverterParameter=Text}" />
                             <Setter TargetName="Block" Property="Visibility" Value="Visible" />
                             <Setter TargetName="PART_ContentHost" Property="Visibility" Value="Hidden" />
 
                         </MultiDataTrigger>
 
                     </ControlTemplate.Triggers>
-
 
 
                 </ControlTemplate>

@@ -12,6 +12,7 @@ public class EncryptServices : IEncryptServices
     private static readonly byte[] Entropy = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
 
+    [Obsolete("Obsolete")]
     public Task<string?> Sha1Encrypt(string? content)
     {
         if (string.IsNullOrEmpty(content)) return Task.FromResult<string>(null!)!;

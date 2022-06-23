@@ -29,7 +29,7 @@ internal class ApiServerCaptchaServices : ICaptchaServices
 
     public async Task<ImageSource?> GetCaptcha()
     {
-        var receiveBytes = await _httpDataServices.GetCaptcha(_currentServerStore.CurrentServer.ApiIp);
+        var receiveBytes = await _httpDataServices.GetCaptcha(_currentServerStore.CurrentServer!.ApiIp);
 
         if (receiveBytes == null) return null;
 

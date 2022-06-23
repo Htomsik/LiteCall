@@ -27,7 +27,10 @@ internal abstract class AsyncCommandBase : BaseCommand
 
     public new event EventHandler? CanExecuteChanged;
 
-    public override bool CanExecute(object? parameter) => !IsExecuting;
+    public override bool CanExecute(object? parameter)
+    {
+        return !IsExecuting;
+    }
 
     public override async void Execute(object? parameter)
     {

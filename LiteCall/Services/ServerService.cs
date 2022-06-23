@@ -20,7 +20,7 @@ internal class ServerService
         statusServices.ChangeStatus(new StatusMessage { Message = "Connecting to server. . .", IsError = false });
 
         HubConnection = new HubConnectionBuilder()
-            .WithUrl($"{url}?token={currentAccount.Token}", options =>
+            .WithUrl($"{url}?token={currentAccount!.Token}", options =>
             {
                 options.WebSocketConfiguration = conf =>
                 {

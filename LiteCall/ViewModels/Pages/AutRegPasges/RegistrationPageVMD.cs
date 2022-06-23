@@ -1,253 +1,250 @@
-﻿using LiteCall.Infrastructure.Commands;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Media;
+using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
 using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Base;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Media;
 
-namespace LiteCall.ViewModels.Pages
+namespace LiteCall.ViewModels.Pages;
+
+internal class RegistrationPageVmd : BaseVmd
 {
-	internal class RegistrationPageVmd : BaseVmd
-	{
-		public RegistrationPageVmd(INavigationService authPageNavigationServices,
-			IRegistrationServices registrationServices, IStatusServices statusServices,
-			ICaptchaServices captchaServices, IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,
-			IEncryptServices encryptServices)
-		{
-			_registrationServices = registrationServices;
+    private readonly ICaptchaServices _captchaServices;
 
+    private readonly IEncryptServices _encryptServices;
 
-			_captchaServices = captchaServices;
+    private readonly IGetPassRecoveryQuestionsServices _getPassRecoveryQuestionsServices;
 
-			_getPassRecoveryQuestionsServices = getPassRecoveryQuestionsServices;
 
-			_encryptServices = encryptServices;
+    private readonly IRegistrationServices _registrationServices;
 
 
-			RegistrationCommand = new AsyncLambdaCommand(OnRegistrationExecuted,
-				(ex) => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
-				CanRegistrationExecute);
+    private bool _canServerConnect;
 
-			OpenAuthPageCommand = new NavigationCommand(authPageNavigationServices);
 
-			OpenModalCommand = new AsyncLambdaCommand(OnOpenModalCommandExecuted,
-				(ex) => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
-				CanOpenModalCommandExecute);
+    private string? _captchaString;
 
 
-			GetQuestionList();
-		}
+    private ImageSource? _captсhaImageSource;
 
 
-		private async void GetQuestionList()
-		{
-			try
-			{
-				QuestionsCollection =
-					new ObservableCollection<Question>((await _getPassRecoveryQuestionsServices.GetQuestions())!);
+    private string? _confirmPassword;
 
-				CanServerConnect = true;
-			}
-			catch
-			{
-				CanServerConnect = false;
 
-				OpenAuthPageCommand.Execute(null);
-			}
-		}
+    private string? _login;
 
-		#region Commands
 
-		public ICommand RegistrationCommand { get; }
-		private bool CanRegistrationExecute(object p) => !(bool)p && !string.IsNullOrEmpty(CaptchaString);
+    private bool _modalStatus;
 
-		private async Task OnRegistrationExecuted(object p)
-		{
-			var base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
 
-			base64Sha1Password = await _encryptServices.Base64Encrypt(base64Sha1Password);
+    private string? _password;
 
-			var newAccount = new Account()
-			{
-				Login = this.Login,
-				Password = base64Sha1Password
-			};
 
-			var registrationModel = new RegistrationModel()
-			{
-				Captcha = CaptchaString,
-				QestionAnswer = QuestionAnswer,
-				Question = SelectedQuestion,
-				RecoveryAccount = newAccount
-			};
+    private string? _questionAnswer;
 
-			var response = await _registrationServices.Registration(registrationModel);
 
-			switch (response)
-			{
-				case 0:
-					await GetCaptcha();
-					break;
+    private ObservableCollection<Question>? _questionsCollection;
 
-				case 1:
-					ModalStatus = false;
 
-					break;
-			}
-		}
+    private Question? _selectedQuestion;
 
+    public RegistrationPageVmd(INavigationService authPageNavigationServices,
+        IRegistrationServices registrationServices, IStatusServices statusServices,
+        ICaptchaServices captchaServices, IGetPassRecoveryQuestionsServices getPassRecoveryQuestionsServices,
+        IEncryptServices encryptServices)
+    {
+        _registrationServices = registrationServices;
 
-		public ICommand OpenModalCommand { get; }
 
-		private async Task OnOpenModalCommandExecuted(object p)
-		{
-			if (ModalStatus == false)
-			{
-				var status = await GetCaptcha();
+        _captchaServices = captchaServices;
 
-				if (!status)
-				{
-					return;
-				}
+        _getPassRecoveryQuestionsServices = getPassRecoveryQuestionsServices;
 
-				ModalStatus = true;
-			}
-			else
-			{
-				ModalStatus = false;
+        _encryptServices = encryptServices;
 
-				CaptchaString = string.Empty;
-			}
-		}
 
+        RegistrationCommand = new AsyncLambdaCommand(OnRegistrationExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanRegistrationExecute);
 
-		private bool CanOpenModalCommandExecute(object p)
-		{
-			if (Password != ConfirmPassword) return false;
+        OpenAuthPageCommand = new NavigationCommand(authPageNavigationServices);
 
-			return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) &&
-				   !string.IsNullOrEmpty(ConfirmPassword) && !string.IsNullOrEmpty(QuestionAnswer) &&
-				   SelectedQuestion is not null;
-		}
+        OpenModalCommand = new AsyncLambdaCommand(OnOpenModalCommandExecuted,
+            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            CanOpenModalCommandExecute);
 
 
-		public async Task<bool> GetCaptcha()
-		{
-			CaptсhaImageSource = await _captchaServices.GetCaptcha();
+        GetQuestionList();
+    }
 
-			if (CaptсhaImageSource == null)
-			{
-				return false;
-			}
+    public bool CanServerConnect
+    {
+        get => _canServerConnect;
+        set => Set(ref _canServerConnect, value);
+    }
 
-			return true;
-		}
+    public bool ModalStatus
+    {
+        get => _modalStatus;
+        set => Set(ref _modalStatus, value);
+    }
 
+    public string? CaptchaString
+    {
+        get => _captchaString;
+        set => Set(ref _captchaString, value);
+    }
 
-		public ICommand OpenAuthPageCommand { get; }
+    public ImageSource? CaptсhaImageSource
+    {
+        get => _captсhaImageSource;
+        set => Set(ref _captсhaImageSource, value);
+    }
 
-		#endregion
+    public string? Login
+    {
+        get => _login;
+        set => Set(ref _login, value);
+    }
 
+    public string? Password
+    {
+        get => _password;
+        set => Set(ref _password, value);
+    }
+
+    public string? ConfirmPassword
+    {
+        get => _confirmPassword;
+        set => Set(ref _confirmPassword, value);
+    }
+
+    public string? QuestionAnswer
+    {
+        get => _questionAnswer;
+        set => Set(ref _questionAnswer, value);
+    }
+
+    public ObservableCollection<Question>? QuestionsCollection
+    {
+        get => _questionsCollection;
+        set => Set(ref _questionsCollection, value);
+    }
+
+    public Question? SelectedQuestion
+    {
+        get => _selectedQuestion;
+        set => Set(ref _selectedQuestion, value);
+    }
+
 
-		private bool _canServerConnect;
+    private async void GetQuestionList()
+    {
+        try
+        {
+            QuestionsCollection =
+                new ObservableCollection<Question>((await _getPassRecoveryQuestionsServices.GetQuestions())!);
 
-		public bool CanServerConnect
-		{
-			get => _canServerConnect;
-			set => Set(ref _canServerConnect, value);
-		}
+            CanServerConnect = true;
+        }
+        catch
+        {
+            CanServerConnect = false;
 
+            OpenAuthPageCommand.Execute(null);
+        }
+    }
 
-		private bool _modalStatus;
+    #region Commands
 
-		public bool ModalStatus
-		{
-			get => _modalStatus;
-			set => Set(ref _modalStatus, value);
-		}
+    public ICommand RegistrationCommand { get; }
 
+    private bool CanRegistrationExecute(object p)
+    {
+        return !(bool)p && !string.IsNullOrEmpty(CaptchaString);
+    }
 
-		private string? _captchaString;
+    private async Task OnRegistrationExecuted(object p)
+    {
+        var base64Sha1Password = await _encryptServices.Sha1Encrypt(Password);
 
-		public string? CaptchaString
-		{
-			get => _captchaString;
-			set => Set(ref _captchaString, value);
-		}
+        base64Sha1Password = await _encryptServices.Base64Encrypt(base64Sha1Password);
 
+        var newAccount = new Account
+        {
+            Login = Login,
+            Password = base64Sha1Password
+        };
 
-		private ImageSource? _captсhaImageSource;
+        var registrationModel = new RegistrationModel
+        {
+            Captcha = CaptchaString,
+            QestionAnswer = QuestionAnswer,
+            Question = SelectedQuestion,
+            RecoveryAccount = newAccount
+        };
 
-		public ImageSource? CaptсhaImageSource
-		{
-			get => _captсhaImageSource;
-			set => Set(ref _captсhaImageSource, value);
-		}
+        var response = await _registrationServices.Registration(registrationModel);
 
+        switch (response)
+        {
+            case 0:
+                await GetCaptcha();
+                break;
 
-		private string? _login;
+            case 1:
+                ModalStatus = false;
 
-		public string? Login
-		{
-			get => _login;
-			set => Set(ref _login, value);
-		}
+                break;
+        }
+    }
 
 
-		private string? _password;
+    public ICommand OpenModalCommand { get; }
 
-		public string? Password
-		{
-			get => _password;
-			set => Set(ref _password, value);
-		}
+    private async Task OnOpenModalCommandExecuted(object p)
+    {
+        if (ModalStatus == false)
+        {
+            var status = await GetCaptcha();
 
+            if (!status) return;
 
-		private string? _confirmPassword;
+            ModalStatus = true;
+        }
+        else
+        {
+            ModalStatus = false;
 
-		public string? ConfirmPassword
-		{
-			get => _confirmPassword;
-			set => Set(ref _confirmPassword, value);
-		}
+            CaptchaString = string.Empty;
+        }
+    }
 
 
-		private string? _questionAnswer;
+    private bool CanOpenModalCommandExecute(object p)
+    {
+        if (Password != ConfirmPassword) return false;
 
-		public string? QuestionAnswer
-		{
-			get => _questionAnswer;
-			set => Set(ref _questionAnswer, value);
-		}
+        return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) &&
+               !string.IsNullOrEmpty(ConfirmPassword) && !string.IsNullOrEmpty(QuestionAnswer) &&
+               SelectedQuestion is not null;
+    }
 
 
-		private ObservableCollection<Question>? _questionsCollection;
+    public async Task<bool> GetCaptcha()
+    {
+        CaptсhaImageSource = await _captchaServices.GetCaptcha();
 
-		public ObservableCollection<Question>? QuestionsCollection
-		{
-			get => _questionsCollection;
-			set => Set(ref _questionsCollection, value);
-		}
+        if (CaptсhaImageSource == null) return false;
 
+        return true;
+    }
 
-		private Question? _selectedQuestion;
 
-		public Question? SelectedQuestion
-		{
-			get => _selectedQuestion;
-			set => Set(ref _selectedQuestion, value);
-		}
+    public ICommand OpenAuthPageCommand { get; }
 
-
-		private readonly IRegistrationServices _registrationServices;
-
-		private readonly ICaptchaServices _captchaServices;
-
-		private readonly IGetPassRecoveryQuestionsServices _getPassRecoveryQuestionsServices;
-
-		private readonly IEncryptServices _encryptServices;
-	}
+    #endregion
 }

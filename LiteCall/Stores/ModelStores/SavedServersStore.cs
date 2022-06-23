@@ -67,9 +67,9 @@ internal sealed class SavedServersStore : BaseVmd
         {
             findAccount =
                 SavedServerAccounts?.ServersAccounts?.First(x =>
-                    x.SavedServer!.ApiIp == deletedServer.SavedServer!.ApiIp)!;
+                    x.SavedServer!.ApiIp == deletedServer!.SavedServer!.ApiIp)!;
         }
-        catch 
+        catch
         {
             // ignored
         }
@@ -79,14 +79,15 @@ internal sealed class SavedServersStore : BaseVmd
         OnCurrentSeverAccountChanged();
     }
 
-    public void Replace(Server? ReplacedServer, Account? newAccount)
+    public void Replace(Server? replacedServer, Account? newAccount)
     {
         ServerAccount? findAccount = null;
 
 
         try
         {
-            findAccount = SavedServerAccounts!.ServersAccounts?.First(x => x.SavedServer.ApiIp == ReplacedServer.ApiIp);
+            findAccount =
+                SavedServerAccounts!.ServersAccounts?.First(x => x.SavedServer!.ApiIp == replacedServer!.ApiIp);
 
             SavedServerAccounts.ServersAccounts?.Remove(findAccount!);
 
@@ -94,12 +95,12 @@ internal sealed class SavedServersStore : BaseVmd
 
             SavedServerAccounts.ServersAccounts?.Add(findAccount);
         }
-        catch 
+        catch
         {
             findAccount = new ServerAccount
             {
                 Account = newAccount,
-                SavedServer = ReplacedServer
+                SavedServer = replacedServer
             };
 
             SavedServerAccounts?.ServersAccounts?.Add(findAccount);

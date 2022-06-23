@@ -22,6 +22,6 @@ internal class ApiServerGetPassRecQuestionsServices : IGetPassRecoveryQuestionsS
 
     public async Task<List<Question>?> GetQuestions()
     {
-        return await _httpDataServices.GetPasswordRecoveryQuestions(_currentServerStore.CurrentServer.ApiIp);
+        return await _httpDataServices.GetPasswordRecoveryQuestions(_currentServerStore.CurrentServer!.ApiIp);
     }
 }

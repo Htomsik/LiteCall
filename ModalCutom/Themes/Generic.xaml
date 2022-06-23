@@ -16,12 +16,14 @@
                     </ControlTemplate.Resources>
 
                     <Grid ClipToBounds="True">
-                        <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid Background="{TemplateBinding Background}"
+                              Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.Effect>
                                 <BlurEffect Radius="10" />
                             </Grid.Effect>
                         </Grid>
-                        <Grid Background="{TemplateBinding Background}" Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid Background="{TemplateBinding Background}"
+                              Visibility="{TemplateBinding IsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                             <Border
                                 HorizontalAlignment="Center"
@@ -38,7 +40,6 @@
                                     </Grid.OpacityMask>
 
 
-
                                     <ContentControl
                                         x:Name="border"
                                         ClipToBounds="True"
@@ -49,7 +50,6 @@
 
                         </Grid>
                     </Grid>
-
 
 
                 </ControlTemplate>

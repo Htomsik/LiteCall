@@ -157,7 +157,7 @@ internal class MainPageVmd : BaseVmd
         }
         catch
         {
-            await _authorizationServices!.Login(false, newServerAccount, SelectedServerAccount.SavedServer.Ip);
+            await _authorizationServices!.Login(false, newServerAccount, SelectedServerAccount.SavedServer!.Ip);
         }
 
 
@@ -190,7 +190,7 @@ internal class MainPageVmd : BaseVmd
         try
         {
             SavedServersStore!.Add(new ServerAccount
-                { Account = ServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore.CurrentServer });
+                { Account = ServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
         }
         catch
         {
@@ -283,7 +283,6 @@ internal class MainPageVmd : BaseVmd
 
         if (!CheckStatus)
         {
-            
             ApiIp = await _httpDataServices.MainServerGetApiIp(ServerNameOrIp);
 
             if (ApiIp == null)
@@ -298,8 +297,7 @@ internal class MainPageVmd : BaseVmd
         }
         else
         {
-           
-            newServer = await _httpDataServices.ApiServerGetInfo(ServerNameOrIp); 
+            newServer = await _httpDataServices.ApiServerGetInfo(ServerNameOrIp);
 
             if (newServer == null)
                 return;

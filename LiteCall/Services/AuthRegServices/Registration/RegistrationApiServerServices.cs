@@ -32,7 +32,8 @@ internal class RegistrationApiServerServices : IRegistrationServices
 
     public async Task<int> Registration(RegistrationModel registrationModel)
     {
-        var Response = await _httpDataServices.Registration(registrationModel, _currentServerStore.CurrentServer.ApiIp);
+        var Response =
+            await _httpDataServices.Registration(registrationModel, _currentServerStore.CurrentServer!.ApiIp);
 
         if (Response.Replace(" ", "") == HttpStatusCode.BadRequest.ToString())
             return 0; //если не верна капча

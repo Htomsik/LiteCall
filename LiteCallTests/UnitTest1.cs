@@ -1,19 +1,14 @@
-using System.Globalization;
-using LiteCall.Infrastructure.ValidationRule;
+namespace LiteCallTests;
 
-namespace LiteCallTests
+public class Tests
 {
-    public class Tests
+    [SetUp]
+    public void Setup()
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
+    }
 
-        [Test]
-        public void Test1()
-        {
-
-        }
+    [Test]
+    public void Test1()
+    {
     }
 }

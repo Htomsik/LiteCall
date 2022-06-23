@@ -1,39 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace LiteCall
+namespace LiteCall;
+
+public class Progam
 {
-    public class Progam
+    [STAThread]
+    public static void Main()
     {
-        [STAThread]
-        public static void Main()
-        {
-            var app = new App();
+        var app = new App();
 
-            app.InitializeComponent();
+        app.InitializeComponent();
 
-            app.Run();
-        }
+        app.Run();
+    }
 
-        public static IHostBuilder CreateHostBuilder(string[] Args)
-        {
-            var host_builder = Host.CreateDefaultBuilder(Args)
-                .UseContentRoot(Environment.CurrentDirectory)
-                .ConfigureServices(App.ConfigureServices)
-                .ConfigureAppConfiguration((host, cfg) => cfg
-                    .SetBasePath(Environment.CurrentDirectory)
-                    .AddJsonFile("apsettings.json", true, reloadOnChange: true)
-                );
+    public static IHostBuilder CreateHostBuilder(string[] Args)
+    {
+        var host_builder = Host.CreateDefaultBuilder(Args)
+            .UseContentRoot(Environment.CurrentDirectory)
+            .ConfigureServices(App.ConfigureServices)
+            .ConfigureAppConfiguration((host, cfg) => cfg
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("apsettings.json", true, true)
+            );
 
-         
-          
-            return host_builder;
-        }
-        
+
+        return host_builder;
     }
 }

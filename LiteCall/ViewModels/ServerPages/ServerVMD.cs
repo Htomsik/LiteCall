@@ -135,7 +135,7 @@ internal class ServerVMD : BaseVmd
 
     #region Stores
 
-    public  CurrentServerStore CurrentServerStore { get; set; }
+    public CurrentServerStore CurrentServerStore { get; set; }
 
     private readonly ServerAccountStore _serverAccountStore;
 
@@ -186,10 +186,11 @@ internal class ServerVMD : BaseVmd
                 CurrentGroup = new ServerRooms
                 {
                     RoomName = NewRoomName,
-                    Users = await ServerService.HubConnection!.InvokeAsync<List<ServerUser>>("GetUsersRoom", NewRoomName)
+                    Users = await ServerService.HubConnection!.InvokeAsync<List<ServerUser>>("GetUsersRoom",
+                        NewRoomName)
                 };
         }
-        catch 
+        catch
         {
             // ignored
         }
@@ -224,7 +225,7 @@ internal class ServerVMD : BaseVmd
             await ServerService.HubConnection!.InvokeAsync("SendMessage", newMessage);
             MessagesColCollection!.Add(newMessage);
         }
-        catch 
+        catch
         {
             _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", IsError = true });
         }
@@ -265,7 +266,8 @@ internal class ServerVMD : BaseVmd
         var ConnectedGroup = rooms;
 
         if (CurrentGroup is not null)
-            return !String.Equals(ConnectedGroup.RoomName!, CurrentGroup.RoomName!, StringComparison.CurrentCultureIgnoreCase);
+            return !string.Equals(ConnectedGroup.RoomName!, CurrentGroup.RoomName!,
+                StringComparison.CurrentCultureIgnoreCase);
         return true;
     }
 
@@ -429,7 +431,7 @@ internal class ServerVMD : BaseVmd
             await ServerService.HubConnection!.InvokeAsync("GroupDisconnect");
             GroupDisconnected();
         }
-        catch 
+        catch
         {
             _statusServices.ChangeStatus(new StatusMessage
                 { Message = "Failed disconnect from group", IsError = true });
@@ -464,7 +466,7 @@ internal class ServerVMD : BaseVmd
             newName = await ServerService.HubConnection!
                 .InvokeAsync<string>("SetName", _serverAccountStore.CurrentAccount!.Login).ConfigureAwait(false);
         }
-        catch 
+        catch
         {
             Dispose();
         }
@@ -527,7 +529,7 @@ internal class ServerVMD : BaseVmd
         return tr || sum2 > porog;
     }
 
-    public async void AsyncGetAudioBus(VoiceMessage newVoiceMes)
+    public void AsyncGetAudioBus(VoiceMessage newVoiceMes)
     {
         if (HeadphoneMute) return;
 
@@ -537,7 +539,7 @@ internal class ServerVMD : BaseVmd
 
             bufferUser.AddSamples(newVoiceMes.Audio, 0, newVoiceMes.Audio!.Length);
         }
-        catch 
+        catch
         {
             try
             {
@@ -577,7 +579,7 @@ internal class ServerVMD : BaseVmd
 
             ServerRooms = new ObservableCollection<ServerRooms>(roomListFromServer);
         }
-        catch 
+        catch
         {
             ServerRooms = new ObservableCollection<ServerRooms>();
         }

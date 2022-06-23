@@ -1,6 +1,5 @@
 ﻿using System;
 using LiteCall.Services.Interfaces;
-using LiteCall.Stores;
 using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Base;
 

@@ -61,7 +61,9 @@ internal class HttpDataService : IHttpDataServices
         _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
         var authModel = new
-            { newAcc.Login, Password = await _encryptServices.Base64Decrypt(newAcc.Password), Guid = ProgramCaptchaId };
+        {
+            newAcc!.Login, Password = await _encryptServices.Base64Decrypt(newAcc.Password), Guid = ProgramCaptchaId
+        };
 
         var json = JsonSerializer.Serialize(authModel);
 
@@ -252,7 +254,7 @@ internal class HttpDataService : IHttpDataServices
     }
 
 
-    public async Task<bool> CheckServerStatus(string? serverAddress)
+    public Task<bool> CheckServerStatus(string? serverAddress)
     {
         _statusServices.ChangeStatus(new StatusMessage { Message = "Check server status. . ." });
 
@@ -267,18 +269,18 @@ internal class HttpDataService : IHttpDataServices
 
                 _statusServices.DeleteStatus();
 
-                return true;
+                return Task.FromResult(true);
             }
             catch
             {
                 _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
 
-                return false;
+                return Task.FromResult(false);
             }
 
         _statusServices.ChangeStatus(new StatusMessage { Message = "Incorrect Ip address", IsError = true });
 
-        return false;
+        return Task.FromResult(false);
     }
 
     public async Task<List<Question>?> GetPasswordRecoveryQuestions(string? apiServerIp = null)
@@ -361,7 +363,8 @@ internal class HttpDataService : IHttpDataServices
     }
 
 
-    public async Task<bool> PostSaveServersUserOnMainServer(Account? currentAccount, AppSavedServers savedServerAccounts)
+    public async Task<bool> PostSaveServersUserOnMainServer(Account? currentAccount,
+        AppSavedServers savedServerAccounts)
     {
         var jsonServers = JsonSerializer.Serialize(savedServerAccounts,
             new JsonSerializerOptions
@@ -369,7 +372,7 @@ internal class HttpDataService : IHttpDataServices
 
         var saveModel = new
         {
-            currentAccount.Login,
+            currentAccount!.Login,
             Password = await _encryptServices.Base64Decrypt(currentAccount.Password),
             SaveServers = jsonServers,
             DateSynch = savedServerAccounts.LastUpdated
@@ -398,7 +401,7 @@ internal class HttpDataService : IHttpDataServices
     {
         var authModel = new
         {
-            currentAccount.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password),
+            currentAccount!.Login, Password = await _encryptServices.Base64Decrypt(currentAccount.Password),
             DateSynch = dateSynch
         };
 
@@ -438,16 +441,16 @@ internal class HttpDataService : IHttpDataServices
     }
 
 
-    public async Task<string> GetRoleFromJwtToken(string token)
+    public Task<string> GetRoleFromJwtToken(string token)
     {
         try
         {
             dynamic obj = JsonNode.Parse(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token.Split('.')[1])))!;
-            return (string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            return Task.FromResult((string)obj["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
         }
         catch
         {
-            return "User";
+            return Task.FromResult("User");
         }
     }
 }

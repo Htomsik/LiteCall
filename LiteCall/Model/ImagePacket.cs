@@ -19,9 +19,9 @@ public class ImagePacket
         Image = ImageBox.EncodeBytes(imgSources);
     }
 
-    private string Hash { get; set; } = string.Empty;
-    private int Len { get; set; }
-    private string Image { get; set; } = string.Empty;
+    private string Hash { get; } = string.Empty;
+    private int Len { get; }
+    private string Image { get; } = string.Empty;
 
     public byte[] GetRawData()
     {

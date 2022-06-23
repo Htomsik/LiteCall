@@ -26,7 +26,7 @@ internal class AuthCheckApiServerServices : IAuthorizationServices
 
             if (response == "invalid") return 0;
 
-            newAccount.Role = await _httpDataServices.GetRoleFromJwtToken(response);
+            newAccount!.Role = await _httpDataServices.GetRoleFromJwtToken(response);
 
             newAccount.Token = response;
 
@@ -34,7 +34,7 @@ internal class AuthCheckApiServerServices : IAuthorizationServices
         }
         else
         {
-            newAccount.IsAuthorized = false;
+            newAccount!.IsAuthorized = false;
 
             newAccount.Password = "";
 

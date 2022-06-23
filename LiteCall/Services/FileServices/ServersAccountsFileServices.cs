@@ -39,7 +39,7 @@ internal class ServersAccountsFileServices : IFileReadServices
             var allUsers = JsonConvert.DeserializeObject<List<SavedServers>>(fileText);
 
             var currentUserServerStore = allUsers!.Find(s =>
-                s.MainServerAccount!.IsAuthorized == _accountStore.CurrentAccount.IsAuthorized &&
+                s.MainServerAccount!.IsAuthorized == _accountStore.CurrentAccount!.IsAuthorized &&
                 s.MainServerAccount.Login == _accountStore.CurrentAccount.Login);
 
             _savedServersStore.SavedServerAccounts!.ServersAccounts = currentUserServerStore?.ServersAccounts ??
@@ -67,7 +67,7 @@ internal class ServersAccountsFileServices : IFileReadServices
                 if (allUsers != null)
                 {
                     foreach (var elem in allUsers)
-                        if (elem.MainServerAccount!.Login == _accountStore.CurrentAccount.Login &&
+                        if (elem.MainServerAccount!.Login == _accountStore.CurrentAccount!.Login &&
                             elem.MainServerAccount.IsAuthorized == _accountStore.CurrentAccount.IsAuthorized)
 
                             allUsers.Remove(elem);
@@ -96,7 +96,7 @@ internal class ServersAccountsFileServices : IFileReadServices
                     ServersAccounts = _savedServersStore.SavedServerAccounts.ServersAccounts
                 };
 
-                allUsers.Add(newSavedServers);
+                allUsers!.Add(newSavedServers);
             }
 
 
@@ -107,7 +107,7 @@ internal class ServersAccountsFileServices : IFileReadServices
 
             await File.WriteAllTextAsync(FilePath, jsonSerializeObject);
         }
-        catch 
+        catch
         {
             // ignored
         }

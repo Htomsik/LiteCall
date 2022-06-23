@@ -14,53 +14,6 @@ namespace LiteCall.ViewModels.Pages;
 
 internal class SettingVmd : BaseVmd
 {
-
-    #region Services
-
-    private readonly INavigationService _authNavigationService;
-
-    private readonly IHttpDataServices _httpDataServices;
-
-    private readonly IStatusServices _statusServices;
-
-
-    #endregion
-
-    #region Stores
-
-    private AccountStore? _accountStore;
-
-    private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
-
-    private  SavedServersStore? _savedServersStore;
-
-    private SettingsStore? _settingsStore;
-
-
-    #endregion
-
-    #region Pivate fields
-
-    private ObservableCollection<string>? _inputDeviceses;
-
-    private bool _isDefault;
-
-    private string? _newServerApiIp;
-
-    private string? _newSeverLogin;
-
-    private ObservableCollection<string>? _outputDevices;
-
-    private int _outputDeviceId;
-
-    private int _inputDeviceId;
-
-    #endregion
-
-
-
-
-
     public SettingVmd(AccountStore? accountStore, SavedServersStore? savedServersStore, SettingsStore? settingsStore,
         INavigationService authNavigationService, IHttpDataServices httpDataServices, IStatusServices statusServices,
         SettingsAccNavigationStore settingsAccNavigationStore)
@@ -284,4 +237,44 @@ internal class SettingVmd : BaseVmd
                 _statusServices.ChangeStatus(new StatusMessage { Message = "Server already exists", IsError = true });
         }
     }
+
+    #region Services
+
+    private readonly INavigationService _authNavigationService;
+
+    private readonly IHttpDataServices _httpDataServices;
+
+    private readonly IStatusServices _statusServices;
+
+    #endregion
+
+    #region Stores
+
+    private AccountStore? _accountStore;
+
+    private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
+
+    private SavedServersStore? _savedServersStore;
+
+    private SettingsStore? _settingsStore;
+
+    #endregion
+
+    #region Pivate fields
+
+    private ObservableCollection<string>? _inputDeviceses;
+
+    private bool _isDefault;
+
+    private string? _newServerApiIp;
+
+    private string? _newSeverLogin;
+
+    private ObservableCollection<string>? _outputDevices;
+
+    private int _outputDeviceId;
+
+    private int _inputDeviceId;
+
+    #endregion
 }
