@@ -16,7 +16,6 @@
                 <ResourceDictionary Source="Resources/Styles/ToolTips.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ToggleButtons.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Combobox.xaml" />
-                <ResourceDictionary Source="Resources/CustomControls/Loading/CustomLoadingGeneric.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

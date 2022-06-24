@@ -8,9 +8,9 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace LiteCall.Resources.CustomControls.Loading
+namespace CustomControls.Converters
 {
-    public class DiameterAndThicknessConverter:IMultiValueConverter
+    public class DiameterAndThicknessConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

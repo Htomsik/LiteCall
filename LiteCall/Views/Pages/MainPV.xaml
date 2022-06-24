@@ -3,9 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
+    xmlns:customControls="clr-namespace:CustomControls;assembly=CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:LiteCall.ViewModels.ServerPages"
@@ -364,7 +364,7 @@
         </ContentControl>
 
         <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
-        <modalCutom:ModalCustom
+        <customControls:ModalWindow
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
             BorderBrush="{DynamicResource Fonts(Solid)}"
@@ -373,7 +373,7 @@
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
 
-            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
+            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customControls:ModalWindow}, Path=Corner}">
                 <Grid
                     MinWidth="200"
                     Margin="5"
@@ -456,7 +456,7 @@
             </Border>
 
 
-        </modalCutom:ModalCustom>
+        </customControls:ModalWindow>
 
     </Grid>
 </UserControl>

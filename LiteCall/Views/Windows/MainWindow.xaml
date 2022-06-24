@@ -3,10 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
+    xmlns:customControls="clr-namespace:CustomControls;assembly=CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loading="clr-namespace:LiteCall.Resources.CustomControls.Loading"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:server="clr-namespace:LiteCall.ViewModels.ServerPages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
@@ -160,7 +159,7 @@
 
             <!--  IsOpen="{Binding ModalIsOpen}">  -->
 
-            <modalCutom:ModalCustom Grid.Row="1" IsOpen="{Binding ModalIsOpen}">
+            <customControls:ModalWindow Grid.Row="1" IsOpen="{Binding ModalIsOpen}">
 
                 <Grid>
 
@@ -213,7 +212,7 @@
 
                 </Grid>
 
-            </modalCutom:ModalCustom>
+            </customControls:ModalWindow>
 
             <Border
                 Grid.Row="1"
@@ -227,14 +226,14 @@
                 CornerRadius="16 0 0 16"
                 Visibility="{Binding StatusMessageIsOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <loading:LoadingCustomControl
+                <customControls:LoadingBox
                     x:Name="StatusLoading"
                     IsLoading="True"
                     MainText="{Binding CurrentStatusMessage.Message}">
 
-                    <loading:LoadingCustomControl.Style>
+                    <customControls:LoadingBox.Style>
 
-                        <Style BasedOn="{StaticResource {x:Type loading:LoadingCustomControl}}" TargetType="{x:Type loading:LoadingCustomControl}">
+                        <Style TargetType="{x:Type customControls:LoadingBox}">
 
                             <Setter Property="Color" Value="{DynamicResource Fonts(Solid)}" />
 
@@ -255,8 +254,8 @@
 
                         </Style>
 
-                    </loading:LoadingCustomControl.Style>
-                </loading:LoadingCustomControl>
+                    </customControls:LoadingBox.Style>
+                </customControls:LoadingBox>
 
 
             </Border>
