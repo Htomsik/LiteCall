@@ -92,7 +92,7 @@
                 Margin="0,5,0,0"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
-                ItemsSource="{Binding ServerRooms}"
+                ItemsSource="{Binding CurrentServerStore.CurrentServerRooms}"
                 SelectedItem="{Binding SelRooms, UpdateSourceTrigger=PropertyChanged}">
 
 

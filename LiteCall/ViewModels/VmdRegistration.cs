@@ -94,7 +94,7 @@ internal static class VmdRegistration
 
         services.AddTransient(s =>
             new ServerVmd(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),
-                s.GetRequiredService<IStatusServices>()));
+                s.GetRequiredService<IStatusServices>(),s.GetRequiredService<IChatServerServices>()));
 
 
         services.AddSingleton(s => new MainWindowVmd(

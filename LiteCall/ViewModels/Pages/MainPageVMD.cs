@@ -271,29 +271,27 @@ internal sealed class MainPageVmd : BaseVmd
 
     private async Task OnConnectServerExecuted(object p)
     {
-        var ServerAccount = new Account
+        var serverAccount = new Account
         {
             Login = AccountStore!.CurrentAccount!.Login
         };
 
         Server? newServer;
 
-        string? ApiIp;
-
 
         if (!CheckStatus)
         {
-            ApiIp = await _httpDataServices.MainServerGetApiIp(ServerNameOrIp);
+            var apiIp = await _httpDataServices.MainServerGetApiIp(ServerNameOrIp);
 
-            if (ApiIp == null)
+            if (apiIp == null)
                 return;
 
-            newServer = await _httpDataServices.ApiServerGetInfo(ApiIp);
+            newServer = await _httpDataServices.ApiServerGetInfo(apiIp);
 
             if (newServer == null)
                 return;
 
-            newServer.ApiIp = ApiIp;
+            newServer.ApiIp = apiIp;
         }
         else
         {
@@ -320,16 +318,16 @@ internal sealed class MainPageVmd : BaseVmd
                 _statusServices.ChangeStatus(new StatusMessage
                     { Message = "Authorization error. You will be logged without account", IsError = true });
 
-                await _authorizationServices.Login(false, ServerAccount, newServer.ApiIp);
+                await _authorizationServices.Login(false, serverAccount, newServer.ApiIp);
             }
             else
             {
-                ServerAccount = dictionaryServerAccount.Account;
+                serverAccount = dictionaryServerAccount.Account;
             }
         }
         catch
         {
-            await _authorizationServices!.Login(false, ServerAccount, newServer.ApiIp);
+            await _authorizationServices!.Login(false, serverAccount, newServer.ApiIp);
         }
 
 

@@ -1,4 +1,6 @@
-﻿namespace LiteCall.Model;
+﻿using LiteCall.ViewModels.Base;
+
+namespace LiteCall.Model;
 
 public class User
 {

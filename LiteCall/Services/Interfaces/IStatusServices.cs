@@ -7,4 +7,5 @@ internal interface IStatusServices
     public void ChangeStatus(StatusMessage newStatusMessage);
 
     public void DeleteStatus();
+
 }

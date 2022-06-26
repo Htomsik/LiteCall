@@ -22,6 +22,8 @@ internal static class StoresRegistration
 
         services.AddSingleton<HttpClientStore>();
 
+        services.AddSingleton<HubConnectionStore>();
+
         #endregion
 
         #region NavigationStores

@@ -14,6 +14,7 @@ internal sealed class AsyncLambdaCommand : AsyncCommandBase
         Func<object, bool>? canExecute = null) : base(onException)
     {
         _execute = execute;
+
         _canExecute = canExecute;
     }
 

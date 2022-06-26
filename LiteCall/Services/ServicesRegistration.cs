@@ -38,6 +38,8 @@ internal static class ServicesRegistration
 
         services.AddTransient<ISynhronyzeDataOnServerServices, SynchronizeDataOnServerServices>();
 
+        services.AddTransient<IChatServerServices, ChatServerServices>();
+
         #endregion
 
         return services;

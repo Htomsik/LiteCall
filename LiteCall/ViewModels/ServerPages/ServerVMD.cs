@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Bus;
@@ -22,10 +23,12 @@ internal sealed class ServerVmd : BaseVmd
 
     private readonly IStatusServices _statusServices;
 
+    private readonly IChatServerServices _chatServerServices;
+
     #endregion
 
     public ServerVmd(ServerAccountStore serverAccountStore, CurrentServerStore currentServerStore,
-        IStatusServices statusServices)
+        IStatusServices statusServices, IChatServerServices chatServerServices)
     {
         _serverAccountStore = serverAccountStore;
 
@@ -35,18 +38,22 @@ internal sealed class ServerVmd : BaseVmd
 
         _statusServices = statusServices;
 
-        InitSignalRConnection(CurrentServerStore.CurrentServer, _serverAccountStore.CurrentAccount);
+        _chatServerServices = chatServerServices;
 
-        AsyncGetUserServerName();
+        currentServerStore.CurrentServerDeleted += Dispose;
+
 
         MessageBus.Bus += AsyncGetMessageBus;
-
-
-        ReloadServerRooms.Reloader += AsynGetServerRoomsBus;
 
         VoiceMessageBus.Bus += AsyncGetAudioBus;
 
         DisconnectNotification.Notificator += GroupDisconnected;
+
+        CurrentServerStore.CurrentServerRoomsChanged += CurrentServerRoomsChanged;
+
+        _serverAccountStore.CurrentAccountChange += CurrentAccountChange;
+
+
 
         #region команды
 
@@ -70,7 +77,7 @@ internal sealed class ServerVmd : BaseVmd
 
         OpenPasswordModalCommand = new LambdaCommand(OnOpenPasswordModalCommandCommandExecuted);
 
-        DisconnectGroupCommand = new LambdaCommand(OnDisconnectGroupExecuted);
+        DisconnectGroupCommand = new AsyncLambdaCommand(OnDisconnectGroupExecuted, ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }));
 
 
         #region Админ команды
@@ -79,7 +86,7 @@ internal sealed class ServerVmd : BaseVmd
             ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
             CanAdminDeleteRoomExecute);
 
-        AdminDisconnectUserFromRoomCommand = new AsyncLambdaCommand(OnAdminDisconnectUserFromRoomExecuted,
+        AdminDisconnectUserFromRoomCommand = new AsyncLambdaCommand(OnAdminKickUserFromRoomExecuted,
             ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
             CanAdminDisconnectUserFromRoomExecute);
 
@@ -93,7 +100,7 @@ internal sealed class ServerVmd : BaseVmd
 
         _input.DataAvailable += InputDataAvailable!;
 
-        _input.BufferMilliseconds = 10;
+        _input.BufferMilliseconds = 25;
 
         _input.WaveFormat = _waveFormat;
 
@@ -113,25 +120,15 @@ internal sealed class ServerVmd : BaseVmd
         #endregion
     }
 
-    #region Server hub connecting
-
-    public async void InitSignalRConnection(Server? currentServer, Account? currentAccount)
+    private void CurrentAccountChange()
     {
-        try
-        {
-            await ServerService.ConnectionHub($"https://{currentServer!.Ip}/LiteCall", currentAccount, _statusServices);
-            CanServerConnect = true;
-        }
-        catch
-        {
-            CanServerConnect = false;
-        }
-
-
-        _statusServices.DeleteStatus();
+        OnPropertyChanged(nameof(CanServerConnect));
     }
 
-    #endregion
+    private void CurrentServerRoomsChanged()
+    {
+        OnPropertyChanged(nameof(CurrentGroup));
+    }
 
     #region Stores
 
@@ -159,9 +156,9 @@ internal sealed class ServerVmd : BaseVmd
 
     public ICommand DisconnectGroupCommand { get; }
 
-    private void OnDisconnectGroupExecuted(object p)
+    private async Task OnDisconnectGroupExecuted(object p)
     {
-        AsyncGroupDisconect();
+       await _chatServerServices.GroupDisconnect();
     }
 
     #endregion
@@ -177,27 +174,12 @@ internal sealed class ServerVmd : BaseVmd
 
     private async Task OnCreateNewRoomExecuted(object p)
     {
-        try
-        {
-            var groupStatus =
-                await ServerService.HubConnection!.InvokeAsync<bool>("GroupCreate", NewRoomName, NewRoomPassword);
-
-            if (groupStatus)
-                CurrentGroup = new ServerRooms
-                {
-                    RoomName = NewRoomName,
-                    Users = await ServerService.HubConnection!.InvokeAsync<List<ServerUser>>("GetUsersRoom",
-                        NewRoomName)
-                };
-        }
-        catch
-        {
-            // ignored
-        }
+        await _chatServerServices.GroupCreate(NewRoomName!, NewRoomPassword!);
 
         NewRoomName = string.Empty;
         NewRoomPassword = string.Empty;
         CreateRoomModalStatus = false;
+
     }
 
     #endregion
@@ -220,17 +202,11 @@ internal sealed class ServerVmd : BaseVmd
             Sender = _serverAccountStore.CurrentAccount!.CurrentServerLogin
         };
 
-        try
+        if (await _chatServerServices.SendMessage(newMessage))
         {
-            await ServerService.HubConnection!.InvokeAsync("SendMessage", newMessage);
             MessagesColCollection!.Add(newMessage);
+            CurrentMessage = string.Empty;
         }
-        catch
-        {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", IsError = true });
-        }
-
-        CurrentMessage = string.Empty;
     }
 
     #endregion
@@ -281,7 +257,7 @@ internal sealed class ServerVmd : BaseVmd
             return;
         }
 
-        await AsyncRoomConnect(connectedGroup);
+        await _chatServerServices.GroupConnect(SelRooms!.RoomName!,RoomPassword!);
     }
 
     #endregion
@@ -316,7 +292,7 @@ internal sealed class ServerVmd : BaseVmd
 
     private async Task OnConnectWithPasswordCommandExecuted(object p)
     {
-        await AsyncRoomConnect(SelRooms, RoomPassword);
+        await _chatServerServices.GroupConnect(SelRooms!.RoomName!, RoomPassword!);
         RoomPassword = string.Empty;
         RoomPasswordModalStatus = false;
     }
@@ -338,14 +314,7 @@ internal sealed class ServerVmd : BaseVmd
     {
         var deletedRoom = (ServerRooms)p;
 
-        try
-        {
-            await ServerService.HubConnection!.SendAsync("AdminDeleteRoom", deletedRoom.RoomName);
-        }
-        catch
-        {
-            // ignored
-        }
+        await _chatServerServices.AdminDeleteGroup(deletedRoom.RoomName!);
     }
 
     #endregion
@@ -361,18 +330,11 @@ internal sealed class ServerVmd : BaseVmd
         return p is ServerUser;
     }
 
-    private async Task OnAdminDisconnectUserFromRoomExecuted(object p)
+    private async Task OnAdminKickUserFromRoomExecuted(object p)
     {
-        var disconnectedUser = (ServerUser)p;
+        var kickedUser = (ServerUser)p;
 
-        try
-        {
-            await ServerService.HubConnection!.SendAsync("AdminKickUser", disconnectedUser.Login);
-        }
-        catch
-        {
-            // ignored
-        }
+        await _chatServerServices.AdminKickUserFromGroup(kickedUser.Login!);
     }
 
     #endregion
@@ -383,60 +345,47 @@ internal sealed class ServerVmd : BaseVmd
 
     #region ControlMethods
 
-    private async Task AsyncRoomConnect(ServerRooms? ConnectedGroup, string? RoomPassword = "")
-    {
-        try
-        {
-            var connectRoomStatus = await ServerService.HubConnection!.InvokeAsync<bool>("GroupConnect",
-                $"{ConnectedGroup!.RoomName}", RoomPassword);
+    //private async Task AsyncRoomConnect(ServerRooms? ConnectedGroup, string? RoomPassword = "")
+    //{
+    //    try
+    //    {
+    //        var connectRoomStatus = await ServerService.HubConnection!.InvokeAsync<bool>("GroupConnect",
+    //            $"{ConnectedGroup!.RoomName}", RoomPassword);
 
-            if (connectRoomStatus)
-            {
-                _mixer.RemoveAllMixerInputs();
+    //        if (connectRoomStatus)
+    //        {
+    //            _mixer.RemoveAllMixerInputs();
 
-                _bufferUsers.Clear();
+    //            _bufferUsers.Clear();
 
-                CurrentGroup = ConnectedGroup;
+    //            CurrentGroup = ConnectedGroup;
 
-                MicrophoneMute = false;
+    //            MicrophoneMute = false;
 
-                _waveOut.Play();
+    //            _waveOut.Play();
 
-                try
-                {
-                    _input.StartRecording();
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-            else
-            {
-                _statusServices.ChangeStatus(new StatusMessage
-                    { Message = "Failed connect to the room", IsError = true });
-            }
-        }
-        catch
-        {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", IsError = true });
-        }
-    }
+    //            try
+    //            {
+    //                _input.StartRecording();
+    //            }
+    //            catch
+    //            {
+    //                // ignored
+    //            }
+    //        }
+    //        else
+    //        {
+    //            _statusServices.ChangeStatus(new StatusMessage
+    //                { Message = "Failed connect to the room", IsError = true });
+    //        }
+    //    }
+    //    catch
+    //    {
+    //        _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", IsError = true });
+    //    }
+    //}
 
 
-    private async void AsyncGroupDisconect()
-    {
-        try
-        {
-            await ServerService.HubConnection!.InvokeAsync("GroupDisconnect");
-            GroupDisconnected();
-        }
-        catch
-        {
-            _statusServices.ChangeStatus(new StatusMessage
-                { Message = "Failed disconnect from group", IsError = true });
-        }
-    }
 
 
     private void GroupDisconnected()
@@ -444,8 +393,6 @@ internal sealed class ServerVmd : BaseVmd
         _mixer.RemoveAllMixerInputs();
 
         _bufferUsers.Clear();
-
-        CurrentGroup = null;
 
         MessagesColCollection = new ObservableCollection<Message>();
 
@@ -458,51 +405,28 @@ internal sealed class ServerVmd : BaseVmd
         _bufferUsers.Clear();
     }
 
-    private async void AsyncGetUserServerName()
-    {
-        string? newName = null;
-        try
-        {
-            newName = await ServerService.HubConnection!
-                .InvokeAsync<string>("SetName", _serverAccountStore.CurrentAccount!.Login).ConfigureAwait(false);
-        }
-        catch
-        {
-            Dispose();
-        }
-
-        if (newName == "non") Dispose();
-
-        _serverAccountStore.CurrentAccount!.CurrentServerLogin = newName;
-    }
-
     #endregion
 
     #region Audio
 
     private async void InputDataAvailable(object sender, WaveInEventArgs e)
     {
-        try
-        {
+       
             if (CurrentGroup != null)
             {
                 if (VAD(e))
-                    await ServerService.HubConnection!.SendAsync("SendAudio", e.Buffer);
+                    await _chatServerServices.SendAudioMessage(e.Buffer);
             }
             else
             {
                 MicrophoneMute = true;
             }
-        }
-        catch
-        {
-            // ignored
-        }
+        
     }
 
     private bool VAD(WaveInEventArgs e)
     {
-        var porog = 0.005;
+        const double porog = 0.005;
 
         var tr = false;
 
@@ -569,36 +493,11 @@ internal sealed class ServerVmd : BaseVmd
         MessagesColCollection!.Add(newMessage);
     }
 
-    private async void AsynGetServerRoomsBus()
-    {
-        try
-        {
-            var roomListFromServer =
-                await ServerService.HubConnection!.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
-
-
-            ServerRooms = new ObservableCollection<ServerRooms>(roomListFromServer);
-        }
-        catch
-        {
-            ServerRooms = new ObservableCollection<ServerRooms>();
-        }
-    }
-
     #endregion
 
     #region Changed
 
-    private ObservableCollection<ServerRooms>? OnCurrentGoupChanged(ObservableCollection<ServerRooms>? CurrentRoomUsers)
-    {
-        foreach (var rooms in CurrentRoomUsers!)
-        foreach (var users in rooms.Users!)
-            if (users.Login == _serverAccountStore.CurrentAccount!.CurrentServerLogin)
-                users.Role = "You";
 
-
-        return CurrentRoomUsers;
-    }
 
 
     private void OnMicrophoneMuteChanged()
@@ -627,11 +526,11 @@ internal sealed class ServerVmd : BaseVmd
 
     public override void Dispose()
     {
-        ServerService.HubConnection!.StopAsync();
+        _chatServerServices.ConnectionStop();
 
         MessageBus.Bus -= AsyncGetMessageBus;
 
-        ReloadServerRooms.Reloader -= AsynGetServerRoomsBus;
+       // ReloadServerRooms.Reloader -= AsynGetServerRoomsBus;
 
         VoiceMessageBus.Bus -= AsyncGetAudioBus;
 
@@ -732,31 +631,18 @@ internal sealed class ServerVmd : BaseVmd
     }
 
 
-    private ObservableCollection<ServerRooms>? _serverRooms;
+    
+    public ServerRooms? CurrentGroup => SetCurrentGroup();
 
-    public ObservableCollection<ServerRooms>? ServerRooms
+    private ServerRooms SetCurrentGroup()
     {
-        get => _serverRooms;
-        set => Set(ref _serverRooms, OnCurrentGoupChanged(value));
+        return (from rooms in CurrentServerStore.CurrentServerRooms! from users in rooms.Users! where users.Login == _serverAccountStore.CurrentAccount!.CurrentServerLogin select rooms).FirstOrDefault()!;
     }
 
 
-    private ServerRooms? _currentGroup;
-
-    public ServerRooms? CurrentGroup
-    {
-        get => _currentGroup;
-        set => Set(ref _currentGroup, value);
-    }
 
 
-    private bool _canServerConnect;
-
-    public bool CanServerConnect
-    {
-        get => _canServerConnect;
-        set => Set(ref _canServerConnect, value);
-    }
+    public bool CanServerConnect => true;
 
 
     private bool _headphoneMute;

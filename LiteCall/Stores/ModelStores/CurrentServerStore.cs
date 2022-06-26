@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using LiteCall.Model;
 using LiteCall.ViewModels.Base;
 
@@ -14,15 +15,38 @@ internal sealed class CurrentServerStore : BaseVmd
         set
         {
             Set(ref _currentServer, value);
-            OnCurrentServerChangeChanged();
+            OnCurrentServerChanged();
         }
     }
 
-    public event Action? CurrentServerChange;
 
-    private void OnCurrentServerChangeChanged()
+    private ObservableCollection<ServerRooms>? _currentSeverRooms = new ObservableCollection<ServerRooms>();
+
+    public ObservableCollection<ServerRooms>?  CurrentServerRooms
     {
-        CurrentServerChange?.Invoke();
+        get => _currentSeverRooms;
+        set
+        {
+            Set(ref _currentSeverRooms, value);
+            CurrentServerRoomsChanged?.Invoke();
+        } 
+    }
+
+
+
+
+
+    public event Action? CurrentServerRoomsChanged;
+
+    public event Action? CurrentServerChanged;
+
+    public event Action? CurrentServerDeleted;
+
+    private void OnCurrentServerChanged()
+    {
+        CurrentServerChanged?.Invoke();
+        if (CurrentServer is null)
+            CurrentServerDeleted?.Invoke();
     }
 
 

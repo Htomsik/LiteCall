@@ -49,7 +49,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
     public async Task<string> GetAuthorizeToken(RegRecPasswordAccount? newAcc, string? apiServerIp = null)
     {
-        if (apiServerIp == null) apiServerIp = DefaultMainIp;
+        apiServerIp ??= DefaultMainIp;
 
         _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
 
