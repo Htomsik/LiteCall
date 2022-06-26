@@ -1,5 +1,5 @@
 ﻿using System;
-using LiteCall.Model;
+using LiteCall.Model.ServerModels.Messages;
 
 namespace LiteCall.Infrastructure.Bus;
 

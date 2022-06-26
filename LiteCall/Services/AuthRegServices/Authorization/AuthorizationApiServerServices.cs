@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 

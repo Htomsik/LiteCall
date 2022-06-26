@@ -96,7 +96,7 @@
 
 
                 <ComboBox
-                    x:Name="QuestionCB"
+                    x:Name="QuestionComboBox"
                     Grid.Row="4"
                     Margin="20,5,1,5"
                     IsEnabled="{Binding CanServerConnect, UpdateSourceTrigger=PropertyChanged}"
@@ -236,7 +236,7 @@
 
         <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
         <customControls:ModalWindow
-            Grid.RowSpan="4"
+            Grid.Row="0" Grid.RowSpan="2"
             BorderBrush="{DynamicResource Fonts(Solid)}"
             BorderThickness="1"
             Corner="10"
@@ -273,7 +273,7 @@
 
 
                     <TextBox
-                        x:Name="CapthcaTB"
+                        x:Name="CaptchaTextBox"
                         Grid.Row="2"
                         Margin="20,8"
                         MaxLength="4"
@@ -313,7 +313,7 @@
                             Command="{Binding RegistrationCommand, UpdateSourceTrigger=PropertyChanged}">
 
                             <Button.CommandParameter>
-                                <Binding ElementName="CapthcaTB" Path="(Validation.HasError)" />
+                                <Binding ElementName="CaptchaTextBox" Path="(Validation.HasError)" />
                             </Button.CommandParameter>
 
                             <TextBlock Text="OK" />
@@ -341,7 +341,7 @@
         </customControls:ModalWindow>
 
         <Border
-            Grid.RowSpan="2"
+            Grid.Row="0" Grid.RowSpan="2"
             Background="Black"
             CornerRadius="10"
             Opacity="0.3"

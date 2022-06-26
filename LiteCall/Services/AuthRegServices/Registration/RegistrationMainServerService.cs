@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.Model.RegistrationRecovery;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 

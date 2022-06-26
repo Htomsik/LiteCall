@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
 using LiteCall.Model;
+using LiteCall.Model.Images;
 using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services.AuthRegServices.Captcha;

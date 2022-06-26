@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.Model.ServerModels.Messages;
 
 namespace LiteCall.Services.Interfaces
 {

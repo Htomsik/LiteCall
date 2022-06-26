@@ -10,6 +10,12 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.Model.Errors;
+using LiteCall.Model.Images;
+using LiteCall.Model.RegistrationRecovery;
+using LiteCall.Model.Saved;
+using LiteCall.Model.ServerModels;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.WebUtilities;
@@ -105,7 +111,7 @@ internal sealed class HttpDataService : IHttpDataServices
             Guid = ProgramCaptchaId,
             registrationModel.Captcha,
             QuestionsId = registrationModel.Question!.Id,
-            AnswersecurityQ = registrationModel.QestionAnswer
+            AnswersecurityQ = registrationModel.QuestionAnswer
         };
 
         var json = JsonSerializer.Serialize(authModel);
@@ -320,7 +326,7 @@ internal sealed class HttpDataService : IHttpDataServices
         {
             recoveryModel.RecoveryAccount!.Login,
             newPassword = await _encryptServices.Base64Decrypt(recoveryModel.RecoveryAccount.Password),
-            QuestionsId = recoveryModel.Question!.Id, AnswersecurityQ = recoveryModel.QestionAnswer
+            QuestionsId = recoveryModel.Question!.Id, AnswersecurityQ = recoveryModel.QuestionAnswer
         };
 
         var json = JsonSerializer.Serialize(authModel);

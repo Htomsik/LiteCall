@@ -4,6 +4,9 @@ using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
+using LiteCall.Model.Errors;
+using LiteCall.Model.RegistrationRecovery;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Base;
 
@@ -88,7 +91,7 @@ internal class PasswordRecoveryVmd : BaseVmd
 
         var recoveryModel = new RecoveryModel
         {
-            QestionAnswer = QuestionAnswer,
+            QuestionAnswer = QuestionAnswer,
             Question = SelectedQuestion,
             RecoveryAccount = new RegRecPasswordAccount { Login = Login, Password = base64Sha1Password }
         };

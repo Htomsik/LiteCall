@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LiteCall.Model;
+using LiteCall.Model.Images;
+using LiteCall.Model.RegistrationRecovery;
+using LiteCall.Model.Saved;
+using LiteCall.Model.ServerModels;
+using LiteCall.Model.Users;
 
 namespace LiteCall.Services.Interfaces;
 

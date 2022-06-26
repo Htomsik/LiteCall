@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using LiteCall.Model;
+using LiteCall.Model.ServerModels;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores;

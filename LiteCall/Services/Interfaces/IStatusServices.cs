@@ -1,4 +1,5 @@
 ﻿using LiteCall.Model;
+using LiteCall.Model.Errors;
 
 namespace LiteCall.Services.Interfaces;
 

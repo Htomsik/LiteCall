@@ -5,6 +5,9 @@ using System.Windows.Media;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
+using LiteCall.Model.Errors;
+using LiteCall.Model.RegistrationRecovery;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Base;
 
@@ -160,7 +163,7 @@ internal class RegistrationPageVmd : BaseVmd
 
     #region Commands
 
-    public ICommand RegistrationCommand { get; }
+    public ICommand RegistrationCommand { get; set; }
 
     private bool CanRegistrationExecute(object p)
     {
@@ -182,7 +185,7 @@ internal class RegistrationPageVmd : BaseVmd
         var registrationModel = new RegistrationModel
         {
             Captcha = CaptchaString,
-            QestionAnswer = QuestionAnswer,
+            QuestionAnswer = QuestionAnswer,
             Question = SelectedQuestion,
             RecoveryAccount = newAccount
         };
