@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Bus;
 using LiteCall.Infrastructure.Commands.Lambda;
-using LiteCall.Model;
-using LiteCall.Model.Errors;
 using LiteCall.Model.ServerModels;
 using LiteCall.Model.ServerModels.Messages;
+using LiteCall.Model.Statuses;
 using LiteCall.Model.Users;
-using LiteCall.Services;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
-using Microsoft.AspNetCore.SignalR.Client;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
@@ -23,14 +20,6 @@ namespace LiteCall.ViewModels.ServerPages;
 
 internal sealed class ServerVmd : BaseVmd
 {
-    #region Services
-
-    private readonly IStatusServices _statusServices;
-
-    private readonly IChatServerServices _chatServerServices;
-
-    #endregion
-
     public ServerVmd(ServerAccountStore serverAccountStore, CurrentServerStore currentServerStore,
         IStatusServices statusServices, IChatServerServices chatServerServices)
     {
@@ -58,40 +47,40 @@ internal sealed class ServerVmd : BaseVmd
         _serverAccountStore.CurrentAccountChange += CurrentAccountChange;
 
 
-
         #region команды
 
         SendMessageCommand = new AsyncLambdaCommand(OnSendMessageExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanSendMessageExecuted);
 
         CreateNewRoomCommand = new AsyncLambdaCommand(OnCreateNewRoomExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanCreateNewRoomExecute);
 
         ConnectCommand = new AsyncLambdaCommand(OnConnectExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanConnectExecute);
 
         ConnectWithPasswordCommand = new AsyncLambdaCommand(OnConnectWithPasswordCommandExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanConnectWithPasswordExecute);
 
         OpenCreateRoomModalCommand = new LambdaCommand(OnOpenCreateRoomModalCommandExecuted);
 
         OpenPasswordModalCommand = new LambdaCommand(OnOpenPasswordModalCommandCommandExecuted);
 
-        DisconnectGroupCommand = new AsyncLambdaCommand(OnDisconnectGroupExecuted, ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }));
+        DisconnectGroupCommand = new AsyncLambdaCommand(OnDisconnectGroupExecuted,
+            ex => statusServices.ChangeStatus(ex.Message));
 
 
         #region Админ команды
 
         AdminDeleteRoomCommand = new AsyncLambdaCommand(OnAdminDeleteRoomExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanAdminDeleteRoomExecute);
 
         AdminDisconnectUserFromRoomCommand = new AsyncLambdaCommand(OnAdminKickUserFromRoomExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanAdminDisconnectUserFromRoomExecute);
 
         #endregion
@@ -134,6 +123,14 @@ internal sealed class ServerVmd : BaseVmd
         OnPropertyChanged(nameof(CurrentGroup));
     }
 
+    #region Services
+
+    private readonly IStatusServices _statusServices;
+
+    private readonly IChatServerServices _chatServerServices;
+
+    #endregion
+
     #region Stores
 
     public CurrentServerStore CurrentServerStore { get; set; }
@@ -162,7 +159,7 @@ internal sealed class ServerVmd : BaseVmd
 
     private async Task OnDisconnectGroupExecuted(object p)
     {
-       await _chatServerServices.GroupDisconnect();
+        await _chatServerServices.GroupDisconnect();
     }
 
     #endregion
@@ -183,7 +180,6 @@ internal sealed class ServerVmd : BaseVmd
         NewRoomName = string.Empty;
         NewRoomPassword = string.Empty;
         CreateRoomModalStatus = false;
-
     }
 
     #endregion
@@ -261,7 +257,7 @@ internal sealed class ServerVmd : BaseVmd
             return;
         }
 
-        await _chatServerServices.GroupConnect(SelRooms!.RoomName!,RoomPassword!);
+        await _chatServerServices.GroupConnect(SelRooms!.RoomName!, RoomPassword!);
     }
 
     #endregion
@@ -390,8 +386,6 @@ internal sealed class ServerVmd : BaseVmd
     //}
 
 
-
-
     private void GroupDisconnected()
     {
         _mixer.RemoveAllMixerInputs();
@@ -415,17 +409,15 @@ internal sealed class ServerVmd : BaseVmd
 
     private async void InputDataAvailable(object sender, WaveInEventArgs e)
     {
-       
-            if (CurrentGroup != null)
-            {
-                if (VAD(e))
-                    await _chatServerServices.SendAudioMessage(e.Buffer);
-            }
-            else
-            {
-                MicrophoneMute = true;
-            }
-        
+        if (CurrentGroup != null)
+        {
+            if (VAD(e))
+                await _chatServerServices.SendAudioMessage(e.Buffer);
+        }
+        else
+        {
+            MicrophoneMute = true;
+        }
     }
 
     private bool VAD(WaveInEventArgs e)
@@ -501,9 +493,6 @@ internal sealed class ServerVmd : BaseVmd
 
     #region Changed
 
-
-
-
     private void OnMicrophoneMuteChanged()
     {
         if (MicrophoneMute)
@@ -534,7 +523,7 @@ internal sealed class ServerVmd : BaseVmd
 
         MessageBus.Bus -= AsyncGetMessageBus;
 
-       // ReloadServerRooms.Reloader -= AsynGetServerRoomsBus;
+        // ReloadServerRooms.Reloader -= AsynGetServerRoomsBus;
 
         VoiceMessageBus.Bus -= AsyncGetAudioBus;
 
@@ -635,15 +624,15 @@ internal sealed class ServerVmd : BaseVmd
     }
 
 
-    
     public ServerRooms? CurrentGroup => SetCurrentGroup();
 
     private ServerRooms SetCurrentGroup()
     {
-        return (from rooms in CurrentServerStore.CurrentServerRooms! from users in rooms.Users! where users.Login == _serverAccountStore.CurrentAccount!.CurrentServerLogin select rooms).FirstOrDefault()!;
+        return (from rooms in CurrentServerStore.CurrentServerRooms!
+            from users in rooms.Users!
+            where users.Login == _serverAccountStore.CurrentAccount!.CurrentServerLogin
+            select rooms).FirstOrDefault()!;
     }
-
-
 
 
     public bool CanServerConnect => true;

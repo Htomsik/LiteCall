@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
-using LiteCall.Model;
-using LiteCall.Model.Errors;
 using LiteCall.Model.Saved;
+using LiteCall.Model.Statuses;
 using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
@@ -44,7 +43,7 @@ internal sealed class SettingVmd : BaseVmd
         AccountStatusChange();
 
         AddNewServerCommand = new AsyncLambdaCommand(OnAddNewServerExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanAddNewServerExecute);
 
 
@@ -237,7 +236,7 @@ internal sealed class SettingVmd : BaseVmd
             newSavedSeverAccount.SavedServer = newServer;
 
             if (!SavedServersStore!.Add(newSavedSeverAccount))
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Server already exists", IsError = true });
+                _statusServices.ChangeStatus("Server already exist");
         }
     }
 

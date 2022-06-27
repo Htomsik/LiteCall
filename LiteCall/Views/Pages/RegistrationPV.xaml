@@ -210,15 +210,22 @@
 
                             <MultiDataTrigger.Conditions>
 
-                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}"
+                                           Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}"
+                                           Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordConfirmTextBox, Path=(Validation.HasError)}" Value="True" />
+                                <Condition
+                                    Binding="{Binding ElementName=PasswordConfirmTextBox, Path=(Validation.HasError)}"
+                                    Value="True" />
 
-                                <Condition Binding="{Binding ElementName=AnswerTextBox, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=AnswerTextBox, Path=(Validation.HasError)}"
+                                           Value="True" />
 
-                                <Condition Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}" Value="True" />
+                                <Condition
+                                    Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}"
+                                    Value="True" />
 
                             </MultiDataTrigger.Conditions>
 
@@ -243,7 +250,8 @@
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
 
-            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customControls:ModalWindow}, Path=Corner}">
+            <Border Background="{DynamicResource Background2(Solid)}"
+                    CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customControls:ModalWindow}, Path=Corner}">
                 <Grid
                     MinWidth="200"
                     MinHeight="200"
@@ -268,7 +276,8 @@
                         BorderBrush="{DynamicResource Fonts(Solid)}"
                         BorderThickness="0.2"
                         CornerRadius="5">
-                        <Image Source="{Binding CaptсhaImageSource, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
+                        <Image Source="{Binding CaptсhaImageSource, UpdateSourceTrigger=PropertyChanged}"
+                               Stretch="Fill" />
                     </Border>
 
 

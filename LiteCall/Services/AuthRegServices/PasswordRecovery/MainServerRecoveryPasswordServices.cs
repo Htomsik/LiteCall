@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using LiteCall.Model;
 using LiteCall.Model.RegistrationRecovery;
 using LiteCall.Services.Interfaces;
 

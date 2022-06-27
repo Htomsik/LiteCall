@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
 using LiteCall.Infrastructure.Bus;
-using LiteCall.Model;
-using LiteCall.Model.Errors;
 using LiteCall.Model.ServerModels;
 using LiteCall.Model.ServerModels.Messages;
+using LiteCall.Model.Statuses;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -28,9 +27,6 @@ internal sealed class ChatServerServices : IChatServerServices
     public ChatServerServices(IStatusServices statusServices, HubConnectionStore hubConnectionStore,
         ServerAccountStore serverAccountStore, CurrentServerStore currentServerStore)
     {
-
-       
-
         _statusServices = statusServices;
 
         _hubConnectionStore = hubConnectionStore;
@@ -39,7 +35,7 @@ internal sealed class ChatServerServices : IChatServerServices
 
         _currentServerStore = currentServerStore;
 
-        _statusServices!.ChangeStatus(new StatusMessage { Message = "Connecting to server. . .", IsError = false });
+        _statusServices.ChangeStatus(StatusesActions.ServerConnection);
 
         ConnectionStart();
 
@@ -58,7 +54,7 @@ internal sealed class ChatServerServices : IChatServerServices
         catch
         {
             _statusServices.ChangeStatus(
-                new StatusMessage { IsError = true, Message = "Room connection error" });
+                new StatusMessage { Type = StatusType.Error, Message = "Room connection error" });
 
             return false;
         }
@@ -74,7 +70,7 @@ internal sealed class ChatServerServices : IChatServerServices
         catch
         {
             _statusServices.ChangeStatus(
-                new StatusMessage { IsError = true, Message = "Room disconnect error" });
+                new StatusMessage { Type = StatusType.Error, Message = "Room disconnect error" });
 
             return false;
         }
@@ -90,7 +86,7 @@ internal sealed class ChatServerServices : IChatServerServices
         catch
         {
             _statusServices.ChangeStatus(
-                new StatusMessage { IsError = true, Message = "Room creation error" });
+                new StatusMessage { Type = StatusType.Error, Message = "Room creation error" });
 
             return false;
         }
@@ -100,21 +96,19 @@ internal sealed class ChatServerServices : IChatServerServices
     {
         try
         {
-           await _hubConnectionStore!.CurrentHubConnection!.SendAsync("AdminDeleteRoom", roomName);
+            await _hubConnectionStore!.CurrentHubConnection!.SendAsync("AdminDeleteRoom", roomName);
             return true;
         }
         catch
         {
-
             _statusServices.ChangeStatus(
-                new StatusMessage { IsError = true, Message = "Room delete error" });
+                new StatusMessage { Type = StatusType.Error, Message = "Room delete error" });
             return false;
         }
     }
 
     public async Task<bool> AdminKickUserFromGroup(string userName)
     {
-        
         try
         {
             await _hubConnectionStore!.CurrentHubConnection!.SendAsync("AdminKickUser", userName);
@@ -123,7 +117,7 @@ internal sealed class ChatServerServices : IChatServerServices
         catch
         {
             _statusServices.ChangeStatus(
-                new StatusMessage { IsError = true, Message = "User kick error" });
+                new StatusMessage { Type = StatusType.Error, Message = "User kick error" });
             return false;
         }
     }
@@ -138,7 +132,7 @@ internal sealed class ChatServerServices : IChatServerServices
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", IsError = true });
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send message", Type = StatusType.Error });
 
             return false;
         }
@@ -148,7 +142,7 @@ internal sealed class ChatServerServices : IChatServerServices
     {
         await _hubConnectionStore!.StopConnection();
 
-         _currentServerStore.Delete();
+        _currentServerStore.Delete();
     }
 
     public async Task SendAudioMessage(byte[] audioBuffer)
@@ -156,39 +150,33 @@ internal sealed class ChatServerServices : IChatServerServices
         try
         {
             await _hubConnectionStore!.CurrentHubConnection!.InvokeAsync("SendAudio", audioBuffer);
-
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send Audio", IsError = true });
-
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed send Audio",Type = StatusType.Error });
         }
     }
 
     private async Task GetUserServerName()
     {
-        string newName = "";
+        var newName = "";
         try
         {
             newName = await _hubConnectionStore!.CurrentHubConnection!
-                        .InvokeAsync<string>("SetName", _serverAccountStore.CurrentAccount!.Login).ConfigureAwait(false);
+                .InvokeAsync<string>("SetName", _serverAccountStore.CurrentAccount!.Login).ConfigureAwait(false);
         }
-        catch 
+        catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Failed get current account login", IsError = true });
+            _statusServices.ChangeStatus(new StatusMessage
+                { Message = "Failed get current account login", Type = StatusType.Error });
 
             _currentServerStore.Delete();
         }
 
         if (newName == "non")
-        {
             _currentServerStore.Delete();
-        }
         else
-        {
             _serverAccountStore.CurrentAccount!.CurrentServerLogin = newName;
-        
-        }
     }
 
     private async Task GetServerRooms()
@@ -198,7 +186,8 @@ internal sealed class ChatServerServices : IChatServerServices
             var roomListFromServer =
                 await _hubConnectionStore!.CurrentHubConnection!.InvokeAsync<List<ServerRooms>>("GetRoomsAndUsers");
 
-            _currentServerStore.CurrentServerRooms = new ObservableCollection<ServerRooms>(OnGroupCollectionChanged(roomListFromServer)!);
+            _currentServerStore.CurrentServerRooms =
+                new ObservableCollection<ServerRooms>(OnGroupCollectionChanged(roomListFromServer)!);
         }
         catch
         {
@@ -206,7 +195,7 @@ internal sealed class ChatServerServices : IChatServerServices
         }
     }
 
-    private List<ServerRooms>? OnGroupCollectionChanged(List<ServerRooms>? currentRoomUsers)
+    private List<ServerRooms> OnGroupCollectionChanged(List<ServerRooms>? currentRoomUsers)
     {
         for (var index = 0; index < currentRoomUsers!.Count; index++)
         {
@@ -224,7 +213,6 @@ internal sealed class ChatServerServices : IChatServerServices
     {
         var isReconnectingDisconnect = false;
 
-     
 
         _hubConnectionStore!.CurrentHubConnection = new HubConnectionBuilder()
             .WithUrl(
@@ -261,7 +249,7 @@ internal sealed class ChatServerServices : IChatServerServices
         _hubConnectionStore.CurrentHubConnection.On<bool>("Notification", flag =>
         {
             _statusServices.ChangeStatus(
-                new StatusMessage { IsError = true, Message = "You have been kicked from room" });
+                new StatusMessage { Type = StatusType.Error, Message = "You have been kicked from room" });
 
             DisconnectNotification.Reload();
         });
@@ -284,7 +272,7 @@ internal sealed class ChatServerServices : IChatServerServices
         {
             if (isReconnectingDisconnect)
                 _statusServices.ChangeStatus(new StatusMessage
-                { IsError = true, Message = "Reconnecting failed" });
+                    { Type = StatusType.Error, Message = "Reconnecting failed" });
             else
                 _statusServices.DeleteStatus();
 
@@ -308,7 +296,7 @@ internal sealed class ChatServerServices : IChatServerServices
         {
             isReconnectingDisconnect = true;
 
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Reconecting to server. . ." });
+            _statusServices.ChangeStatus(new StatusMessage { Message = "Reconnecting to server. . .", Type = StatusType.Action});
 
             return Task.CompletedTask;
         };

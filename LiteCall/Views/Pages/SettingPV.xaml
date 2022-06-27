@@ -74,19 +74,24 @@
 
                                 <TextBlock Text="Account type: " />
 
-                                <TextBlock Text="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource IsAuthorizeToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBlock
+                                    Text="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource IsAuthorizeToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                                     <TextBlock.Style>
 
-                                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                                        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+                                               TargetType="{x:Type TextBlock}">
 
 
                                             <Setter Property="Foreground" Value="{DynamicResource Dangerous(Solid)}" />
 
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="Authorized">
+                                                <DataTrigger
+                                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
+                                                    Value="Authorized">
 
-                                                    <Setter Property="Foreground" Value="{DynamicResource Green(Solid)}" />
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource Green(Solid)}" />
 
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -124,7 +129,8 @@
 
                                     <Style.Triggers>
 
-                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}" Value="True">
+                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}"
+                                                     Value="True">
 
                                             <Setter Property="Visibility" Value="Visible" />
 
@@ -134,7 +140,8 @@
 
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding IsDefault}" Value="False" />
-                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}" Value="False" />
+                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}"
+                                                           Value="False" />
                                             </MultiDataTrigger.Conditions>
 
                                             <Setter Property="Visibility" Value="Visible" />
@@ -217,7 +224,8 @@
                             Background="{DynamicResource Background23(Solid)}"
                             CornerRadius="10">
 
-                            <ListView x:Name="ServesListView" ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts, UpdateSourceTrigger=PropertyChanged}">
+                            <ListView x:Name="ServesListView"
+                                      ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts, UpdateSourceTrigger=PropertyChanged}">
 
                                 <ListView.ItemTemplate>
 
@@ -228,13 +236,15 @@
                                             <StackPanel Background="Transparent" Orientation="Vertical">
 
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Ip: " />
+                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}"
+                                                               Text="Ip: " />
                                                     <TextBlock Text="{Binding SavedServer.ApiIp}" />
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal">
 
-                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Nickname: " />
+                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}"
+                                                               Text="Nickname: " />
 
                                                     <TextBlock Text="{Binding Account.Login}" />
 
@@ -253,7 +263,8 @@
 
                                         <DataTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource Button2(Solid)}" />
+                                                <Setter TargetName="Border" Property="Background"
+                                                        Value="{DynamicResource Button2(Solid)}" />
                                             </Trigger>
                                         </DataTemplate.Triggers>
 
@@ -356,8 +367,12 @@
 
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding ElementName=Ip, Path=(Validation.HasError)}" Value="True" />
-                                                    <Condition Binding="{Binding ElementName=Login, Path=(Validation.HasError)}" Value="True" />
+                                                    <Condition
+                                                        Binding="{Binding ElementName=Ip, Path=(Validation.HasError)}"
+                                                        Value="True" />
+                                                    <Condition
+                                                        Binding="{Binding ElementName=Login, Path=(Validation.HasError)}"
+                                                        Value="True" />
                                                 </MultiDataTrigger.Conditions>
                                                 <MultiDataTrigger.Setters>
                                                     <Setter Property="IsEnabled" Value="False" />

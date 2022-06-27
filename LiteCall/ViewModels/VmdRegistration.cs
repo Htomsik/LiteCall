@@ -1,5 +1,4 @@
 ﻿using System;
-using LiteCall.Services;
 using LiteCall.Services.AuthRegServices.Authorization;
 using LiteCall.Services.AuthRegServices.Captcha;
 using LiteCall.Services.AuthRegServices.PasswordRecovery;
@@ -94,7 +93,7 @@ internal static class VmdRegistration
 
         services.AddTransient(s =>
             new ServerVmd(s.GetRequiredService<ServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),
-                s.GetRequiredService<IStatusServices>(),s.GetRequiredService<IChatServerServices>()));
+                s.GetRequiredService<IStatusServices>(), s.GetRequiredService<IChatServerServices>()));
 
 
         services.AddSingleton(s => new MainWindowVmd(

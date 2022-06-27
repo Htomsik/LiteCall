@@ -6,10 +6,9 @@ using System.Windows.Input;
 using LiteCall.Infrastructure.Bus;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
-using LiteCall.Model;
-using LiteCall.Model.Errors;
 using LiteCall.Model.Saved;
 using LiteCall.Model.ServerModels;
+using LiteCall.Model.Statuses;
 using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
@@ -67,19 +66,19 @@ internal sealed class MainPageVmd : BaseVmd
 
 
         SaveServerCommand = new AsyncLambdaCommand(OnSaveServerCommandExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanSaveServerCommandExecute);
 
         DeleteServerSavedCommand = new AsyncLambdaCommand(OnDeleteServerSavedExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanDeleteServerSavedExecute);
 
 
         ConnectServerCommand = new AsyncLambdaCommand(OnConnectServerExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }));
+            ex => statusServices.ChangeStatus(ex.Message));
 
         ConnectServerSavedCommand = new AsyncLambdaCommand(OnConnectServerSavedExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanConnectServerSavedExecute);
 
 
@@ -147,8 +146,7 @@ internal sealed class MainPageVmd : BaseVmd
 
             if (authorizeStatus == 0)
             {
-                _statusServices.ChangeStatus(new StatusMessage
-                    { Message = "Authorization error. You will be logged without account", IsError = true });
+                _statusServices.ChangeStatus(StatusesErrors.AuthorizationFailed);
 
                 await Task.Delay(1000);
 
@@ -198,8 +196,7 @@ internal sealed class MainPageVmd : BaseVmd
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage
-                { Message = "Serve save error", IsError = true });
+            _statusServices.ChangeStatus("Server save failed");
         }
 
         return Task.CompletedTask;
@@ -319,8 +316,7 @@ internal sealed class MainPageVmd : BaseVmd
 
             if (authorizeStatus == 0)
             {
-                _statusServices.ChangeStatus(new StatusMessage
-                    { Message = "Authorization error. You will be logged without account", IsError = true });
+                _statusServices.ChangeStatus(StatusesErrors.AuthorizationFailed);
 
                 await _authorizationServices.Login(false, serverAccount, newServer.ApiIp);
             }

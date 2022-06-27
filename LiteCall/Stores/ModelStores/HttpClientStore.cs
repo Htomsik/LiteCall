@@ -6,6 +6,7 @@ namespace LiteCall.Stores;
 
 internal class HttpClientStore : BaseVmd
 {
+    private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
     public readonly HttpClient CurrentHttpClient;
 
     public HttpClientStore()
@@ -19,13 +20,7 @@ internal class HttpClientStore : BaseVmd
         CurrentHttpClient = new HttpClient(clientHandler)
         {
             Timeout = TimeSpan.FromSeconds(10),
-                DefaultRequestHeaders = { { "ApiKey", ApiKey } }
+            DefaultRequestHeaders = { { "ApiKey", ApiKey } }
         };
-
     }
-
-    private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
-
-
-
 }

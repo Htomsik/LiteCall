@@ -2,7 +2,6 @@
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
-using LiteCall.Model;
 using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Base;

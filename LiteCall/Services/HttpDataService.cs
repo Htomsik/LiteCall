@@ -10,11 +10,11 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LiteCall.Model;
-using LiteCall.Model.Errors;
 using LiteCall.Model.Images;
 using LiteCall.Model.RegistrationRecovery;
 using LiteCall.Model.Saved;
 using LiteCall.Model.ServerModels;
+using LiteCall.Model.Statuses;
 using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
@@ -28,13 +28,11 @@ internal sealed class HttpDataService : IHttpDataServices
     private static readonly Guid ProgramCaptchaId = Guid.NewGuid();
 
 
-    
-
     private readonly IConfiguration _configuration;
 
-    private readonly HttpClientStore _httpClientStore;
-
     private readonly IEncryptServices _encryptServices;
+
+    private readonly HttpClientStore _httpClientStore;
 
     private readonly IStatusServices _statusServices;
 
@@ -47,6 +45,7 @@ internal sealed class HttpDataService : IHttpDataServices
         _encryptServices = encryptServices;
 
         _configuration = configuration;
+        
         _httpClientStore = httpClientStore;
     }
 
@@ -57,7 +56,9 @@ internal sealed class HttpDataService : IHttpDataServices
     {
         apiServerIp ??= DefaultMainIp;
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
+      
+        
+        _statusServices.ChangeStatus(StatusesActions.ServerConnection);
 
         var authModel = new
         {
@@ -73,13 +74,13 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{apiServerIp}/api/Auth/Authorization", content)
+            response = await _httpClientStore.CurrentHttpClient
+                .PostAsync($"https://{apiServerIp}/api/Auth/Authorization", content)
                 .ConfigureAwait(false);
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage
-                { Message = "Failed connect to the server", IsError = true });
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
 
             return "invalid";
         }
@@ -92,18 +93,21 @@ internal sealed class HttpDataService : IHttpDataServices
             return await response.Content.ReadAsStringAsync();
         }
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Authorisation Error", IsError = true });
+       
+        
+        _statusServices.ChangeStatus(StatusesErrors.AuthorizationFailed);
 
         return "invalid";
     }
-
-
+    
     public async Task<string> Registration(RegistrationModel registrationModel, string? apiServerIp = null)
     {
-        if (apiServerIp == null) apiServerIp = DefaultMainIp;
+        apiServerIp ??= DefaultMainIp;
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
+      
 
+        _statusServices.ChangeStatus(StatusesActions.ServerConnection);
+        
         var authModel = new
         {
             registrationModel.RecoveryAccount!.Login,
@@ -122,13 +126,16 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{apiServerIp}/api/Auth/Registration", content)
+            response = await _httpClientStore.CurrentHttpClient
+                .PostAsync($"https://{apiServerIp}/api/Auth/Registration", content)
                 .ConfigureAwait(false);
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+           
 
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
+            
             return null!;
         }
 
@@ -140,16 +147,17 @@ internal sealed class HttpDataService : IHttpDataServices
             return await response.Content.ReadAsStringAsync();
         }
 
-        _statusServices.ChangeStatus(new StatusMessage
-            { Message = response.Content.ReadAsStringAsync().Result, IsError = true });
+     
 
+        _statusServices.ChangeStatus(StatusesErrors.RegistrationFailed);
         return response.ReasonPhrase!;
     }
-
-
+    
     public async Task<string?> MainServerGetApiIp(string? serverName)
     {
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Get API server ip. . ." });
+     
+        
+        _statusServices.ChangeStatus(StatusesActions.GettingInfoAboutServer);
 
         var json = JsonSerializer.Serialize(serverName);
 
@@ -159,13 +167,16 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/ServerGetIP", content)
+            response = await _httpClientStore.CurrentHttpClient
+                .PostAsync($"https://{DefaultMainIp}/api/Server/ServerGetIP", content)
                 .ConfigureAwait(false);
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+            
 
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
+            
             return null;
         }
 
@@ -177,26 +188,32 @@ internal sealed class HttpDataService : IHttpDataServices
             return response.Content.ReadAsStringAsync().Result;
         }
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Incorrect server name", IsError = true });
+        
+
+        _statusServices.ChangeStatus(StatusesErrors.IncorrectServerNameOrIp);
 
         return null;
     }
-
-
+    
     public async Task<Server?> ApiServerGetInfo(string? apiServerIp)
     {
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Get server info. . ." });
+        
+        
+        _statusServices.ChangeStatus(StatusesActions.GettingInfoAboutServer);
 
         HttpResponseMessage response;
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.GetAsync($"https://{apiServerIp}/api/Server/ServerGetInfo")
+            response = await _httpClientStore.CurrentHttpClient
+                .GetAsync($"https://{apiServerIp}/api/Server/ServerGetInfo")
                 .ConfigureAwait(false);
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+            
+            
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
 
             return null;
         }
@@ -209,18 +226,21 @@ internal sealed class HttpDataService : IHttpDataServices
             return JsonSerializer.Deserialize<Server>(response.Content.ReadAsStringAsync().Result);
         }
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Incorrect server name", IsError = true });
+        
+        
+        _statusServices.ChangeStatus(StatusesErrors.IncorrectServerNameOrIp);
 
         return null;
     }
-
-
+    
     public async Task<ImagePacket?> GetCaptcha(string? apiServerIp = null)
     {
-        if (apiServerIp == null) apiServerIp = DefaultMainIp;
+        apiServerIp ??= DefaultMainIp;
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Get captcha from server. . ." });
+        
 
+        _statusServices.ChangeStatus(StatusesActions.GettingCaptcha);
+        
         HttpResponseMessage httpResponseMessage;
 
         var serialize = JsonSerializer.Serialize(ProgramCaptchaId.ToString());
@@ -234,7 +254,9 @@ internal sealed class HttpDataService : IHttpDataServices
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+            
+            
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
 
             return null;
         }
@@ -251,11 +273,12 @@ internal sealed class HttpDataService : IHttpDataServices
 
         return null;
     }
-
-
+    
     public Task<bool> CheckServerStatus(string? serverAddress)
     {
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Check server status. . ." });
+       
+        
+        _statusServices.ChangeStatus(StatusesActions.ServerConnection);
 
         var serverAddressArray = serverAddress!.Split(':');
 
@@ -272,12 +295,12 @@ internal sealed class HttpDataService : IHttpDataServices
             }
             catch
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+                _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
 
                 return Task.FromResult(false);
             }
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Incorrect Ip address", IsError = true });
+        _statusServices.ChangeStatus(StatusesErrors.IncorrectServerIp);
 
         return Task.FromResult(false);
     }
@@ -287,18 +310,19 @@ internal sealed class HttpDataService : IHttpDataServices
         if (apiServerIp == null) apiServerIp = DefaultMainIp;
 
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Get Qestions from server. . ." });
+        _statusServices.ChangeStatus(new StatusMessage { Message = "Get Questions from server. . ." });
 
         HttpResponseMessage response;
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.GetAsync($"https://{apiServerIp}/api/auth/SecurityQuestions")
+            response = await _httpClientStore.CurrentHttpClient
+                .GetAsync($"https://{apiServerIp}/api/auth/SecurityQuestions")
                 .ConfigureAwait(false);
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
 
             return null;
         }
@@ -311,7 +335,9 @@ internal sealed class HttpDataService : IHttpDataServices
             return JsonSerializer.Deserialize<List<Question>>(response.Content.ReadAsStringAsync().Result);
         }
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Unknown error", IsError = true });
+        _statusServices.ChangeStatus(StatusesErrors.UnknownError);
+        
+        _statusServices.ChangeStatus(StatusesErrors.UnknownError);
 
         return new List<Question>();
     }
@@ -320,7 +346,7 @@ internal sealed class HttpDataService : IHttpDataServices
     {
         if (apiServerIp == null) apiServerIp = DefaultMainIp;
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Connect to server. . ." });
+       _statusServices.ChangeStatus(StatusesActions.ServerConnection);
 
         var authModel = new
         {
@@ -343,7 +369,7 @@ internal sealed class HttpDataService : IHttpDataServices
         }
         catch
         {
-            _statusServices.ChangeStatus(new StatusMessage { Message = "Server connection error", IsError = true });
+            _statusServices.ChangeStatus(StatusesErrors.ServerConnectionFailed);
 
             return false;
         }
@@ -356,12 +382,11 @@ internal sealed class HttpDataService : IHttpDataServices
             return true;
         }
 
-        _statusServices.ChangeStatus(new StatusMessage { Message = "Unknown error", IsError = true });
+        _statusServices.ChangeStatus(StatusesErrors.UnknownError);
 
         return false;
     }
-
-
+    
     public async Task<bool> PostSaveServersUserOnMainServer(Account? currentAccount,
         AppSavedServers savedServerAccounts)
     {
@@ -385,7 +410,8 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/SaveServersUser", content)
+            response = await _httpClientStore.CurrentHttpClient
+                .PostAsync($"https://{DefaultMainIp}/api/Server/SaveServersUser", content)
                 .ConfigureAwait(false);
         }
         catch
@@ -412,7 +438,8 @@ internal sealed class HttpDataService : IHttpDataServices
 
         try
         {
-            response = await _httpClientStore.CurrentHttpClient.PostAsync($"https://{DefaultMainIp}/api/Server/GetServersUser", content)
+            response = await _httpClientStore.CurrentHttpClient
+                .PostAsync($"https://{DefaultMainIp}/api/Server/GetServersUser", content)
                 .ConfigureAwait(false);
         }
         catch
@@ -438,8 +465,7 @@ internal sealed class HttpDataService : IHttpDataServices
 
         return null!;
     }
-
-
+    
     public Task<string> GetRoleFromJwtToken(string token)
     {
         try

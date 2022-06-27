@@ -1,6 +1,5 @@
 ﻿using System;
-using LiteCall.Model;
-using LiteCall.Model.Errors;
+using LiteCall.Model.Statuses;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.Stores;

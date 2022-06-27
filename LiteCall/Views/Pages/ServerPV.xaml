@@ -227,19 +227,23 @@
                                         <DataTemplate.Triggers>
 
                                             <DataTrigger Binding="{Binding Role}" Value="You">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Green(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Green(Solid)}" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="Admin">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Dangerous(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Dangerous(Solid)}" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="User">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Blue(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Blue(Solid)}" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Role}" Value="Anonymous">
-                                                <Setter TargetName="UserPath" Property="Fill" Value="{DynamicResource Fonts(Solid)}" />
+                                                <Setter TargetName="UserPath" Property="Fill"
+                                                        Value="{DynamicResource Fonts(Solid)}" />
                                             </DataTrigger>
 
 
@@ -357,7 +361,8 @@
                         </StackPanel>
 
                         <!--  County  -->
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentServerStore.CurrentServer.Country, Converter={StaticResource NullToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding CurrentServerStore.CurrentServer.Country, Converter={StaticResource NullToVisibilityConverter}}">
 
                             <TextBlock Text="Country:" />
                             <TextBlock Text="{Binding CurrentServerStore.CurrentServer.Country}" />
@@ -365,7 +370,8 @@
                         </StackPanel>
 
                         <!--  City  -->
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding CurrentServerStore.CurrentServer.City, Converter={StaticResource NullToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding CurrentServerStore.CurrentServer.City, Converter={StaticResource NullToVisibilityConverter}}">
 
                             <TextBlock Text="City:" />
                             <TextBlock Text="{Binding CurrentServerStore.CurrentServer.City}" />
@@ -423,7 +429,8 @@
                 <!--  Сообщеия  -->
                 <Border Grid.Row="1" Background="{DynamicResource Background6(Solid)}">
 
-                    <ListView ItemContainerStyle="{DynamicResource MessageListItems}" ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
+                    <ListView ItemContainerStyle="{DynamicResource MessageListItems}"
+                              ItemsSource="{Binding MessagesColCollection, UpdateSourceTrigger=PropertyChanged}">
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>

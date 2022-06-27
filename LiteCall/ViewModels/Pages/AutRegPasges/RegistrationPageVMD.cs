@@ -5,8 +5,8 @@ using System.Windows.Media;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
 using LiteCall.Model;
-using LiteCall.Model.Errors;
 using LiteCall.Model.RegistrationRecovery;
+using LiteCall.Model.Statuses;
 using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.ViewModels.Base;
@@ -70,13 +70,13 @@ internal class RegistrationPageVmd : BaseVmd
 
 
         RegistrationCommand = new AsyncLambdaCommand(OnRegistrationExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanRegistrationExecute);
 
         OpenAuthPageCommand = new NavigationCommand(authPageNavigationServices);
 
         OpenModalCommand = new AsyncLambdaCommand(OnOpenModalCommandExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message }),
+            ex => statusServices.ChangeStatus(ex.Message),
             CanOpenModalCommandExecute);
 
 

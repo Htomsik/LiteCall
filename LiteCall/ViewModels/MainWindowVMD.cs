@@ -2,8 +2,7 @@
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
 using LiteCall.Infrastructure.Commands.Lambda;
-using LiteCall.Model;
-using LiteCall.Model.Errors;
+using LiteCall.Model.Statuses;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
@@ -61,7 +60,7 @@ internal sealed class MainWindowVmd : BaseVmd
         CloseSettingsCommand = new NavigationCommand(closeAdditionalNavigationService);
 
         CloseAppCommand = new AsyncLambdaCommand(OnCloseAppExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { IsError = true, Message = ex.Message })
+            ex => statusServices.ChangeStatus(ex.Message)
         );
     }
 

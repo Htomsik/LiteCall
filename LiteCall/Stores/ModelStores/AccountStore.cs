@@ -1,5 +1,4 @@
 ﻿using System;
-using LiteCall.Model;
 using LiteCall.Model.Users;
 using LiteCall.ViewModels.Base;
 
@@ -9,15 +8,15 @@ internal sealed class AccountStore : BaseVmd
 {
     private readonly Account? _defaultAccount;
 
+    private Account? _currentAccount;
+
 
     public AccountStore()
     {
-        _defaultAccount =  new Account { Login = "LC_User" };
+        _defaultAccount = new Account { Login = "LC_User" };
 
         _currentAccount = _defaultAccount;
     }
-
-    private Account? _currentAccount;
 
     public bool IsDefaultAccount => CurrentAccount == _defaultAccount;
 

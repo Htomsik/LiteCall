@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
-using LiteCall.Model;
 using LiteCall.Model.Images;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
