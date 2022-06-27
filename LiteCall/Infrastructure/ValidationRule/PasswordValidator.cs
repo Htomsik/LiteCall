@@ -1,39 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace LiteCall.Infrastructure.ValidationRule
+namespace LiteCall.Infrastructure.ValidationRule;
+
+public class PasswordValidator : System.Windows.Controls.ValidationRule
 {
-    public class PasswordValidator : System.Windows.Controls.ValidationRule
+    public override ValidationResult Validate(object value, CultureInfo cultureInfo)
     {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            var StringArray = value.ToString().ToArray();
+        var stringArray = value.ToString()!.ToArray();
 
+        if (stringArray.Length == 0) return new ValidationResult(true, null);
 
-            if (StringArray.Length == 0)
-            {
-                return new ValidationResult(true, null);
-            }
+        var haveAnyBigLetter = stringArray.Any(item => char.IsUpper(item));
 
-            var HaveAnyBigLetter = StringArray.Any(item => char.IsUpper(item));
-
-            if (StringArray.Length < 6)
-            {
-                return new ValidationResult(false, "Password can`t be less than 6 ");
-            }
-            else if (!HaveAnyBigLetter)
-            {
-                return new ValidationResult(false, @"Password must contain at least 1 capital letter");
-            }
-
-
-            return new ValidationResult(true, null);
-        }
+        if (stringArray.Length < 6)
+            return new ValidationResult(false, "Password can`t be less than 6 ");
+        return !haveAnyBigLetter
+            ? new ValidationResult(false, @"Password must contain at least 1 capital letter")
+            : new ValidationResult(true, null);
     }
 }

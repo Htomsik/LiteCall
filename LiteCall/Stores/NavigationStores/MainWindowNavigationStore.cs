@@ -1,33 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteCall.ViewModels.Base;
 
-namespace LiteCall.Stores
+namespace LiteCall.Stores;
+
+internal sealed class MainWindowNavigationStore
 {
-    internal class MainWindowNavigationStore
+    private BaseVmd? _mainWindowCurrentViewModel;
+
+    public BaseVmd? MainWindowCurrentViewModel
     {
-        private BaseVMD _MainWindowCurrentViewModel;
-        public BaseVMD MainWindowCurrentViewModel
+        get => _mainWindowCurrentViewModel;
+        set
         {
-            get => _MainWindowCurrentViewModel;
-            set
-            {
-               
-                _MainWindowCurrentViewModel = value;
-                OnCurrentViewModelChanged();
-            }
+            _mainWindowCurrentViewModel = value;
+            OnCurrentViewModelChanged();
         }
+    }
 
-        public event Action CurrentViewModelChanged;
+    public event Action? CurrentViewModelChanged;
 
-        private void OnCurrentViewModelChanged()
-        {
-            CurrentViewModelChanged?.Invoke();
-        }
-
-
+    private void OnCurrentViewModelChanged()
+    {
+        CurrentViewModelChanged?.Invoke();
     }
 }

@@ -1,80 +1,70 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using LiteCall.Model;
+﻿using System.IO;
+using LiteCall.Model.Saved;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using Newtonsoft.Json;
 
-namespace LiteCall.Services
+namespace LiteCall.Services.FileServices;
+
+internal sealed class MainAccountFileServices : IFileReadServices
 {
-    internal class MainAccountFileServices:IFileReadServices
+    private const string FilePath = @"MainAccount.json";
+
+    private readonly AccountStore _accountStore;
+
+    private readonly SettingsStore _settingsStore;
+
+
+    public MainAccountFileServices(AccountStore accountStore, SettingsStore settingsStore)
     {
+        _accountStore = accountStore;
 
-        private const string FilePath = $@"MainAccount.json";
+        _settingsStore = settingsStore;
 
-        private readonly AccountStore _accountStore;
+        _accountStore.CurrentAccountChange += SaveDataInFile;
 
-        private readonly SettingsStore _settingsStore;
+        _settingsStore.CurrentSettingsChanged += SaveDataInFile;
+    }
 
-        
-        public MainAccountFileServices(AccountStore accountStore, SettingsStore settingsStore)
+    public async void GetDataFromFile()
+    {
+        try
         {
-            _accountStore = accountStore;
+            var fileText = await File.ReadAllTextAsync(FilePath);
 
-            _settingsStore = settingsStore;
+            var savedAccount = JsonConvert.DeserializeObject<SavedMainAccount>(fileText);
 
-            _accountStore.CurrentAccountChange += SaveDataInFile;
+            if (savedAccount?.MainAccount != null) _accountStore.CurrentAccount = savedAccount.MainAccount;
 
-            _settingsStore.CurentSettingChanged += SaveDataInFile;
+            if (savedAccount?.Settings != null)
+                _settingsStore.CurrentSettings = savedAccount.Settings;
         }
-
-        public async void GetDataFromFile()
+        catch
         {
-            try
-            {
-                var FileText =  File.ReadAllTextAsync(FilePath);
-
-                SavedMainAccount savedAccount = JsonConvert.DeserializeObject<SavedMainAccount>(FileText.Result);
-
-                if (savedAccount?._MainAccount != null)
-                {
-                    _accountStore.CurrentAccount = savedAccount._MainAccount;
-                }
-                
-                if(savedAccount?._Settings != null)
-                _settingsStore.CurrentSettings = savedAccount._Settings;
-            }
-            catch (Exception e) { }
+            // ignored
         }
+    }
 
-        public async void SaveDataInFile()
+    public async void SaveDataInFile()
+    {
+        try
         {
-            try
+            var jsonNoNConvertedAccount = _accountStore.IsDefaultAccount ? null : _accountStore.CurrentAccount;
+
+            if (jsonNoNConvertedAccount is not null) jsonNoNConvertedAccount.Token = null;
+
+
+            var jsonSerializeObject = JsonConvert.SerializeObject(new SavedMainAccount
             {
+                MainAccount = jsonNoNConvertedAccount,
+                Settings = _settingsStore.CurrentSettings
+            });
 
-                var jsonNoNConvertedAccount =  _accountStore.isDefaultAccount ? null : _accountStore.CurrentAccount ;
-
-                if (jsonNoNConvertedAccount is not null)
-                {
-                    jsonNoNConvertedAccount.Token = null;
-                }
-               
-
-                var jsonSerializeObject = JsonConvert.SerializeObject(new SavedMainAccount
-                {
-                    _MainAccount = jsonNoNConvertedAccount,
-                    _Settings = _settingsStore.CurrentSettings
-                });
-
-                await File.WriteAllTextAsync(FilePath, jsonSerializeObject);
-            }
-            catch (Exception e) { }
+            await File.WriteAllTextAsync(FilePath, jsonSerializeObject);
+        }
+        catch
+        {
+            // ignored
         }
     }
 }

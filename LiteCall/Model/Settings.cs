@@ -1,52 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteCall.ViewModels.Base;
 using Newtonsoft.Json;
 
-namespace LiteCall.Model
+namespace LiteCall.Model;
+
+internal sealed class Settings : BaseVmd
 {
-    internal class Settings:BaseVMD
+    [JsonIgnore] private int _captureDeviceId;
+
+    [JsonIgnore] private int _outputDeviceId;
+
+    public int OutputDeviceId
     {
-
-        [JsonIgnore]
-        private int _OutputDeviceId;
-
-        public int OutputDeviceId
+        get => _outputDeviceId;
+        set
         {
-            get => _OutputDeviceId;
-            set
-            {
-                Set(ref _OutputDeviceId, value);
-                OnCurrentSettingsChanged();
-            }
+            Set(ref _outputDeviceId, value);
+            OnCurrentSettingsChanged();
         }
-
-        [JsonIgnore]
-        private int _CaptureDeviceId;
-
-        public int CaptureDeviceId
-        {
-            get => _CaptureDeviceId;
-            set
-            {
-                Set(ref _CaptureDeviceId, value);
-                OnCurrentSettingsChanged();
-
-            }
-           
-        }
-
-       
-        private void OnCurrentSettingsChanged()
-        {
-            CurrentsettingsChanged?.Invoke();
-        }
-    
-        public event Action? CurrentsettingsChanged;
-
-
     }
+
+    public int CaptureDeviceId
+    {
+        get => _captureDeviceId;
+        set
+        {
+            Set(ref _captureDeviceId, value);
+            OnCurrentSettingsChanged();
+        }
+    }
+
+
+    private void OnCurrentSettingsChanged()
+    {
+        CurrentSettingsChanged?.Invoke();
+    }
+
+    public event Action? CurrentSettingsChanged;
 }

@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Windows.Controls;
 
-namespace LiteCall.Infrastructure.ValidationRule
+namespace LiteCall.Infrastructure.ValidationRule;
+
+public class AnswerValidation : System.Windows.Controls.ValidationRule
 {
-    public class AnswerValidation: System.Windows.Controls.ValidationRule
+    public override ValidationResult Validate(object value, CultureInfo cultureInfo)
     {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        return value.ToString()!.Length switch
         {
-
-            if (value.ToString().Length < 3) return new ValidationResult(true, null);
-           
-
-            if (value.ToString().Length < 5) return new ValidationResult(false, "Answer can't less than 5");
-
-            return new ValidationResult(true, null);
-        }
+            0 => new ValidationResult(true, null),
+            < 5 => new ValidationResult(false, "Answer can't less than 5"),
+            _ => new ValidationResult(true, null)
+        };
     }
 }

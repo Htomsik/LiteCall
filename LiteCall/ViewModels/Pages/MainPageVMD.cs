@@ -3,29 +3,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using LiteCall.Infrastructure.Bus;
 using LiteCall.Infrastructure.Commands;
-using LiteCall.Model;
-using LiteCall.Services;
+using LiteCall.Infrastructure.Commands.Lambda;
+using LiteCall.Model.Saved;
+using LiteCall.Model.ServerModels;
+using LiteCall.Model.Statuses;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
-using LiteCall.Stores.ModelStores;
-using LiteCall.Stores.NavigationStores;
 using LiteCall.ViewModels.Base;
 
 namespace LiteCall.ViewModels.Pages;
 
-internal class MainPageVMD : BaseVMD
+internal sealed class MainPageVmd : BaseVmd
 {
-    public MainPageVMD(AccountStore accountStore, ServerAccountStore serverAccountStore,
-        SavedServersStore savedServersStore,
-        CurrentServerStore currentServerStore,
+    public MainPageVmd(AccountStore? accountStore, ServerAccountStore? serverAccountStore,
+        SavedServersStore? savedServersStore,
+        CurrentServerStore? currentServerStore,
         MainPageServerNavigationStore mainPageServerNavigationStore,
         INavigationService settingsPageNavigationService,
         INavigationService serverPageNavigationService,
-        INavigationService openModalServerAuthorisationNavigationService,
-        IAuthorisationServices authorisationApiServices,
+        INavigationService openModalServerAuthorizationNavigationService,
+        IAuthorizationServices? authorizationApiServices,
         IStatusServices statusServices,
-        IhttpDataServices httpDataServices)
+        IHttpDataServices httpDataServices)
     {
         AccountStore = accountStore;
 
@@ -36,7 +38,7 @@ internal class MainPageVMD : BaseVMD
         CurrentServerStore = currentServerStore;
 
 
-        AuthorisationServices = authorisationApiServices;
+        _authorizationServices = authorizationApiServices;
 
         MainPageServerNavigationStore = mainPageServerNavigationStore;
 
@@ -47,7 +49,7 @@ internal class MainPageVMD : BaseVMD
         _httpDataServices = httpDataServices;
 
 
-        ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorisationNavigationService,
+        ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationService,
             CanModalRegistrationOpenCommandExecuted);
 
 
@@ -63,24 +65,24 @@ internal class MainPageVMD : BaseVMD
         OpenSettingsCommand = new NavigationCommand(settingsPageNavigationService);
 
 
-        SaveServerCommand = new AsyncLamdaCommand(OnSaveServerCommandExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
+        SaveServerCommand = new AsyncLambdaCommand(OnSaveServerCommandExecuted,
+            ex => statusServices.ChangeStatus(ex.Message),
             CanSaveServerCommandExecute);
 
-        DeleteServerSavedCommand = new AsyncLamdaCommand(OnDeleteServerSavedExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
+        DeleteServerSavedCommand = new AsyncLambdaCommand(OnDeleteServerSavedExecuted,
+            ex => statusServices.ChangeStatus(ex.Message),
             CanDeleteServerSavedExecute);
 
 
-        ConnectServerCommand = new AsyncLamdaCommand(OnConnectServerExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }));
+        ConnectServerCommand = new AsyncLambdaCommand(OnConnectServerExecuted,
+            ex => statusServices.ChangeStatus(ex.Message));
 
-        ConnectServerSavedCommand = new AsyncLamdaCommand(OnConnectServerSavedExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
+        ConnectServerSavedCommand = new AsyncLambdaCommand(OnConnectServerSavedExecuted,
+            ex => statusServices.ChangeStatus(ex.Message),
             CanConnectServerSavedExecute);
 
 
-        DisconectServerReloader.Reloader += DisconectServer;
+        DisconnectServerReloader.Reloader += DisconnectServer;
 
         MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
     }
@@ -91,13 +93,13 @@ internal class MainPageVMD : BaseVMD
         OnPropertyChanged(nameof(SelectedViewModel));
     }
 
-    private void DisconectServer()
+    private void DisconnectServer()
     {
         if (SelectedViewModel == null) return;
 
         SelectedViewModel.Dispose();
 
-        VisibilitiStatus = Visibility.Collapsed;
+        ButtonVisibleStatus = Visibility.Collapsed;
 
         MainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
     }
@@ -110,8 +112,7 @@ internal class MainPageVMD : BaseVMD
 
     private bool CanModalRegistrationOpenCommandExecuted()
     {
-         return !ServerAccountStore.CurrentAccount.IsAuthorise;
-
+        return !ServerAccountStore!.CurrentAccount!.IsAuthorized;
     }
 
 
@@ -124,58 +125,56 @@ internal class MainPageVMD : BaseVMD
 
     private async Task OnConnectServerSavedExecuted(object p)
     {
-        
-        var ServerStatus =
-            await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+        var serverStatus =
+            await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount!.SavedServer!.ApiIp));
 
-        if (!ServerStatus) return;
+        if (!serverStatus) return;
 
-        if (SelectedViewModel != default) DisconectServer();
+        if (SelectedViewModel != default) DisconnectServer();
 
 
         var newServerAccount = new Account
         {
-            Login = SelectedServerAccount.Account.Login
+            Login = SelectedServerAccount!.Account!.Login
         };
 
 
         try
         {
-            var authoriseStatus = await AuthorisationServices.Login(SelectedServerAccount.Account.IsAuthorise,
-                SelectedServerAccount.Account, SelectedServerAccount.SavedServer.ApiIp);
+            var authorizeStatus = await _authorizationServices!.Login(SelectedServerAccount.Account.IsAuthorized,
+                SelectedServerAccount.Account, SelectedServerAccount.SavedServer!.ApiIp);
 
-            if (authoriseStatus == 0)
+            if (authorizeStatus == 0)
             {
-                _statusServices.ChangeStatus(new StatusMessage
-                    { Message = "Authorization error. You will be logged without account", isError = true });
+                _statusServices.ChangeStatus(StatusesErrors.AuthorizationFailed);
 
                 await Task.Delay(1000);
 
-                await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
+                await _authorizationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
             }
             else
             {
                 newServerAccount = SelectedServerAccount.Account;
             }
         }
-        catch (Exception e)
+        catch
         {
-            await AuthorisationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.Ip);
+            await _authorizationServices!.Login(false, newServerAccount, SelectedServerAccount.SavedServer!.Ip);
         }
 
 
-        ServerStatus =
+        serverStatus =
             await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
-        if (ServerStatus)
+        if (serverStatus)
         {
-            CurrentServerStore.CurrentServer = SelectedServerAccount.SavedServer;
+            CurrentServerStore!.CurrentServer = SelectedServerAccount.SavedServer;
 
             _serverPageNavigationService.Navigate();
 
-            ServernameOrIp = string.Empty;
+            ServerNameOrIp = string.Empty;
 
-            VisibilitiStatus = Visibility.Visible;
+            ButtonVisibleStatus = Visibility.Visible;
         }
     }
 
@@ -185,24 +184,22 @@ internal class MainPageVMD : BaseVMD
     private bool CanSaveServerCommandExecute(object p)
     {
         return SavedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
-                x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
-        
+            x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
     }
 
-    private async Task OnSaveServerCommandExecuted(object p)
+    private Task OnSaveServerCommandExecuted(object p)
     {
         try
         {
-            SavedServersStore.Add(new ServerAccount
-                { Account = ServerAccountStore.CurrentAccount, SavedServer = CurrentServerStore.CurrentServer });
+            SavedServersStore!.Add(new ServerAccount
+                { Account = ServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
         }
-        catch (Exception e)
+        catch
         {
-            _statusServices.ChangeStatus(new StatusMessage
-                { Message = "Serve save error", isError = true });
-
+            _statusServices.ChangeStatus("Server save failed");
         }
-       
+
+        return Task.CompletedTask;
     }
 
 
@@ -213,18 +210,19 @@ internal class MainPageVMD : BaseVMD
         return SelectedServerAccount is not null;
     }
 
-    private async Task OnDeleteServerSavedExecuted(object p)
+    private Task OnDeleteServerSavedExecuted(object p)
     {
-        SavedServersStore.Remove(SelectedServerAccount);
+        SavedServersStore!.Remove(SelectedServerAccount);
+        return Task.CompletedTask;
     }
 
 
     public ICommand DisconnectServerCommand { get; }
 
-    
+
     private void OnDisconnectServerExecuted(object p)
     {
-        DisconectServer();
+        DisconnectServer();
     }
 
 
@@ -233,9 +231,9 @@ internal class MainPageVMD : BaseVMD
     private void OnVisibilitySwitchExecuted(object p)
     {
         if (Convert.ToInt32(p) == 1)
-            VisibilitiStatus = Visibility.Collapsed;
+            ButtonVisibleStatus = Visibility.Collapsed;
         else
-            VisibilitiStatus = Visibility.Visible;
+            ButtonVisibleStatus = Visibility.Visible;
     }
 
 
@@ -251,7 +249,7 @@ internal class MainPageVMD : BaseVMD
         {
             ModalStatus = false;
 
-            ServernameOrIp = string.Empty;
+            ServerNameOrIp = string.Empty;
         }
     }
 
@@ -262,11 +260,11 @@ internal class MainPageVMD : BaseVMD
     {
         if (SelectedViewModel != null) MainPageServerNavigationStore.Close();
 
-        CurrentServerStore.CurrentServer = default;
+        CurrentServerStore!.CurrentServer = default;
 
-        VisibilitiStatus = Visibility.Collapsed;
+        ButtonVisibleStatus = Visibility.Collapsed;
 
-        AccountStore.Logout();
+        AccountStore!.Logout();
     }
 
 
@@ -274,80 +272,72 @@ internal class MainPageVMD : BaseVMD
 
     private async Task OnConnectServerExecuted(object p)
     {
-        var ServerAccount = new Account
+        var serverAccount = new Account
         {
-            Login = AccountStore.CurrentAccount.Login
+            Login = AccountStore!.CurrentAccount!.Login
         };
 
-        Server newServer;
-
-        string ApiIp;
+        Server? newServer;
 
 
         if (!CheckStatus)
         {
-            //Получить информацию о сервере из главной базы по имени
-            ApiIp = await _httpDataServices.MainServerGetApiIp(ServernameOrIp);
+            var apiIp = await _httpDataServices.MainServerGetApiIp(ServerNameOrIp);
 
-            if (ApiIp == null)
+            if (apiIp == null)
                 return;
 
-            newServer = await _httpDataServices.ApiServerGetInfo(ApiIp);
+            newServer = await _httpDataServices.ApiServerGetInfo(apiIp);
 
             if (newServer == null)
                 return;
 
-            newServer.ApiIp = ApiIp;
+            newServer.ApiIp = apiIp;
         }
         else
         {
-            // Получить информацию из API сервера о сервере
-            newServer = await _httpDataServices.ApiServerGetInfo(ServernameOrIp);
+            newServer = await _httpDataServices.ApiServerGetInfo(ServerNameOrIp);
 
             if (newServer == null)
-                // _statusServices.DeleteStatus();
-
                 return;
 
-            newServer.ApiIp = ServernameOrIp;
+            newServer.ApiIp = ServerNameOrIp;
         }
 
 
         try
         {
-            var DictionaryServerAccount =
-                SavedServersStore.SavedServerAccounts.ServersAccounts.First(s => s.SavedServer.ApiIp == newServer.ApiIp.ToLower());
+            var dictionaryServerAccount =
+                SavedServersStore!.SavedServerAccounts!.ServersAccounts!.First(s =>
+                    s.SavedServer!.ApiIp == newServer.ApiIp!.ToLower());
 
-            var AuthoriseStatus = await AuthorisationServices.Login(DictionaryServerAccount.Account.IsAuthorise,
-                DictionaryServerAccount.Account, newServer.ApiIp);
+            var authorizeStatus = await _authorizationServices!.Login(dictionaryServerAccount.Account!.IsAuthorized,
+                dictionaryServerAccount.Account, newServer.ApiIp);
 
-            if (AuthoriseStatus == 0)
+            if (authorizeStatus == 0)
             {
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Authorization error. You will be logged without account", isError = true });
+                _statusServices.ChangeStatus(StatusesErrors.AuthorizationFailed);
 
-                await AuthorisationServices.Login(false, ServerAccount, newServer.ApiIp);
+                await _authorizationServices.Login(false, serverAccount, newServer.ApiIp);
             }
             else
             {
-                ServerAccount = DictionaryServerAccount.Account;
+                serverAccount = dictionaryServerAccount.Account;
             }
         }
-        catch (Exception e)
+        catch
         {
-            await AuthorisationServices.Login(false, ServerAccount, newServer.ApiIp);
+            await _authorizationServices!.Login(false, serverAccount, newServer.ApiIp);
         }
 
 
-        //Заглушка на случай если Артём забудет убрать из сервера
-        newServer.Ip = newServer.Ip.Replace("https://", "");
+        newServer.Ip = newServer.Ip!.Replace("https://", ""); //временно
 
         var serverStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(newServer.Ip));
 
-        if (newServer is not null && serverStatus)
+        if (serverStatus)
         {
-            CurrentServerStore.CurrentServer = newServer;
-
-            //    _statusServices.ChangeStatus(new StatusMessage { Message = "Сonnecting to server. . ." });
+            CurrentServerStore!.CurrentServer = newServer;
 
             await Task.Delay(250);
 
@@ -355,9 +345,9 @@ internal class MainPageVMD : BaseVMD
 
             _serverPageNavigationService.Navigate();
 
-            ServernameOrIp = string.Empty;
+            ServerNameOrIp = string.Empty;
 
-            VisibilitiStatus = Visibility.Visible;
+            ButtonVisibleStatus = Visibility.Visible;
         }
     }
 
@@ -365,92 +355,83 @@ internal class MainPageVMD : BaseVMD
 
     #region Данные
 
-    private bool _CheckStatus;
+    private bool _checkStatus;
 
     public bool CheckStatus
     {
-        get => _CheckStatus;
-        set => Set(ref _CheckStatus, value);
+        get => _checkStatus;
+        set => Set(ref _checkStatus, value);
     }
 
 
-    private bool _ModalStatus;
+    private bool _modalStatus;
 
     public bool ModalStatus
     {
-        get => _ModalStatus;
-        set => Set(ref _ModalStatus, value);
+        get => _modalStatus;
+        set => Set(ref _modalStatus, value);
     }
 
 
-    private AccountStore _AccountStore;
+    private AccountStore? _accountStore;
 
-    public AccountStore AccountStore
+    public AccountStore? AccountStore
     {
-        get => _AccountStore;
-        set => Set(ref _AccountStore, value);
+        get => _accountStore;
+        set => Set(ref _accountStore, value);
     }
 
-    private CurrentServerStore _CurrentServerStore;
+    private CurrentServerStore? _currentServerStore;
 
-    public CurrentServerStore CurrentServerStore
+    public CurrentServerStore? CurrentServerStore
     {
-        get => _CurrentServerStore;
-        set => Set(ref _CurrentServerStore, value);
+        get => _currentServerStore;
+        set => Set(ref _currentServerStore, value);
     }
 
 
-    private ServerAccountStore _ServerAccountStore;
+    private ServerAccountStore? _serverAccountStore;
 
-    public ServerAccountStore ServerAccountStore
+    public ServerAccountStore? ServerAccountStore
     {
-        get => _ServerAccountStore;
-        set => Set(ref _ServerAccountStore, value);
+        get => _serverAccountStore;
+        set => Set(ref _serverAccountStore, value);
     }
 
 
-    private ServerAccount _selectedServerAccount;
+    private ServerAccount? _selectedServerAccount;
 
-    public ServerAccount SelectedServerAccount
+    public ServerAccount? SelectedServerAccount
     {
         get => _selectedServerAccount;
         set => Set(ref _selectedServerAccount, value);
     }
 
 
-    private SavedServersStore _savedServersStore;
+    private SavedServersStore? _savedServersStore;
 
-    public SavedServersStore SavedServersStore
+    public SavedServersStore? SavedServersStore
     {
         get => _savedServersStore;
         set => Set(ref _savedServersStore, value);
     }
 
 
-    private IAuthorisationServices _AuthorisationServices;
+    private string? _serverNameOrIp;
 
-    public IAuthorisationServices AuthorisationServices
+    public string? ServerNameOrIp
     {
-        get => _AuthorisationServices;
-        set => Set(ref _AuthorisationServices, value);
+        get => _serverNameOrIp;
+        set => Set(ref _serverNameOrIp, value);
     }
 
 
-    private string _servernameOrIp;
+    private Visibility _buttonVisibleStatus = Visibility.Collapsed;
 
-    public string ServernameOrIp
+    public Visibility ButtonVisibleStatus
     {
-        get => _servernameOrIp;
-        set => Set(ref _servernameOrIp, value);
-    }
-
-
-    private Visibility _VisibilitiStatus = Visibility.Collapsed;
-
-    public Visibility VisibilitiStatus
-    {
-        get => _VisibilitiStatus;
-        set => Set(ref _VisibilitiStatus, value);
+        get => _buttonVisibleStatus;
+        set => Set(ref _buttonVisibleStatus, value);
     }
 
 
@@ -458,11 +439,14 @@ internal class MainPageVMD : BaseVMD
 
     private readonly IStatusServices _statusServices;
 
-    private readonly IhttpDataServices _httpDataServices;
+    private readonly IHttpDataServices _httpDataServices;
+
+
+    private readonly IAuthorizationServices? _authorizationServices;
 
     public MainPageServerNavigationStore MainPageServerNavigationStore;
 
-    public BaseVMD SelectedViewModel => MainPageServerNavigationStore.MainPageServerCurrentViewModel;
+    public BaseVmd? SelectedViewModel => MainPageServerNavigationStore.MainPageServerCurrentViewModel;
 
     #endregion
 }

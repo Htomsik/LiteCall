@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteCall.Model;
-using LiteCall.Stores;
+﻿using System.Threading.Tasks;
 
-namespace LiteCall.Services
+namespace LiteCall.Services.Interfaces;
+
+internal interface ISynhronyzeDataOnServerServices
 {
-    internal interface ISynhronyzeDataOnServerServices
-    {
-        public Task<bool> SaveOnServer();
+    public Task<bool> SaveOnServer();
 
-        public Task<bool> GetFromServer();
-    }
+    public Task<bool> GetFromServer();
 }

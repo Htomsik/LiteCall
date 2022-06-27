@@ -1,40 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteCall.Infrastructure.Commands.Base;
-using LiteCall.Services;
 using LiteCall.Services.Interfaces;
-using LiteCall.Stores;
-using LiteCall.ViewModels.Base;
 
-namespace LiteCall.Infrastructure.Commands
+namespace LiteCall.Infrastructure.Commands;
+
+internal sealed class NavigationCommand : BaseCommand
 {
-   
-    
-        internal class NavigationCommand : BaseCommand
-        {
+    private readonly Func<bool>? _canExecute;
 
-            private readonly INavigationService _NavigationService;
+    private readonly INavigationService _navigationService;
 
-            private readonly Func<bool> _CanExecute;
+    public NavigationCommand(INavigationService navigationService, Func<bool>? canExecute = null)
+    {
+        _navigationService = navigationService;
+        _canExecute = canExecute;
+    }
 
-            public NavigationCommand(INavigationService navigationService, Func<bool> CanExecute = null)
-            {
-                    _NavigationService = navigationService;
-                    _CanExecute = CanExecute;
-            }
+    public override bool CanExecute(object? parameter)
+    {
+        return _canExecute?.Invoke() ?? true;
+    }
 
-
-            public override bool CanExecute(object parameter) => _CanExecute?.Invoke() ?? true;
-
-
-            public override void Execute(object parameter)
-            {
-                   
-                    _NavigationService.Navigate();
-            }
-        }
-    
+    public override void Execute(object? parameter)
+    {
+        _navigationService.Navigate();
+    }
 }

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteCall.Model;
+﻿using LiteCall.Model.Statuses;
 
-namespace LiteCall.Services.Interfaces
+namespace LiteCall.Services.Interfaces;
+
+internal interface IStatusServices
 {
-    internal interface IStatusServices
-    {
-        public void ChangeStatus(StatusMessage newStatusMessage);
+    public void ChangeStatus(StatusMessage newStatusMessage);
+    
+    public void ChangeStatus(StatusesActions action);
+    
+    public void ChangeStatus(StatusesErrors errors);
+    
+    public void ChangeStatus(string commandError);
 
-        public void DeleteStatus();
-    }
+    public void DeleteStatus();
 }

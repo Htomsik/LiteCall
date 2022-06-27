@@ -1,43 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiteCall.ViewModels.Base;
 
-namespace LiteCall.Stores
+namespace LiteCall.Stores;
+
+internal sealed class ModalNavigationStore
 {
-    internal class ModalNavigationStore
+    private BaseVmd? _modalMainWindowCurrentViewModel;
+
+    public BaseVmd? ModalMainWindowCurrentViewModel
     {
-        private BaseVMD _ModalMainWindowCurrentViewModel;
-        public BaseVMD ModalMainWindowCurrentViewModel
+        get => _modalMainWindowCurrentViewModel;
+        set
         {
-            get => _ModalMainWindowCurrentViewModel;
-            set
-            {
+            _modalMainWindowCurrentViewModel?.Dispose();
+            _modalMainWindowCurrentViewModel = value;
 
-
-                _ModalMainWindowCurrentViewModel?.Dispose();
-                _ModalMainWindowCurrentViewModel = value;
-
-                OnCurrentViewModelChanged();
-            }
+            OnCurrentViewModelChanged();
         }
+    }
 
 
-        public void Close()
-        {
-            ModalMainWindowCurrentViewModel = null;
-        }
+    public bool IsOpen => ModalMainWindowCurrentViewModel != null;
 
 
-        public bool IsOpen => ModalMainWindowCurrentViewModel != null;
+    public void Close()
+    {
+        ModalMainWindowCurrentViewModel = null;
+    }
 
-        public event Action CurrentViewModelChanged;
+    public event Action? CurrentViewModelChanged;
 
-        private void OnCurrentViewModelChanged()
-        {
-            CurrentViewModelChanged?.Invoke();
-        }
+    private void OnCurrentViewModelChanged()
+    {
+        CurrentViewModelChanged?.Invoke();
     }
 }

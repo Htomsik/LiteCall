@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace LiteCall.Model
+namespace LiteCall.Model;
+
+public class Question
 {
-    public class Question
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
+    [JsonPropertyName("id")] public int Id { get; set; }
 
-        [JsonPropertyName("questions")]
-        public string _Question { get; set; }
-
-
-    }
+    [JsonPropertyName("questions")] public string? Text { get; set; }
 }

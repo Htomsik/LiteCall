@@ -1,43 +1,23 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiteCall.Infrastructure.Commands;
-using LiteCall.Model;
+using LiteCall.Infrastructure.Commands.Lambda;
+using LiteCall.Model.Saved;
+using LiteCall.Model.Statuses;
+using LiteCall.Model.Users;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
 using LiteCall.ViewModels.Base;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace LiteCall.ViewModels.Pages;
 
-internal class SettingVMD : BaseVMD
+internal sealed class SettingVmd : BaseVmd
 {
-    private readonly INavigationService _authNavigationService;
-
-    private readonly IhttpDataServices _httpDataServices;
-
-    private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
-
-    private readonly IStatusServices _statusServices;
-
-    private AccountStore _accountStore;
-
-    private ObservableCollection<string> _inputDevice;
-
-    private bool _isDefault;
-
-    private string _newServerApiIp;
-
-    private string _newSeverLogin;
-
-    private ObservableCollection<string> _outputDevice;
-
-    private SavedServersStore _savedServersStore;
-
-
-    public  SettingVMD(AccountStore accountStore, SavedServersStore savedServersStore, SettingsStore settingsStore,
-        INavigationService authNavigationService, IhttpDataServices httpDataServices, IStatusServices statusServices,
+    public SettingVmd(AccountStore? accountStore, SavedServersStore? savedServersStore, SettingsStore? settingsStore,
+        INavigationService authNavigationService, IHttpDataServices httpDataServices, IStatusServices statusServices,
         SettingsAccNavigationStore settingsAccNavigationStore)
     {
         AccountStore = accountStore;
@@ -47,8 +27,6 @@ internal class SettingVMD : BaseVMD
         SettingsStore = settingsStore;
 
         _settingsAccNavigationStore = settingsAccNavigationStore;
-        
-
 
         _authNavigationService = authNavigationService;
 
@@ -58,85 +36,68 @@ internal class SettingVMD : BaseVMD
 
         LogoutAccCommand = new AccountLogoutCommand(accountStore);
 
-        AccountStore.CurrentAccountChange += AcoountStatusChange;
+        AccountStore!.CurrentAccountChange += AccountStatusChange;
 
         _settingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
-        AcoountStatusChange();
+        AccountStatusChange();
 
-        AddNewServerCommand = new AsyncLamdaCommand(OnAddNewServerExecuted,
-            ex => statusServices.ChangeStatus(new StatusMessage { isError = true, Message = ex.Message }),
+        AddNewServerCommand = new AsyncLambdaCommand(OnAddNewServerExecuted,
+            ex => statusServices.ChangeStatus(ex.Message),
             CanAddNewServerExecute);
 
 
-        inputDevice = new ObservableCollection<string>();
+        InputDevices = new ObservableCollection<string>();
 
-        outputDevice = new ObservableCollection<string>();
+        OutputDevices = new ObservableCollection<string>();
 
         GetInputOutput();
-       
-    }
-
-
-    async void GetInputOutput()
-    {
-        for (var n = 0; n < WaveIn.DeviceCount; n++)
-        {
-            var capabilities = WaveIn.GetCapabilities(n).ProductName;
-            inputDevice.Add(capabilities);
-        }
-
-        for (var n = 0; n < WaveOut.DeviceCount; n++)
-        {
-            var capabilities = WaveOut.GetCapabilities(n).ProductName;
-            outputDevice.Add(capabilities);
-        }
 
 
         try
         {
-            var capabilities = WaveIn.GetCapabilities(SettingsStore.CurrentSettings.CaptureDeviceId);
+            var capabilities = WaveIn.GetCapabilities(SettingsStore!.CurrentSettings!.CaptureDeviceId);
         }
-        catch (Exception e)
+        catch
         {
-            SettingsStore.CurrentSettings.CaptureDeviceId = 0;
+            SettingsStore!.CurrentSettings!.CaptureDeviceId = 0;
         }
 
         try
         {
             var capabilities = WaveOut.GetCapabilities(SettingsStore.CurrentSettings.OutputDeviceId);
         }
-        catch (Exception e)
+        catch
         {
             SettingsStore.CurrentSettings.OutputDeviceId = 0;
         }
     }
 
-    public ObservableCollection<string> inputDevice
+    public ObservableCollection<string>? InputDevices
     {
-        get => _inputDevice;
-        set => Set(ref _inputDevice, value);
+        get => _inputDeviceses;
+        set => Set(ref _inputDeviceses, value);
     }
 
-    public ObservableCollection<string> outputDevice
+    public ObservableCollection<string>? OutputDevices
     {
-        get => _outputDevice;
-        set => Set(ref _outputDevice, value);
+        get => _outputDevices;
+        set => Set(ref _outputDevices, value);
     }
 
-    public BaseVMD AccountCurrentVMD => _settingsAccNavigationStore.SettingsAccCurrentViewModel;
+    public BaseVmd? AccountCurrentVmd => _settingsAccNavigationStore.SettingsAccCurrentViewModel;
 
     public ICommand LogoutAccCommand { get; }
 
     public ICommand AddNewServerCommand { get; }
 
-    public string NewServerApiIp
+    public string? NewServerApiIp
     {
         get => _newServerApiIp;
         set => Set(ref _newServerApiIp, value);
     }
 
-    public string NewSeverLogin
+    public string? NewSeverLogin
     {
         get => _newSeverLogin;
         set => Set(ref _newSeverLogin, value);
@@ -148,66 +109,102 @@ internal class SettingVMD : BaseVMD
         set => Set(ref _isDefault, value);
     }
 
-    public AccountStore AccountStore
+    public AccountStore? AccountStore
     {
         get => _accountStore;
         set => Set(ref _accountStore, value);
     }
 
-    public SavedServersStore SavedServersStore
+    public SavedServersStore? SavedServersStore
     {
         get => _savedServersStore;
         set => Set(ref _savedServersStore, value);
     }
 
-
-    private SettingsStore _settingsStore;
-
-    public SettingsStore SettingsStore
+    public SettingsStore? SettingsStore
     {
         get => _settingsStore;
         set => Set(ref _settingsStore, value);
     }
 
-
-    private int _CaptureDeviceId;
-
     public int CaptureDeviceId
     {
-        get => SettingsStore.CurrentSettings.CaptureDeviceId;
+        get => SettingsStore!.CurrentSettings!.CaptureDeviceId;
         set
         {
-            Set(ref _OutputDeviceId, value);
+            Set(ref _inputDeviceId, value);
 
-            SettingsStore.CurrentSettings.CaptureDeviceId = value;
+            SettingsStore!.CurrentSettings!.CaptureDeviceId = value;
+        }
+    }
+
+    public int OutputDeviceId
+    {
+        get => SettingsStore!.CurrentSettings!.OutputDeviceId;
+        set
+        {
+            Set(ref _outputDeviceId, value);
+
+            SettingsStore!.CurrentSettings!.OutputDeviceId = value;
         }
     }
 
 
-    private int _OutputDeviceId;
-
-    public int OutputDeviceId
+    private async void GetInputOutput()
     {
-        get => SettingsStore.CurrentSettings.OutputDeviceId;
-        set
-        {
-            Set(ref _OutputDeviceId, value);
+        await Task.Run(() => InputDevices = AsyncGetInputDevices().Result);
 
-            SettingsStore.CurrentSettings.OutputDeviceId = value;
+        await Task.Run(() => OutputDevices = AsyncGetOutputDevices().Result);
+    }
+
+    private Task<ObservableCollection<string>?> AsyncGetInputDevices()
+    {
+        var inputDevices = new ObservableCollection<string>();
+
+        var enumerator = new MMDeviceEnumerator();
+
+        for (var waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
+        {
+            var deviceInfo = WaveIn.GetCapabilities(waveInDevice);
+
+            foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
+                if (device.FriendlyName.StartsWith(deviceInfo.ProductName))
+                    inputDevices.Add(device.FriendlyName);
         }
+
+
+        return Task.FromResult(inputDevices)!;
+    }
+
+    private Task<ObservableCollection<string>?> AsyncGetOutputDevices()
+    {
+        var outputDevices = new ObservableCollection<string>();
+
+        var enumerator = new MMDeviceEnumerator();
+
+        for (var waveInDevice = 0; waveInDevice < WaveOut.DeviceCount; waveInDevice++)
+        {
+            var deviceInfo = WaveOut.GetCapabilities(waveInDevice);
+
+            foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+                outputDevices.Add(device.FriendlyName);
+        }
+
+
+        return Task.FromResult(outputDevices)!;
     }
 
 
     private void OnCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(AccountCurrentVMD));
+        OnPropertyChanged(nameof(AccountCurrentVmd));
     }
 
-    private void AcoountStatusChange()
+    private void AccountStatusChange()
     {
-        IsDefault = AccountStore.isDefaultAccount;
+        IsDefault = AccountStore!.IsDefaultAccount;
 
-        if (AccountStore.isDefaultAccount)
+        if (AccountStore.IsDefaultAccount)
             _authNavigationService.Navigate();
         else
             _settingsAccNavigationStore.Close();
@@ -238,8 +235,48 @@ internal class SettingVMD : BaseVMD
 
             newSavedSeverAccount.SavedServer = newServer;
 
-            if (!SavedServersStore.Add(newSavedSeverAccount))
-                _statusServices.ChangeStatus(new StatusMessage { Message = "Server already exists", isError = true });
+            if (!SavedServersStore!.Add(newSavedSeverAccount))
+                _statusServices.ChangeStatus("Server already exist");
         }
     }
+
+    #region Services
+
+    private readonly INavigationService _authNavigationService;
+
+    private readonly IHttpDataServices _httpDataServices;
+
+    private readonly IStatusServices _statusServices;
+
+    #endregion
+
+    #region Stores
+
+    private AccountStore? _accountStore;
+
+    private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
+
+    private SavedServersStore? _savedServersStore;
+
+    private SettingsStore? _settingsStore;
+
+    #endregion
+
+    #region Pivate fields
+
+    private ObservableCollection<string>? _inputDeviceses;
+
+    private bool _isDefault;
+
+    private string? _newServerApiIp;
+
+    private string? _newSeverLogin;
+
+    private ObservableCollection<string>? _outputDevices;
+
+    private int _outputDeviceId;
+
+    private int _inputDeviceId;
+
+    #endregion
 }

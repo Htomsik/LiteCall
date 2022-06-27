@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteCall.Model;
+﻿using System.Threading.Tasks;
+using LiteCall.Model.RegistrationRecovery;
 
-namespace LiteCall.Services.Interfaces
+namespace LiteCall.Services.Interfaces;
+
+internal interface IRecoveryPasswordServices
 {
-    internal interface IRecoveryPasswordServices
-    {
-        public Task<bool> RecoveryPassword(RecoveryModel recoveryModel);
-
-    }
+    public Task<bool> RecoveryPassword(RecoveryModel recoveryModel);
 }

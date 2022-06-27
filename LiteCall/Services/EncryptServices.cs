@@ -1,55 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using LiteCall.Services.Interfaces;
-using Microsoft.AspNetCore.WebUtilities;
 
-namespace LiteCall.Services
+namespace LiteCall.Services;
+
+public class EncryptServices : IEncryptServices
 {
-    public  class EncryptServices:IEncryptServices
+    private static readonly byte[] Entropy = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+
+    [Obsolete("Obsolete")]
+    public Task<string?> Sha1Encrypt(string? content)
     {
+        if (string.IsNullOrEmpty(content)) return Task.FromResult<string>(null!)!;
 
-        readonly static byte[] Entropy = { 1,2,3,4,5,6,7,8,9,10 };
+        using var sha1 = new SHA1Managed();
 
-        public async Task<string> Sha1Encrypt(string content)
-        {
-            if (string.IsNullOrEmpty(content)) return null;
+        var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
 
-            using var sha1 = new SHA1Managed();
+        return Task.FromResult(string.Concat(hash.Select(b => b.ToString("x2"))))!;
+    }
 
-            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(content));
+    public Task<string?> Base64Encrypt(string? content)
+    {
+        if (string.IsNullOrEmpty(content)) return Task.FromResult(content)!;
 
-            return string.Concat(hash.Select(b => b.ToString("x2")));
-        }
+        var originalText = Encoding.Unicode.GetBytes(content);
 
-        public async Task<string> Base64Encypt(string content)
-        {
-            if (string.IsNullOrEmpty(content)) return content;
 
-            byte[] originalText = Encoding.Unicode.GetBytes(content);
+        var encryptedText = ProtectedData.Protect(originalText, Entropy, DataProtectionScope.CurrentUser);
 
-         
-            byte[] encryptedText = ProtectedData.Protect(originalText, Entropy, DataProtectionScope.CurrentUser);
+        return Task.FromResult(Convert.ToBase64String(encryptedText))!;
+    }
 
-            return Convert.ToBase64String(encryptedText);
-        }
+    public Task<string?> Base64Decrypt(string? content)
+    {
+        if (string.IsNullOrEmpty(content)) return Task.FromResult(content);
 
-        public async Task<string?> Base64Decrypt(string? content)
-        {
-         
-            if(string.IsNullOrEmpty(content)) return content;
+        var encryptedText = Convert.FromBase64String(content);
 
-            byte[] encryptedText = Convert.FromBase64String(content);
 
-           
-            byte[] originalText = ProtectedData.Unprotect(encryptedText, Entropy, DataProtectionScope.CurrentUser);
+        var originalText = ProtectedData.Unprotect(encryptedText, Entropy, DataProtectionScope.CurrentUser);
 
-           
-            return Encoding.Unicode.GetString(originalText);
-        }
+
+        return Task.FromResult(Encoding.Unicode.GetString(originalText))!;
     }
 }

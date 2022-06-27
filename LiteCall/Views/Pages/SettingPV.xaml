@@ -4,10 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     xmlns:viewModel="clr-namespace:LiteCall.ViewModels.Pages"
     d:DesignHeight="450"
@@ -23,7 +21,7 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:IsAuthoriseToStingConverter x:Key="IsAuthoriseToStingConverter" />
+            <converters:IsAuthorizeToStingConverter x:Key="IsAuthorizeToStingConverter" />
 
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
@@ -37,7 +35,6 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         Background="{DynamicResource Background(Solid)}">
-
 
 
         <TabControl
@@ -77,19 +74,24 @@
 
                                 <TextBlock Text="Account type: " />
 
-                                <TextBlock Text="{Binding AccountStore.CurrentAccount.IsAuthorise, Converter={StaticResource IsAuthoriseToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBlock
+                                    Text="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource IsAuthorizeToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                                     <TextBlock.Style>
 
-                                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                                        <Style BasedOn="{StaticResource {x:Type TextBlock}}"
+                                               TargetType="{x:Type TextBlock}">
 
 
                                             <Setter Property="Foreground" Value="{DynamicResource Dangerous(Solid)}" />
 
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="Authorized">
+                                                <DataTrigger
+                                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
+                                                    Value="Authorized">
 
-                                                    <Setter Property="Foreground" Value="{DynamicResource Green(Solid)}" />
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource Green(Solid)}" />
 
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -104,7 +106,6 @@
                                     Foreground="{DynamicResource Dangerous(Solid)}"
                                     Text="Default"
                                     Visibility="{Binding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
 
 
                             </StackPanel>
@@ -128,7 +129,8 @@
 
                                     <Style.Triggers>
 
-                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}" Value="True">
+                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}"
+                                                     Value="True">
 
                                             <Setter Property="Visibility" Value="Visible" />
 
@@ -138,7 +140,8 @@
 
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding IsDefault}" Value="False" />
-                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}" Value="False" />
+                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}"
+                                                           Value="False" />
                                             </MultiDataTrigger.Conditions>
 
                                             <Setter Property="Visibility" Value="Visible" />
@@ -154,25 +157,24 @@
                         </Button>
 
 
-
                         <ContentControl
                             Grid.Row="2"
                             Margin="5"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Content="{Binding AccountCurrentVMD, UpdateSourceTrigger=PropertyChanged}">
+                            Content="{Binding AccountCurrentVmd, UpdateSourceTrigger=PropertyChanged}">
 
                             <ContentControl.Resources>
 
-                                <DataTemplate DataType="{x:Type viewModel:AuthorisationPageVMD}">
+                                <DataTemplate DataType="{x:Type viewModel:AuthorizationPageVmd}">
                                     <local:AuthorisationPV />
                                 </DataTemplate>
 
-                                <DataTemplate DataType="{x:Type viewModel:RegistrationPageVMD}">
+                                <DataTemplate DataType="{x:Type viewModel:RegistrationPageVmd}">
                                     <local:RegistrationPV />
                                 </DataTemplate>
 
-                                <DataTemplate DataType="{x:Type viewModel:PasswordRecoveryVMD}">
+                                <DataTemplate DataType="{x:Type viewModel:PasswordRecoveryVmd}">
                                     <local:PasswordRecoveryPV />
                                 </DataTemplate>
 
@@ -187,7 +189,6 @@
                 </TabItem.Content>
 
             </TabItem>
-
 
 
             <TabItem
@@ -223,7 +224,8 @@
                             Background="{DynamicResource Background23(Solid)}"
                             CornerRadius="10">
 
-                            <ListView x:Name="ServesListView" ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts, UpdateSourceTrigger=PropertyChanged}">
+                            <ListView x:Name="ServesListView"
+                                      ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts, UpdateSourceTrigger=PropertyChanged}">
 
                                 <ListView.ItemTemplate>
 
@@ -234,13 +236,15 @@
                                             <StackPanel Background="Transparent" Orientation="Vertical">
 
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Ip: " />
+                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}"
+                                                               Text="Ip: " />
                                                     <TextBlock Text="{Binding SavedServer.ApiIp}" />
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal">
 
-                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Nickname: " />
+                                                    <TextBlock Foreground="{DynamicResource Important(Solid)}"
+                                                               Text="Nickname: " />
 
                                                     <TextBlock Text="{Binding Account.Login}" />
 
@@ -259,7 +263,8 @@
 
                                         <DataTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource Button2(Solid)}" />
+                                                <Setter TargetName="Border" Property="Background"
+                                                        Value="{DynamicResource Button2(Solid)}" />
                                             </Trigger>
                                         </DataTemplate.Triggers>
 
@@ -300,7 +305,7 @@
                                     <TextBlock
                                         Margin="5,10,0,0"
                                         HorizontalAlignment="Center"
-                                        Style="{DynamicResource Bigtext}"
+                                        Style="{DynamicResource BigTextBlock}"
                                         Text="ACCOUNT" />
 
 
@@ -340,8 +345,6 @@
                                     </TextBox>
 
 
-
-
                                 </Grid>
 
                             </Border>
@@ -354,7 +357,7 @@
                                 Margin="15"
                                 Command="{Binding AddNewServerCommand}">
 
-                                <TextBlock Style="{DynamicResource Bigtext}" Text="Add" />
+                                <TextBlock Style="{DynamicResource BigTextBlock}" Text="Add" />
 
 
                                 <Button.Style>
@@ -364,8 +367,12 @@
 
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding ElementName=Ip, Path=(Validation.HasError)}" Value="True" />
-                                                    <Condition Binding="{Binding ElementName=Login, Path=(Validation.HasError)}" Value="True" />
+                                                    <Condition
+                                                        Binding="{Binding ElementName=Ip, Path=(Validation.HasError)}"
+                                                        Value="True" />
+                                                    <Condition
+                                                        Binding="{Binding ElementName=Login, Path=(Validation.HasError)}"
+                                                        Value="True" />
                                                 </MultiDataTrigger.Conditions>
                                                 <MultiDataTrigger.Setters>
                                                     <Setter Property="IsEnabled" Value="False" />
@@ -381,24 +388,8 @@
 
                             </Button>
 
-                            <!--  Показывает статус загрузки  -->
-                            <loadingCustom:LoadingCustom
-                                Grid.Row="3"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Margin="5"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                Diameter="30"
-                                IsLoading="{Binding HasStatusMessage}"
-                                MainText="{Binding StatusMessage}"
-                                Color="{DynamicResource Fonts(Solid)}" />
-
 
                         </Grid>
-
-
-
 
 
                     </Grid>
@@ -423,8 +414,9 @@
 
                 <TabItem.Content>
                     <Grid
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Stretch"
+                        MinWidth="200"
+                        Margin="5"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Top">
 
                         <Grid.RowDefinitions>
@@ -435,7 +427,7 @@
                         <StackPanel>
                             <TextBlock Text="Input device:" />
                             <ComboBox
-                                ItemsSource="{Binding inputDevice, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding InputDevices, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedIndex="{Binding CaptureDeviceId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 Tag="Default" />
                         </StackPanel>
@@ -444,7 +436,7 @@
                         <StackPanel Grid.Row="1">
                             <TextBlock Text="Output device:" />
                             <ComboBox
-                                ItemsSource="{Binding outputDevice, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding OutputDevices, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedIndex="{Binding OutputDeviceId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 Tag="Default" />
                         </StackPanel>
@@ -518,15 +510,11 @@
                 </TabItem.Content>
 
 
-
-
             </TabItem>
         </TabControl>
 
 
-
     </Grid>
-
 
 
 </UserControl>

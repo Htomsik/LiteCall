@@ -1,76 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LiteCall.Model;
+﻿using System.Threading.Tasks;
 using LiteCall.Services.Interfaces;
 using LiteCall.Stores;
-using Exception = System.Exception;
 
-namespace LiteCall.Services
+namespace LiteCall.Services;
+
+internal sealed class SynchronizeDataOnServerServices : ISynhronyzeDataOnServerServices
 {
-    internal class SynchronizeDataOnServerServices:ISynhronyzeDataOnServerServices
+    private readonly AccountStore _accountStore;
+
+    private readonly IEncryptServices _encryptServices;
+
+    private readonly IHttpDataServices _httpDataServices;
+
+    private readonly SavedServersStore _savedServersStore;
+
+    public SynchronizeDataOnServerServices(AccountStore accountStore, SavedServersStore savedServersStore,
+        IHttpDataServices httpDataServices, IEncryptServices encryptServices)
     {
-        private readonly AccountStore _accountStore;
+        _accountStore = accountStore;
 
-        private readonly SavedServersStore _savedServersStore;
+        _savedServersStore = savedServersStore;
 
-        private readonly IhttpDataServices _httpDataServices;
+        _httpDataServices = httpDataServices;
 
-        private readonly IEncryptServices _encryptServices;
+        _encryptServices = encryptServices;
+    }
 
-        public SynchronizeDataOnServerServices(AccountStore accountStore, SavedServersStore savedServersStore,IhttpDataServices httpDataServices,IEncryptServices encryptServices)
-        {
-            _accountStore = accountStore;
-
-            _savedServersStore = savedServersStore;
-
-            _httpDataServices = httpDataServices;
-
-            _encryptServices = encryptServices;
-        }
-
-        public async Task<bool> SaveOnServer()
-        {
-
-            if (string.IsNullOrEmpty(_accountStore?.CurrentAccount?.Password) ||
-                _savedServersStore?.SavedServerAccounts?.ServersAccounts is null)
-            {
-                return false;
-            }
-
-
-            var savedServers = _savedServersStore.SavedServerAccounts;
-
-                foreach (var elem in savedServers.ServersAccounts)
-                {
-                    elem.Account.Password = await _encryptServices.Base64Decrypt(elem.Account.Password);
-                }
-
-            return await _httpDataServices.PostSaveServersUserOnMainServer(_accountStore.CurrentAccount, savedServers);
-
-        }
-
-
-        public async Task<bool> GetFromServer()
-        {
-            if (string.IsNullOrEmpty(_accountStore?.CurrentAccount?.Password))
-            {
-                return false;
-            }
-
-            AppSavedServers? dataFromServer = await _httpDataServices.GetSaveServersUserOnMainServer(_accountStore.CurrentAccount,
-                _savedServersStore.SavedServerAccounts?.LastUpdated);
-
-            if (dataFromServer != null)
-            {
-                _savedServersStore.SavedServerAccounts = dataFromServer;
-                return true;
-            }
-           
-
+    public async Task<bool> SaveOnServer()
+    {
+        if (string.IsNullOrEmpty(_accountStore?.CurrentAccount?.Password) ||
+            _savedServersStore?.SavedServerAccounts?.ServersAccounts is null)
             return false;
+
+
+        var savedServers = _savedServersStore.SavedServerAccounts;
+
+        foreach (var elem in savedServers.ServersAccounts)
+            elem.Account!.Password = await _encryptServices.Base64Decrypt(elem.Account.Password);
+
+        return await _httpDataServices.PostSaveServersUserOnMainServer(_accountStore.CurrentAccount, savedServers);
+    }
+
+
+    public async Task<bool> GetFromServer()
+    {
+        if (string.IsNullOrEmpty(_accountStore?.CurrentAccount?.Password)) return false;
+
+        var dataFromServer = await _httpDataServices.GetSaveServersUserOnMainServer(_accountStore.CurrentAccount,
+            _savedServersStore.SavedServerAccounts?.LastUpdated);
+
+        if (dataFromServer != null)
+        {
+            _savedServersStore.SavedServerAccounts = dataFromServer;
+            return true;
         }
+
+
+        return false;
     }
 }

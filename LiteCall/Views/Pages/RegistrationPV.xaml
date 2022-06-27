@@ -3,18 +3,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
+    xmlns:customControls="clr-namespace:CustomControls;assembly=CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingCustom="clr-namespace:LoadingCustom;assembly=LoadingCustom"
-    xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:modalCutom="clr-namespace:ModalCutom;assembly=ModalCutom"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+            <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -46,11 +44,11 @@
                 <TextBlock
                     Margin="5"
                     HorizontalAlignment="Center"
-                    Style="{DynamicResource Bigtext}"
+                    Style="{DynamicResource BigTextBlock}"
                     Text="REGISTRATION" />
 
                 <TextBox
-                    x:Name="UsernameTB"
+                    x:Name="UserNameTextBox"
                     Grid.Row="1"
                     Margin="20,5"
                     Style="{StaticResource LogPassTextBox}"
@@ -71,7 +69,7 @@
                 </TextBox>
 
                 <TextBox
-                    x:Name="PasswordTB"
+                    x:Name="PasswordTextBox"
                     Grid.Row="2"
                     Margin="20,5"
                     Style="{StaticResource PassTextBox}"
@@ -89,7 +87,7 @@
                 </TextBox>
 
                 <TextBox
-                    x:Name="PasswordConfirmTB"
+                    x:Name="PasswordConfirmTextBox"
                     Grid.Row="3"
                     Margin="20,5"
                     Style="{StaticResource PassTextBox}"
@@ -98,13 +96,12 @@
 
 
                 <ComboBox
-                    x:Name="QuestionCB"
+                    x:Name="QuestionComboBox"
                     Grid.Row="4"
                     Margin="20,5,1,5"
                     IsEnabled="{Binding CanServerConnect, UpdateSourceTrigger=PropertyChanged}"
-                    ItemsSource="{Binding QestionsCollection}"
-                    SelectedIndex="-1"
-                    SelectedItem="{Binding SelectedQestion}"
+                    ItemsSource="{Binding QuestionsCollection}"
+                    SelectedItem="{Binding SelectedQuestion}"
                     Tag="QUESTION">
 
                     <ComboBox.ItemTemplate>
@@ -112,7 +109,7 @@
                         <DataTemplate>
                             <Grid>
 
-                                <TextBlock Text="{Binding _Question}" />
+                                <TextBlock Text="{Binding Text}" />
                             </Grid>
                         </DataTemplate>
 
@@ -121,7 +118,7 @@
 
 
                 <TextBox
-                    x:Name="AnswerTB"
+                    x:Name="AnswerTextBox"
                     Grid.Row="5"
                     Margin="20,5"
                     Style="{StaticResource PassTextBox}"
@@ -193,7 +190,7 @@
             MaxHeight="40"
             Margin="20,5"
             Command="{Binding OpenModalCommand}">
-            <TextBlock Style="{DynamicResource Bigtext}" Text="REGISTRATION" />
+            <TextBlock Style="{DynamicResource BigTextBlock}" Text="REGISTRATION" />
 
             <!-- <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource LoginPassValidatConverter}">
@@ -213,15 +210,22 @@
 
                             <MultiDataTrigger.Conditions>
 
-                                <Condition Binding="{Binding ElementName=UsernameTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=UserNameTextBox, Path=(Validation.HasError)}"
+                                           Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=PasswordTextBox, Path=(Validation.HasError)}"
+                                           Value="True" />
 
-                                <Condition Binding="{Binding ElementName=PasswordConfirmTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition
+                                    Binding="{Binding ElementName=PasswordConfirmTextBox, Path=(Validation.HasError)}"
+                                    Value="True" />
 
-                                <Condition Binding="{Binding ElementName=AnswerTB, Path=(Validation.HasError)}" Value="True" />
+                                <Condition Binding="{Binding ElementName=AnswerTextBox, Path=(Validation.HasError)}"
+                                           Value="True" />
 
-                                <Condition Binding="{Binding ElementName=QuestionCB, Path=SelectedIndex}" Value="0" />
+                                <Condition
+                                    Binding="{Binding SelectedQestion, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource GroupNotNullBoolConverter}}"
+                                    Value="True" />
 
                             </MultiDataTrigger.Conditions>
 
@@ -238,15 +242,16 @@
         </Button>
 
         <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
-        <modalCutom:ModalCustom
-            Grid.RowSpan="4"
+        <customControls:ModalWindow
+            Grid.Row="0" Grid.RowSpan="2"
             BorderBrush="{DynamicResource Fonts(Solid)}"
             BorderThickness="1"
             Corner="10"
             IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
 
 
-            <Border Background="{DynamicResource Background2(Solid)}" CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=modalCutom:ModalCustom}, Path=Corner}">
+            <Border Background="{DynamicResource Background2(Solid)}"
+                    CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customControls:ModalWindow}, Path=Corner}">
                 <Grid
                     MinWidth="200"
                     MinHeight="200"
@@ -263,7 +268,6 @@
                     </Grid.RowDefinitions>
 
 
-
                     <Border
                         Grid.Row="1"
                         Width="120"
@@ -272,12 +276,13 @@
                         BorderBrush="{DynamicResource Fonts(Solid)}"
                         BorderThickness="0.2"
                         CornerRadius="5">
-                        <Image Source="{Binding Capthca, UpdateSourceTrigger=PropertyChanged}" Stretch="Fill" />
+                        <Image Source="{Binding CaptсhaImageSource, UpdateSourceTrigger=PropertyChanged}"
+                               Stretch="Fill" />
                     </Border>
 
 
                     <TextBox
-                        x:Name="CapthcaTB"
+                        x:Name="CaptchaTextBox"
                         Grid.Row="2"
                         Margin="20,8"
                         MaxLength="4"
@@ -287,7 +292,7 @@
                         <TextBox.Text>
                             <Binding
                                 Mode="TwoWay"
-                                Path="CapthcaString"
+                                Path="CaptchaString"
                                 UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <validationRule:CaptchaValidation />
@@ -317,7 +322,7 @@
                             Command="{Binding RegistrationCommand, UpdateSourceTrigger=PropertyChanged}">
 
                             <Button.CommandParameter>
-                                <Binding ElementName="CapthcaTB" Path="(Validation.HasError)" />
+                                <Binding ElementName="CaptchaTextBox" Path="(Validation.HasError)" />
                             </Button.CommandParameter>
 
                             <TextBlock Text="OK" />
@@ -339,31 +344,13 @@
                         </Button>
                     </Grid>
 
-
-
-                    <!--  Показывает статус загрузки  -->
-                    <loadingCustom:LoadingCustom
-                        Grid.Row="4"
-                        Margin="5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Diameter="30"
-                        IsLoading="{Binding ModalHasStatusMessage}"
-                        MainText="{Binding ModalStatusMessage}"
-                        Color="{DynamicResource Fonts(Solid)}" />
-
-
-
-
-
-
                 </Grid>
             </Border>
 
-        </modalCutom:ModalCustom>
+        </customControls:ModalWindow>
 
         <Border
-            Grid.RowSpan="2"
+            Grid.Row="0" Grid.RowSpan="2"
             Background="Black"
             CornerRadius="10"
             Opacity="0.3"
