@@ -1,4 +1,4 @@
-﻿using Core.Models.ServerModels.Messages;
+﻿using Core.Models.Servers.Messages;
 
 namespace Core.Infrastructure.Buses;
 

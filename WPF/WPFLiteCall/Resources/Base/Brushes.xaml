@@ -1,0 +1,79 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!--  Из за багов лучге не  указывать цвет в солиде  -->
+
+    <SolidColorBrush x:Key="Background(Solid)" Color="#202020" />
+
+    <SolidColorBrush x:Key="Background2(Solid)" Color="#2A2B2A" />
+
+    <SolidColorBrush x:Key="Background23(Solid)" Color="#262726" />
+
+
+    <SolidColorBrush x:Key="Background3(Solid)" Color="#252625" />
+
+    <SolidColorBrush x:Key="Background4(Solid)" Color="#555655" />
+
+    <SolidColorBrush x:Key="Background5(Solid)" Color="#7E7E7E" />
+
+    <SolidColorBrush x:Key="Background6(Solid)" Color="#3D3E3D" />
+
+
+    <SolidColorBrush x:Key="Background7(Solid)" Color="#343534" />
+
+
+    <SolidColorBrush x:Key="Fonts(Solid)" Color="#D6D6D6" />
+
+
+    <SolidColorBrush x:Key="Dangerous(Solid)" Color="#E74C3C" />
+
+    <SolidColorBrush x:Key="Green(Solid)" Color="#7DA300" />
+
+    <SolidColorBrush x:Key="Important(Solid)" Color="#FFE019" />
+
+    <SolidColorBrush x:Key="Blue(Solid)" Color="#7481D2" />
+
+
+    <SolidColorBrush x:Key="Button(Solid)" Color="#969696" />
+
+    <SolidColorBrush x:Key="Button2(Solid)" Color="#525252" />
+
+    <SolidColorBrush x:Key="ButtonPressed(Solid)" Color="#666666" />
+
+
+    <Color x:Key="Background(Color)">#202020</Color>
+
+    <Color x:Key="Background2(Color)">#2A2B2A</Color>
+
+    <Color x:Key="Background23(Color)">#262726</Color>
+
+    <Color x:Key="Background3(Color)">#252625</Color>
+
+    <Color x:Key="Background4(Color)">#555655</Color>
+
+    <Color x:Key="Background5(Color)">#7E7E7E</Color>
+
+    <Color x:Key="Background6(Color)">#3D3E3D</Color>
+
+    <Color x:Key="Background7(Color)">#343534</Color>
+
+
+    <Color x:Key="Fonts(Color)">#D6D6D6</Color>
+
+
+    <Color x:Key="Dangerous(Color)">#E74C3C</Color>
+
+    <Color x:Key="Important(Color)">#FFE019</Color>
+
+
+    <Color x:Key="Button(Color)">#969696</Color>
+
+    <Color x:Key="Button2(Color)">#525252</Color>
+
+    <Color x:Key="ButtonPressed(Color)">#666666</Color>
+
+    <Color x:Key="ButtonDisabled(Color)">#8F8F8F</Color>
+
+
+</ResourceDictionary>
