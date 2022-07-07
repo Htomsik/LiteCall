@@ -47,8 +47,10 @@ public sealed class CurrentServerStore : BaseVmd
     }
 
 
-    public void Delete()
+    public Task Delete()
     {
         CurrentServer = null;
+        
+        return  Task.CompletedTask;
     }
 }

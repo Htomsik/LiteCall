@@ -13,7 +13,7 @@ public abstract class AsyncCmdBase: ICommand
         _onException = onException;
     }
 
-    public bool IsExecuting
+    protected bool IsExecuting
     {
         get => _isExecuting;
         set

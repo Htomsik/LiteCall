@@ -67,9 +67,9 @@ internal sealed class ServerVmd : BaseVmd
             ex => statusSc.ChangeStatus(ex.Message),
             CanConnectWithPasswordExecute);
 
-        OpenCreateRoomModalCommand = new LambdaCmd(OnOpenCreateRoomModalCommandExecuted);
+        OpenCreateRoomModalCommand = ReactiveCommand.Create<object>(OnOpenCreateRoomModalCommandExecuted);
 
-        OpenPasswordModalCommand = new LambdaCmd(OnOpenPasswordModalCommandCommandExecuted);
+        OpenPasswordModalCommand = ReactiveCommand.Create<object>(OnOpenPasswordModalCommandCommandExecuted);
 
         DisconnectGroupCommand = new AsyncLambdaCmd(OnDisconnectGroupExecuted,
             ex => statusSc.ChangeStatus(ex.Message));

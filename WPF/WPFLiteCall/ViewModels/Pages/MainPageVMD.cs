@@ -55,16 +55,12 @@ internal sealed class MainPageVmd : BaseVmd
         ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationSc,
             CanModalRegistrationOpenCommandExecuted);
 
-
-        VisibilitySwitchCommand = new LambdaCmd(OnVisibilitySwitchExecuted);
-
-        OpenModalCommaCommand = new LambdaCmd(OnOpenModalCommaExecuted);
+        
+        OpenModalCommand = ReactiveCommand.Create<object>(OnOpenModalCommaExecuted);
 
 
-        DisconnectServerCommand = new LambdaCmd(OnDisconnectServerExecuted);
-
-        AccountLogoutCommand = new LambdaCmd(OnAccountLogoutExecuted); //Не работает
-
+        DisconnectServerCommand = ReactiveCommand.CreateFromTask<object>(_ => CurrentServerStore?.Delete()!);
+        
         OpenSettingsCommand = new NavigationCommand(settingsPageNavigationSc);
 
 
@@ -222,27 +218,9 @@ internal sealed class MainPageVmd : BaseVmd
     }
 
 
-    public ICommand DisconnectServerCommand { get; }
-
-
-    private void OnDisconnectServerExecuted(object p)
-    {
-        CurrentServerStore?.Delete();
-    }
-
-
-    public ICommand VisibilitySwitchCommand { get; }
-
-    private void OnVisibilitySwitchExecuted(object p)
-    {
-        if (Convert.ToInt32(p) == 1)
-            ButtonVisibleStatus = Visibility.Collapsed;
-        else
-            ButtonVisibleStatus = Visibility.Visible;
-    }
-
-
-    public ICommand OpenModalCommaCommand { get; }
+    public IReactiveCommand DisconnectServerCommand { get; }
+    
+    public IReactiveCommand OpenModalCommand { get; }
 
     private void OnOpenModalCommaExecuted(object p)
     {
@@ -256,23 +234,8 @@ internal sealed class MainPageVmd : BaseVmd
 
             ServerNameOrIp = string.Empty;
         }
+     
     }
-
-
-    public ICommand AccountLogoutCommand { get; }
-
-    private void OnAccountLogoutExecuted(object p)
-    {
-        if (SelectedViewModel != null) MainPageServerNavigationStore.Close();
-
-        CurrentServerStore!.CurrentServer = default;
-
-        ButtonVisibleStatus = Visibility.Collapsed;
-
-        AccountStore!.Logout();
-    }
-
-
     public ICommand ConnectServerCommand { get; }
 
     private async Task OnConnectServerExecuted(object p)
