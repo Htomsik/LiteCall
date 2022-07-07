@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Core.VMD.Base;
 using Newtonsoft.Json;
+using ReactiveUI;
 
 namespace Core.Models.Saved;
 
@@ -11,7 +12,7 @@ public class AppSavedServers : BaseVmd
     public ObservableCollection<ServerAccount>? ServersAccounts
     {
         get => _serversAccounts;
-        set => Set(ref _serversAccounts, value);
+        set => this.RaiseAndSetIfChanged(ref _serversAccounts, value);
     }
     
     public DateTime? LastUpdated { get; set; }

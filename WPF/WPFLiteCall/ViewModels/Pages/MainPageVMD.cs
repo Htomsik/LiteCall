@@ -16,6 +16,7 @@ using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
 using LiteCall.Services.Interfaces;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels.Pages;
 
@@ -94,7 +95,7 @@ internal sealed class MainPageVmd : BaseVmd
 
     private void OnCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(SelectedViewModel));
+        this.RaisePropertyChanged(nameof(SelectedViewModel));
     }
 
     private void DisconnectServer()
@@ -364,7 +365,7 @@ internal sealed class MainPageVmd : BaseVmd
     public bool CheckStatus
     {
         get => _checkStatus;
-        set => Set(ref _checkStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _checkStatus, value);
     }
 
 
@@ -373,7 +374,7 @@ internal sealed class MainPageVmd : BaseVmd
     public bool ModalStatus
     {
         get => _modalStatus;
-        set => Set(ref _modalStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _modalStatus, value);
     }
 
 
@@ -382,7 +383,7 @@ internal sealed class MainPageVmd : BaseVmd
     public MainAccountStore? AccountStore
     {
         get => _accountStore;
-        set => Set(ref _accountStore, value);
+        set => this.RaiseAndSetIfChanged(ref _accountStore, value);
     }
 
     private CurrentServerStore? _currentServerStore;
@@ -390,7 +391,7 @@ internal sealed class MainPageVmd : BaseVmd
     public CurrentServerStore? CurrentServerStore
     {
         get => _currentServerStore;
-        set => Set(ref _currentServerStore, value);
+        set => this.RaiseAndSetIfChanged(ref _currentServerStore, value);
     }
 
 
@@ -399,7 +400,7 @@ internal sealed class MainPageVmd : BaseVmd
     public CurrentServerAccountStore? ServerAccountStore
     {
         get => _serverAccountStore;
-        set => Set(ref _serverAccountStore, value);
+        set => this.RaiseAndSetIfChanged(ref _serverAccountStore, value);
     }
 
 
@@ -408,7 +409,7 @@ internal sealed class MainPageVmd : BaseVmd
     public ServerAccount? SelectedServerAccount
     {
         get => _selectedServerAccount;
-        set => Set(ref _selectedServerAccount, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedServerAccount, value);
     }
 
 
@@ -417,7 +418,7 @@ internal sealed class MainPageVmd : BaseVmd
     public SavedServersStore? SavedServersStore
     {
         get => _savedServersStore;
-        set => Set(ref _savedServersStore, value);
+        set => this.RaiseAndSetIfChanged(ref _savedServersStore, value);
     }
 
 
@@ -426,7 +427,7 @@ internal sealed class MainPageVmd : BaseVmd
     public string? ServerNameOrIp
     {
         get => _serverNameOrIp;
-        set => Set(ref _serverNameOrIp, value);
+        set => this.RaiseAndSetIfChanged(ref _serverNameOrIp, value);
     }
 
 
@@ -435,7 +436,7 @@ internal sealed class MainPageVmd : BaseVmd
     public Visibility ButtonVisibleStatus
     {
         get => _buttonVisibleStatus;
-        set => Set(ref _buttonVisibleStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _buttonVisibleStatus, value);
     }
 
 

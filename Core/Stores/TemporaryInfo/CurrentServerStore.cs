@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Core.Models.Servers;
 using Core.VMD.Base;
+using ReactiveUI;
 
 namespace Core.Stores.TemporaryInfo;
 
@@ -16,7 +17,7 @@ public sealed class CurrentServerStore : BaseVmd
         get => _currentServer;
         set
         {
-            Set(ref _currentServer, value);
+            this.RaiseAndSetIfChanged(ref _currentServer, value);
             OnCurrentServerChanged();
         }
     }
@@ -26,7 +27,7 @@ public sealed class CurrentServerStore : BaseVmd
         get => _currentSeverRooms;
         set
         {
-            Set(ref _currentSeverRooms, value);
+            this.RaiseAndSetIfChanged(ref _currentSeverRooms, value);
             CurrentServerRoomsChanged?.Invoke();
         }
     }

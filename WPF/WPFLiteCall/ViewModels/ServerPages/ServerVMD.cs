@@ -16,6 +16,7 @@ using Core.VMD.Base;
 using LiteCall.Services.Interfaces;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels.ServerPages;
 
@@ -116,12 +117,12 @@ internal sealed class ServerVmd : BaseVmd
 
     private void CurrentAccountChange()
     {
-        OnPropertyChanged(nameof(CanServerConnect));
+        this.RaisePropertyChanged(nameof(CanServerConnect));
     }
 
     private void CurrentServerRoomsChanged()
     {
-        OnPropertyChanged(nameof(CurrentGroup));
+        this.RaisePropertyChanged(nameof(CurrentGroup));
     }
 
     #region Services
@@ -546,7 +547,7 @@ internal sealed class ServerVmd : BaseVmd
     public ObservableCollection<TextMessage>? MessagesColCollection
     {
         get => _messagesColCollection;
-        set => Set(ref _messagesColCollection, value);
+        set => this.RaiseAndSetIfChanged(ref _messagesColCollection, value);
     }
 
 
@@ -555,7 +556,7 @@ internal sealed class ServerVmd : BaseVmd
     public string? CurrentMessage
     {
         get => _currentMessage;
-        set => Set(ref _currentMessage, value);
+        set => this.RaiseAndSetIfChanged(ref _currentMessage, value);
     }
 
 
@@ -564,7 +565,7 @@ internal sealed class ServerVmd : BaseVmd
     public bool CreateRoomModalStatus
     {
         get => _createRoomModalStatus;
-        set => Set(ref _createRoomModalStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _createRoomModalStatus, value);
     }
 
 
@@ -573,7 +574,7 @@ internal sealed class ServerVmd : BaseVmd
     public string? NewRoomName
     {
         get => _newRoomName;
-        set => Set(ref _newRoomName, value);
+        set => this.RaiseAndSetIfChanged(ref _newRoomName, value);
     }
 
 
@@ -582,7 +583,7 @@ internal sealed class ServerVmd : BaseVmd
     public string? NewRoomPassword
     {
         get => _newRoomPassword;
-        set => Set(ref _newRoomPassword, value);
+        set => this.RaiseAndSetIfChanged(ref _newRoomPassword, value);
     }
 
 
@@ -591,7 +592,7 @@ internal sealed class ServerVmd : BaseVmd
     public bool RoomPasswordModalStatus
     {
         get => _roomPasswordModalStatus;
-        set => Set(ref _roomPasswordModalStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _roomPasswordModalStatus, value);
     }
 
 
@@ -600,7 +601,7 @@ internal sealed class ServerVmd : BaseVmd
     public string? RoomPassword
     {
         get => _roomPassword;
-        set => Set(ref _roomPassword, value);
+        set => this.RaiseAndSetIfChanged(ref _roomPassword, value);
     }
 
     private ServerRooms? _selRooms;
@@ -608,7 +609,7 @@ internal sealed class ServerVmd : BaseVmd
     public ServerRooms? SelRooms
     {
         get => _selRooms;
-        set => Set(ref _selRooms, value);
+        set => this.RaiseAndSetIfChanged(ref _selRooms, value);
     }
 
 
@@ -617,7 +618,7 @@ internal sealed class ServerVmd : BaseVmd
     public ServerUser? SelServerUser
     {
         get => _selServerUser;
-        set => Set(ref _selServerUser, value);
+        set => this.RaiseAndSetIfChanged(ref _selServerUser, value);
     }
 
 
@@ -640,7 +641,7 @@ internal sealed class ServerVmd : BaseVmd
     public bool HeadphoneMute
     {
         get => _headphoneMute;
-        set => Set(ref _headphoneMute, value);
+        set => this.RaiseAndSetIfChanged(ref _headphoneMute, value);
     }
 
 
@@ -651,7 +652,7 @@ internal sealed class ServerVmd : BaseVmd
         get => _microphoneMute;
         set
         {
-            Set(ref _microphoneMute, value);
+            this.RaiseAndSetIfChanged(ref _microphoneMute, value);
             OnMicrophoneMuteChanged();
         }
     }

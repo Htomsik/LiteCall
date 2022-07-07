@@ -8,6 +8,7 @@ using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.Base;
 using Microsoft.Extensions.Configuration;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels;
 
@@ -100,28 +101,28 @@ internal sealed class MainWindowVmd : BaseVmd
 
     private void OnCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(CurrentViewModel));
+        this.RaisePropertyChanged(nameof(CurrentViewModel));
     }
 
 
     private void OnModalCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(ModalCurrentViewModel));
+        this.RaisePropertyChanged(nameof(ModalCurrentViewModel));
 
-        OnPropertyChanged(nameof(ModalIsOpen));
+        this.RaisePropertyChanged(nameof(ModalIsOpen));
     }
 
     private void OnAdditionalCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(AdditionalCurrentViewModel));
+        this.RaisePropertyChanged(nameof(AdditionalCurrentViewModel));
 
-        OnPropertyChanged(nameof(AdditionalIsOpen));
+        this.RaisePropertyChanged(nameof(AdditionalIsOpen));
     }
 
     private void OnCurrentStatusMessageChanged()
     {
-        OnPropertyChanged(nameof(CurrentStatusMessage));
+        this.RaisePropertyChanged(nameof(CurrentStatusMessage));
 
-        OnPropertyChanged(nameof(StatusMessageIsOpen));
+        this.RaisePropertyChanged(nameof(StatusMessageIsOpen));
     }
 }

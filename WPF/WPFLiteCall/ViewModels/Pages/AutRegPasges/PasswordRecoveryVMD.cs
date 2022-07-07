@@ -12,6 +12,7 @@ using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
 using Core.VMD.Base;
 using LiteCall.Services.Interfaces;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels.Pages.AutRegPasges;
 
@@ -112,7 +113,7 @@ internal class PasswordRecoveryVmd : BaseVmd
     public bool CanServerConnect
     {
         get => _canServerConnect;
-        set => Set(ref _canServerConnect, value);
+        set => this.RaiseAndSetIfChanged(ref _canServerConnect, value);
     }
 
 
@@ -121,7 +122,7 @@ internal class PasswordRecoveryVmd : BaseVmd
     public string? Login
     {
         get => _login;
-        set => Set(ref _login, value);
+        set => this.RaiseAndSetIfChanged(ref _login, value);
     }
 
 
@@ -130,7 +131,7 @@ internal class PasswordRecoveryVmd : BaseVmd
     public string? Password
     {
         get => _password;
-        set => Set(ref _password, value);
+        set => this.RaiseAndSetIfChanged(ref _password, value);
     }
 
     private string? _questionAnswer;
@@ -138,7 +139,7 @@ internal class PasswordRecoveryVmd : BaseVmd
     public string? QuestionAnswer
     {
         get => _questionAnswer;
-        set => Set(ref _questionAnswer, value);
+        set => this.RaiseAndSetIfChanged(ref _questionAnswer, value);
     }
 
 
@@ -147,7 +148,7 @@ internal class PasswordRecoveryVmd : BaseVmd
     public ObservableCollection<Question>? QuestionsCollection
     {
         get => _questionsCollection;
-        set => Set(ref _questionsCollection, value);
+        set => this.RaiseAndSetIfChanged(ref _questionsCollection, value);
     }
 
 
@@ -156,7 +157,7 @@ internal class PasswordRecoveryVmd : BaseVmd
     public Question? SelectedQuestion
     {
         get => _selectedQuestion;
-        set => Set(ref _selectedQuestion, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedQuestion, value);
     }
 
     #endregion

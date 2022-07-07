@@ -1,4 +1,5 @@
 ﻿using Core.VMD.Base;
+using ReactiveUI;
 
 namespace Core.Models.Servers;
 
@@ -13,6 +14,6 @@ public  sealed class ServerRooms : BaseVmd
     public ICollection<ServerUser>? Users
     {
         get => _users;
-        set => Set(ref _users, value);
+        set => this.RaiseAndSetIfChanged(ref _users, value);
     }
 }

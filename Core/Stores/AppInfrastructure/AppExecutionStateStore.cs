@@ -1,5 +1,6 @@
 ﻿using Core.Models.AppInfrastructure;
 using Core.VMD.Base;
+using ReactiveUI;
 
 namespace Core.Stores.AppInfrastructure;
 
@@ -12,7 +13,7 @@ public class AppExecutionStateStore:BaseVmd
         get => _currentStatusMessage;
         set
         {
-            Set(ref _currentStatusMessage, value);
+            this.RaiseAndSetIfChanged(ref _currentStatusMessage, value);
             OnCurrentStatusMessageChanged();
         }
     }

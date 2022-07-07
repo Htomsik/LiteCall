@@ -1,5 +1,6 @@
 ﻿using Core.Models.Users;
 using Core.VMD.Base;
+using ReactiveUI;
 
 namespace Core.Stores.TemporaryInfo;
 
@@ -12,7 +13,7 @@ public sealed class CurrentServerAccountStore : BaseVmd
         get => _currentAccount;
         set
         {
-            Set(ref _currentAccount, value);
+            this.RaiseAndSetIfChanged(ref _currentAccount, value);
             OnCurrentAccountChangeChanged();
         }
     }

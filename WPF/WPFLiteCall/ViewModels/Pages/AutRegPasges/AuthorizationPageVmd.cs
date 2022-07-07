@@ -9,6 +9,7 @@ using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
 using LiteCall.Services.Interfaces;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels.Pages.AutRegPasges;
 
@@ -84,7 +85,7 @@ internal class AuthorizationPageVmd : BaseVmd
     public bool CheckStatus
     {
         get => _checkStatus;
-        set => Set(ref _checkStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _checkStatus, value);
     }
 
 
@@ -93,7 +94,7 @@ internal class AuthorizationPageVmd : BaseVmd
     public string? Login
     {
         get => _login;
-        set => Set(ref _login, value);
+        set => this.RaiseAndSetIfChanged(ref _login, value);
     }
 
 
@@ -102,7 +103,7 @@ internal class AuthorizationPageVmd : BaseVmd
     public string? Password
     {
         get => _password;
-        set => Set(ref _password, value);
+        set => this.RaiseAndSetIfChanged(ref _password, value);
     }
 
 
@@ -113,8 +114,8 @@ internal class AuthorizationPageVmd : BaseVmd
         get => _statusMessage;
         set
         {
-            Set(ref _statusMessage, value);
-            OnPropertyChanged(nameof(HasStatusMessage));
+            this.RaiseAndSetIfChanged(ref _statusMessage, value);
+            this.RaisePropertyChanged(nameof(HasStatusMessage));
         }
     }
 

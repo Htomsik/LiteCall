@@ -13,6 +13,7 @@ using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
 using LiteCall.Services.Interfaces;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels.Pages.AutRegPasges;
 
@@ -89,61 +90,61 @@ internal class RegistrationPageVmd : BaseVmd
     public bool CanServerConnect
     {
         get => _canServerConnect;
-        set => Set(ref _canServerConnect, value);
+        set => this.RaiseAndSetIfChanged(ref _canServerConnect, value);
     }
 
     public bool ModalStatus
     {
         get => _modalStatus;
-        set => Set(ref _modalStatus, value);
+        set => this.RaiseAndSetIfChanged(ref _modalStatus, value);
     }
 
     public string? CaptchaString
     {
         get => _captchaString;
-        set => Set(ref _captchaString, value);
+        set => this.RaiseAndSetIfChanged(ref _captchaString, value);
     }
 
     public ImageSource? CaptсhaImageSource
     {
         get => _captсhaImageSource;
-        set => Set(ref _captсhaImageSource, value);
+        set => this.RaiseAndSetIfChanged(ref _captсhaImageSource, value);
     }
 
     public string? Login
     {
         get => _login;
-        set => Set(ref _login, value);
+        set => this.RaiseAndSetIfChanged(ref _login, value);
     }
 
     public string? Password
     {
         get => _password;
-        set => Set(ref _password, value);
+        set => this.RaiseAndSetIfChanged(ref _password, value);
     }
 
     public string? ConfirmPassword
     {
         get => _confirmPassword;
-        set => Set(ref _confirmPassword, value);
+        set => this.RaiseAndSetIfChanged(ref _confirmPassword, value);
     }
 
     public string? QuestionAnswer
     {
         get => _questionAnswer;
-        set => Set(ref _questionAnswer, value);
+        set => this.RaiseAndSetIfChanged(ref _questionAnswer, value);
     }
 
     public ObservableCollection<Question>? QuestionsCollection
     {
         get => _questionsCollection;
-        set => Set(ref _questionsCollection, value);
+        set => this.RaiseAndSetIfChanged(ref _questionsCollection, value);
     }
 
     public Question? SelectedQuestion
     {
         get => _selectedQuestion;
-        set => Set(ref _selectedQuestion, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedQuestion, value);
     }
 
 

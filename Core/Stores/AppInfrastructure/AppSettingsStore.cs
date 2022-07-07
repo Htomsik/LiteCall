@@ -1,5 +1,6 @@
 ﻿using Core.Models.AppInfrastructure;
 using Core.VMD.Base;
+using ReactiveUI;
 
 namespace Core.Stores.AppInfrastructure;
 
@@ -17,7 +18,7 @@ public class AppSettingsStore:BaseVmd
         get => _currentSettings;
         set
         {
-            Set(ref _currentSettings, value);
+            this.RaiseAndSetIfChanged(ref _currentSettings, value);
             OnCurrentSettingsChanged();
         }
     }

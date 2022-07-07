@@ -1,5 +1,6 @@
 ﻿using Core.VMD.Base;
 using Newtonsoft.Json;
+using ReactiveUI;
 
 namespace Core.Models.AppInfrastructure;
 
@@ -14,7 +15,7 @@ public class AppSettings:BaseVmd
         get => _outputDeviceId;
         set
         {
-            Set(ref _outputDeviceId, value);
+            this.RaiseAndSetIfChanged(ref _outputDeviceId, value);
             OnCurrentSettingsChanged();
         }
     }
@@ -24,7 +25,7 @@ public class AppSettings:BaseVmd
         get => _captureDeviceId;
         set
         {
-            Set(ref _captureDeviceId, value);
+            this.RaiseAndSetIfChanged(ref _captureDeviceId, value);
             OnCurrentSettingsChanged();
         }
     }

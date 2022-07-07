@@ -13,6 +13,7 @@ using Core.VMD.Base;
 using LiteCall.Services.Interfaces;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using ReactiveUI;
 
 namespace LiteCall.ViewModels.Pages;
 
@@ -78,13 +79,13 @@ internal sealed class SettingVmd : BaseVmd
     public ObservableCollection<string>? InputDevices
     {
         get => _inputDeviceses;
-        set => Set(ref _inputDeviceses, value);
+        set => this.RaiseAndSetIfChanged(ref _inputDeviceses, value);
     }
 
     public ObservableCollection<string>? OutputDevices
     {
         get => _outputDevices;
-        set => Set(ref _outputDevices, value);
+        set => this.RaiseAndSetIfChanged(ref _outputDevices, value);
     }
 
     public BaseVmd? AccountCurrentVmd => _settingsAccNavigationStore.SettingsAccCurrentViewModel;
@@ -96,37 +97,37 @@ internal sealed class SettingVmd : BaseVmd
     public string? NewServerApiIp
     {
         get => _newServerApiIp;
-        set => Set(ref _newServerApiIp, value);
+        set => this.RaiseAndSetIfChanged(ref _newServerApiIp, value);
     }
 
     public string? NewSeverLogin
     {
         get => _newSeverLogin;
-        set => Set(ref _newSeverLogin, value);
+        set => this.RaiseAndSetIfChanged(ref _newSeverLogin, value);
     }
 
     public bool IsDefault
     {
         get => _isDefault;
-        set => Set(ref _isDefault, value);
+        set => this.RaiseAndSetIfChanged(ref _isDefault, value);
     }
 
     public MainAccountStore? AccountStore
     {
         get => _accountStore;
-        set => Set(ref _accountStore, value);
+        set => this.RaiseAndSetIfChanged(ref _accountStore, value);
     }
 
     public SavedServersStore? SavedServersStore
     {
         get => _savedServersStore;
-        set => Set(ref _savedServersStore, value);
+        set => this.RaiseAndSetIfChanged(ref _savedServersStore, value);
     }
 
     public AppSettingsStore? SettingsStore
     {
         get => _settingsStore;
-        set => Set(ref _settingsStore, value);
+        set => this.RaiseAndSetIfChanged(ref _settingsStore, value);
     }
 
     public int CaptureDeviceId
@@ -134,7 +135,7 @@ internal sealed class SettingVmd : BaseVmd
         get => SettingsStore!.CurrentSettings!.CaptureDeviceId;
         set
         {
-            Set(ref _inputDeviceId, value);
+            this.RaiseAndSetIfChanged(ref _inputDeviceId, value);
 
             SettingsStore!.CurrentSettings!.CaptureDeviceId = value;
         }
@@ -145,7 +146,7 @@ internal sealed class SettingVmd : BaseVmd
         get => SettingsStore!.CurrentSettings!.OutputDeviceId;
         set
         {
-            Set(ref _outputDeviceId, value);
+            this.RaiseAndSetIfChanged(ref _outputDeviceId, value);
 
             SettingsStore!.CurrentSettings!.OutputDeviceId = value;
         }
@@ -199,7 +200,7 @@ internal sealed class SettingVmd : BaseVmd
 
     private void OnCurrentViewModelChanged()
     {
-        OnPropertyChanged(nameof(AccountCurrentVmd));
+        ((IReactiveObject)this).RaisePropertyChanged(nameof(AccountCurrentVmd));
     }
 
     private void AccountStatusChange()

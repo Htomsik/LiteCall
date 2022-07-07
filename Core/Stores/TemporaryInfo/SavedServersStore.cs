@@ -3,6 +3,7 @@ using Core.Models.Saved;
 using Core.Models.Servers;
 using Core.Models.Users;
 using Core.VMD.Base;
+using ReactiveUI;
 
 namespace Core.Stores.TemporaryInfo;
 
@@ -16,7 +17,7 @@ public sealed class SavedServersStore : BaseVmd
         get => _savedServerAccounts;
         set
         {
-            Set(ref _savedServerAccounts, value);
+            this.RaiseAndSetIfChanged(ref _savedServerAccounts, value);
             OnCurrentSeverAccountChanged();
         }
     }
