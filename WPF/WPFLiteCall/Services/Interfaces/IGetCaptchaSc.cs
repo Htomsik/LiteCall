@@ -5,5 +5,5 @@ namespace LiteCall.Services.Interfaces;
 
 internal interface IGetCaptchaSc
 {
-    public Task<ImageSource?> GetCaptcha();
+    public Task<byte[]?> GetCaptcha();
 }

@@ -9,6 +9,7 @@ using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.Base;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
+using Splat;
 
 namespace LiteCall.ViewModels;
 
@@ -61,9 +62,11 @@ internal sealed class MainWindowVmd : BaseVmd
 
         CloseSettingsCommand = new NavigationCommand(closeAdditionalNavigationSc);
 
-        CloseAppCommand = new AsyncLambdaCmd(OnCloseAppExecuted,
-            ex => statusSc.ChangeStatus(ex.Message)
-        );
+        // CloseAppCommand = new AsyncLambdaCmd(OnCloseAppExecuted,
+        //     ex => statusSc.ChangeStatus(ex.Message)
+        // );
+        
+        CloseAppCommand = ReactiveCommand.CreateFromTask(OnCloseAppExecuted);
     }
 
 
@@ -72,7 +75,7 @@ internal sealed class MainWindowVmd : BaseVmd
     public string Branch => _configuration!.GetSection("AppSettings")["Branch"] ?? "NonStable";
 
 
-    public ICommand CloseAppCommand { get; }
+    public IReactiveCommand CloseAppCommand { get; }
 
     public ICommand CloseModalCommand { get; }
 
@@ -93,7 +96,7 @@ internal sealed class MainWindowVmd : BaseVmd
 
     public bool StatusMessageIsOpen => _statusMessageStore.IsOpen;
 
-    private async Task OnCloseAppExecuted(object p)
+    private async Task OnCloseAppExecuted()
     {
         await _closeAppSc?.Close()!;
     }

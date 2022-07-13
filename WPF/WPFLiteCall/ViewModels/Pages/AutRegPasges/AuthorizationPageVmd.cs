@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Core.Infrastructure.CMD;
 using Core.Infrastructure.CMD.Lambda;
@@ -24,9 +25,8 @@ internal class AuthorizationPageVmd : BaseVmd
         _encryptSc = encryptSc;
 
         _authorizationSc = authorizationSc;
-
-        AuthCommand =
-            new AsyncLambdaCmd(OnAuthExecuteExecuted, ex => StatusMessage = ex.Message, CanAuthExecute);
+        
+        AuthCommand = ReactiveCommand.CreateFromTask(OnAuthExecuteExecuted, CanAuthExecute);
 
         OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationScs);
 
@@ -38,13 +38,15 @@ internal class AuthorizationPageVmd : BaseVmd
 
     public ICommand AuthCommand { get; }
 
-    private bool CanAuthExecute(object p)
-    {
-        if (CheckStatus && !string.IsNullOrEmpty(Login)) return true;
-        return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
-    }
+    
+    private IObservable<bool> CanAuthExecute => this.WhenAnyValue(x => x.CheckStatus, x => x.Login, x => x.Password,
+        (checkStatus, login, password) =>
+        {
+            if (CheckStatus && !string.IsNullOrEmpty(Login)) return true;
+            return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
+        });
 
-    private async Task OnAuthExecuteExecuted(object p)
+    private async Task OnAuthExecuteExecuted()
     {
         var base64Sha1Password = await _encryptSc.Sha1Encrypt(Password);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Core.Infrastructure.CMD;
@@ -6,6 +7,7 @@ using Core.Infrastructure.CMD.Lambda;
 using Core.Models.Saved;
 using Core.Models.Users;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
@@ -20,7 +22,7 @@ namespace LiteCall.ViewModels.Pages;
 internal sealed class SettingVmd : BaseVmd
 {
     public SettingVmd(MainAccountStore? accountStore, SavedServersStore? savedServersStore, AppSettingsStore? settingsStore,
-        INavigationSc authNavigationSc, IHttpDataServices httpDataServices, IStatusSc statusSc,
+        INavigationSc authNavigationSc, IHttpDataSc httpDataSc, IStatusSc statusSc,
         SettingsAccNavigationStore settingsAccNavigationStore)
     {
         AccountStore = accountStore;
@@ -33,7 +35,7 @@ internal sealed class SettingVmd : BaseVmd
 
         _authNavigationSc = authNavigationSc;
 
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
 
         _statusSc = statusSc;
 
@@ -44,11 +46,8 @@ internal sealed class SettingVmd : BaseVmd
         _settingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
         AccountStatusChange();
-
-        AddNewServerCommand = new AsyncLambdaCmd(OnAddNewServerExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanAddNewServerExecute);
-
+        
+        AddNewServerCommand = ReactiveCommand.CreateFromTask(OnAddNewServerExecuted, CanAddNewServerExecute());
 
         InputDevices = new ObservableCollection<string>();
 
@@ -92,7 +91,7 @@ internal sealed class SettingVmd : BaseVmd
 
     public ICommand LogoutAccCommand { get; }
 
-    public ICommand AddNewServerCommand { get; }
+    public IReactiveCommand AddNewServerCommand { get; }
 
     public string? NewServerApiIp
     {
@@ -212,13 +211,15 @@ internal sealed class SettingVmd : BaseVmd
         else
             _settingsAccNavigationStore.Close();
     }
+ 
+    private IObservable<bool> CanAddNewServerExecute() => this.WhenAnyValue(x=>
+        x.NewServerApiIp,
+        x=>x.NewSeverLogin,
+        (newServerApiIp, newSeverLogin) =>
+            !string.IsNullOrEmpty(newServerApiIp) && !string.IsNullOrEmpty(newSeverLogin));
+    
 
-    private bool CanAddNewServerExecute(object p)
-    {
-        return !string.IsNullOrEmpty(NewServerApiIp) && !string.IsNullOrEmpty(NewSeverLogin);
-    }
-
-    private async Task OnAddNewServerExecuted(object p)
+    private async Task OnAddNewServerExecuted()
     {
         var newSavedSeverAccount = new ServerAccount
         {
@@ -226,11 +227,11 @@ internal sealed class SettingVmd : BaseVmd
         };
 
 
-        var serverStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(NewServerApiIp));
+        var serverStatus = await Task.Run(() => _httpDataSc.CheckServerStatus(NewServerApiIp));
 
         if (serverStatus)
         {
-            var newServer = await _httpDataServices.ApiServerGetInfo(NewServerApiIp);
+            var newServer = await _httpDataSc.ApiServerGetInfo(NewServerApiIp);
 
             if (newServer == null) return;
 
@@ -247,7 +248,7 @@ internal sealed class SettingVmd : BaseVmd
 
     private readonly INavigationSc _authNavigationSc;
 
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
     private readonly IStatusSc _statusSc;
 

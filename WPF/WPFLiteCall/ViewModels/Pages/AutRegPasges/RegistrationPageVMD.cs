@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -35,7 +37,7 @@ internal class RegistrationPageVmd : BaseVmd
     private string? _captchaString;
 
 
-    private ImageSource? _captсhaImageSource;
+    private byte[]? _captchaBytes;
 
 
     private string? _confirmPassword;
@@ -71,19 +73,15 @@ internal class RegistrationPageVmd : BaseVmd
         _getRecoveryQuestionsSc = getRecoveryQuestionsSc;
 
         _encryptSc = encryptSc;
-
-
-        RegistrationCommand = new AsyncLambdaCmd(OnRegistrationExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanRegistrationExecute);
-
+        
+        RegistrationCommand = ReactiveCommand.CreateFromTask(OnRegistrationExecuted,this.WhenAnyValue(x=>x.CaptchaString,(captchaString)=>!string.IsNullOrEmpty(captchaString)));
+        
+        OpenModalCommand = ReactiveCommand.CreateFromTask(OnOpenModalCommandExecuted, CanOpenModalCommandExecute());
+        
         OpenAuthPageCommand = new NavigationCommand(authPageNavigationScs);
-
-        OpenModalCommand = new AsyncLambdaCmd(OnOpenModalCommandExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanOpenModalCommandExecute);
-
-
+        
+     
+        
         GetQuestionList();
     }
 
@@ -105,10 +103,10 @@ internal class RegistrationPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _captchaString, value);
     }
 
-    public ImageSource? CaptсhaImageSource
+    public byte[]? CaptchaBytes
     {
-        get => _captсhaImageSource;
-        set => this.RaiseAndSetIfChanged(ref _captсhaImageSource, value);
+        get => _captchaBytes;
+        set => this.RaiseAndSetIfChanged(ref _captchaBytes, value);
     }
 
     public string? Login
@@ -167,14 +165,9 @@ internal class RegistrationPageVmd : BaseVmd
 
     #region Commands
 
-    public ICommand RegistrationCommand { get; set; }
-
-    private bool CanRegistrationExecute(object p)
-    {
-        return !(bool)p && !string.IsNullOrEmpty(CaptchaString);
-    }
-
-    private async Task OnRegistrationExecuted(object p)
+    public IReactiveCommand RegistrationCommand { get; set; }
+    
+    private async Task OnRegistrationExecuted()
     {
         var base64Sha1Password = await _encryptSc.Sha1Encrypt(Password);
 
@@ -210,9 +203,9 @@ internal class RegistrationPageVmd : BaseVmd
     }
 
 
-    public ICommand OpenModalCommand { get; }
+    public IReactiveCommand OpenModalCommand { get; }
 
-    private async Task OnOpenModalCommandExecuted(object p)
+    private async Task OnOpenModalCommandExecuted()
     {
         if (ModalStatus == false)
         {
@@ -230,22 +223,27 @@ internal class RegistrationPageVmd : BaseVmd
         }
     }
 
+    
+    private IObservable<bool> CanOpenModalCommandExecute() =>
+        this.WhenAnyValue(x => x.Login, x => x.Password,
+            x => x.QuestionAnswer,
+            x => x.SelectedQuestion,x=>x.ConfirmPassword,
+            (login, password, questionAnswer, selectedQuestion,confirmPassword) =>
+            {
+                if (Password != confirmPassword) return false;
 
-    private bool CanOpenModalCommandExecute(object p)
-    {
-        if (Password != ConfirmPassword) return false;
-
-        return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) &&
-               !string.IsNullOrEmpty(ConfirmPassword) && !string.IsNullOrEmpty(QuestionAnswer) &&
-               SelectedQuestion is not null;
-    }
+                return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) &&
+                       !string.IsNullOrEmpty(confirmPassword) && !string.IsNullOrEmpty(QuestionAnswer) &&
+                       SelectedQuestion is not null;
+            });
+              
 
 
     public async Task<bool> GetCaptcha()
     {
-        CaptсhaImageSource = await _getCaptchaSc.GetCaptcha();
+        CaptchaBytes = await _getCaptchaSc.GetCaptcha();
 
-        return CaptсhaImageSource != null;
+        return CaptchaBytes != null;
     }
 
 

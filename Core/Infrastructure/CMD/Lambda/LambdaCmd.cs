@@ -2,6 +2,10 @@
 
 namespace Core.Infrastructure.CMD.Lambda;
 
+
+/// <summary>
+/// Dont use it
+/// </summary>
 public class LambdaCmd:CmdBase
 {
     private readonly Func<object, bool> _canExecute;

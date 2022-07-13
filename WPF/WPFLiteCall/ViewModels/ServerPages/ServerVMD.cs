@@ -51,28 +51,21 @@ internal sealed class ServerVmd : BaseVmd
 
         #region команды
 
-        SendMessageCommand = new AsyncLambdaCmd(OnSendMessageExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanSendMessageExecuted);
+        
+        DisconnectGroupCommand = ReactiveCommand.CreateFromTask(OnDisconnectGroupExecuted);
 
-        CreateNewRoomCommand = new AsyncLambdaCmd(OnCreateNewRoomExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanCreateNewRoomExecute);
+        OpenPasswordModalCommand = ReactiveCommand.CreateFromTask<object>(OnOpenPasswordModalCommandCommandExecuted);
 
-        ConnectCommand = new AsyncLambdaCmd(OnConnectExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanConnectExecute);
+        OpenCreateRoomModalCommand = ReactiveCommand.CreateFromTask<object>(OnOpenCreateRoomModalCommandExecuted);
 
-        ConnectWithPasswordCommand = new AsyncLambdaCmd(OnConnectWithPasswordCommandExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanConnectWithPasswordExecute);
+        ConnectWithPasswordCommand =
+            ReactiveCommand.CreateFromTask<object>(OnConnectWithPasswordCommandExecuted, CanConnectWithPasswordExecute());
 
-        OpenCreateRoomModalCommand = ReactiveCommand.Create<object>(OnOpenCreateRoomModalCommandExecuted);
+        ConnectCommand = ReactiveCommand.CreateFromTask(OnConnectExecuted, CanConnectExecute());
 
-        OpenPasswordModalCommand = ReactiveCommand.Create<object>(OnOpenPasswordModalCommandCommandExecuted);
+        CreateNewRoomCommand = ReactiveCommand.CreateFromTask(OnCreateNewRoomExecuted,CanCreateNewRoomExecute());
 
-        DisconnectGroupCommand = new AsyncLambdaCmd(OnDisconnectGroupExecuted,
-            ex => statusSc.ChangeStatus(ex.Message));
+        SendMessageCommand = ReactiveCommand.CreateFromTask(OnSendMessageExecuted,CanSendMessageExecuted());
 
 
         #region Админ команды
@@ -85,6 +78,8 @@ internal sealed class ServerVmd : BaseVmd
             ex => statusSc.ChangeStatus(ex.Message),
             CanAdminDisconnectUserFromRoomExecute);
 
+        
+        
         #endregion
 
         #endregion
@@ -113,6 +108,9 @@ internal sealed class ServerVmd : BaseVmd
         _waveOut.Play();
 
         #endregion
+        
+        
+     //   chatServerSc.GetUserServerName();
     }
 
     private void CurrentAccountChange()
@@ -157,9 +155,9 @@ internal sealed class ServerVmd : BaseVmd
 
     #region DiconnecFromGroup
 
-    public ICommand DisconnectGroupCommand { get; }
+    public IReactiveCommand DisconnectGroupCommand { get; }
 
-    private async Task OnDisconnectGroupExecuted(object p)
+    private async Task OnDisconnectGroupExecuted()
     {
         await _chatServerSc.GroupDisconnect();
     }
@@ -168,14 +166,13 @@ internal sealed class ServerVmd : BaseVmd
 
     #region CreateNewRoom
 
-    public ICommand CreateNewRoomCommand { get; }
+    public IReactiveCommand CreateNewRoomCommand { get; }
 
-    private bool CanCreateNewRoomExecute(object p)
-    {
-        return !Convert.ToBoolean(p) && !string.IsNullOrEmpty(NewRoomName);
-    }
+    
+    private IObservable<bool> CanCreateNewRoomExecute() => this.WhenAnyValue(x=>x.NewRoomName, 
+        newRoomName =>  !string.IsNullOrEmpty(newRoomName));
 
-    private async Task OnCreateNewRoomExecuted(object p)
+    private async Task OnCreateNewRoomExecuted()
     {
         await _chatServerSc.GroupCreate(NewRoomName!, NewRoomPassword!);
 
@@ -188,14 +185,17 @@ internal sealed class ServerVmd : BaseVmd
 
     #region SendMessage
 
-    public ICommand SendMessageCommand { get; }
+    public IReactiveCommand SendMessageCommand { get; }
 
-    public bool CanSendMessageExecuted(object p)
-    {
-        return CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
-    }
+    // public bool CanSendMessageExecuted(object p)
+    // {
+    //     return CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
+    // }
 
-    private async Task OnSendMessageExecuted(object p)
+    private IObservable<bool> CanSendMessageExecuted() => this.WhenAnyValue(x=>x.CurrentGroup,x=>x.CurrentMessage,
+        (currentGroup, currentMessage) => currentGroup is not null && !string.IsNullOrEmpty(currentMessage));
+    
+    private async Task OnSendMessageExecuted()
     {
         var newMessage = new TextMessage
         {
@@ -215,9 +215,9 @@ internal sealed class ServerVmd : BaseVmd
 
     #region OpenCreateRoomModal
 
-    public ICommand OpenCreateRoomModalCommand { get; }
+    public IReactiveCommand OpenCreateRoomModalCommand { get; }
 
-    private void OnOpenCreateRoomModalCommandExecuted(object p)
+    private async Task OnOpenCreateRoomModalCommandExecuted(object p)
     {
         if ((string)p == "1")
         {
@@ -229,31 +229,34 @@ internal sealed class ServerVmd : BaseVmd
             NewRoomName = string.Empty;
             NewRoomPassword = string.Empty;
         }
+        
+        
     }
 
     #endregion
 
     #region ConnectRoom
 
-    public ICommand ConnectCommand { get; }
-
-    private bool CanConnectExecute(object p)
+    public IReactiveCommand ConnectCommand { get; }
+    
+    private IObservable<bool> CanConnectExecute() => this.WhenAnyValue(x => x.CurrentGroup, x=>x.SelRooms,
+        (currentGroup,selRooms) =>
     {
-        if (p is not ServerRooms rooms) return false;
-
+        if (selRooms is not ServerRooms rooms) return false;
+        
         var ConnectedGroup = rooms;
-
-        if (CurrentGroup is not null)
-            return !string.Equals(ConnectedGroup.RoomName!, CurrentGroup.RoomName!,
+        
+        if (currentGroup is not null)
+            return !string.Equals(ConnectedGroup.RoomName!, currentGroup.RoomName!,
                 StringComparison.CurrentCultureIgnoreCase);
         return true;
-    }
+    });
 
-    private async Task OnConnectExecuted(object p)
+    private async Task OnConnectExecuted()
     {
-        var connectedGroup = (ServerRooms)p;
+        var connectedGroup = SelRooms;
 
-        if (connectedGroup.Guard)
+        if (connectedGroup!.Guard)
         {
             RoomPasswordModalStatus = true;
             return;
@@ -266,9 +269,9 @@ internal sealed class ServerVmd : BaseVmd
 
     #region OpenPasswordModal
 
-    public ICommand OpenPasswordModalCommand { get; }
+    public IReactiveCommand OpenPasswordModalCommand { get; }
 
-    private void OnOpenPasswordModalCommandCommandExecuted(object p)
+    private async Task OnOpenPasswordModalCommandCommandExecuted(object p)
     {
         if ((string)p == "1")
         {
@@ -279,18 +282,18 @@ internal sealed class ServerVmd : BaseVmd
             RoomPasswordModalStatus = false;
             RoomPassword = string.Empty;
         }
+        
     }
 
     #endregion
 
     #region ConnectWithPasswordRooms
 
-    public ICommand ConnectWithPasswordCommand { get; }
+    public IReactiveCommand ConnectWithPasswordCommand { get; }
 
-    private bool CanConnectWithPasswordExecute(object p)
-    {
-        return !Convert.ToBoolean(p) && !string.IsNullOrEmpty(RoomPassword);
-    }
+    
+    private IObservable<bool> CanConnectWithPasswordExecute() => this.WhenAnyValue(x=>x.RoomPassword,
+        (roomPassword) =>  !string.IsNullOrEmpty(roomPassword));
 
     private async Task OnConnectWithPasswordCommandExecuted(object p)
     {

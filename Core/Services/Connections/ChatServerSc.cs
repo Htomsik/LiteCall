@@ -38,7 +38,7 @@ public sealed class ChatServerSc : IChatServerSc
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
 
         ConnectionStart();
-
+        
         GetUserServerName();
 
         _statusSc.DeleteStatus();
@@ -144,7 +144,7 @@ public sealed class ChatServerSc : IChatServerSc
     {
         await _hubConnectionStore!.StopConnection();
 
-        _currentServerStore.Delete();
+        await _currentServerStore.Delete();
     }
 
     public async Task SendAudioMessage(byte[] audioBuffer)
@@ -159,7 +159,7 @@ public sealed class ChatServerSc : IChatServerSc
         }
     }
 
-    private async Task GetUserServerName()
+    public async Task GetUserServerName()
     {
         var newName = "";
         try
@@ -172,11 +172,11 @@ public sealed class ChatServerSc : IChatServerSc
             _statusSc.ChangeStatus(new AppExecutionState
                 { Message = "Failed get current account login", Type = StateTypes.Error });
 
-            _currentServerStore.Delete();
+            await _currentServerStore.Delete();
         }
 
         if (newName == "non")
-            _currentServerStore.Delete();
+            await _currentServerStore.Delete();
         else
             _currentServerAccountStore.CurrentAccount!.CurrentServerLogin = newName;
     }
@@ -211,26 +211,23 @@ public sealed class ChatServerSc : IChatServerSc
         return currentRoomUsers;
     }
 
-    private Task ConnectionStart()
+    private  Task ConnectionStart()
     {
         var isReconnectingDisconnect = false;
 
 
         _hubConnectionStore!.CurrentHubConnection = new HubConnectionBuilder()
             .WithUrl(
-                $"https://{_currentServerStore.CurrentServer!.Ip}/WPFLiteCall?token={_currentServerAccountStore.CurrentAccount!.Token}",
+                $"https://{_currentServerStore.CurrentServer!.Ip}/LiteCall?token={_currentServerAccountStore.CurrentAccount!.Token}",
                 options =>
                 {
                     options.WebSocketConfiguration = conf =>
                     {
-                        conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) =>
-                        {
-                            return true;
-                        };
+                        conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => true;
                     };
                     options.HttpMessageHandlerFactory = factory => new HttpClientHandler
                     {
-                        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                     };
                     options.AccessTokenProvider = () => Task.FromResult(_currentServerAccountStore.CurrentAccount.Token);
                 })
@@ -238,10 +235,11 @@ public sealed class ChatServerSc : IChatServerSc
             {
                 TimeSpan.Zero, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10)
             })
+            
             .Build();
 
-        _hubConnectionStore.CurrentHubConnection.ServerTimeout = TimeSpan.FromSeconds(10000);
-
+        // _hubConnectionStore.CurrentHubConnection.ServerTimeout = TimeSpan.FromSeconds(15);
+        
         _hubConnectionStore.CurrentHubConnection.On<TextMessage>("Send", message =>
         {
             TextMessageBus.Send(message);
@@ -256,16 +254,15 @@ public sealed class ChatServerSc : IChatServerSc
             KickFromRoomNotifier.Notify();
         });
 
-        _hubConnectionStore.CurrentHubConnection.On("UpdateRooms", () =>
+        _hubConnectionStore.CurrentHubConnection.On("UpdateRooms", async () =>
         {
-            GetServerRooms();
-
-            return Task.CompletedTask;
+          await  GetServerRooms();
+          
         });
 
-        _hubConnectionStore.CurrentHubConnection.On("SendAudio", (string name, byte[] MessageAudio) =>
+        _hubConnectionStore.CurrentHubConnection.On("SendAudio", (string name, byte[] messageAudio) =>
         {
-            var newMessage = new AudioMessage { UserName = name, Audio = MessageAudio };
+            var newMessage = new AudioMessage { UserName = name, Audio = messageAudio };
 
             AudioMessageBus.Send(newMessage);
         });
@@ -303,6 +300,8 @@ public sealed class ChatServerSc : IChatServerSc
 
             return Task.CompletedTask;
         };
+        
+      
 
         return _hubConnectionStore.CurrentHubConnection.StartAsync();
     }

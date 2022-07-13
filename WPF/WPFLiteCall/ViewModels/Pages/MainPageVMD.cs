@@ -12,6 +12,7 @@ using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
@@ -31,7 +32,7 @@ internal sealed class MainPageVmd : BaseVmd
         INavigationSc openModalServerAuthorizationNavigationSc,
         IAuthorizationSc? authorizationApiServices,
         IStatusSc statusSc,
-        IHttpDataServices httpDataServices)
+        IHttpDataSc httpDataSc)
     {
         AccountStore = accountStore;
 
@@ -49,41 +50,30 @@ internal sealed class MainPageVmd : BaseVmd
 
         _statusSc = statusSc;
 
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
 
 
         ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationSc,
             CanModalRegistrationOpenCommandExecuted);
-
-        
-        OpenModalCommand = ReactiveCommand.Create<object>(OnOpenModalCommaExecuted);
-
-
-        DisconnectServerCommand = ReactiveCommand.CreateFromTask<object>(_ => CurrentServerStore?.Delete()!);
         
         OpenSettingsCommand = new NavigationCommand(settingsPageNavigationSc);
+        
+        OpenModalCommand = ReactiveCommand.Create<object>(OnOpenModalCommaExecuted);
+        
+        DisconnectServerCommand = ReactiveCommand.CreateFromTask<object>(_ => CurrentServerStore?.Delete()!);
+        
+       SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted,CanSaveServerCommandExecute());
+       
+       DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted);
+       
+        ConnectServerCommand = ReactiveCommand.CreateFromTask(OnConnectServerExecuted);
 
-
-        SaveServerCommand = new AsyncLambdaCmd(OnSaveServerCommandExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanSaveServerCommandExecute);
-
-        DeleteServerSavedCommand = new AsyncLambdaCmd(OnDeleteServerSavedExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanDeleteServerSavedExecute);
-
-
-        ConnectServerCommand = new AsyncLambdaCmd(OnConnectServerExecuted,
-            ex => statusSc.ChangeStatus(ex.Message));
-
-        ConnectServerSavedCommand = new AsyncLambdaCmd(OnConnectServerSavedExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanConnectServerSavedExecute);
+     ConnectServerSavedCommand = ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted,CanConnectServerSavedExecute());
 
 
         DisconnectFromServerNotificator.Notificator += DisconnectServer;
 
-        CurrentServerStore.CurrentServerDeleted += DisconnectServer;
+        CurrentServerStore!.CurrentServerDeleted += DisconnectServer;
 
         MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
     }
@@ -113,21 +103,20 @@ internal sealed class MainPageVmd : BaseVmd
 
     private bool CanModalRegistrationOpenCommandExecuted()
     {
-        return !ServerAccountStore!.CurrentAccount!.IsAuthorized;
+        return ServerAccountStore!.CurrentAccount!.IsAuthorized;
     }
 
 
-    public ICommand ConnectServerSavedCommand { get; }
+    public IReactiveCommand ConnectServerSavedCommand { get; }
+    
+    private IObservable<bool> CanConnectServerSavedExecute() => this.WhenAnyValue(x => x.SelectedServerAccount,
+        x => x.CurrentServerStore, (
+            (account, store) => account?.SavedServer?.ApiIp != store?.CurrentServer?.ApiIp));
 
-    private bool CanConnectServerSavedExecute(object p)
-    {
-        return SelectedServerAccount?.SavedServer?.ApiIp != CurrentServerStore?.CurrentServer?.ApiIp;
-    }
-
-    private async Task OnConnectServerSavedExecuted(object p)
+    private async Task OnConnectServerSavedExecuted()
     {
         var serverStatus =
-            await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount!.SavedServer!.ApiIp));
+            await Task.Run(() => _httpDataSc.CheckServerStatus(SelectedServerAccount!.SavedServer!.ApiIp));
 
         if (!serverStatus) return;
 
@@ -165,7 +154,7 @@ internal sealed class MainPageVmd : BaseVmd
 
 
         serverStatus =
-            await Task.Run(() => _httpDataServices.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
+            await Task.Run(() => _httpDataSc.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
 
         if (serverStatus)
         {
@@ -180,15 +169,22 @@ internal sealed class MainPageVmd : BaseVmd
     }
 
 
-    public ICommand SaveServerCommand { get; set; }
+    public IReactiveCommand SaveServerCommand { get; set; }
 
-    private bool CanSaveServerCommandExecute(object p)
-    {
-        return SavedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
-            x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
-    }
+    // private bool CanSaveServerCommandExecute(object p)
+    // {
+    //     return SavedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+    //         x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
+    // }
 
-    private Task OnSaveServerCommandExecuted(object p)
+    private IObservable<bool> CanSaveServerCommandExecute() => this.WhenAnyValue(x=> x.SavedServersStore,
+        (savedServersStore) =>
+        {
+            return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+                x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
+        });
+    
+    private Task OnSaveServerCommandExecuted()
     {
         try
         {
@@ -204,14 +200,12 @@ internal sealed class MainPageVmd : BaseVmd
     }
 
 
-    public ICommand DeleteServerSavedCommand { get; }
+    public IReactiveCommand DeleteServerSavedCommand { get; }
 
-    private bool CanDeleteServerSavedExecute(object p)
-    {
-        return SelectedServerAccount is not null;
-    }
+    
+  
 
-    private Task OnDeleteServerSavedExecuted(object p)
+    private Task OnDeleteServerSavedExecuted()
     {
         SavedServersStore!.Remove(SelectedServerAccount);
         return Task.CompletedTask;
@@ -238,7 +232,7 @@ internal sealed class MainPageVmd : BaseVmd
     }
     public ICommand ConnectServerCommand { get; }
 
-    private async Task OnConnectServerExecuted(object p)
+    private async Task OnConnectServerExecuted()
     {
         var serverAccount = new Account
         {
@@ -250,12 +244,12 @@ internal sealed class MainPageVmd : BaseVmd
 
         if (!CheckStatus)
         {
-            var apiIp = await _httpDataServices.MainServerGetApiIp(ServerNameOrIp);
+            var apiIp = await _httpDataSc.MainServerGetApiIp(ServerNameOrIp);
 
             if (apiIp == null)
                 return;
 
-            newServer = await _httpDataServices.ApiServerGetInfo(apiIp);
+            newServer = await _httpDataSc.ApiServerGetInfo(apiIp);
 
             if (newServer == null)
                 return;
@@ -264,7 +258,7 @@ internal sealed class MainPageVmd : BaseVmd
         }
         else
         {
-            newServer = await _httpDataServices.ApiServerGetInfo(ServerNameOrIp);
+            newServer = await _httpDataSc.ApiServerGetInfo(ServerNameOrIp);
 
             if (newServer == null)
                 return;
@@ -301,7 +295,7 @@ internal sealed class MainPageVmd : BaseVmd
 
         newServer.Ip = newServer.Ip!.Replace("https://", ""); //временно
 
-        var serverStatus = await Task.Run(() => _httpDataServices.CheckServerStatus(newServer.Ip));
+        var serverStatus = await Task.Run(() => _httpDataSc.CheckServerStatus(newServer.Ip));
 
         if (serverStatus)
         {
@@ -407,7 +401,7 @@ internal sealed class MainPageVmd : BaseVmd
 
     private readonly IStatusSc _statusSc;
 
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
 
     private readonly IAuthorizationSc? _authorizationServices;

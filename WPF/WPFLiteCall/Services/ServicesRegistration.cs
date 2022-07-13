@@ -38,8 +38,8 @@ internal static class ServicesRegistration
 
         services.AddTransient<IImageServices, ImageServices>();
 
-        services.AddSingleton<IHttpDataServices, HttpDataService>(s =>
-            new HttpDataService(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),
+        services.AddSingleton<IHttpDataSc, HttpDataSc>(s =>
+            new HttpDataSc(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),
                 configuration, s.GetRequiredService<HttpClientStore>()));
 
         services.AddTransient<ICloseAppSc, CloseAppSc>();

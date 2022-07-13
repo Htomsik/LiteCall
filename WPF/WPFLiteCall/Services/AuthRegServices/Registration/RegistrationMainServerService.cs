@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using LiteCall.Services.Interfaces;
 
@@ -10,20 +11,20 @@ namespace LiteCall.Services.AuthRegServices.Registration;
 
 internal sealed class RegistrationMainServerSc : IRegistrationSc
 {
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
     private readonly MainAccountStore _mainAccountStore;
 
-    public RegistrationMainServerSc(MainAccountStore mainAccountStore, IHttpDataServices httpDataServices)
+    public RegistrationMainServerSc(MainAccountStore mainAccountStore, IHttpDataSc httpDataSc)
     {
         _mainAccountStore = mainAccountStore;
 
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
     }
 
     public async Task<int> Registration(RegistrationModel registrationModel)
     {
-        var response = await _httpDataServices.Registration(registrationModel);
+        var response = await _httpDataSc.Registration(registrationModel);
 
         if (response.Replace(" ", "") == HttpStatusCode.BadRequest.ToString())
             return 0;

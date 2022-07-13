@@ -39,8 +39,8 @@ public sealed class SavedServersFileSc : IFileSc
             var allUsers = JsonConvert.DeserializeObject<List<CurrentAccountSavedServers>>(fileText);
 
             var currentUserServerStore = allUsers!.Find(s =>
-                s.MainServerAccount!.IsAuthorized == _accountStore.CurrentAccount!.IsAuthorized &&
-                s.MainServerAccount.Login == _accountStore.CurrentAccount.Login);
+                s.MainServerAccount!.IsAuthorized! == _accountStore!.CurrentAccount!.IsAuthorized! &&
+                s!.MainServerAccount!.Login! == _accountStore!.CurrentAccount!.Login!);
 
             _savedServersStore.SavedServerAccounts!.ServersAccounts = currentUserServerStore?.ServersAccounts ??
                                                                       new ObservableCollection<ServerAccount>();

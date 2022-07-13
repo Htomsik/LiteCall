@@ -12,13 +12,13 @@ internal static class StoresRegistration
     {
         #region Хранилища
 
-        services.AddSingleton<MainAccountStore, MainAccountStore>();
+        services.AddSingleton<MainAccountStore>();
 
         services.AddSingleton<AppSettingsStore>();
 
         services.AddSingleton<CurrentServerAccountStore>();
 
-        services.AddSingleton<SavedServersStore, SavedServersStore>();
+        services.AddSingleton<SavedServersStore>();
 
         services.AddSingleton<CurrentServerStore>();
 

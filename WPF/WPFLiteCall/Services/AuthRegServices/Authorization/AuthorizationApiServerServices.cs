@@ -2,6 +2,7 @@
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using LiteCall.Services.Interfaces;
 
@@ -13,13 +14,13 @@ internal sealed class AuthorizationApiServerSc : IAuthorizationSc
 
     private readonly CurrentServerStore _currentServerStore;
 
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
     private readonly SavedServersStore _savedServersStore;
 
     public AuthorizationApiServerSc(SavedServersStore savedServersStore,
         CurrentServerStore currentServerStore, INavigationSc closeModalNavigationSc,
-        IHttpDataServices httpDataServices)
+        IHttpDataSc httpDataSc)
     {
         _savedServersStore = savedServersStore;
 
@@ -27,7 +28,7 @@ internal sealed class AuthorizationApiServerSc : IAuthorizationSc
 
         _closeModalNavigationSc = closeModalNavigationSc;
 
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
     }
 
 
@@ -36,11 +37,11 @@ internal sealed class AuthorizationApiServerSc : IAuthorizationSc
         if (isNotAnonymousAuthorize)
         {
             var response =
-                await _httpDataServices.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
+                await _httpDataSc.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
 
             if (response == "invalid") return 0;
 
-            newAccount!.Role = await _httpDataServices.GetRoleFromJwtToken(response);
+            newAccount!.Role = await _httpDataSc.GetRoleFromJwtToken(response);
 
             newAccount.Token = response;
 
@@ -53,11 +54,11 @@ internal sealed class AuthorizationApiServerSc : IAuthorizationSc
             newAccount.Password = "";
 
             var response =
-                await _httpDataServices.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
+                await _httpDataSc.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
 
             if (response == "invalid") return 0;
 
-            newAccount.Role = await _httpDataServices.GetRoleFromJwtToken(response);
+            newAccount.Role = await _httpDataSc.GetRoleFromJwtToken(response);
 
             newAccount.Token = response;
         }

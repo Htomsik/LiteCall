@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Model.Images;
 using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services.AuthRegServices.Captcha;
@@ -11,15 +11,15 @@ internal sealed class ApiServerGetCaptchaSc : IGetCaptchaSc
     private readonly CurrentServerStore _currentServerStore;
 
 
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
     private readonly IImageServices _imageServices;
 
 
-    public ApiServerGetCaptchaSc(IHttpDataServices httpDataServices, IImageServices imageServices,
+    public ApiServerGetCaptchaSc(IHttpDataSc httpDataSc, IImageServices imageServices,
         CurrentServerStore currentServerStore)
     {
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
 
         _imageServices = imageServices;
 
@@ -27,16 +27,11 @@ internal sealed class ApiServerGetCaptchaSc : IGetCaptchaSc
     }
 
 
-    public async Task<ImageSource?> GetCaptcha()
+    public async Task<byte[]?> GetCaptcha()
     {
-        var receiveBytes = await _httpDataServices.GetCaptcha(_currentServerStore.CurrentServer!.ApiIp);
+        var receiveBytes = await _httpDataSc.GetCaptcha(_currentServerStore.CurrentServer!.ApiIp);
 
-        if (receiveBytes == null) return null;
-
-        var captchaFromServer = ImageBox.BytesToImage(receiveBytes.GetRawData());
-
-        var bitmapSource = _imageServices.GetBitmapSource(captchaFromServer);
-
-        return bitmapSource;
+        return _imageServices.GetRawData(receiveBytes) ?? null;
+        
     }
 }

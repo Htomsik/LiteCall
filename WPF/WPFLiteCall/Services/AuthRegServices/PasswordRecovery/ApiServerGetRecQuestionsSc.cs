@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Core.Models;
 using Core.Models.AccountManagement;
 using Core.Services.Interfaces.AccountManagement;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using LiteCall.Services.Interfaces;
 
@@ -11,19 +12,19 @@ namespace LiteCall.Services.AuthRegServices.PasswordRecovery;
 internal sealed class ApiServerGetRecQuestionsSc : IGetRecoveryQuestionsSc
 {
     private readonly CurrentServerStore _currentServerStore;
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
 
-    public ApiServerGetRecQuestionsSc(IHttpDataServices httpDataServices,
+    public ApiServerGetRecQuestionsSc(IHttpDataSc httpDataSc,
         CurrentServerStore currentServerStore)
     {
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
 
         _currentServerStore = currentServerStore;
     }
 
     public async Task<List<Question>?> GetQuestions()
     {
-        return await _httpDataServices.GetPasswordRecoveryQuestions(_currentServerStore.CurrentServer!.ApiIp);
+        return await _httpDataSc.GetPasswordRecoveryQuestions(_currentServerStore.CurrentServer!.ApiIp);
     }
 }

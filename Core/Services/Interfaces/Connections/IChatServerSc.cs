@@ -12,4 +12,5 @@ public interface IChatServerSc
     public Task<bool> SendMessage(TextMessage newMessage);
     public Task ConnectionStop();
     public Task SendAudioMessage(byte[] audioBuffer);
+    public  Task GetUserServerName();
 }

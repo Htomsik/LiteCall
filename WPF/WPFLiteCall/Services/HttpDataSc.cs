@@ -13,21 +13,22 @@ using Core.Models;
 using Core.Models.AccountManagement;
 using Core.Models.AppInfrastructure;
 using Core.Models.AppInfrastructure.StateStatuses;
+using Core.Models.Images;
 using Core.Models.Saved;
 using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Services;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
 using Core.Stores.Connections;
-using LiteCall.Model.Images;
 using LiteCall.Services.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
 namespace LiteCall.Services;
 
-internal sealed class HttpDataService : IHttpDataServices
+internal sealed class HttpDataSc : IHttpDataSc
 {
     private static readonly Guid ProgramCaptchaId = Guid.NewGuid();
 
@@ -41,7 +42,7 @@ internal sealed class HttpDataService : IHttpDataServices
     private readonly IStatusSc _statusSc;
 
 
-    public HttpDataService(IStatusSc statusSc, IEncryptSc encryptSc,
+    public HttpDataSc(IStatusSc statusSc, IEncryptSc encryptSc,
         IConfiguration configuration, HttpClientStore httpClientStore)
     {
         _statusSc = statusSc;
@@ -252,7 +253,9 @@ internal sealed class HttpDataService : IHttpDataServices
         {
             _statusSc.DeleteStatus();
 
-            return JsonSerializer.Deserialize<ImagePacket>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+            var test = JsonSerializer.Deserialize<ImagePacket>(await httpResponseMessage.Content.ReadAsStringAsync());
+            
+            return test;
         }
 
         _statusSc.DeleteStatus();

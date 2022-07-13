@@ -1,33 +1,27 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
-using LiteCall.Model.Images;
+using Core.Services.Interfaces.Connections;
 using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services.AuthRegServices.Captcha;
 
 internal sealed class MainServerGetCaptchaSc : IGetCaptchaSc
 {
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
     private readonly IImageServices _imageServices;
 
 
-    public MainServerGetCaptchaSc(IHttpDataServices httpDataServices, IImageServices imageServices)
+    public MainServerGetCaptchaSc(IHttpDataSc httpDataSc, IImageServices imageServices)
     {
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
 
         _imageServices = imageServices;
     }
 
-    public async Task<ImageSource?> GetCaptcha()
+    public async Task<byte[]?> GetCaptcha()
     {
-        var receiveBytes = await _httpDataServices.GetCaptcha();
+        var receiveBytes = await _httpDataSc.GetCaptcha();
 
-        if (receiveBytes == null) return null;
-
-        var captchaFromServer = ImageBox.BytesToImage(receiveBytes.GetRawData());
-
-        var bitmapSource = _imageServices.GetBitmapSource(captchaFromServer);
-
-        return bitmapSource;
+        return _imageServices.GetRawData(receiveBytes) ?? null;
     }
 }

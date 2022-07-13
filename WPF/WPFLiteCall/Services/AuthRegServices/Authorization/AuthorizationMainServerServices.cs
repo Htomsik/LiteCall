@@ -2,6 +2,7 @@
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using LiteCall.Services.Interfaces;
 
@@ -9,18 +10,18 @@ namespace LiteCall.Services.AuthRegServices.Authorization;
 
 internal sealed class AuthorizationMainServerSc : IAuthorizationSc
 {
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
     private readonly MainAccountStore _mainAccountStore;
 
     private readonly IStatusSc _statusSc;
 
-    public AuthorizationMainServerSc(MainAccountStore accountStore, IHttpDataServices httpDataServices,
+    public AuthorizationMainServerSc(MainAccountStore accountStore, IHttpDataSc httpDataSc,
         IStatusSc statusSc)
     {
         _mainAccountStore = accountStore;
 
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
 
         _statusSc = statusSc;
     }
@@ -29,7 +30,7 @@ internal sealed class AuthorizationMainServerSc : IAuthorizationSc
     {
         if (isNotAnonymousAuthorize)
         {
-            var response = await _httpDataServices.GetAuthorizeToken(newAccount);
+            var response = await _httpDataSc.GetAuthorizeToken(newAccount);
 
             if (response == "invalid") return 0;
 

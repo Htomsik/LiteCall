@@ -4,6 +4,7 @@ using Core.Models.AccountManagement;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using LiteCall.Services.Interfaces;
 
@@ -16,13 +17,13 @@ internal sealed class RegistrationApiServerSc : IRegistrationSc
     private readonly CurrentServerStore _currentServerStore;
 
 
-    private readonly IHttpDataServices _httpDataServices;
+    private readonly IHttpDataSc _httpDataSc;
 
     private readonly SavedServersStore _savedServersStore;
 
 
     public RegistrationApiServerSc(SavedServersStore savedServersStore, CurrentServerStore currentServerStore,
-        INavigationSc closeModalNavigationSc, IHttpDataServices httpDataServices)
+        INavigationSc closeModalNavigationSc, IHttpDataSc httpDataSc)
     {
         _closeModalNavigationSc = closeModalNavigationSc;
 
@@ -30,13 +31,13 @@ internal sealed class RegistrationApiServerSc : IRegistrationSc
 
         _currentServerStore = currentServerStore;
 
-        _httpDataServices = httpDataServices;
+        _httpDataSc = httpDataSc;
     }
 
     public async Task<int> Registration(RegistrationModel registrationModel)
     {
         var response =
-            await _httpDataServices.Registration(registrationModel, _currentServerStore.CurrentServer!.ApiIp);
+            await _httpDataSc.Registration(registrationModel, _currentServerStore.CurrentServer!.ApiIp);
 
         if (response.Replace(" ", "") == HttpStatusCode.BadRequest.ToString())
             return 0; //если не верна капча

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core.Models.AccountManagement;
+﻿using Core.Models.AccountManagement;
+using Core.Models.Images;
 using Core.Models.Saved;
 using Core.Models.Servers;
 using Core.Models.Users;
-using LiteCall.Model.Images;
 
-namespace LiteCall.Services.Interfaces;
+namespace Core.Services.Interfaces.Connections;
 
-public interface IHttpDataServices
+public interface IHttpDataSc
 {
     public Task<string> GetAuthorizeToken(RegistrationUser? newAcc, string? apiServerIp = null);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Core.Infrastructure.CMD;
@@ -38,9 +39,12 @@ internal class PasswordRecoveryVmd : BaseVmd
 
         #region Асинхронные
 
-        RecoveryPasswordCommand = new AsyncLambdaCmd(OnRecoveryPasswordCommandExecuted,
-            ex => statusSc.ChangeStatus(ex.Message),
-            CanRecoveryPasswordCommandExecute);
+        // RecoveryPasswordCommand = new AsyncLambdaCmd(OnRecoveryPasswordCommandExecuted,
+        //     ex => statusSc.ChangeStatus(ex.Message),
+        //     CanRecoveryPasswordCommandExecute);
+        
+        
+        RecoveryPasswordCommand = ReactiveCommand.CreateFromTask(OnRecoveryPasswordCommandExecuted,CanRecoveryPasswordCommandExecute());
 
         #endregion
 
@@ -79,15 +83,19 @@ internal class PasswordRecoveryVmd : BaseVmd
     #region Команды
 
     public ICommand OpenAuthPageCommand { get; set; }
-    public ICommand RecoveryPasswordCommand { get; }
+    public IReactiveCommand RecoveryPasswordCommand { get; }
 
-    private bool CanRecoveryPasswordCommandExecute(object p)
-    {
-        return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password) &&
-               !string.IsNullOrEmpty(QuestionAnswer) && SelectedQuestion is not null;
-    }
+    
 
-    private async Task OnRecoveryPasswordCommandExecuted(object p)
+    private IObservable<bool> CanRecoveryPasswordCommandExecute() => 
+        this.WhenAnyValue(x => x.Login,x=>x.Password,
+            x=>x.QuestionAnswer,
+            x=>x.SelectedQuestion,
+        (login, password, questionAnswer, selectedQuestion) => 
+            !string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password) &&
+            !string.IsNullOrEmpty(questionAnswer) && selectedQuestion is not null);
+    
+    private async Task OnRecoveryPasswordCommandExecuted()
     {
         var base64Sha1Password = await _encryptSc.Sha1Encrypt(Password);
 

@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Services\Extra" />
       <Folder Include="VMD\Pages\AccountManagment" />
       <Folder Include="VMD\ServerPages" />
     </ItemGroup>

@@ -89,19 +89,20 @@ internal static class VmdRegistration
                 CreateModalAuthorizationPageNavigationService(s),
                 CreateAuthCheckApiServerServices(s),
                 s.GetRequiredService<IStatusSc>(),
-                s.GetRequiredService<IHttpDataServices>()));
+                s.GetRequiredService<IHttpDataSc>()));
 
         services.AddTransient(s => new SettingVmd(
             s.GetRequiredService<MainAccountStore>(),
             s.GetRequiredService<SavedServersStore>(), s.GetRequiredService<AppSettingsStore>(),
-            CreateAutPageNavigationServices(s), s.GetRequiredService<IHttpDataServices>(),
+            CreateAutPageNavigationServices(s), s.GetRequiredService<IHttpDataSc>(),
             s.GetRequiredService<IStatusSc>(),
             s.GetRequiredService<SettingsAccNavigationStore>()
         ));
 
 
         services.AddTransient(s =>
-            new ServerVmd(s.GetRequiredService<CurrentServerAccountStore>(), s.GetRequiredService<CurrentServerStore>(),
+            new ServerVmd(s.GetRequiredService<CurrentServerAccountStore>(), 
+                s.GetRequiredService<CurrentServerStore>(),
                 s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IChatServerSc>()));
 
 
@@ -195,13 +196,13 @@ internal static class VmdRegistration
         return new RegistrationApiServerSc(serviceProvider.GetRequiredService<SavedServersStore>(),
             serviceProvider.GetRequiredService<CurrentServerStore>(),
             serviceProvider.GetRequiredService<CloseModalNavigationSc>(),
-            serviceProvider.GetRequiredService<IHttpDataServices>());
+            serviceProvider.GetRequiredService<IHttpDataSc>());
     }
 
     private static IRegistrationSc CreateMainRegistrationServices(IServiceProvider serviceProvider)
     {
         return new RegistrationMainServerSc(serviceProvider.GetRequiredService<MainAccountStore>(),
-            serviceProvider.GetRequiredService<IHttpDataServices>());
+            serviceProvider.GetRequiredService<IHttpDataSc>());
     }
 
     private static IAuthorizationSc CreateApiAuthorizationServices(IServiceProvider serviceProvider)
@@ -209,31 +210,31 @@ internal static class VmdRegistration
         return new AuthorizationApiServerSc(serviceProvider.GetRequiredService<SavedServersStore>(),
             serviceProvider.GetRequiredService<CurrentServerStore>(),
             serviceProvider.GetRequiredService<CloseModalNavigationSc>(),
-            serviceProvider.GetRequiredService<IHttpDataServices>());
+            serviceProvider.GetRequiredService<IHttpDataSc>());
     }
 
     private static IAuthorizationSc CreateMainAuthorizationServices(IServiceProvider serviceProvider)
     {
         return new AuthorizationMainServerSc(serviceProvider.GetRequiredService<MainAccountStore>(),
-            serviceProvider.GetRequiredService<IHttpDataServices>(),
+            serviceProvider.GetRequiredService<IHttpDataSc>(),
             serviceProvider.GetRequiredService<IStatusSc>());
     }
 
     private static IAuthorizationSc? CreateAuthCheckApiServerServices(IServiceProvider serviceProvider)
     {
         return new AuthCheckApiServerSc(serviceProvider.GetRequiredService<CurrentServerAccountStore>(),
-            serviceProvider.GetRequiredService<IHttpDataServices>());
+            serviceProvider.GetRequiredService<IHttpDataSc>());
     }
 
     private static IGetCaptchaSc CreateMainServeCaptchaServices(IServiceProvider serviceProvider)
     {
-        return new MainServerGetCaptchaSc(serviceProvider.GetRequiredService<IHttpDataServices>(),
+        return new MainServerGetCaptchaSc(serviceProvider.GetRequiredService<IHttpDataSc>(),
             serviceProvider.GetRequiredService<IImageServices>());
     }
 
     private static IGetCaptchaSc CreateApiServeCaptchaServices(IServiceProvider serviceProvider)
     {
-        return new ApiServerGetCaptchaSc(serviceProvider.GetRequiredService<IHttpDataServices>(),
+        return new ApiServerGetCaptchaSc(serviceProvider.GetRequiredService<IHttpDataSc>(),
             serviceProvider.GetRequiredService<IImageServices>(),
             serviceProvider.GetRequiredService<CurrentServerStore>());
     }
@@ -241,25 +242,25 @@ internal static class VmdRegistration
     private static IGetRecoveryQuestionsSc CreateMainServerGetPasswordRecoveryQuestions(
         IServiceProvider serviceProvider)
     {
-        return new MainServerGetRecQuestionsSc(serviceProvider.GetRequiredService<IHttpDataServices>());
+        return new MainServerGetRecQuestionsSc(serviceProvider.GetRequiredService<IHttpDataSc>());
     }
 
     private static IGetRecoveryQuestionsSc CreateApiServerGetPasswordRecoveryQuestions(
         IServiceProvider serviceProvider)
     {
-        return new ApiServerGetRecQuestionsSc(serviceProvider.GetRequiredService<IHttpDataServices>(),
+        return new ApiServerGetRecQuestionsSc(serviceProvider.GetRequiredService<IHttpDataSc>(),
             serviceProvider.GetRequiredService<CurrentServerStore>());
     }
 
 
     private static IRecoveryPasswordSc CreateMainRecoveryPasswordServices(IServiceProvider serviceProvider)
     {
-        return new MainServerRecoveryPasswordSc(serviceProvider.GetRequiredService<IHttpDataServices>());
+        return new MainServerRecoveryPasswordSc(serviceProvider.GetRequiredService<IHttpDataSc>());
     }
 
     private static IRecoveryPasswordSc CreateApiRecoveryPasswordServices(IServiceProvider serviceProvider)
     {
-        return new ApiServerRecoveryPasswordSc(serviceProvider.GetRequiredService<IHttpDataServices>(),
+        return new ApiServerRecoveryPasswordSc(serviceProvider.GetRequiredService<IHttpDataSc>(),
             serviceProvider.GetRequiredService<CurrentServerStore>());
     }
 

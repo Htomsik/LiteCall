@@ -24,6 +24,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            
+            <converters:Boolinverter x:Key="Boolinverter" />
 
             <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
 
@@ -594,20 +596,14 @@
                         </Grid.ColumnDefinitions>
 
                         <Button
+                            IsEnabled="{Binding ElementName=RoomNameTb, Path=(Validation.HasError), Converter={StaticResource Boolinverter}}"
                             MaxWidth="125"
                             MaxHeight="40"
                             Margin="15"
                             BorderBrush="{DynamicResource Green(Solid)}"
                             Command="{Binding CreateNewRoomCommand}">
                             <TextBlock Text="OK" />
-
-                            <Button.CommandParameter>
-                                <Binding
-                                    ElementName="RoomNameTb"
-                                    Path="(Validation.HasError)"
-                                    UpdateSourceTrigger="PropertyChanged" />
-
-                            </Button.CommandParameter>
+                            
                         </Button>
 
                         <Button
@@ -689,20 +685,14 @@
                         </Grid.ColumnDefinitions>
 
                         <Button
+                            IsEnabled="{Binding ElementName=RoomPasswordTb, Path=(Validation.HasError), Converter={StaticResource  Boolinverter}}"
                             MaxWidth="125"
                             MaxHeight="40"
                             Margin="15"
                             BorderBrush="{DynamicResource Green(Solid)}"
                             Command="{Binding ConnectWithPasswordCommand}">
                             <TextBlock Text="OK" />
-
-                            <Button.CommandParameter>
-                                <Binding
-                                    ElementName="RoomPasswordTb"
-                                    Path="(Validation.HasError)"
-                                    UpdateSourceTrigger="PropertyChanged" />
-
-                            </Button.CommandParameter>
+                            
                         </Button>
 
                         <Button
