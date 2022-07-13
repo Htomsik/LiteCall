@@ -13,7 +13,6 @@ using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
-using LiteCall.Services.Interfaces;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using ReactiveUI;

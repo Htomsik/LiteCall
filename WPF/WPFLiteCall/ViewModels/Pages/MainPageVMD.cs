@@ -16,7 +16,6 @@ using Core.Services.Interfaces.Connections;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
-using LiteCall.Services.Interfaces;
 using ReactiveUI;
 
 namespace LiteCall.ViewModels.Pages;

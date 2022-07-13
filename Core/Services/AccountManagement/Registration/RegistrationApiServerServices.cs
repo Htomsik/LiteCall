@@ -1,16 +1,14 @@
 ﻿using System.Net;
-using System.Threading.Tasks;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Services.Interfaces;
 
-namespace LiteCall.Services.AuthRegServices.Registration;
+namespace Core.Services.AccountManagement.Registration;
 
-internal sealed class RegistrationApiServerSc : IRegistrationSc
+public sealed class RegistrationApiServerSc : IRegistrationSc
 {
     private readonly INavigationSc _closeModalNavigationSc;
 

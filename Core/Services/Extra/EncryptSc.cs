@@ -1,19 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using Core.Services;
 using Core.Services.Interfaces.Extra;
-using LiteCall.Services.Interfaces;
 
-namespace LiteCall.Services;
+namespace Core.Services.Extra;
 
 public class EncryptSc : IEncryptSc
 {
     private static readonly byte[] Entropy = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-
+    
     [Obsolete("Obsolete")]
     public Task<string?> Sha1Encrypt(string? content)
     {
@@ -31,11 +25,10 @@ public class EncryptSc : IEncryptSc
         if (string.IsNullOrEmpty(content)) return Task.FromResult(content)!;
 
         var originalText = Encoding.Unicode.GetBytes(content);
-
-
+        
         var encryptedText = ProtectedData.Protect(originalText, Entropy, DataProtectionScope.CurrentUser);
 
-        return Task.FromResult(Convert.ToBase64String(encryptedText))!;
+       return Task.FromResult(Convert.ToBase64String(encryptedText))!;
     }
 
     public Task<string?> Base64Decrypt(string? content)

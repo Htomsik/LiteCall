@@ -3,13 +3,13 @@ using Core.Services.AppInfrastructure;
 using Core.Services.AppInfrastructure.FileServices;
 using Core.Services.AppInfrastructure.NavigationServices;
 using Core.Services.Connections;
+using Core.Services.Extra;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.Connections;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,11 +32,11 @@ internal static class ServicesRegistration
 
         services.AddTransient<CloseModalNavigationSc>();
 
-        services.AddSingleton<IStatusSc, AppExecutionStateS>();
+        services.AddSingleton<IStatusSc, AppExecutionStateSc>();
 
         services.AddTransient<IEncryptSc, EncryptSc>();
 
-        services.AddTransient<IImageServices, ImageServices>();
+        services.AddTransient<IImageServices, ImageSc>();
 
         services.AddSingleton<IHttpDataSc, HttpDataSc>(s =>
             new HttpDataSc(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),

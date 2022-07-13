@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.Connections;
-using LiteCall.Services.Interfaces;
+using Core.Services.Interfaces.Extra;
 
-namespace LiteCall.Services.AuthRegServices.Captcha;
+namespace Core.Services.AccountManagement.Captcha;
 
-internal sealed class MainServerGetCaptchaSc : IGetCaptchaSc
+public sealed class MainServerGetCaptchaSc : IGetCaptchaSc
 {
     private readonly IHttpDataSc _httpDataSc;
     private readonly IImageServices _imageServices;

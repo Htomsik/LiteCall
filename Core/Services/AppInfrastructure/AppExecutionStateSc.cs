@@ -5,7 +5,7 @@ using Core.Stores.AppInfrastructure;
 
 namespace Core.Services.AppInfrastructure;
 
-public sealed class AppExecutionStateS : IStatusSc
+public sealed class AppExecutionStateSc : IStatusSc
 {
     private static readonly Dictionary<ExecutionActionStates, AppExecutionState> SampleActions =
         new()
@@ -59,7 +59,7 @@ public sealed class AppExecutionStateS : IStatusSc
     private readonly AppExecutionStateStore _statusMessageStore;
     private bool _isDelete;
 
-    public AppExecutionStateS(AppExecutionStateStore statusMessageStore)
+    public AppExecutionStateSc(AppExecutionStateStore statusMessageStore)
     {
         _statusMessageStore = statusMessageStore;
     }

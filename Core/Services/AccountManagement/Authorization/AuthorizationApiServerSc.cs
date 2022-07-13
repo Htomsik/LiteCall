@@ -1,14 +1,12 @@
-﻿using System.Threading.Tasks;
-using Core.Models.Users;
+﻿using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Services.Interfaces;
 
-namespace LiteCall.Services.AuthRegServices.Authorization;
+namespace Core.Services.AccountManagement.Authorization;
 
-internal sealed class AuthorizationApiServerSc : IAuthorizationSc
+public sealed class AuthorizationApiServerSc : IAuthorizationSc
 {
     private readonly INavigationSc _closeModalNavigationSc;
 

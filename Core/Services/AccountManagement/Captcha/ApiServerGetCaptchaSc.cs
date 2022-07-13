@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.Connections;
+using Core.Services.Interfaces.Extra;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Services.Interfaces;
 
-namespace LiteCall.Services.AuthRegServices.Captcha;
+namespace Core.Services.AccountManagement.Captcha;
 
-internal sealed class ApiServerGetCaptchaSc : IGetCaptchaSc
+public sealed class ApiServerGetCaptchaSc : IGetCaptchaSc
 {
     private readonly CurrentServerStore _currentServerStore;
 

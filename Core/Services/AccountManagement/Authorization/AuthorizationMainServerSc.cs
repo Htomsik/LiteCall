@@ -1,14 +1,12 @@
-﻿using System.Threading.Tasks;
-using Core.Models.Users;
+﻿using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Services.Interfaces;
 
-namespace LiteCall.Services.AuthRegServices.Authorization;
+namespace Core.Services.AccountManagement.Authorization;
 
-internal sealed class AuthorizationMainServerSc : IAuthorizationSc
+public sealed class AuthorizationMainServerSc : IAuthorizationSc
 {
     private readonly IHttpDataSc _httpDataSc;
 

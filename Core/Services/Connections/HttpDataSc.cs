@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Net.Mime;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Core.Models;
 using Core.Models.AccountManagement;
 using Core.Models.AppInfrastructure;
 using Core.Models.AppInfrastructure.StateStatuses;
@@ -17,22 +12,19 @@ using Core.Models.Images;
 using Core.Models.Saved;
 using Core.Models.Servers;
 using Core.Models.Users;
-using Core.Services;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
 using Core.Stores.Connections;
-using LiteCall.Services.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
-namespace LiteCall.Services;
+namespace Core.Services.Connections;
 
-internal sealed class HttpDataSc : IHttpDataSc
+public sealed class HttpDataSc : IHttpDataSc
 {
     private static readonly Guid ProgramCaptchaId = Guid.NewGuid();
-
-
+    
     private readonly IConfiguration _configuration;
 
     private readonly IEncryptSc _encryptSc;

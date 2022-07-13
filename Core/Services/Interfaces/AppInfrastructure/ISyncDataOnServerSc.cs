@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace LiteCall.Services.Interfaces;
+﻿namespace Core.Services.Interfaces.AppInfrastructure;
 
 public interface ISyncDataOnServerSc
 {

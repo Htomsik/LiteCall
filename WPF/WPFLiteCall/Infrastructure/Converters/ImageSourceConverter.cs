@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Infrastructure.Converters;
 

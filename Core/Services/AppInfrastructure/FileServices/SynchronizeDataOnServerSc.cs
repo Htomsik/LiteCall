@@ -1,13 +1,11 @@
-﻿using System.Threading.Tasks;
-using Core.Services;
+﻿using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
 using Core.Stores.TemporaryInfo;
-using LiteCall.Services.Interfaces;
 
-namespace LiteCall.Services;
+namespace Core.Services.AppInfrastructure.FileServices;
 
-internal sealed class SynchronizeDataOnServerSc : ISyncDataOnServerSc
+public sealed class SynchronizeDataOnServerSc : ISyncDataOnServerSc
 {
     private readonly MainAccountStore _accountStore;
 

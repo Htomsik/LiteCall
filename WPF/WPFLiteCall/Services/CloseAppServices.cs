@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using Core.Services.Interfaces.AppInfrastructure;
-using LiteCall.Services.Interfaces;
 
 namespace LiteCall.Services;
 

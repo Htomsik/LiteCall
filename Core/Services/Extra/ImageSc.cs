@@ -1,17 +1,11 @@
-﻿using System;
-using System.Drawing;
-using System.Security.Cryptography;
-using System.Security.Policy;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 using Core.Models.Images;
-using LiteCall.Services.Interfaces;
+using Core.Services.Interfaces.Extra;
 
-namespace LiteCall.Services;
+namespace Core.Services.Extra;
 
-public class ImageServices : IImageServices
+public class ImageSc : IImageServices
 {
     
     public byte[]? GetRawData(ImagePacket? image)
