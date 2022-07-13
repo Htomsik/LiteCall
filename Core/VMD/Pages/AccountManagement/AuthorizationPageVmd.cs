@@ -1,19 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.CMD.Lambda;
 using Core.Models.Users;
-using Core.VMD.Base;
-using Core.Services;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
+using Core.VMD.Base;
 using ReactiveUI;
 
-namespace LiteCall.ViewModels.Pages.AutRegPasges;
+namespace Core.VMD.Pages.AccountManagement;
 
-internal class AuthorizationPageVmd : BaseVmd
+public class AuthorizationPageVmd : BaseVmd
 {
     private readonly IEncryptSc _encryptSc;
 

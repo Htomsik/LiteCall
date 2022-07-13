@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.CMD.Lambda;
 using Core.Models.AppInfrastructure;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Stores.AppInfrastructure;
@@ -9,11 +7,10 @@ using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.Base;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
-using Splat;
 
-namespace LiteCall.ViewModels;
+namespace Core.VMD.Windows;
 
-internal sealed class MainWindowVmd : BaseVmd
+public sealed class MainWindowVmd : BaseVmd
 {
     private readonly AdditionalNavigationStore _additionalNavigationStore;
 

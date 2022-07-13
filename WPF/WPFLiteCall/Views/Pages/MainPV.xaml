@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    xmlns:viewModel="clr-namespace:LiteCall.ViewModels.ServerPages"
+    xmlns:viewModel="clr-namespace:Core.VMD.ServerPages;assembly=Core"
     d:DesignHeight="450"
     d:DesignWidth="400"
     mc:Ignorable="d">

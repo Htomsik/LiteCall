@@ -8,8 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    xmlns:viewModel="clr-namespace:LiteCall.ViewModels.Pages"
-    xmlns:authRegPages="clr-namespace:LiteCall.ViewModels.ServerPages.AuthRegPages"
+    xmlns:viewModel="clr-namespace:Core.VMD.Pages.Single;assembly=Core"
+    xmlns:authRegPages="clr-namespace:Core.VMD.Pages.AccountManagement.ChatServer;assembly=Core"
     x:Name="Window"
     Width="800"
     Height="450"
@@ -80,7 +80,7 @@
                         <pages:MainPV />
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type viewModel:SettingVmd}">
+                    <DataTemplate DataType="{x:Type viewModel:SettingsPageVmd}">
                         <pages:SettingPV />
                     </DataTemplate>
 
@@ -108,7 +108,7 @@
 
                     <ContentControl.Resources>
 
-                        <DataTemplate DataType="{x:Type viewModel:SettingVmd}">
+                        <DataTemplate DataType="{x:Type viewModel:SettingsPageVmd}">
                             <pages:SettingPV />
                         </DataTemplate>
 

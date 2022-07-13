@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.CMD.Lambda;
 using Core.Infrastructure.Notifiers;
 using Core.Models.AppInfrastructure.StateStatuses;
 using Core.Models.Saved;
@@ -18,9 +14,9 @@ using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
 using ReactiveUI;
 
-namespace LiteCall.ViewModels.Pages;
+namespace Core.VMD.Pages.Single;
 
-internal sealed class MainPageVmd : BaseVmd
+public sealed class MainPageVmd : BaseVmd
 {
     public MainPageVmd(MainAccountStore? accountStore, CurrentServerAccountStore? serverAccountStore,
         SavedServersStore? savedServersStore,

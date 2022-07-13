@@ -1,12 +1,10 @@
-﻿using Core.Services;
-using Core.Services.Interfaces.AccountManagement;
+﻿using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
-using LiteCall.ViewModels.Pages.AutRegPasges;
 
-namespace LiteCall.ViewModels.ServerPages.AuthRegPages;
+namespace Core.VMD.Pages.AccountManagement.ChatServer;
 
-internal sealed class ServerRegistrationModalVmd : RegistrationPageVmd
+public sealed class ServerRegistrationModalVmd : RegistrationPageVmd
 {
     public ServerRegistrationModalVmd(INavigationSc authPageNavigationScs,
         IRegistrationSc registrationSc,

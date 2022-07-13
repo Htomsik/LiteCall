@@ -13,10 +13,11 @@ using Core.Services.Interfaces.Extra;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
-using LiteCall.ViewModels.Pages;
-using LiteCall.ViewModels.Pages.AutRegPasges;
-using LiteCall.ViewModels.ServerPages;
-using LiteCall.ViewModels.ServerPages.AuthRegPages;
+using Core.VMD.Pages.AccountManagement;
+using Core.VMD.Pages.AccountManagement.ChatServer;
+using Core.VMD.Pages.Single;
+using Core.VMD.ServerPages;
+using Core.VMD.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -91,7 +92,7 @@ internal static class VmdRegistration
                 s.GetRequiredService<IStatusSc>(),
                 s.GetRequiredService<IHttpDataSc>()));
 
-        services.AddTransient(s => new SettingVmd(
+        services.AddTransient(s => new SettingsPageVmd(
             s.GetRequiredService<MainAccountStore>(),
             s.GetRequiredService<SavedServersStore>(), s.GetRequiredService<AppSettingsStore>(),
             CreateAutPageNavigationServices(s), s.GetRequiredService<IHttpDataSc>(),
@@ -150,9 +151,9 @@ internal static class VmdRegistration
 
     private static INavigationSc CreateSettingPageNavigationService(IServiceProvider serviceProvider)
     {
-        return new AdditionalNavigationSc<SettingVmd>(
+        return new AdditionalNavigationSc<SettingsPageVmd>(
             serviceProvider.GetRequiredService<AdditionalNavigationStore>(),
-            serviceProvider.GetRequiredService<SettingVmd>);
+            serviceProvider.GetRequiredService<SettingsPageVmd>);
     }
 
     private static INavigationSc CreateServerPageNavigationService(IServiceProvider serviceProvider)

@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Windows.Media;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.CMD.Lambda;
-using Core.Models;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
-using Core.VMD.Base;
-using Core.Services;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
+using Core.VMD.Base;
 using ReactiveUI;
 
-namespace LiteCall.ViewModels.Pages.AutRegPasges;
+namespace Core.VMD.Pages.AccountManagement;
 
-internal class RegistrationPageVmd : BaseVmd
+public class RegistrationPageVmd : BaseVmd
 {
     private readonly IGetCaptchaSc _getCaptchaSc;
 

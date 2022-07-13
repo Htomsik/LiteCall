@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.CMD.Lambda;
 using Core.Models.Saved;
 using Core.Models.Users;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -13,14 +10,13 @@ using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
 using NAudio.CoreAudioApi;
-using NAudio.Wave;
 using ReactiveUI;
 
-namespace LiteCall.ViewModels.Pages;
+namespace Core.VMD.Pages.Single;
 
-internal sealed class SettingVmd : BaseVmd
+public sealed class SettingsPageVmd : BaseVmd
 {
-    public SettingVmd(MainAccountStore? accountStore, SavedServersStore? savedServersStore, AppSettingsStore? settingsStore,
+    public SettingsPageVmd(MainAccountStore? accountStore, SavedServersStore? savedServersStore, AppSettingsStore? settingsStore,
         INavigationSc authNavigationSc, IHttpDataSc httpDataSc, IStatusSc statusSc,
         SettingsAccNavigationStore settingsAccNavigationStore)
     {
@@ -52,26 +48,26 @@ internal sealed class SettingVmd : BaseVmd
 
         OutputDevices = new ObservableCollection<string>();
 
-        GetInputOutput();
-
-
-        try
-        {
-            var capabilities = WaveIn.GetCapabilities(SettingsStore!.CurrentSettings!.CaptureDeviceId);
-        }
-        catch
-        {
-            SettingsStore!.CurrentSettings!.CaptureDeviceId = 0;
-        }
-
-        try
-        {
-            var capabilities = WaveOut.GetCapabilities(SettingsStore.CurrentSettings.OutputDeviceId);
-        }
-        catch
-        {
-            SettingsStore.CurrentSettings.OutputDeviceId = 0;
-        }
+        // // GetInputOutput();
+        //
+        //
+        // try
+        // {
+        //    // var capabilities = WaveIn.GetCapabilities(SettingsStore!.CurrentSettings!.CaptureDeviceId);
+        // }
+        // catch
+        // {
+        //     SettingsStore!.CurrentSettings!.CaptureDeviceId = 0;
+        // }
+        //
+        // try
+        // {
+        //    // var capabilities = WaveOut.GetCapabilities(SettingsStore.CurrentSettings.OutputDeviceId);
+        // }
+        // catch
+        // {
+        //     SettingsStore!.CurrentSettings!.OutputDeviceId = 0;
+        // }
     }
 
     public ObservableCollection<string>? InputDevices
@@ -151,49 +147,49 @@ internal sealed class SettingVmd : BaseVmd
     }
 
 
-    private async void GetInputOutput()
-    {
-        await Task.Run(() => InputDevices = AsyncGetInputDevices().Result);
+    // private async void GetInputOutput()
+    // {
+    //     await Task.Run(() => InputDevices = AsyncGetInputDevices().Result);
+    //
+    //     await Task.Run(() => OutputDevices = AsyncGetOutputDevices().Result);
+    // }
 
-        await Task.Run(() => OutputDevices = AsyncGetOutputDevices().Result);
-    }
+    // private Task<ObservableCollection<string>?> AsyncGetInputDevices()
+    // {
+    //     var inputDevices = new ObservableCollection<string>();
+    //
+    //     var enumerator = new MMDeviceEnumerator();
+    //
+    //     for (var waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
+    //     {
+    //         var deviceInfo = WaveIn.GetCapabilities(waveInDevice);
+    //
+    //         foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
+    //             if (device.FriendlyName.StartsWith(deviceInfo.ProductName))
+    //                 inputDevices.Add(device.FriendlyName);
+    //     }
+    //
+    //
+    //     return Task.FromResult(inputDevices)!;
+    // }
 
-    private Task<ObservableCollection<string>?> AsyncGetInputDevices()
-    {
-        var inputDevices = new ObservableCollection<string>();
-
-        var enumerator = new MMDeviceEnumerator();
-
-        for (var waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
-        {
-            var deviceInfo = WaveIn.GetCapabilities(waveInDevice);
-
-            foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
-                if (device.FriendlyName.StartsWith(deviceInfo.ProductName))
-                    inputDevices.Add(device.FriendlyName);
-        }
-
-
-        return Task.FromResult(inputDevices)!;
-    }
-
-    private Task<ObservableCollection<string>?> AsyncGetOutputDevices()
-    {
-        var outputDevices = new ObservableCollection<string>();
-
-        var enumerator = new MMDeviceEnumerator();
-
-        for (var waveInDevice = 0; waveInDevice < WaveOut.DeviceCount; waveInDevice++)
-        {
-            var deviceInfo = WaveOut.GetCapabilities(waveInDevice);
-
-            foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
-                outputDevices.Add(device.FriendlyName);
-        }
-
-
-        return Task.FromResult(outputDevices)!;
-    }
+    // private Task<ObservableCollection<string>?> AsyncGetOutputDevices()
+    // {
+    //     var outputDevices = new ObservableCollection<string>();
+    //
+    //     var enumerator = new MMDeviceEnumerator();
+    //
+    //     for (var waveInDevice = 0; waveInDevice < WaveOut.DeviceCount; waveInDevice++)
+    //     {
+    //         var deviceInfo = WaveOut.GetCapabilities(waveInDevice);
+    //
+    //         foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+    //             outputDevices.Add(device.FriendlyName);
+    //     }
+    //
+    //
+    //     return Task.FromResult(outputDevices)!;
+    // }
 
 
     private void OnCurrentViewModelChanged()

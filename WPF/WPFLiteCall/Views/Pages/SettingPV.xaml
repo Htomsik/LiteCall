@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
-    xmlns:autRegPasges="clr-namespace:LiteCall.ViewModels.Pages.AutRegPasges"
+    xmlns:accountManagement="clr-namespace:Core.VMD.Pages.AccountManagement;assembly=Core"
     d:DesignHeight="450"
     d:DesignWidth="450"
     mc:Ignorable="d">
@@ -168,15 +168,15 @@
 
                             <ContentControl.Resources>
 
-                                <DataTemplate DataType="{x:Type autRegPasges:AuthorizationPageVmd}">
+                                <DataTemplate DataType="{x:Type accountManagement:AuthorizationPageVmd}">
                                     <local:AuthorisationPV />
                                 </DataTemplate>
 
-                                <DataTemplate DataType="{x:Type autRegPasges:RegistrationPageVmd}">
+                                <DataTemplate DataType="{x:Type accountManagement:RegistrationPageVmd}">
                                     <local:RegistrationPV />
                                 </DataTemplate>
 
-                                <DataTemplate DataType="{x:Type autRegPasges:PasswordRecoveryVmd}">
+                                <DataTemplate DataType="{x:Type accountManagement:PasswordRecoveryVmd}">
                                     <local:PasswordRecoveryPV />
                                 </DataTemplate>
 

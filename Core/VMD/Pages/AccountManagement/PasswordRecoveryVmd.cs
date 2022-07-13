@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.CMD.Lambda;
-using Core.Models;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
-using Core.Services;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
 using Core.VMD.Base;
 using ReactiveUI;
 
-namespace LiteCall.ViewModels.Pages.AutRegPasges;
+namespace Core.VMD.Pages.AccountManagement;
 
-internal class PasswordRecoveryVmd : BaseVmd
+public class PasswordRecoveryVmd : BaseVmd
 {
     private readonly IEncryptSc _encryptSc;
     private readonly IGetRecoveryQuestionsSc _getRecoveryQuestionsSc;

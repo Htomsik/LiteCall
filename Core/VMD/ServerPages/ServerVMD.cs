@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Core.Infrastructure.Buses;
 using Core.Infrastructure.CMD.Lambda;
@@ -17,9 +13,9 @@ using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using ReactiveUI;
 
-namespace LiteCall.ViewModels.ServerPages;
+namespace Core.VMD.ServerPages;
 
-internal sealed class ServerVmd : BaseVmd
+public sealed class ServerVmd : BaseVmd
 {
     public ServerVmd(CurrentServerAccountStore currentServerAccountStore, CurrentServerStore currentServerStore,
         IStatusSc statusSc, IChatServerSc chatServerSc)
@@ -85,7 +81,7 @@ internal sealed class ServerVmd : BaseVmd
 
         #region Naudio Settings
 
-        _input = new WaveIn();
+        _input = new WaveInEvent();
 
         _input.DataAvailable += InputDataAvailable!;
 
@@ -98,7 +94,7 @@ internal sealed class ServerVmd : BaseVmd
             ReadFully = true
         };
 
-        _waveOut = new WaveOut();
+        _waveOut = new WaveOutEvent();
 
         _waveOut.DeviceNumber = 0;
 
@@ -142,9 +138,9 @@ internal sealed class ServerVmd : BaseVmd
 
     private readonly WaveFormat _waveFormat = new(8000, 16, 1);
 
-    private readonly WaveOut _waveOut;
+    private readonly WaveOutEvent _waveOut;
 
-    private readonly WaveIn _input;
+    private readonly WaveInEvent _input;
 
     private readonly MixingSampleProvider _mixer;
 
