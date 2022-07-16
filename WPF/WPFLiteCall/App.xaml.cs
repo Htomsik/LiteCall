@@ -17,7 +17,7 @@ public partial class App : Application
 {
     private IHost? _host;
 
-    public IHost Host => _host ?? Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+    public IHost Host => _host ?? Progam.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
 
     protected override async void OnStartup(StartupEventArgs e)
