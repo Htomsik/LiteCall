@@ -1,4 +1,5 @@
 ﻿using Core.VMD.Base;
+using Microsoft.Extensions.Configuration;
 
 namespace Core.Stores.Connections;
 
@@ -7,7 +8,7 @@ public class HttpClientStore : BaseVmd
     private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
     public readonly HttpClient CurrentHttpClient;
 
-    public HttpClientStore()
+    public HttpClientStore(IConfiguration configuration)
     {
         var clientHandler = new HttpClientHandler
         {
@@ -18,7 +19,7 @@ public class HttpClientStore : BaseVmd
         CurrentHttpClient = new HttpClient(clientHandler)
         {
             Timeout = TimeSpan.FromSeconds(10),
-            DefaultRequestHeaders = { { "ApiKey", ApiKey } }
+            DefaultRequestHeaders = { { "ApiKey", configuration["ApiKey"] ?? configuration["AppSettings:DefaultApiKey"] } }
         };
     }
 }

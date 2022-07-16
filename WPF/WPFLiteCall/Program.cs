@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace LiteCall;
 
-public class Progam
+public class Program
 {
     [STAThread]
     public static void Main()
@@ -24,6 +24,7 @@ public class Progam
             .ConfigureAppConfiguration((host, cfg) => cfg
                 .SetBasePath(Environment.CurrentDirectory)
                 .AddJsonFile("apsettings.json", true, true)
+                .AddUserSecrets<Program>(true)
             );
 
 
