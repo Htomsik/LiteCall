@@ -5,13 +5,14 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Platforms>AnyCPU;x64</Platforms>
-        <StartupObject>LiteCall.Progam</StartupObject>
+        <StartupObject>LiteCall.Program</StartupObject>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
         <ApplicationIcon>Resources\Assets\Icons\logo.ico</ApplicationIcon>
         <DebugType>embedded</DebugType>
         <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
         <TargetFramework>net6.0-windows</TargetFramework>
         <RootNamespace>LiteCall</RootNamespace>
+        <UserSecretsId>6705da81-3707-4fa5-ba55-db3262924014</UserSecretsId>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,14 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0-preview.5.22301.12" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-        <PackageReference Include="NAudio" Version="2.1.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="ReactiveUI" Version="18.2.5" />
-        <PackageReference Include="ReactiveUI.WPF" Version="18.2.5" />
     </ItemGroup>
 
     <ItemGroup>
@@ -79,7 +74,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="appsettings.json">
+        <None Update="appSettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
