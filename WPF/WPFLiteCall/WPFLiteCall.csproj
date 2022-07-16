@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Platforms>AnyCPU;x64</Platforms>
-        <StartupObject>LiteCall.Progam</StartupObject>
+        <StartupObject>LiteCall.Program</StartupObject>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
         <ApplicationIcon>Resources\Assets\Icons\logo.ico</ApplicationIcon>
         <DebugType>embedded</DebugType>

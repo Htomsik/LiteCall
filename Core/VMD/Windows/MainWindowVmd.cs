@@ -67,9 +67,9 @@ public sealed class MainWindowVmd : BaseVmd
     }
 
 
-    public string Version => _configuration!.GetSection("AppSettings")["AppVersions"] ?? "0.1.0";
+    public string Version => _configuration!.GetSection("AppSettings")["AppVersions"] ?? "NonIdentify";
 
-    public string Branch => _configuration!.GetSection("AppSettings")["Branch"] ?? "NonStable";
+    public string Branch => _configuration!.GetSection("AppSettings")["Branch"] ?? "NonIdentify";
 
 
     public IReactiveCommand CloseAppCommand { get; }
