@@ -28,7 +28,7 @@
 
 ### __Окно авторизации__
 
-![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/Login.png)
+![Project Image](https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/Autorization.png)
 
 ### __Окно подключения к серверу__
 
@@ -36,11 +36,11 @@
 
 ### __Страница сервера__
 
-![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/ServerRoom1.png)
+![Project Image](https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/ChatServer.png)
 
 ### __Диаграмма классов клиента__
 
-![Project Image](https://raw.githubusercontent.com/Htomsik/LiteCall/master/ReadmeAssets/ClassDiagram1.png)
+![Project Image](https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/DiagramClass.png)
 
 
 
