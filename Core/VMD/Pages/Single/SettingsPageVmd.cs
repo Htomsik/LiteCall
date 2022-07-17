@@ -48,26 +48,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
         OutputDevices = new ObservableCollection<string>();
 
-        // // GetInputOutput();
-        //
-        //
-        // try
-        // {
-        //    // var capabilities = WaveIn.GetCapabilities(SettingsStore!.CurrentSettings!.CaptureDeviceId);
-        // }
-        // catch
-        // {
-        //     SettingsStore!.CurrentSettings!.CaptureDeviceId = 0;
-        // }
-        //
-        // try
-        // {
-        //    // var capabilities = WaveOut.GetCapabilities(SettingsStore.CurrentSettings.OutputDeviceId);
-        // }
-        // catch
-        // {
-        //     SettingsStore!.CurrentSettings!.OutputDeviceId = 0;
-        // }
+       
     }
 
     public ObservableCollection<string>? InputDevices
@@ -145,53 +126,7 @@ public sealed class SettingsPageVmd : BaseVmd
             SettingsStore!.CurrentSettings!.OutputDeviceId = value;
         }
     }
-
-
-    // private async void GetInputOutput()
-    // {
-    //     await Task.Run(() => InputDevices = AsyncGetInputDevices().Result);
-    //
-    //     await Task.Run(() => OutputDevices = AsyncGetOutputDevices().Result);
-    // }
-
-    // private Task<ObservableCollection<string>?> AsyncGetInputDevices()
-    // {
-    //     var inputDevices = new ObservableCollection<string>();
-    //
-    //     var enumerator = new MMDeviceEnumerator();
-    //
-    //     for (var waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
-    //     {
-    //         var deviceInfo = WaveIn.GetCapabilities(waveInDevice);
-    //
-    //         foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
-    //             if (device.FriendlyName.StartsWith(deviceInfo.ProductName))
-    //                 inputDevices.Add(device.FriendlyName);
-    //     }
-    //
-    //
-    //     return Task.FromResult(inputDevices)!;
-    // }
-
-    // private Task<ObservableCollection<string>?> AsyncGetOutputDevices()
-    // {
-    //     var outputDevices = new ObservableCollection<string>();
-    //
-    //     var enumerator = new MMDeviceEnumerator();
-    //
-    //     for (var waveInDevice = 0; waveInDevice < WaveOut.DeviceCount; waveInDevice++)
-    //     {
-    //         var deviceInfo = WaveOut.GetCapabilities(waveInDevice);
-    //
-    //         foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
-    //             outputDevices.Add(device.FriendlyName);
-    //     }
-    //
-    //
-    //     return Task.FromResult(outputDevices)!;
-    // }
-
-
+    
     private void OnCurrentViewModelChanged()
     {
         ((IReactiveObject)this).RaisePropertyChanged(nameof(AccountCurrentVmd));
@@ -234,8 +169,16 @@ public sealed class SettingsPageVmd : BaseVmd
 
             newSavedSeverAccount.SavedServer = newServer;
 
-            if (!SavedServersStore!.Add(newSavedSeverAccount))
+            try
+            {
+                SavedServersStore!.Add(newSavedSeverAccount);
+            }
+            catch (Exception)
+            {
                 _statusSc.ChangeStatus("Server already exist");
+            }
+        
+                
         }
     }
 

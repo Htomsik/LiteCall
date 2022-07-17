@@ -30,17 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0-preview.5.22301.12" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-        <PackageReference Include="NAudio" Version="2.1.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="ReactiveUI" Version="18.2.5" />
-        <PackageReference Include="ReactiveUI.WPF" Version="18.2.5" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Content Include="Resources\Assets\Fonts\Oswald-Bold.ttf">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

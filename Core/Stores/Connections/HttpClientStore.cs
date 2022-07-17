@@ -5,7 +5,6 @@ namespace Core.Stores.Connections;
 
 public class HttpClientStore : BaseVmd
 {
-    private const string ApiKey = "ACbaAS324hnaASD324bzZwq41";
     public readonly HttpClient CurrentHttpClient;
 
     public HttpClientStore(IConfiguration configuration)

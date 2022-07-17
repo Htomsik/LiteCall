@@ -31,7 +31,7 @@ public sealed class SavedServersStore : BaseVmd
     }
 
 
-    public bool Add(ServerAccount newServerAccount)
+    public void Add(ServerAccount newServerAccount)
     {
         ServerAccount? findAccount = null;
 
@@ -47,44 +47,37 @@ public sealed class SavedServersStore : BaseVmd
         }
 
 
-        if (findAccount == null)
-        {
-            if (SavedServerAccounts!.ServersAccounts is null)
-                SavedServerAccounts.ServersAccounts = new ObservableCollection<ServerAccount>();
+        if (findAccount != null) throw new Exception("Server already added");
+        
+        if (SavedServerAccounts!.ServersAccounts is null)
+            SavedServerAccounts.ServersAccounts = new ObservableCollection<ServerAccount>();
 
-            SavedServerAccounts.ServersAccounts.Add(newServerAccount);
-            OnCurrentSeverAccountChanged();
-            return true;
-        }
-
-        return false;
+        SavedServerAccounts.ServersAccounts.Add(newServerAccount);
+        
+        OnCurrentSeverAccountChanged();
     }
 
     public void Remove(ServerAccount? deletedServer)
     {
-        ServerAccount findAccount = null!;
-
         try
         {
-            findAccount =
-                SavedServerAccounts?.ServersAccounts?.First(x =>
-                    x.SavedServer!.ApiIp == deletedServer!.SavedServer!.ApiIp)!;
+            var findAccount = SavedServerAccounts?.ServersAccounts?.First(x =>
+                x.SavedServer!.ApiIp == deletedServer!.SavedServer!.ApiIp)!;
+            
+            SavedServerAccounts?.ServersAccounts?.Remove(findAccount);
+            OnCurrentSeverAccountChanged();
         }
         catch
         {
-            // ignored
+            throw new Exception("Saved server doesn't exist");
         }
-
-
-        SavedServerAccounts?.ServersAccounts?.Remove(findAccount);
-        OnCurrentSeverAccountChanged();
+        
     }
 
     public void Replace(Server? replacedServer, Account? newAccount)
     {
         ServerAccount? findAccount = null;
-
-
+        
         try
         {
             findAccount =

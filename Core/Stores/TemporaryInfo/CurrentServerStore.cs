@@ -34,14 +34,11 @@ public sealed class CurrentServerStore : BaseVmd
 
 
     public event Action? CurrentServerRoomsChanged;
-
-    public event Action? CurrentServerChanged;
-
+    
     public event Action? CurrentServerDeleted;
 
     private void OnCurrentServerChanged()
     {
-        CurrentServerChanged?.Invoke();
         if (CurrentServer is null)
             CurrentServerDeleted?.Invoke();
     }
