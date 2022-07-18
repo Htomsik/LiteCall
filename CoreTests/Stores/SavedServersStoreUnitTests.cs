@@ -3,7 +3,7 @@ using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Stores.TemporaryInfo;
 
-namespace CoreTests;
+namespace CoreTests.Stores;
 
 [TestClass]
 public class SavedServersStoreUnitTests

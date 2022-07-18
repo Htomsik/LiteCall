@@ -91,7 +91,7 @@ public class PasswordRecoveryVmd : BaseVmd
     
     private async Task OnRecoveryPasswordCommandExecuted()
     {
-        var base64Sha1Password = await _encryptSc.Sha1Encrypt(Password);
+        var base64Sha1Password = await _encryptSc.ShaEncrypt(Password);
 
         base64Sha1Password = await _encryptSc.Base64Encrypt(base64Sha1Password);
 

@@ -2,7 +2,7 @@
 
 public interface IEncryptSc
 {
-    public Task<string?> Sha1Encrypt(string? content);
+    public Task<string?> ShaEncrypt(string? content);
 
     public Task<string?> Base64Encrypt(string? content);
 
