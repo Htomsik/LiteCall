@@ -25,6 +25,7 @@ public sealed class MainPageVmd : BaseVmd
         INavigationSc settingsPageNavigationSc,
         INavigationSc serverPageNavigationSc,
         INavigationSc openModalServerAuthorizationNavigationSc,
+        INavigationSc openModalServerConnectionNavigationSc,
         IAuthorizationSc? authorizationApiServices,
         IStatusSc statusSc,
         IHttpDataSc httpDataSc)
@@ -51,18 +52,16 @@ public sealed class MainPageVmd : BaseVmd
         ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationSc,
             CanModalRegistrationOpenCommandExecuted);
 
+        ModalServerConnectionCommand = new NavigationCommand(openModalServerConnectionNavigationSc);
+
         OpenSettingsCommand = new NavigationCommand(settingsPageNavigationSc);
-
-        OpenModalCommand = ReactiveCommand.Create<object>(OnOpenModalCommaExecuted);
-
+        
         DisconnectServerCommand = ReactiveCommand.CreateFromTask<object>(_ => CurrentServerStore?.Delete()!);
 
         SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
 
         DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted);
-
-        ConnectServerCommand = ReactiveCommand.CreateFromTask(OnConnectServerExecuted);
-
+        
         ConnectServerSavedCommand =
             ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
 
@@ -101,15 +100,16 @@ public sealed class MainPageVmd : BaseVmd
     #region Команды
 
     public ICommand OpenSettingsCommand { get; }
+    
+    public ICommand ModalServerConnectionCommand { get; }
 
-    public ICommand ModalRegistrationOpenCommand { get; set; }
+    public ICommand ModalRegistrationOpenCommand { get;}
 
     private bool CanModalRegistrationOpenCommandExecuted()
     {
         return ServerAccountStore!.CurrentAccount!.IsAuthorized;
     }
-
-
+    
     public IReactiveCommand ConnectServerSavedCommand { get; }
 
     private IObservable<bool> CanConnectServerSavedExecute()
@@ -190,68 +190,7 @@ public sealed class MainPageVmd : BaseVmd
 
 
     public IReactiveCommand DisconnectServerCommand { get; }
-
-    public IReactiveCommand OpenModalCommand { get; }
-
-    private void OnOpenModalCommaExecuted(object p)
-    {
-        ModalStatus = (bool)p;
-    }
-
-    public ICommand ConnectServerCommand { get; }
-
-    private async Task OnConnectServerExecuted()
-    {
-        var serverAccount = new Account
-        {
-            Login = AccountStore!.CurrentAccount!.Login
-        };
-
-        Server? newServer;
-        
-        try
-        {
-            var apiIp = !CheckStatus ? await _httpDataSc.MainServerGetApiIp(ServerNameOrIp) : ServerNameOrIp;
-            
-            newServer = await _httpDataSc.ApiServerGetInfo(apiIp);
-        }
-        catch (Exception)
-        {
-            return;
-        }
-        
-        try
-        {
-            var dictionaryServerAccount =
-                SavedServersStore!.SavedServerAccounts!.ServersAccounts!.First(s =>
-                    s.SavedServer!.ApiIp == newServer!.ApiIp!.ToLower());
-
-            await _authorizationServices!.Login(dictionaryServerAccount.Account!.IsAuthorized,
-                dictionaryServerAccount.Account, newServer!.ApiIp);
-            
-            serverAccount = dictionaryServerAccount.Account;
-            
-        }
-        catch
-        {
-            await _authorizationServices!.Login(false, serverAccount, newServer!.ApiIp);
-        }
-        
-        var serverStatus = await Task.Run(() => _httpDataSc.CheckServerStatus(newServer.Ip));
-
-        if (serverStatus)
-        {
-            CurrentServerStore!.CurrentServer = newServer;
-
-            await Task.Delay(250);
-
-            ModalStatus = false;
-            
-            _serverPageNavigationSc.Navigate();
-            
-        }
-    }
-
+    
     #endregion
 
     #region Данные
@@ -265,13 +204,7 @@ public sealed class MainPageVmd : BaseVmd
     }
 
 
-    private bool _modalStatus;
-
-    public bool ModalStatus
-    {
-        get => _modalStatus;
-        set => this.RaiseAndSetIfChanged(ref _modalStatus, value);
-    }
+   
 
 
     private MainAccountStore? _accountStore;
@@ -293,7 +226,7 @@ public sealed class MainPageVmd : BaseVmd
 
     private CurrentServerAccountStore? _serverAccountStore;
 
-    public CurrentServerAccountStore? ServerAccountStore
+    private CurrentServerAccountStore? ServerAccountStore
     {
         get => _serverAccountStore;
         set => this.RaiseAndSetIfChanged(ref _serverAccountStore, value);
@@ -317,15 +250,7 @@ public sealed class MainPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _savedServersStore, value);
     }
 
-
-    private string? _serverNameOrIp;
-
-    public string? ServerNameOrIp
-    {
-        get => _serverNameOrIp;
-        set => this.RaiseAndSetIfChanged(ref _serverNameOrIp, ModalStatus ? value : String.Empty);
-    }
-
+    
     public Visibility ButtonVisibleStatus =>
         CurrentServerStore!.CurrentServer == null ? Visibility.Collapsed : Visibility.Visible;
     
