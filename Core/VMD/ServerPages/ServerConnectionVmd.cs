@@ -46,9 +46,8 @@ public class ServerConnectionVmd:BaseVmd
         
         _closeModalNavigationSc = closeModalNavigationSc;
 
-        ServerConnectCommand = ReactiveCommand.CreateFromTask(OnServerConnect);
-
-
+        ServerConnectCommand = ReactiveCommand.CreateFromTask(OnServerConnect,CanServerConnect);
+        
     }
 
     public IReactiveCommand ServerConnectCommand { get; }
@@ -102,6 +101,8 @@ public class ServerConnectionVmd:BaseVmd
 
         }
     }
+
+    private IObservable<bool> CanServerConnect => this.WhenAnyValue(x=>x.ServerNameOrIp,(serverNameOrIp)=> !String.IsNullOrEmpty(serverNameOrIp));
 
 
 

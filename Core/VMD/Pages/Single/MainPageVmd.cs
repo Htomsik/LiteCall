@@ -12,6 +12,7 @@ using Core.Services.Interfaces.Connections;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
+using DynamicData.Binding;
 using ReactiveUI;
 
 namespace Core.VMD.Pages.Single;
@@ -60,7 +61,7 @@ public sealed class MainPageVmd : BaseVmd
 
         SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
 
-        DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted);
+        DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted,CanDeleteServerSavedExecute());
         
         ConnectServerSavedCommand =
             ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
@@ -72,7 +73,9 @@ public sealed class MainPageVmd : BaseVmd
         CurrentServerStore!.CurrentServerChanged += CurrentServerChanged;
 
         _mainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
-        
+
+        this.WhenAnyPropertyChanged();
+
     }
 
     private void CurrentServerChanged()
@@ -91,9 +94,7 @@ public sealed class MainPageVmd : BaseVmd
         if (SelectedViewModel == null) return;
 
         SelectedViewModel.Dispose();
-
-      //  ButtonVisibleStatus = Visibility.Collapsed;
-
+        
         _mainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
     }
 
@@ -151,7 +152,7 @@ public sealed class MainPageVmd : BaseVmd
     }
 
 
-    public IReactiveCommand SaveServerCommand { get; set; }
+    public IReactiveCommand SaveServerCommand { get;}
 
     private IObservable<bool> CanSaveServerCommandExecute()
     {
@@ -165,16 +166,9 @@ public sealed class MainPageVmd : BaseVmd
 
     private Task OnSaveServerCommandExecuted()
     {
-        try
-        {
-            SavedServersStore!.Add(new ServerAccount
+        SavedServersStore!.Add(new ServerAccount
                 { Account = ServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
-        }
-        catch
-        {
-            _statusSc.ChangeStatus("Server save failed");
-        }
-
+            
         return Task.CompletedTask;
     }
 
@@ -184,9 +178,30 @@ public sealed class MainPageVmd : BaseVmd
 
     private Task OnDeleteServerSavedExecuted()
     {
-        SavedServersStore!.Remove(SelectedServerAccount);
+        try
+        {
+            SavedServersStore!.Remove(SelectedServerAccount);
+        
+            SelectedServerAccount = null;
+        }
+        catch 
+        {
+           //ignored
+        }
+        
         return Task.CompletedTask;
     }
+
+    private IObservable<bool> CanDeleteServerSavedExecute()
+    {
+        return this.WhenAnyValue(x => x.SavedServersStore,
+            savedServersStore =>
+            {
+                return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+                    x.SavedServer?.ApiIp == SelectedServerAccount?.SavedServer!.ApiIp) is not null;
+            });
+    }
+    
 
 
     public IReactiveCommand DisconnectServerCommand { get; }
@@ -194,19 +209,7 @@ public sealed class MainPageVmd : BaseVmd
     #endregion
 
     #region Данные
-
-    private bool _checkStatus;
-
-    public bool CheckStatus
-    {
-        get => _checkStatus;
-        set => this.RaiseAndSetIfChanged(ref _checkStatus, value);
-    }
-
-
-   
-
-
+    
     private MainAccountStore? _accountStore;
 
     public MainAccountStore? AccountStore
