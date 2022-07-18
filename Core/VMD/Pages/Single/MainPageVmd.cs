@@ -165,13 +165,7 @@ public sealed class MainPageVmd : BaseVmd
 
 
     public IReactiveCommand SaveServerCommand { get; set; }
-
-    // private bool CanSaveServerCommandExecute(object p)
-    // {
-    //     return SavedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
-    //         x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
-    // }
-
+    
     private IObservable<bool> CanSaveServerCommandExecute() => this.WhenAnyValue(x=> x.SavedServersStore,
         (savedServersStore) =>
         {
