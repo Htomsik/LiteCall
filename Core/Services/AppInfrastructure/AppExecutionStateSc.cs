@@ -57,6 +57,7 @@ public sealed class AppExecutionStateSc : IStatusSc
         };
 
     private readonly AppExecutionStateStore _statusMessageStore;
+    
     private bool _isDelete;
 
     public AppExecutionStateSc(AppExecutionStateStore statusMessageStore)

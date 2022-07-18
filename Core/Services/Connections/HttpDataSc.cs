@@ -77,7 +77,7 @@ public sealed class HttpDataSc : IHttpDataSc
         {
             _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
 
-            return "invalid";
+            throw new Exception("Authorization server connection error | GetAuthorizeToken");
         }
 
 
@@ -91,7 +91,7 @@ public sealed class HttpDataSc : IHttpDataSc
 
         _statusSc.ChangeStatus(ExecutionErrorStates.AuthorizationFailed);
 
-        return "invalid";
+        throw new Exception("Authorization failed | GetAuthorizeToken");
     }
 
 
@@ -166,21 +166,19 @@ public sealed class HttpDataSc : IHttpDataSc
         {
             _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
 
-            return null;
+            throw new Exception("ApiIp getting from main server failed | MainServerGetApiIp");
         }
-
-
+        
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _statusSc.DeleteStatus();
 
             return response.Content.ReadAsStringAsync().Result;
         }
-
-
+        
         _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerNameOrIp);
 
-        return null;
+        throw new Exception("ApiIp getting from main server failed | MainServerGetApiIp");
     }
 
     public async Task<Server?> ApiServerGetInfo(string? apiServerIp)
@@ -199,21 +197,30 @@ public sealed class HttpDataSc : IHttpDataSc
         {
             _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
 
-            return null;
+            throw new Exception("Getting info about server failed | ApiServerGetInfo");
         }
-
-
+        
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _statusSc.DeleteStatus();
 
-            return JsonSerializer.Deserialize<Server>(response.Content.ReadAsStringAsync().Result);
-        }
+            var deserializeServerInfo =  JsonSerializer.Deserialize<Server>(await response.Content.ReadAsStringAsync());
 
+            if (deserializeServerInfo is null)
+            {
+                throw new Exception("Getting info about server failed | ApiServerGetInfo");
+            }
+
+            deserializeServerInfo.ApiIp = apiServerIp;
+            
+            return deserializeServerInfo;
+
+        }
 
         _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerNameOrIp);
 
-        return null;
+        throw new Exception("Getting info about server failed | ApiServerGetInfo");
+        
     }
 
     public async Task<ImagePacket?> GetCaptcha(string? apiServerIp = null)

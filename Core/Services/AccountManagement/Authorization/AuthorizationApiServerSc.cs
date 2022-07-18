@@ -30,42 +30,31 @@ public sealed class AuthorizationApiServerSc : IAuthorizationSc
     }
 
 
-    public async Task<int> Login(bool isNotAnonymousAuthorize, Account? newAccount, string? apiSeverIp)
+    public async Task Login(bool isNotAnonymousAuthorize, Account? newAccount, string? apiSeverIp)
     {
-        if (isNotAnonymousAuthorize)
+        
+        newAccount!.IsAuthorized = isNotAnonymousAuthorize;
+        
+        newAccount.Password = isNotAnonymousAuthorize ? string.Empty : newAccount.Password;
+        
+        try
         {
-            var response =
-                await _httpDataSc.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
+            var tokenResponse = await _httpDataSc.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
+        
+            newAccount.Role = await _httpDataSc.GetRoleFromJwtToken(tokenResponse);
+        
+            newAccount.Token = tokenResponse;
 
-            if (response == "invalid") return 0;
-
-            newAccount!.Role = await _httpDataSc.GetRoleFromJwtToken(response);
-
-            newAccount.Token = response;
-
-            newAccount.IsAuthorized = true;
+         
         }
-        else
+        catch (Exception)
         {
-            newAccount!.IsAuthorized = false;
-
-            newAccount.Password = "";
-
-            var response =
-                await _httpDataSc.GetAuthorizeToken(newAccount, _currentServerStore.CurrentServer!.ApiIp);
-
-            if (response == "invalid") return 0;
-
-            newAccount.Role = await _httpDataSc.GetRoleFromJwtToken(response);
-
-            newAccount.Token = response;
+            throw new Exception();
         }
-
-
+        
         _savedServersStore.Replace(_currentServerStore.CurrentServer, newAccount);
 
         _closeModalNavigationSc.Navigate();
-
-        return 1;
+        
     }
 }

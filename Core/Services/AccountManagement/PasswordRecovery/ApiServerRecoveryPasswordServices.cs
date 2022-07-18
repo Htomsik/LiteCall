@@ -14,6 +14,7 @@ public sealed class ApiServerRecoveryPasswordSc : IRecoveryPasswordSc
     public ApiServerRecoveryPasswordSc(IHttpDataSc httpDataSc, CurrentServerStore currentServerStore)
     {
         _httpDataSc = httpDataSc;
+        
         _currentServerStore = currentServerStore;
     }
 

@@ -29,6 +29,10 @@
             <converters:IsCurrentServerNullConveter x:Key="IsCurrentServerNullConveter" />
 
             <system:Double x:Key="PlusScale">1</system:Double>
+            
+            <system:Boolean x:Key="True">True</system:Boolean>
+            
+            <system:Boolean x:Key="False">False</system:Boolean>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -203,7 +207,7 @@
                 Width="35"
                 Height="35"
                 Command="{Binding OpenModalCommand}"
-                CommandParameter="1"
+                CommandParameter="{StaticResource True}"
                 Style="{StaticResource ImgButton}"
                 Visibility="{Binding ButtonVisibleStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
@@ -460,7 +464,7 @@
                             VerticalAlignment="Top"
                             BorderBrush="{DynamicResource Dangerous(Solid)}"
                             Command="{Binding OpenModalCommand}"
-                            CommandParameter="0">
+                            CommandParameter="{StaticResource False}">
                             <TextBlock Text="EXIT" />
                         </Button>
                     </Grid>

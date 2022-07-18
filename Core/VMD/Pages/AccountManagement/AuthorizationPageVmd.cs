@@ -56,21 +56,12 @@ public class AuthorizationPageVmd : BaseVmd
 
             newAccount.Password = base64ShaPassword;
             
-            var response = await _authorizationSc.Login(!CheckStatus, newAccount);
-
-            switch (response)
-            {
-                case 0:
-                    break;
-
-                case 1:
-                    StatusMessage = null;
-                    break;
-            }
+            await _authorizationSc.Login(!CheckStatus, newAccount);
+                
         }
         catch (Exception )
         {
-            //ignored
+            StatusMessage = null;
         }
         
     }
