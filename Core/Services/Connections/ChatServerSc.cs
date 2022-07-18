@@ -215,7 +215,6 @@ public sealed class ChatServerSc : IChatServerSc
     {
         var isReconnectingDisconnect = false;
 
-
         _hubConnectionStore!.CurrentHubConnection = new HubConnectionBuilder()
             .WithUrl(
                 $"https://{_currentServerStore.CurrentServer!.Ip}/LiteCall?token={_currentServerAccountStore.CurrentAccount!.Token}",
@@ -238,8 +237,6 @@ public sealed class ChatServerSc : IChatServerSc
             
             .Build();
 
-        // _hubConnectionStore.CurrentHubConnection.ServerTimeout = TimeSpan.FromSeconds(15);
-        
         _hubConnectionStore.CurrentHubConnection.On<TextMessage>("Send", message =>
         {
             TextMessageBus.Send(message);

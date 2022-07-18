@@ -46,19 +46,18 @@ public sealed class HttpDataSc : IHttpDataSc
         _httpClientStore = httpClientStore;
     }
 
-    private string? DefaultMainIp => _configuration!.GetSection("MainSever")["MainServerIp"] ?? "localhost:5005";
+    private string? DefaultMainIp => _configuration["MainSever:MainServerIp"] ?? "localhost:5005";
 
 
     public async Task<string> GetAuthorizeToken(RegistrationUser? newAcc, string? apiServerIp = null)
     {
         apiServerIp ??= DefaultMainIp;
-
-
+        
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
-
+   
         var authModel = new
         {
-            newAcc!.Login, Password = await _encryptSc.Base64Decrypt(newAcc.Password), Guid = ProgramCaptchaId
+            newAcc!.Login, Password = !string.IsNullOrEmpty(newAcc.Password) ? await _encryptSc.Base64Decrypt(newAcc.Password): null, Guid = ProgramCaptchaId
         };
 
         var json = JsonSerializer.Serialize(authModel);
@@ -95,11 +94,13 @@ public sealed class HttpDataSc : IHttpDataSc
         return "invalid";
     }
 
+
+    
+
     
     public async Task<string> Registration(RegistrationModel? registrationModel, string? apiServerIp = null)
     {
         apiServerIp ??= DefaultMainIp;
-
 
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
 

@@ -161,37 +161,47 @@ public class RegistrationPageVmd : BaseVmd
     
     private async Task OnRegistrationExecuted()
     {
-        var base64Sha1Password = await _encryptSc.ShaEncrypt(Password);
-
-        base64Sha1Password = await _encryptSc.Base64Encrypt(base64Sha1Password);
-
         var newAccount = new Account
         {
-            Login = Login,
-            Password = base64Sha1Password
+            Login = Login
         };
-
-        var registrationModel = new RegistrationModel
+        
+        try
         {
-            Captcha = CaptchaString,
-            QuestionAnswer = QuestionAnswer,
-            Question = SelectedQuestion,
-            RecoveryAccount = newAccount
-        };
+            var base64ShaPassword = await _encryptSc.ShaEncrypt(Password);
 
-        var response = await _registrationSc.Registration(registrationModel);
+            base64ShaPassword = await _encryptSc.Base64Encrypt(base64ShaPassword);
 
-        switch (response)
-        {
-            case 0:
-                await GetCaptcha();
-                break;
+            Password = base64ShaPassword;
+            
+            var registrationModel = new RegistrationModel
+            {
+                Captcha = CaptchaString,
+                QuestionAnswer = QuestionAnswer,
+                Question = SelectedQuestion,
+                RecoveryAccount = newAccount
+            };
 
-            case 1:
-                ModalStatus = false;
+            var response = await _registrationSc.Registration(registrationModel);
 
-                break;
+            switch (response)
+            {
+                case 0:
+                    await GetCaptcha();
+                    break;
+
+                case 1:
+                    ModalStatus = false;
+
+                    break;
+            }
         }
+        catch (Exception)
+        {
+            //ignored
+        }
+        
+       
     }
 
 

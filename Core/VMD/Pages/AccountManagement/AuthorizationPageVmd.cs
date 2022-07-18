@@ -43,27 +43,36 @@ public class AuthorizationPageVmd : BaseVmd
 
     private async Task OnAuthExecuted()
     {
-        var base64Sha1Password = await _encryptSc.ShaEncrypt(Password);
-
-        base64Sha1Password = await _encryptSc.Base64Encrypt(base64Sha1Password);
-
         var newAccount = new Account
         {
-            Login = Login,
-            Password = base64Sha1Password
+            Login = Login
         };
-
-        var response = await _authorizationSc.Login(!CheckStatus, newAccount);
-
-        switch (response)
+        
+        try
         {
-            case 0:
-                break;
+            var base64ShaPassword = await _encryptSc.ShaEncrypt(Password);
 
-            case 1:
-                StatusMessage = null;
-                break;
+            base64ShaPassword = await _encryptSc.Base64Encrypt(base64ShaPassword);
+
+            newAccount.Password = base64ShaPassword;
+            
+            var response = await _authorizationSc.Login(!CheckStatus, newAccount);
+
+            switch (response)
+            {
+                case 0:
+                    break;
+
+                case 1:
+                    StatusMessage = null;
+                    break;
+            }
         }
+        catch (Exception )
+        {
+            //ignored
+        }
+        
     }
 
     public ICommand OpenRegistrationPageCommand { get; }
