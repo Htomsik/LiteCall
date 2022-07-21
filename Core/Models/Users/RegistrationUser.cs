@@ -1,6 +1,8 @@
-﻿namespace Core.Models.Users;
+﻿using ReactiveUI;
 
-public class RegistrationUser
+namespace Core.Models.Users;
+
+public class RegistrationUser:ReactiveObject
 {
     public string? Login { get; set; }
     

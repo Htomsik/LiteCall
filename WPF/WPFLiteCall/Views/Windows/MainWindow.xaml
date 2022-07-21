@@ -102,7 +102,6 @@
 
 
                 <ContentControl
-                    Width="{Binding ElementName=AdditionalModal}"
                     VerticalAlignment="Stretch"
                     Content="{Binding AdditionalCurrentViewModel}">
 

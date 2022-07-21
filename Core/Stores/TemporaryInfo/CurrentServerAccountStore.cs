@@ -1,31 +1,21 @@
 ﻿using Core.Models.Users;
 using Core.VMD.Base;
+using DynamicData.Binding;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.Stores.TemporaryInfo;
 
 public sealed class CurrentServerAccountStore : BaseVmd
 {
-    private Account? _currentAccount;
-
-    public Account? CurrentAccount
-    {
-        get => _currentAccount;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _currentAccount, value);
-            OnCurrentAccountChangeChanged();
-        }
-    }
-
-    public event Action? CurrentAccountChange;
-
-    private void OnCurrentAccountChangeChanged()
-    {
-        CurrentAccountChange?.Invoke();
-    }
-
-
+    
+    [Reactive]
+    public Account? CurrentAccount { get; set; }
+    
+    
+    
+    
+    
     public void Logout()
     {
         CurrentAccount = new Account();

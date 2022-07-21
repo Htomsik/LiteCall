@@ -12,6 +12,7 @@ using Core.VMD.Base;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.ServerPages;
 
@@ -20,8 +21,8 @@ public sealed class ServerVmd : BaseVmd
     public ServerVmd(CurrentServerAccountStore currentServerAccountStore, CurrentServerStore currentServerStore,
         IStatusSc statusSc, IChatServerSc chatServerSc)
     {
-        _currentServerAccountStore = currentServerAccountStore;
-
+        CurrentServerAccountStore = currentServerAccountStore;
+        
         MessagesColCollection = new ObservableCollection<TextMessage>();
 
         CurrentServerStore = currentServerStore;
@@ -31,8 +32,7 @@ public sealed class ServerVmd : BaseVmd
         _chatServerSc = chatServerSc;
 
         currentServerStore.CurrentServerDeleted += Dispose;
-
-
+        
         TextMessageBus.Bus += AsyncGetMessageBus;
 
         AudioMessageBus.Bus += AsyncGetAudioBus;
@@ -40,10 +40,8 @@ public sealed class ServerVmd : BaseVmd
         KickFromRoomNotifier.Notificator += GroupDisconnected;
 
         CurrentServerStore.CurrentServerRoomsChanged += CurrentServerRoomsChanged;
-
-        _currentServerAccountStore.CurrentAccountChange += CurrentAccountChange;
-
-
+        
+        
         #region команды
 
         
@@ -104,20 +102,22 @@ public sealed class ServerVmd : BaseVmd
 
         #endregion
         
+        this.WhenAny(x => x.CurrentServerAccountStore!.CurrentAccount!.CurrentServerLogin, x => x.Value)
+            .Subscribe(x => CurrentServerAccountStoreChanged());
         
-     //   chatServerSc.GetUserServerName();
     }
 
-    private void CurrentAccountChange()
-    {
-        this.RaisePropertyChanged(nameof(CanServerConnect));
-    }
-
+    
     private void CurrentServerRoomsChanged()
     {
         this.RaisePropertyChanged(nameof(CurrentGroup));
     }
 
+    private void CurrentServerAccountStoreChanged()
+    {
+        CanServerConnect = !string.IsNullOrEmpty(CurrentServerAccountStore!.CurrentAccount!.CurrentServerLogin);
+    }
+    
     #region Services
 
     private readonly IStatusSc _statusSc;
@@ -129,8 +129,15 @@ public sealed class ServerVmd : BaseVmd
     #region Stores
 
     public CurrentServerStore CurrentServerStore { get; set; }
+    
+    
+    private CurrentServerAccountStore? _currentServerAccountStore;
 
-    private readonly CurrentServerAccountStore _currentServerAccountStore;
+    public CurrentServerAccountStore? CurrentServerAccountStore
+    {
+        get => _currentServerAccountStore;
+        set => this.RaiseAndSetIfChanged(ref _currentServerAccountStore, value);
+    }
 
     #endregion
 
@@ -181,12 +188,7 @@ public sealed class ServerVmd : BaseVmd
     #region SendMessage
 
     public IReactiveCommand SendMessageCommand { get; }
-
-    // public bool CanSendMessageExecuted(object p)
-    // {
-    //     return CurrentGroup is not null && !string.IsNullOrEmpty(CurrentMessage);
-    // }
-
+    
     private IObservable<bool> CanSendMessageExecuted() => this.WhenAnyValue(x=>x.CurrentGroup,x=>x.CurrentMessage,
         (currentGroup, currentMessage) => currentGroup is not null && !string.IsNullOrEmpty(currentMessage));
     
@@ -196,7 +198,7 @@ public sealed class ServerVmd : BaseVmd
         {
             DateSend = DateTime.Now,
             Text = CurrentMessage,
-            Sender = _currentServerAccountStore.CurrentAccount!.CurrentServerLogin
+            Sender = CurrentServerAccountStore!.CurrentAccount!.CurrentServerLogin
         };
 
         if (await _chatServerSc.SendMessage(newMessage))
@@ -305,7 +307,7 @@ public sealed class ServerVmd : BaseVmd
 
     private bool CanAdminDeleteRoomExecute(object p)
     {
-        if (_currentServerAccountStore.CurrentAccount!.Role != "Admin") return false;
+        if (CurrentServerAccountStore.CurrentAccount!.Role != "Admin") return false;
 
         return p is ServerRooms;
     }
@@ -325,7 +327,7 @@ public sealed class ServerVmd : BaseVmd
 
     private bool CanAdminDisconnectUserFromRoomExecute(object p)
     {
-        if (_currentServerAccountStore.CurrentAccount!.Role != "Admin") return false;
+        if (CurrentServerAccountStore.CurrentAccount!.Role != "Admin") return false;
 
         return p is ServerUser;
     }
@@ -529,7 +531,7 @@ public sealed class ServerVmd : BaseVmd
 
         _waveOut.Stop();
         
-        _currentServerAccountStore.Logout();
+        CurrentServerAccountStore.Logout();
 
         base.Dispose();
     }
@@ -626,14 +628,15 @@ public sealed class ServerVmd : BaseVmd
     {
         return (from rooms in CurrentServerStore.CurrentServerRooms!
             from users in rooms.Users!
-            where users.Login == _currentServerAccountStore.CurrentAccount!.CurrentServerLogin
+            where users.Login == CurrentServerAccountStore.CurrentAccount!.CurrentServerLogin
             select rooms).FirstOrDefault()!;
     }
 
 
-    public bool CanServerConnect => true;
 
 
+    [Reactive] public bool CanServerConnect { get; set; }
+    
     private bool _headphoneMute;
 
     public bool HeadphoneMute

@@ -19,7 +19,7 @@ namespace Core.VMD.Pages.Single;
 
 public sealed class MainPageVmd : BaseVmd
 {
-    public MainPageVmd(MainAccountStore? accountStore, CurrentServerAccountStore? serverAccountStore,
+    public MainPageVmd(MainAccountStore? accountStore, CurrentServerAccountStore? currentServerAccountStore,
         SavedServersStore? savedServersStore,
         CurrentServerStore? currentServerStore,
         MainPageServerNavigationStore mainPageServerNavigationStore,
@@ -33,7 +33,7 @@ public sealed class MainPageVmd : BaseVmd
     {
         AccountStore = accountStore;
 
-        ServerAccountStore = serverAccountStore;
+        CurrentServerAccountStore = currentServerAccountStore;
 
         SavedServersStore = savedServersStore;
 
@@ -108,7 +108,7 @@ public sealed class MainPageVmd : BaseVmd
 
     private bool CanModalRegistrationOpenCommandExecuted()
     {
-        return ServerAccountStore!.CurrentAccount!.IsAuthorized;
+        return CurrentServerAccountStore!.CurrentAccount!.IsAuthorized;
     }
     
     public IReactiveCommand ConnectServerSavedCommand { get; }
@@ -167,7 +167,7 @@ public sealed class MainPageVmd : BaseVmd
     private Task OnSaveServerCommandExecuted()
     {
         SavedServersStore!.Add(new ServerAccount
-                { Account = ServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
+                { Account = CurrentServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
             
         return Task.CompletedTask;
     }
@@ -227,12 +227,12 @@ public sealed class MainPageVmd : BaseVmd
     }
 
 
-    private CurrentServerAccountStore? _serverAccountStore;
+    private CurrentServerAccountStore? _currentServerAccountStore;
 
-    private CurrentServerAccountStore? ServerAccountStore
+    public CurrentServerAccountStore? CurrentServerAccountStore
     {
-        get => _serverAccountStore;
-        set => this.RaiseAndSetIfChanged(ref _serverAccountStore, value);
+        get => _currentServerAccountStore;
+        set => this.RaiseAndSetIfChanged(ref _currentServerAccountStore, value);
     }
 
 

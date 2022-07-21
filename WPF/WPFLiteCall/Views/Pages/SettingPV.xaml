@@ -129,7 +129,7 @@
 
                                     <Style.Triggers>
 
-                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorise}"
+                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}"
                                                      Value="True">
 
                                             <Setter Property="Visibility" Value="Visible" />
@@ -255,7 +255,7 @@
                                                         FontSize="15"
                                                         Foreground="{DynamicResource Dangerous(Solid)}"
                                                         Text="[NA]"
-                                                        Visibility="{Binding Account.IsAuthorise, Converter={StaticResource BooleanToVisibilityInverter}}" />
+                                                        Visibility="{Binding Account.IsAuthorized, Converter={StaticResource BooleanToVisibilityInverter}}" />
 
                                                 </StackPanel>
 

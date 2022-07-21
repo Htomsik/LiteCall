@@ -251,12 +251,14 @@
 
             </Border.Style>
 
+            <!--Down toolbar-->
             <Grid>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+                
                 <StackPanel Orientation="Horizontal">
 
                     <Border
@@ -277,9 +279,8 @@
                                 Style="{DynamicResource PersonPath}" />
                         </Viewbox>
 
-
                     </Border>
-
+   
                     <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
 
                         <TextBlock.Style>
@@ -288,7 +289,6 @@
 
                                 <Setter Property="Text" Value="{Binding AccountStore.CurrentAccount.Login}" />
 
-
                                 <Style.Triggers>
 
                                     <DataTrigger
@@ -296,7 +296,7 @@
                                         Value="False">
 
                                         <Setter Property="Text"
-                                                Value="{Binding ServerAccountStore.CurrentAccount.Login, UpdateSourceTrigger=PropertyChanged}" />
+                                                Value="{Binding CurrentServerAccountStore.CurrentAccount.CurrentServerLogin, UpdateSourceTrigger=PropertyChanged}" />
 
                                         <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
 
@@ -305,6 +305,7 @@
                                 </Style.Triggers>
 
                             </Style>
+                            
                         </TextBlock.Style>
 
                     </TextBlock>
@@ -324,7 +325,7 @@
                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
                                 <Setter Property="Visibility"
-                                        Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                        Value="{Binding CurrentServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
                                 <Style.Triggers>
 
