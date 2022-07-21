@@ -1,8 +1,10 @@
 ﻿using Core.Models.Users;
+using Newtonsoft.Json;
 
 namespace Core.Models.Saved;
 
 public sealed class CurrentAccountSavedServers : AppSavedServers
 {
-    public Account? MainServerAccount { get; set; } = null;
+    [JsonProperty]
+    public Account? MainServerAccount { get; set; }
 }

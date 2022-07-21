@@ -13,8 +13,7 @@ public sealed class RegistrationApiServerSc : IRegistrationSc
     private readonly INavigationSc _closeModalNavigationSc;
 
     private readonly CurrentServerStore _currentServerStore;
-
-
+    
     private readonly IHttpDataSc _httpDataSc;
 
     private readonly SavedServersStore _savedServersStore;

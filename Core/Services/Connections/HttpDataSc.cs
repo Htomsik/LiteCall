@@ -46,19 +46,18 @@ public sealed class HttpDataSc : IHttpDataSc
         _httpClientStore = httpClientStore;
     }
 
-    private string? DefaultMainIp => _configuration!.GetSection("MainSever")["MainServerIp"] ?? "localhost:5005";
+    private string? DefaultMainIp => _configuration["MainSever:MainServerIp"] ?? "localhost:5005";
 
 
     public async Task<string> GetAuthorizeToken(RegistrationUser? newAcc, string? apiServerIp = null)
     {
         apiServerIp ??= DefaultMainIp;
-
-
+        
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
-
+   
         var authModel = new
         {
-            newAcc!.Login, Password = await _encryptSc.Base64Decrypt(newAcc.Password), Guid = ProgramCaptchaId
+            newAcc!.Login, Password = !string.IsNullOrEmpty(newAcc.Password) ? await _encryptSc.Base64Decrypt(newAcc.Password): null, Guid = ProgramCaptchaId
         };
 
         var json = JsonSerializer.Serialize(authModel);
@@ -78,7 +77,7 @@ public sealed class HttpDataSc : IHttpDataSc
         {
             _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
 
-            return "invalid";
+            throw new Exception("Authorization server connection error | GetAuthorizeToken");
         }
 
 
@@ -92,14 +91,16 @@ public sealed class HttpDataSc : IHttpDataSc
 
         _statusSc.ChangeStatus(ExecutionErrorStates.AuthorizationFailed);
 
-        return "invalid";
+        throw new Exception("Authorization failed | GetAuthorizeToken");
     }
+
+
+    
 
     
     public async Task<string> Registration(RegistrationModel? registrationModel, string? apiServerIp = null)
     {
         apiServerIp ??= DefaultMainIp;
-
 
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
 
@@ -165,21 +166,19 @@ public sealed class HttpDataSc : IHttpDataSc
         {
             _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
 
-            return null;
+            throw new Exception("ApiIp getting from main server failed | MainServerGetApiIp");
         }
-
-
+        
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _statusSc.DeleteStatus();
 
             return response.Content.ReadAsStringAsync().Result;
         }
-
-
+        
         _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerNameOrIp);
 
-        return null;
+        throw new Exception("ApiIp getting from main server failed | MainServerGetApiIp");
     }
 
     public async Task<Server?> ApiServerGetInfo(string? apiServerIp)
@@ -198,21 +197,30 @@ public sealed class HttpDataSc : IHttpDataSc
         {
             _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
 
-            return null;
+            throw new Exception("Getting info about server failed | ApiServerGetInfo");
         }
-
-
+        
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _statusSc.DeleteStatus();
 
-            return JsonSerializer.Deserialize<Server>(response.Content.ReadAsStringAsync().Result);
-        }
+            var deserializeServerInfo =  JsonSerializer.Deserialize<Server>(await response.Content.ReadAsStringAsync());
 
+            if (deserializeServerInfo is null)
+            {
+                throw new Exception("Getting info about server failed | ApiServerGetInfo");
+            }
+
+            deserializeServerInfo.ApiIp = apiServerIp;
+            
+            return deserializeServerInfo;
+
+        }
 
         _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerNameOrIp);
 
-        return null;
+        throw new Exception("Getting info about server failed | ApiServerGetInfo");
+        
     }
 
     public async Task<ImagePacket?> GetCaptcha(string? apiServerIp = null)

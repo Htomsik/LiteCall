@@ -18,38 +18,26 @@ public sealed class AuthCheckApiServerSc : IAuthorizationSc
         _httpDataSc = httpDataSc;
     }
 
-    public async Task<int> Login(bool isNotAnonymousAuthorize, Account? newAccount, string? ApiServerIp)
+    public async Task Login(bool isNotAnonymousAuthorize, Account? newAccount, string? apiServerIp)
     {
-        if (isNotAnonymousAuthorize)
+        newAccount!.IsAuthorized = isNotAnonymousAuthorize;
+        
+        newAccount.Password = isNotAnonymousAuthorize ? string.Empty : newAccount.Password;
+
+        try
         {
-            var response = await _httpDataSc.GetAuthorizeToken(newAccount, ApiServerIp);
+            var tokenResponse = await _httpDataSc.GetAuthorizeToken(newAccount, apiServerIp);
+        
+            newAccount.Role = await _httpDataSc.GetRoleFromJwtToken(tokenResponse);
+        
+            newAccount.Token = tokenResponse;
 
-            if (response == "invalid") return 0;
-
-            newAccount!.Role = await _httpDataSc.GetRoleFromJwtToken(response);
-
-            newAccount.Token = response;
-
-            newAccount.IsAuthorized = true;
+            _currentServerAccountStore.CurrentAccount = newAccount;
         }
-        else
+        catch (Exception)
         {
-            newAccount!.IsAuthorized = false;
-
-            newAccount.Password = "";
-
-            var response = await _httpDataSc.GetAuthorizeToken(newAccount, ApiServerIp);
-
-
-            if (response == "invalid") return 0;
-
-            newAccount.Role = await _httpDataSc.GetRoleFromJwtToken(response);
-
-            newAccount.Token = response;
+            throw new Exception();
         }
-
-        _currentServerAccountStore.CurrentAccount = newAccount;
-
-        return 1;
+        
     }
 }

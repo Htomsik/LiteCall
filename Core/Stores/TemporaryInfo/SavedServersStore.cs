@@ -41,12 +41,11 @@ public sealed class SavedServersStore : BaseVmd
                 SavedServerAccounts?.ServersAccounts?.First(x =>
                     x.SavedServer!.ApiIp == newServerAccount.SavedServer!.ApiIp);
         }
-        catch
+        catch (Exception)
         {
             // ignored
         }
-
-
+        
         if (findAccount != null) throw new Exception("Server already added");
         
         if (SavedServerAccounts!.ServersAccounts is null)

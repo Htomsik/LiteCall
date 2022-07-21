@@ -29,6 +29,10 @@
             <converters:IsCurrentServerNullConveter x:Key="IsCurrentServerNullConveter" />
 
             <system:Double x:Key="PlusScale">1</system:Double>
+            
+            <system:Boolean x:Key="True">True</system:Boolean>
+            
+            <system:Boolean x:Key="False">False</system:Boolean>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -170,6 +174,8 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            
+            <!--Server connection-->
             <Border
                 Width="45"
                 Height="45"
@@ -202,8 +208,7 @@
             <Button
                 Width="35"
                 Height="35"
-                Command="{Binding OpenModalCommand}"
-                CommandParameter="1"
+                Command="{Binding ModalServerConnectionCommand}"
                 Style="{StaticResource ImgButton}"
                 Visibility="{Binding ButtonVisibleStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
@@ -246,12 +251,14 @@
 
             </Border.Style>
 
+            <!--Down toolbar-->
             <Grid>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+                
                 <StackPanel Orientation="Horizontal">
 
                     <Border
@@ -272,9 +279,8 @@
                                 Style="{DynamicResource PersonPath}" />
                         </Viewbox>
 
-
                     </Border>
-
+   
                     <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
 
                         <TextBlock.Style>
@@ -283,7 +289,6 @@
 
                                 <Setter Property="Text" Value="{Binding AccountStore.CurrentAccount.Login}" />
 
-
                                 <Style.Triggers>
 
                                     <DataTrigger
@@ -291,7 +296,7 @@
                                         Value="False">
 
                                         <Setter Property="Text"
-                                                Value="{Binding ServerAccountStore.CurrentAccount.Login, UpdateSourceTrigger=PropertyChanged}" />
+                                                Value="{Binding CurrentServerAccountStore.CurrentAccount.CurrentServerLogin, UpdateSourceTrigger=PropertyChanged}" />
 
                                         <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
 
@@ -300,6 +305,7 @@
                                 </Style.Triggers>
 
                             </Style>
+                            
                         </TextBlock.Style>
 
                     </TextBlock>
@@ -319,7 +325,7 @@
                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
                                 <Setter Property="Visibility"
-                                        Value="{Binding ServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                        Value="{Binding CurrentServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
 
                                 <Style.Triggers>
 
@@ -374,102 +380,6 @@
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
-
-        <!--  IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}"  -->
-        <customControls:ModalWindow
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="3"
-            BorderBrush="{DynamicResource Fonts(Solid)}"
-            BorderThickness="1"
-            Corner="10"
-            IsOpen="{Binding ModalStatus, UpdateSourceTrigger=PropertyChanged}">
-
-
-            <Border Background="{DynamicResource Background2(Solid)}"
-                    CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=customControls:ModalWindow}, Path=Corner}">
-                <Grid
-                    MinWidth="200"
-                    Margin="5"
-                    Background="{DynamicResource Background2(Solid)}">
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-
-                    <TextBlock
-                        Grid.Row="0"
-                        Margin="0,5"
-                        HorizontalAlignment="Center"
-                        Style="{DynamicResource BigTextBlock}"
-                        Text="CONNECT" />
-
-                    <TextBox
-                        x:Name="Iptb"
-                        Grid.Row="1"
-                        Margin="8"
-                        MaxLength="20"
-                        Style="{StaticResource LogPassTextBox}"
-                        Tag="SERVER NAME OR IP"
-                        Text="{Binding ServerNameOrIp, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <StackPanel
-                        Grid.Row="2"
-                        Margin="5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Orientation="Horizontal">
-
-                        <CheckBox
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            IsChecked="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged}" />
-
-                        <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
-                            Join by ip
-                        </TextBlock>
-
-                    </StackPanel>
-
-                    <Grid Margin="8" Row="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <Button
-                            MinHeight="35"
-                            MaxWidth="125"
-                            MaxHeight="40"
-                            Margin="5"
-                            VerticalAlignment="Top"
-                            BorderBrush="{DynamicResource Green(Solid)}"
-                            Command="{Binding ConnectServerCommand}">
-                            <TextBlock Text="OK" />
-                        </Button>
-
-                        <Button
-                            Grid.Column="1"
-                            MinHeight="35"
-                            MaxWidth="125"
-                            MaxHeight="40"
-                            Margin="5"
-                            VerticalAlignment="Top"
-                            BorderBrush="{DynamicResource Dangerous(Solid)}"
-                            Command="{Binding OpenModalCommand}"
-                            CommandParameter="0">
-                            <TextBlock Text="EXIT" />
-                        </Button>
-                    </Grid>
-
-                </Grid>
-            </Border>
-
-
-        </customControls:ModalWindow>
-
+        
     </Grid>
 </UserControl>

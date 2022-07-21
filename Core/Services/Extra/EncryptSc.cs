@@ -9,7 +9,7 @@ public class EncryptSc : IEncryptSc
     private static readonly byte[] Entropy = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     
     [Obsolete("Obsolete")]
-    public Task<string?> Sha1Encrypt(string? content)
+    public Task<string?> ShaEncrypt(string? content)
     {
         if (string.IsNullOrEmpty(content)) return Task.FromResult<string>(null!)!;
 
@@ -22,7 +22,7 @@ public class EncryptSc : IEncryptSc
 
     public Task<string?> Base64Encrypt(string? content)
     {
-        if (string.IsNullOrEmpty(content)) return Task.FromResult(content)!;
+        if (string.IsNullOrEmpty(content)) throw new Exception("Text for encrypt can't be null");
 
         var originalText = Encoding.Unicode.GetBytes(content);
         
@@ -33,7 +33,7 @@ public class EncryptSc : IEncryptSc
 
     public Task<string?> Base64Decrypt(string? content)
     {
-        if (string.IsNullOrEmpty(content)) return Task.FromResult(content);
+        if (string.IsNullOrEmpty(content)) throw new Exception("Text for decrypt can't be null");
 
         var encryptedText = Convert.FromBase64String(content);
 

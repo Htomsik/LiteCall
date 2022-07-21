@@ -17,14 +17,7 @@ public sealed class MainPageServerNavigationStore
             OnCurrentViewModelChanged();
         }
     }
-
-
-    public void Close()
-    {
-        MainPageServerCurrentViewModel!.Dispose();
-    }
-
-
+    
     public event Action? CurrentViewModelChanged;
 
     private void OnCurrentViewModelChanged()

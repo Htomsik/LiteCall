@@ -8,8 +8,7 @@ namespace Core.Stores.TemporaryInfo;
 public sealed class CurrentServerStore : BaseVmd
 {
     private Server? _currentServer;
-
-
+    
     private ObservableCollection<ServerRooms>? _currentSeverRooms = new();
 
     public Server? CurrentServer
@@ -36,11 +35,15 @@ public sealed class CurrentServerStore : BaseVmd
     public event Action? CurrentServerRoomsChanged;
     
     public event Action? CurrentServerDeleted;
+    
+    public event Action? CurrentServerChanged;
 
     private void OnCurrentServerChanged()
     {
         if (CurrentServer is null)
             CurrentServerDeleted?.Invoke();
+        
+        CurrentServerChanged?.Invoke();
     }
 
 

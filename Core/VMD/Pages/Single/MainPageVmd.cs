@@ -12,26 +12,28 @@ using Core.Services.Interfaces.Connections;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
+using DynamicData.Binding;
 using ReactiveUI;
 
 namespace Core.VMD.Pages.Single;
 
 public sealed class MainPageVmd : BaseVmd
 {
-    public MainPageVmd(MainAccountStore? accountStore, CurrentServerAccountStore? serverAccountStore,
+    public MainPageVmd(MainAccountStore? accountStore, CurrentServerAccountStore? currentServerAccountStore,
         SavedServersStore? savedServersStore,
         CurrentServerStore? currentServerStore,
         MainPageServerNavigationStore mainPageServerNavigationStore,
         INavigationSc settingsPageNavigationSc,
         INavigationSc serverPageNavigationSc,
         INavigationSc openModalServerAuthorizationNavigationSc,
+        INavigationSc openModalServerConnectionNavigationSc,
         IAuthorizationSc? authorizationApiServices,
         IStatusSc statusSc,
         IHttpDataSc httpDataSc)
     {
         AccountStore = accountStore;
 
-        ServerAccountStore = serverAccountStore;
+        CurrentServerAccountStore = currentServerAccountStore;
 
         SavedServersStore = savedServersStore;
 
@@ -39,7 +41,7 @@ public sealed class MainPageVmd : BaseVmd
 
         _authorizationServices = authorizationApiServices;
 
-        MainPageServerNavigationStore = mainPageServerNavigationStore;
+        _mainPageServerNavigationStore = mainPageServerNavigationStore;
 
         _serverPageNavigationSc = serverPageNavigationSc;
 
@@ -50,27 +52,35 @@ public sealed class MainPageVmd : BaseVmd
 
         ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationSc,
             CanModalRegistrationOpenCommandExecuted);
-        
+
+        ModalServerConnectionCommand = new NavigationCommand(openModalServerConnectionNavigationSc);
+
         OpenSettingsCommand = new NavigationCommand(settingsPageNavigationSc);
         
-        OpenModalCommand = ReactiveCommand.Create<object>(OnOpenModalCommaExecuted);
-        
         DisconnectServerCommand = ReactiveCommand.CreateFromTask<object>(_ => CurrentServerStore?.Delete()!);
+
+        SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
+
+        DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted,CanDeleteServerSavedExecute());
         
-       SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted,CanSaveServerCommandExecute());
-       
-       DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted);
-       
-        ConnectServerCommand = ReactiveCommand.CreateFromTask(OnConnectServerExecuted);
-
-     ConnectServerSavedCommand = ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted,CanConnectServerSavedExecute());
-
+        ConnectServerSavedCommand =
+            ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
 
         DisconnectFromServerNotificator.Notificator += DisconnectServer;
 
         CurrentServerStore!.CurrentServerDeleted += DisconnectServer;
 
-        MainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+        CurrentServerStore!.CurrentServerChanged += CurrentServerChanged;
+
+        _mainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+
+        this.WhenAnyPropertyChanged();
+
+    }
+
+    private void CurrentServerChanged()
+    {
+        this.RaisePropertyChanged(nameof(ButtonVisibleStatus));
     }
 
 
@@ -84,29 +94,30 @@ public sealed class MainPageVmd : BaseVmd
         if (SelectedViewModel == null) return;
 
         SelectedViewModel.Dispose();
-
-        ButtonVisibleStatus = Visibility.Collapsed;
-
-        MainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
+        
+        _mainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
     }
 
     #region Команды
 
     public ICommand OpenSettingsCommand { get; }
+    
+    public ICommand ModalServerConnectionCommand { get; }
 
-    public ICommand ModalRegistrationOpenCommand { get; set; }
+    public ICommand ModalRegistrationOpenCommand { get;}
 
     private bool CanModalRegistrationOpenCommandExecuted()
     {
-        return ServerAccountStore!.CurrentAccount!.IsAuthorized;
+        return CurrentServerAccountStore!.CurrentAccount!.IsAuthorized;
     }
-
-
-    public IReactiveCommand ConnectServerSavedCommand { get; }
     
-    private IObservable<bool> CanConnectServerSavedExecute() => this.WhenAnyValue(x => x.SelectedServerAccount,
-        x => x.CurrentServerStore, (
-            (account, store) => account?.SavedServer?.ApiIp != store?.CurrentServer?.ApiIp));
+    public IReactiveCommand ConnectServerSavedCommand { get; }
+
+    private IObservable<bool> CanConnectServerSavedExecute()
+    {
+        return this.WhenAnyValue(x => x.SelectedServerAccount,
+            x => x.CurrentServerStore, (account, store) => account?.SavedServer?.ApiIp != store?.CurrentServer?.ApiIp);
+    }
 
     private async Task OnConnectServerSavedExecuted()
     {
@@ -116,214 +127,89 @@ public sealed class MainPageVmd : BaseVmd
         if (!serverStatus) return;
 
         if (SelectedViewModel != default) DisconnectServer();
-
-
+        
         var newServerAccount = new Account
         {
             Login = SelectedServerAccount!.Account!.Login
         };
-
-
+        
         try
         {
-            var authorizeStatus = await _authorizationServices!.Login(SelectedServerAccount.Account.IsAuthorized,
+             await _authorizationServices!.Login(SelectedServerAccount.Account.IsAuthorized,
                 SelectedServerAccount.Account, SelectedServerAccount.SavedServer!.ApiIp);
-
-            if (authorizeStatus == 0)
-            {
-                _statusSc.ChangeStatus(ExecutionErrorStates.AuthorizationFailed);
-
-                await Task.Delay(1000);
-
-                await _authorizationServices.Login(false, newServerAccount, SelectedServerAccount.SavedServer.ApiIp);
-            }
-            else
-            {
+             
                 newServerAccount = SelectedServerAccount.Account;
-            }
         }
         catch
         {
             await _authorizationServices!.Login(false, newServerAccount, SelectedServerAccount.SavedServer!.Ip);
         }
+        
+        CurrentServerStore!.CurrentServer = SelectedServerAccount.SavedServer;
 
-
-        serverStatus =
-            await Task.Run(() => _httpDataSc.CheckServerStatus(SelectedServerAccount.SavedServer.ApiIp));
-
-        if (serverStatus)
-        {
-            CurrentServerStore!.CurrentServer = SelectedServerAccount.SavedServer;
-
-            _serverPageNavigationSc.Navigate();
-
-            ServerNameOrIp = string.Empty;
-
-            ButtonVisibleStatus = Visibility.Visible;
-        }
+        _serverPageNavigationSc.Navigate();
+        
     }
 
 
-    public IReactiveCommand SaveServerCommand { get; set; }
-    
-    private IObservable<bool> CanSaveServerCommandExecute() => this.WhenAnyValue(x=> x.SavedServersStore,
-        (savedServersStore) =>
-        {
-            return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
-                x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
-        });
-    
+    public IReactiveCommand SaveServerCommand { get;}
+
+    private IObservable<bool> CanSaveServerCommandExecute()
+    {
+        return this.WhenAnyValue(x => x.SavedServersStore,
+            savedServersStore =>
+            {
+                return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+                    x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
+            });
+    }
+
     private Task OnSaveServerCommandExecuted()
     {
-        try
-        {
-            SavedServersStore!.Add(new ServerAccount
-                { Account = ServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
-        }
-        catch
-        {
-            _statusSc.ChangeStatus("Server save failed");
-        }
-
+        SavedServersStore!.Add(new ServerAccount
+                { Account = CurrentServerAccountStore!.CurrentAccount, SavedServer = CurrentServerStore!.CurrentServer });
+            
         return Task.CompletedTask;
     }
 
 
     public IReactiveCommand DeleteServerSavedCommand { get; }
 
-    
-  
 
     private Task OnDeleteServerSavedExecuted()
     {
-        SavedServersStore!.Remove(SelectedServerAccount);
+        try
+        {
+            SavedServersStore!.Remove(SelectedServerAccount);
+        
+            SelectedServerAccount = null;
+        }
+        catch 
+        {
+           //ignored
+        }
+        
         return Task.CompletedTask;
     }
+
+    private IObservable<bool> CanDeleteServerSavedExecute()
+    {
+        return this.WhenAnyValue(x => x.SavedServersStore,
+            savedServersStore =>
+            {
+                return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+                    x.SavedServer?.ApiIp == SelectedServerAccount?.SavedServer!.ApiIp) is not null;
+            });
+    }
+    
 
 
     public IReactiveCommand DisconnectServerCommand { get; }
     
-    public IReactiveCommand OpenModalCommand { get; }
-
-    private void OnOpenModalCommaExecuted(object p)
-    {
-        if ((string)p == "1")
-        {
-            ModalStatus = true;
-        }
-        else
-        {
-            ModalStatus = false;
-
-            ServerNameOrIp = string.Empty;
-        }
-     
-    }
-    public ICommand ConnectServerCommand { get; }
-
-    private async Task OnConnectServerExecuted()
-    {
-        var serverAccount = new Account
-        {
-            Login = AccountStore!.CurrentAccount!.Login
-        };
-
-        Server? newServer;
-
-
-        if (!CheckStatus)
-        {
-            var apiIp = await _httpDataSc.MainServerGetApiIp(ServerNameOrIp);
-
-            if (apiIp == null)
-                return;
-
-            newServer = await _httpDataSc.ApiServerGetInfo(apiIp);
-
-            if (newServer == null)
-                return;
-
-            newServer.ApiIp = apiIp;
-        }
-        else
-        {
-            newServer = await _httpDataSc.ApiServerGetInfo(ServerNameOrIp);
-
-            if (newServer == null)
-                return;
-
-            newServer.ApiIp = ServerNameOrIp;
-        }
-
-
-        try
-        {
-            var dictionaryServerAccount =
-                SavedServersStore!.SavedServerAccounts!.ServersAccounts!.First(s =>
-                    s.SavedServer!.ApiIp == newServer.ApiIp!.ToLower());
-
-            var authorizeStatus = await _authorizationServices!.Login(dictionaryServerAccount.Account!.IsAuthorized,
-                dictionaryServerAccount.Account, newServer.ApiIp);
-
-            if (authorizeStatus == 0)
-            {
-                _statusSc.ChangeStatus(ExecutionErrorStates.AuthorizationFailed);
-
-                await _authorizationServices.Login(false, serverAccount, newServer.ApiIp);
-            }
-            else
-            {
-                serverAccount = dictionaryServerAccount.Account;
-            }
-        }
-        catch
-        {
-            await _authorizationServices!.Login(false, serverAccount, newServer.ApiIp);
-        }
-
-
-        newServer.Ip = newServer.Ip!.Replace("https://", ""); //временно
-
-        var serverStatus = await Task.Run(() => _httpDataSc.CheckServerStatus(newServer.Ip));
-
-        if (serverStatus)
-        {
-            CurrentServerStore!.CurrentServer = newServer;
-
-            await Task.Delay(250);
-
-            ModalStatus = false;
-
-            _serverPageNavigationSc.Navigate();
-
-            ServerNameOrIp = string.Empty;
-
-            ButtonVisibleStatus = Visibility.Visible;
-        }
-    }
-
     #endregion
 
     #region Данные
-
-    private bool _checkStatus;
-
-    public bool CheckStatus
-    {
-        get => _checkStatus;
-        set => this.RaiseAndSetIfChanged(ref _checkStatus, value);
-    }
-
-
-    private bool _modalStatus;
-
-    public bool ModalStatus
-    {
-        get => _modalStatus;
-        set => this.RaiseAndSetIfChanged(ref _modalStatus, value);
-    }
-
-
+    
     private MainAccountStore? _accountStore;
 
     public MainAccountStore? AccountStore
@@ -341,12 +227,12 @@ public sealed class MainPageVmd : BaseVmd
     }
 
 
-    private CurrentServerAccountStore? _serverAccountStore;
+    private CurrentServerAccountStore? _currentServerAccountStore;
 
-    public CurrentServerAccountStore? ServerAccountStore
+    public CurrentServerAccountStore? CurrentServerAccountStore
     {
-        get => _serverAccountStore;
-        set => this.RaiseAndSetIfChanged(ref _serverAccountStore, value);
+        get => _currentServerAccountStore;
+        set => this.RaiseAndSetIfChanged(ref _currentServerAccountStore, value);
     }
 
 
@@ -367,25 +253,10 @@ public sealed class MainPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _savedServersStore, value);
     }
 
-
-    private string? _serverNameOrIp;
-
-    public string? ServerNameOrIp
-    {
-        get => _serverNameOrIp;
-        set => this.RaiseAndSetIfChanged(ref _serverNameOrIp, value);
-    }
-
-
-    private Visibility _buttonVisibleStatus = Visibility.Collapsed;
-
-    public Visibility ButtonVisibleStatus
-    {
-        get => _buttonVisibleStatus;
-        set => this.RaiseAndSetIfChanged(ref _buttonVisibleStatus, value);
-    }
-
-
+    
+    public Visibility ButtonVisibleStatus =>
+        CurrentServerStore!.CurrentServer == null ? Visibility.Collapsed : Visibility.Visible;
+    
     private readonly INavigationSc _serverPageNavigationSc;
 
     private readonly IStatusSc _statusSc;
@@ -395,9 +266,9 @@ public sealed class MainPageVmd : BaseVmd
 
     private readonly IAuthorizationSc? _authorizationServices;
 
-    public MainPageServerNavigationStore MainPageServerNavigationStore;
+    private readonly MainPageServerNavigationStore _mainPageServerNavigationStore;
 
-    public BaseVmd? SelectedViewModel => MainPageServerNavigationStore.MainPageServerCurrentViewModel;
+    public BaseVmd? SelectedViewModel => _mainPageServerNavigationStore.MainPageServerCurrentViewModel;
 
     #endregion
 }

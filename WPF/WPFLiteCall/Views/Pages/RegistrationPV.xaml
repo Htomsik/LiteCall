@@ -190,12 +190,9 @@
             MaxWidth="235"
             MaxHeight="40"
             Margin="20,5"
-            Command="{Binding OpenModalCommand}">
+            Command="{Binding OpenModalCommand}" >
             <TextBlock Style="{DynamicResource BigTextBlock}" Text="REGISTRATION" />
-
             
-
-
             <Button.Style>
                 <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
 

@@ -1,7 +1,11 @@
-﻿namespace Core.Models.Users;
+﻿using Newtonsoft.Json;
+using ReactiveUI;
 
-public class RegistrationUser
+namespace Core.Models.Users;
+
+public class RegistrationUser:ReactiveObject
 {
+    [JsonProperty]
     public string? Login { get; set; }
     
     public string? Password { get; set; }

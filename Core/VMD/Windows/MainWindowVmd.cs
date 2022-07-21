@@ -31,7 +31,6 @@ public sealed class MainWindowVmd : BaseVmd
         AppExecutionStateStore statusMessageStore,
         INavigationSc closeModalNavigationScs,
         INavigationSc closeAdditionalNavigationSc,
-        IStatusSc statusSc,
         ICloseAppSc closeAppSc,
         IConfiguration configuration)
     {
@@ -58,18 +57,14 @@ public sealed class MainWindowVmd : BaseVmd
         CloseModalCommand = new NavigationCommand(closeModalNavigationScs);
 
         CloseSettingsCommand = new NavigationCommand(closeAdditionalNavigationSc);
-
-        // CloseAppCommand = new AsyncLambdaCmd(OnCloseAppExecuted,
-        //     ex => statusSc.ChangeStatus(ex.Message)
-        // );
         
         CloseAppCommand = ReactiveCommand.CreateFromTask(OnCloseAppExecuted);
     }
 
 
-    public string Version => _configuration!.GetSection("AppSettings")["AppVersions"] ?? "NonIdentify";
+    public string Version => _configuration["AppSettings:AppVersions"] ?? "NonIdentify";
 
-    public string Branch => _configuration!.GetSection("AppSettings")["Branch"] ?? "NonIdentify";
+    public string Branch => _configuration["AppSettings:Branch"] ?? "NonIdentify";
 
 
     public IReactiveCommand CloseAppCommand { get; }

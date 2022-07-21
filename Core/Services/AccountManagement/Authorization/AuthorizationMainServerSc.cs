@@ -24,27 +24,22 @@ public sealed class AuthorizationMainServerSc : IAuthorizationSc
         _statusSc = statusSc;
     }
 
-    public async Task<int> Login(bool isNotAnonymousAuthorize, Account? newAccount, string? severIp = null)
+    public async Task Login(bool isNotAnonymousAuthorize, Account? newAccount, string? severIp = null)
     {
-        if (isNotAnonymousAuthorize)
+        newAccount!.IsAuthorized = isNotAnonymousAuthorize;
+        
+        newAccount.Password = isNotAnonymousAuthorize ? string.Empty : newAccount.Password;
+
+        try
         {
-            var response = await _httpDataSc.GetAuthorizeToken(newAccount);
-
-            if (response == "invalid") return 0;
-
-            newAccount!.Token = response;
-
-            newAccount.IsAuthorized = true;
+            newAccount!.Token = isNotAnonymousAuthorize ? await _httpDataSc.GetAuthorizeToken(newAccount) : null;
         }
-        else
+        catch (Exception)
         {
-            newAccount!.IsAuthorized = false;
-
-            newAccount.Password = "";
+            throw new Exception();
         }
-
+        
         _mainAccountStore.CurrentAccount = newAccount;
-
-        return 1;
+        
     }
 }

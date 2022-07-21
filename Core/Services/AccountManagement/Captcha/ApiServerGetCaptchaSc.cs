@@ -8,8 +8,7 @@ namespace Core.Services.AccountManagement.Captcha;
 public sealed class ApiServerGetCaptchaSc : IGetCaptchaSc
 {
     private readonly CurrentServerStore _currentServerStore;
-
-
+    
     private readonly IHttpDataSc _httpDataSc;
 
     private readonly IImageServices _imageServices;

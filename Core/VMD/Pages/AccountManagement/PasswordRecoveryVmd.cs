@@ -91,19 +91,28 @@ public class PasswordRecoveryVmd : BaseVmd
     
     private async Task OnRecoveryPasswordCommandExecuted()
     {
-        var base64Sha1Password = await _encryptSc.Sha1Encrypt(Password);
-
-        base64Sha1Password = await _encryptSc.Base64Encrypt(base64Sha1Password);
-
-        var recoveryModel = new RecoveryModel
+        try
         {
-            QuestionAnswer = QuestionAnswer,
-            Question = SelectedQuestion,
-            RecoveryAccount = new RegistrationUser { Login = Login, Password = base64Sha1Password }
-        };
+            var base64ShaPassword = await _encryptSc.ShaEncrypt(Password);
+
+            base64ShaPassword = await _encryptSc.Base64Encrypt(base64ShaPassword);
+
+            var recoveryModel = new RecoveryModel
+            {
+                QuestionAnswer = QuestionAnswer,
+                Question = SelectedQuestion,
+                RecoveryAccount = new RegistrationUser { Login = Login, Password = base64ShaPassword }
+            };
 
 
-        if (await _recoveryPasswordSc.RecoveryPassword(recoveryModel)) OpenAuthPageCommand.Execute(null);
+            if (await _recoveryPasswordSc.RecoveryPassword(recoveryModel)) 
+                OpenAuthPageCommand.Execute(null);
+        }
+        catch (Exception e)
+        {
+           //ignored
+        }
+      
     }
 
     #endregion

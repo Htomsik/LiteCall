@@ -21,7 +21,7 @@ public class AuthorizationPageVmd : BaseVmd
 
         _authorizationSc = authorizationSc;
         
-        AuthCommand = ReactiveCommand.CreateFromTask(OnAuthExecuteExecuted, CanAuthExecute);
+        AuthCommand = ReactiveCommand.CreateFromTask(OnAuthExecuted, CanAuthExecute);
 
         OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationScs);
 
@@ -41,29 +41,29 @@ public class AuthorizationPageVmd : BaseVmd
             return !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password);
         });
 
-    private async Task OnAuthExecuteExecuted()
+    private async Task OnAuthExecuted()
     {
-        var base64Sha1Password = await _encryptSc.Sha1Encrypt(Password);
-
-        base64Sha1Password = await _encryptSc.Base64Encrypt(base64Sha1Password);
-
         var newAccount = new Account
         {
-            Login = Login,
-            Password = base64Sha1Password
+            Login = Login
         };
-
-        var response = await _authorizationSc.Login(!CheckStatus, newAccount);
-
-        switch (response)
+        
+        try
         {
-            case 0:
-                break;
+            var base64ShaPassword = await _encryptSc.ShaEncrypt(Password);
 
-            case 1:
-                StatusMessage = null;
-                break;
+            base64ShaPassword = await _encryptSc.Base64Encrypt(base64ShaPassword);
+
+            newAccount.Password = base64ShaPassword;
+            
+            await _authorizationSc.Login(!CheckStatus, newAccount);
+                
         }
+        catch (Exception )
+        {
+            StatusMessage = null;
+        }
+        
     }
 
     public ICommand OpenRegistrationPageCommand { get; }

@@ -10,6 +10,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:Core.VMD.Pages.Single;assembly=Core"
     xmlns:authRegPages="clr-namespace:Core.VMD.Pages.AccountManagement.ChatServer;assembly=Core"
+    xmlns:serverPages="clr-namespace:Core.VMD.ServerPages;assembly=Core"
     x:Name="Window"
     Width="800"
     Height="450"
@@ -87,8 +88,7 @@
                 </ContentControl.Resources>
             </ContentControl>
 
-            <!--  Для настроек, отрывается поверх остальных окон  -->
-
+            <!--Settings only-->
             <Grid
                 Grid.Row="1"
                 Background="{DynamicResource Background(Solid)}"
@@ -102,7 +102,6 @@
 
 
                 <ContentControl
-                    Width="{Binding ElementName=AdditionalModal}"
                     VerticalAlignment="Stretch"
                     Content="{Binding AdditionalCurrentViewModel}">
 
@@ -118,7 +117,7 @@
                 </ContentControl>
 
 
-                <!--  Vesion Name  -->
+                <!--  Version Name  -->
                 <StackPanel Grid.Row="1" HorizontalAlignment="Right">
 
                     <StackPanel Margin="0,0,25,0" Orientation="Horizontal">
@@ -133,7 +132,7 @@
 
                 </StackPanel>
 
-                <!--  Кнопка выхода  -->
+                <!--  settings close button  -->
                 <Button
                     Grid.Row="1"
                     Width="25"
@@ -156,9 +155,8 @@
                 </Button>
 
             </Grid>
-
-            <!--  IsOpen="{Binding ModalIsOpen}">  -->
-
+            
+            <!--Modal Box-->
             <customControls:ModalWindow Grid.Row="1" IsOpen="{Binding ModalIsOpen}">
 
                 <Grid>
@@ -188,10 +186,12 @@
                             <DataTemplate DataType="{x:Type authRegPages:ServerPasswordRecoveryModalVmd}">
                                 <pages:PasswordRecoveryPV />
                             </DataTemplate>
-
+                            
+                            <DataTemplate DataType="{x:Type serverPages:ServerConnectionVmd}">
+                                <pages:ServerConnectionPV />
+                            </DataTemplate>
+                            
                         </ContentControl.Resources>
-
-
                     </ContentControl>
 
                     <Button
@@ -214,6 +214,7 @@
 
             </customControls:ModalWindow>
 
+            <!--Loading Box-->
             <Border
                 Grid.Row="1"
                 Margin="0,20,0,0"
@@ -260,8 +261,9 @@
 
             </Border>
 
+            <!--Upper Dock Panel-->
             <Border>
-                <!--  Верхняя панель  -->
+              
                 <DockPanel Background="{DynamicResource Background(Solid)}" MouseLeftButtonDown="DragPanel">
 
                     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
