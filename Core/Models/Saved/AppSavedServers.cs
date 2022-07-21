@@ -2,18 +2,15 @@
 using Core.VMD.Base;
 using Newtonsoft.Json;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.Models.Saved;
 
-public class AppSavedServers : BaseVmd
+public class AppSavedServers : ReactiveObject
 {
-    [JsonIgnore] private ObservableCollection<ServerAccount>? _serversAccounts = new();
-
-    public ObservableCollection<ServerAccount>? ServersAccounts
-    {
-        get => _serversAccounts;
-        set => this.RaiseAndSetIfChanged(ref _serversAccounts, value);
-    }
-    
+    [JsonProperty]
+    [Reactive]
+    public ObservableCollection<ServerAccount>? ServersAccounts { get; set; }
+    [JsonProperty]
     public DateTime? LastUpdated { get; set; }
 }
