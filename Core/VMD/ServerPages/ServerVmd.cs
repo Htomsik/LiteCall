@@ -236,16 +236,16 @@ public sealed class ServerVmd : BaseVmd
     
     private IObservable<bool> CanConnectExecute() => this.WhenAnyValue(x => x.CurrentGroup, x=>x.SelRooms,
         (currentGroup,selRooms) =>
-    {
-        if (selRooms is not ServerRooms rooms) return false;
+        {
+            if (selRooms is not ServerRooms rooms) return false;
         
-        var ConnectedGroup = rooms;
+            var ConnectedGroup = rooms;
         
-        if (currentGroup is not null)
-            return !string.Equals(ConnectedGroup.RoomName!, currentGroup.RoomName!,
-                StringComparison.CurrentCultureIgnoreCase);
-        return true;
-    });
+            if (currentGroup is not null)
+                return !string.Equals(ConnectedGroup.RoomName!, currentGroup.RoomName!,
+                    StringComparison.CurrentCultureIgnoreCase);
+            return true;
+        });
 
     private async Task OnConnectExecuted()
     {

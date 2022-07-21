@@ -103,7 +103,6 @@
 
                         <MenuItem
                             Command="{Binding ConnectCommand}"
-                            CommandParameter="{Binding SelRooms}"
                             Header="Connect" />
 
                         <MenuItem
