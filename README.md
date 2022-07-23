@@ -11,7 +11,7 @@
 <br />
 <div align="center">
   <a>
-    <img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/LiteCallAppIcon.png" alt="Logo" width="300">
+    <img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/LiteCallAppIcon.png" alt="Logo" width="200">
   </a>
 
 <h3 align="center">LiteCall</h3>
@@ -38,7 +38,7 @@
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#Also creator">Contact</a></li>
+    <li><a href="#Also creator">Also creator</a></li>
   </ol>
 </details>
 
@@ -208,12 +208,25 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 
 [![YouTube](https://img.shields.io/badge/LiteCall-YouTube-090909?style=for-the-badge&logo=YouTube&logoColor=FF0000)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
+
+# Screenshots
 <details>
-  <summary>Also Creator</summary>
+  <summary>Open me!</summary>
+<h3 align="center">Chat Server</h3>
+<img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/ChatServer.png">
+<h3 align="center">Settings</h3>
+<img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/Settings.png">
+<h3 align="center">Main page</h3>
+<img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/LiteCall/Main.png">
+</details>
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+# Also creator
+<details>
+  <summary>Open me!</summary>
 <h1 align="center">Kifirka</h1>
 <img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/ProileReadme/Chifirka.png">
 </details>
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
