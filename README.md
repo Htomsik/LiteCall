@@ -38,7 +38,8 @@
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#Also creator">Also creator</a></li>
+    <li><a href="#Screenshots">Screenshots</a></li>
+    <li><a href="#Also-creator">Also-creator</a></li>
   </ol>
 </details>
 
@@ -72,94 +73,214 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 <!-- ROADMAP -->
 # Roadmap
 
-  ### Взаимодействия с сервером для общения
+### Interacting with the server to communicate
 
-  - [ ] Различные варианты подключения к серверам для общения:
+- [ ] Various options for connecting to Chat-server:
+    - [x] By Ip address of the Chat-server API
+    - [x] By name of the Chat-server in the main server database
+    - [ ] Choice from list of public servers in special window
+
+  #### Room Management
+    - [ ] Creation
+        - [x] Public
+            - [x] without password
+            - [x] with password
+        - [ ] Private (invisible)
+            - [ ] For administration (no one can see them and administrator connects users from other rooms)
+            - [ ] For specific roles
+                - [ ] without password
+                - [ ] with password
+            - [ ] Only token connection (visible only to those who are in room)
+    - [ ] Editing
+        - [ ] Room information
+            - [ ] title
+            - [ ] password
+            - [ ] maximum users in room
+  #### Room Interactions
+    - [ ] Chat
+        - [x] Voice
+            - [x] Mute microphone
+            - [x] Mute output device (microphone/speakers or something else)
+        - [x] Text
+            - [x] Text
+            - [ ] Images
+            - [ ] links
+    - [ ] User interaction
+        - [ ] Adding to friends list
+        - [ ] Changing incoming audio volume of user (on client, only for yourself)
+        - [ ] Muting a user (on client, only for yourself)
+
+  #### Room Administration
+    - [ ] User interaction
+        - [ ] Kick from the room
+            - [ ] With ability to reconnecting
+            - [ ] Ban
+                - [ ] Temporary
+                - [ ] Permanent (only in this room)
+        - [ ] Mute
+            - [ ] Deactivate user microphone for everyone in the room (only in this room)
+            - [ ] Deactivate headphones and microphone for the user (only in this room)
+
+  #### Server Administration
+    - [ ] User interaction
+        - [x] Kick from the room
+            - [x] With ability to reconnecting
+            - [ ] Ban
+                - [ ] Temporary (in all rooms)
+                - [ ] Permanent (in all rooms)
+        - [ ] Ban on server
+            - [ ] Temporary
+            - [ ] Permanent
+        - [ ] Mute on the server
+            - [ ] Temporary
+            - [ ] Permanent
+    - [ ] Change of server settings
+        - [ ] Descriptions
+        - [ ] Chat server IP address
+        - [ ] Maximum number of users
+
+  #### Account Management
+    - [ ] Adding server and account to bookmarks
+    - [ ] Account management
+        - [x] Sign up
+        - [x] Sign in
+            - [ ] Double authentication via code generator
+        - [x] Password recovery
+            - [x] By secret question
+        - [ ] Nickname change (if your account is not registered )
+
+
+### Interacting with the main server
+#### Account Management
+- [x] Registration
+    - [x] Authentication
+    - [ ] Double Authentication via code generator/email
+    - [x] Password recovery
+        - [x] By secret question
+        - [ ] By mail
+    - [ ] Nickname change (if your account is not registered )
+
+#### Storing data
+- [x] Synchronization list of saved servers and accounts of this servers
+- [ ] Synchronization of friends list
+- [ ] Synchronization client settings
+
+### Client settings
+#### General
+- [ ] Different language support
+    - [x] English
+    - [ ] Russian
+- [ ] Manage your Friends list
+- [x] Manage your list of saved servers and accounts of this servers
+
+#### Audio
+- [ ] Audio Input device selection
+- [ ] Audio output device selection
+- [ ] Mute microphone when mute output device
+- [ ] Noise reduction
+    - [x] Standard (VAD filter)
+    - [ ] Moved (noise reduction without VAD)
+    - [ ] Hybrid (Standard + Advanced)
+    - [ ] Based on machine learning (Worth a try)
+- [ ] Selecting activation option to send sound
+    - [ ] By voice
+    - [ ] By button
+    - [ ] Permanent recording
+
+
+
+    
+<details>
+  <summary>Russian version</summary>
+
+### Взаимодействия с сервером для общения
+
+- [ ] Различные варианты подключения к серверам для общения:
     - [x] По Ip адрессу API сервера чата
-    - [x] По названию сервера чата в главной базе 
+    - [x] По названию сервера чата в главной базе
     - [ ] Выбор из списка общедоступных серверов в специальном окне
-  
-    #### Управление комнатами
+
+  #### Управление комнатами
     - [ ] Создание
-      - [x] Публичные 
-        - [x] без пароля
-        - [x] с паролем
-      - [ ] Приватные (невидимые) 
-        - [ ] Для администрации (их невидит никто, а подключение происходит посредством перекидывания пользователей из других комнат )
-        - [ ] Для определенных ролей 
-          - [ ] без пароля
-          - [ ] с паролем
-        - [ ] Only token connection (Видимые только для тех кто находится в них)
+        - [x] Публичные
+            - [x] без пароля
+            - [x] с паролем
+        - [ ] Приватные (невидимые)
+            - [ ] Для администрации (их невидит никто, а подключение происходит посредством перекидывания пользователей из других комнат )
+            - [ ] Для определенных ролей
+                - [ ] без пароля
+                - [ ] с паролем
+            - [ ] Only token connection (Видимые только для тех кто находится в них)
     - [ ] Редактирование
-      - [ ] Редактирование информации о комнате
-        - [ ] названия
-        - [ ] пароля
-        - [ ] максимального количества пользователей
-      - [ ] Перевод комнаты в Only token connection
-      
-    #### Взаимодействия в комнате
+        - [ ] Редактирование информации о комнате
+            - [ ] названия
+            - [ ] пароля
+            - [ ] максимального количества пользователей
+        - [ ] Перевод комнаты в Only token connection
+
+  #### Взаимодействия в комнате
     - [ ] Чат
-      - [x] Голосовой
-        - [x] Выключение микрофона
-        - [x] Выключение звука
-      - [x] Текстовый
-        - [x] Текст
-        - [ ] Изображения
-        - [ ] Ссылки
+        - [x] Голосовой
+            - [x] Выключение микрофона
+            - [x] Выключение звука
+        - [x] Текстовый
+            - [x] Текст
+            - [ ] Изображения
+            - [ ] Ссылки
     - [ ] Взаимодействие с пользователями
-      - [ ] Добваление в список друзей
-      - [ ] Изменение громкости входящего аудио пользователей (на клиенте)
-      - [ ] Мут пользователя (на клиенте, только для себя)
+        - [ ] Добваление в список друзей
+        - [ ] Изменение громкости входящего аудио пользователей (на клиенте)
+        - [ ] Мут пользователя (на клиенте, только для себя)
 
-    #### Администрирование комнаты
-      - [ ] Взаимодействие с пользователями
+  #### Администрирование комнаты
+    - [ ] Взаимодействие с пользователями
         - [ ] Кик из комнаты
-          - [ ] с возможностью перезахода
-          - [ ] Бан
-            - [ ] Временный
-            - [ ] Перманентный (только в этой комнате)
+            - [ ] с возможностью перезахода
+            - [ ] Бан
+                - [ ] Временный
+                - [ ] Перманентный (только в этой комнате)
         - [ ] Мут
-          - [ ] Отключения микрофона пользователя для всех в комнате (только в этой комнате)
-          - [ ] Отключения наушников и микрофона для пользователя (только в этой комнате)
+            - [ ] Отключения микрофона пользователя для всех в комнате (только в этой комнате)
+            - [ ] Отключения наушников и микрофона для пользователя (только в этой комнате)
 
-      #### Администрирование сервера
-      - [ ] Взаимодействие с пользователями
+  #### Администрирование сервера
+    - [ ] Взаимодействие с пользователями
         - [x] Кик из комнаты
-          - [x] С возможностью перезахода
-          - [ ] Бан
-            - [ ] Временный (во всех комнатах)
-            - [ ] Перманентный (во всех комнатах)
+            - [x] С возможностью перезахода
+            - [ ] Бан
+                - [ ] Временный (во всех комнатах)
+                - [ ] Перманентный (во всех комнатах)
         - [ ] Бан на сервере
-          - [ ] Временный
-          - [ ] Перманентный
+            - [ ] Временный
+            - [ ] Перманентный
         - [ ] Мут на сервере
-          - [ ] Временный
-          - [ ] Перманентный
-      - [ ] Изменение настроек сервера
+            - [ ] Временный
+            - [ ] Перманентный
+    - [ ] Изменение настроек сервера
         - [ ] описания
         - [ ] Ip адреса чат сервера
         - [ ] Максимального количества пользователей
 
-      #### Управление аккаунтом
-      - [ ] Добавление сервера и аккаунта в закладки
-      - [ ] Управление аккаунтом
+  #### Управление аккаунтом
+    - [ ] Добавление сервера и аккаунта в закладки
+    - [ ] Управление аккаунтом
         - [x] Регистрция
         - [x] Авторизация
-          - [ ] Двойная аутинтификация через генератор кодов
+            - [ ] Двойная аутинтификация через генератор кодов
         - [x] Восстановление пароля
-          - [x] По секретному вопросу
+            - [x] По секретному вопросу
         - [ ] Смена никнейма (в случае если аккаунт не ялвяется зарегистрированным)
-    
+
 
 ### Взаимодействия с главным сервером
-#### Управление аккаунтом  
+#### Управление аккаунтом
 - [x] Регистрция
-  - [x] Авторизация
-  - [ ] Двойная аутинтификация через генератор кодов/почту
-  - [x] Восстановление пароля 
-    - [x] По секретному вопросу
-    - [ ] По почте
-  - [ ] Смена никнейма (в случае если аккаунт не ялвяется зарегистрированным)
+    - [x] Авторизация
+    - [ ] Двойная аутинтификация через генератор кодов/почту
+    - [x] Восстановление пароля
+        - [x] По секретному вопросу
+        - [ ] По почте
+    - [ ] Смена никнейма (в случае если аккаунт не ялвяется зарегистрированным)
 
 #### Хранение данных
 - [x] Синхронизация списка сохраненных серверов и аккаунтов к ним
@@ -169,35 +290,29 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 ### Настройки клиента
 #### Общее
 - [ ] Поддержка разных языков
-  - [x] Английский
-  - [ ] Русский
+    - [x] Английский
+    - [ ] Русский
 - [ ] Управление списком друзей
 - [x] Управление списком сохраненных серверов и аккаунтов
 
 #### Аудио
 - [ ] Выбор устройства ввода аудио
 - [ ] Выбор устройства вывода аудио
-- [ ] Возможность выключение микрофона при выключении звука 
+- [ ] Возможность выключение микрофона при выключении звука
 - [ ] Шумоподавление
-  - [x] Стандартное (VAD фильтр)
-  - [ ] Подвинутое (снижение уровня шума без VAD)
-  - [ ] Гибридное (Стандатное + продвинутое)
-  - [ ] На основе машинного обучения (Стоит попробовать)
+    - [x] Стандартное (VAD фильтр)
+    - [ ] Подвинутое (снижение уровня шума без VAD)
+    - [ ] Гибридное (Стандатное + продвинутое)
+    - [ ] На основе машинного обучения (Стоит попробовать)
 - [ ] Выбор варианта активации отправки звука
-  - [ ] По голосу
-  - [ ] По кнопке
-  - [ ] Постояння запись
-    
+    - [ ] По голосу
+    - [ ] По кнопке
+    - [ ] Постояння запись
 
 
-
-
-
-
+</details>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 # Contact
@@ -230,7 +345,6 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/Htomsik/LiteCall.svg?style=for-the-badge
 [contributors-url]: https://github.com/Htomsik/LiteCall/graphs/contributors
 
