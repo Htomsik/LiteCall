@@ -37,9 +37,9 @@
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#Screenshots">Screenshots</a></li>
     <li><a href="#Also-creator">Also-creator</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
@@ -59,21 +59,28 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 
 ## Built With
 
-* [![Naudio][NAudio-shield]][NAudio-url]
-* [![ReactiveUI][ReactiveUI-shield]][ReactiveUI-url]
-* [![Newtonsoft][Newtonsoft-shield]][Newtonsoft-url]
-* [![SignalR][SignalR-shield]][SignalR-url]
+### Client
+[![.Net][.Net-shield]][.Net-url]
+[![SignalR][SignalR-shield]][SignalR-url]
+[![ReactiveUI][ReactiveUI-shield]][ReactiveUI-url]
+[![Naudio][NAudio-shield]][NAudio-url]
+[![Newtonsoft][Newtonsoft-shield]][Newtonsoft-url]
 
+### Authentication server (also main server)
+[![Asp.Net][Asp.Net-shield]][Asp.Net-url]
+[![SqlLite.Net][SqlLite-shield]][SqlLite-url]
+[![EntityFramework.Net][EntityFramework-shield]][EntityFramework-url]
 
-
-
+### Chat-server
+[![Asp.Net][Asp.Net-shield]][Asp.Net-url]
+[![SignalR][SignalR-shield]][SignalR-url]
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- ROADMAP -->
 # Roadmap
 
-### Interacting with the server to communicate
+### Interacting with Chat-server
 
 - [ ] Various options for connecting to Chat-server:
     - [x] By Ip address of the Chat-server API
@@ -314,16 +321,6 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- CONTACT -->
-# Contact
-
-[![Konstantin](https://img.shields.io/badge/Konstantin-CLient-090909?style=for-the-badge&logo=vk&logoColor=red)](https://vk.com/jessnjake)
-
-[![Artem](https://img.shields.io/badge/Artem-Servers-090909?style=for-the-badge&logo=vk&logoColor=blue)](https://vk.com/id506987182)
-
-[![YouTube](https://img.shields.io/badge/LiteCall-YouTube-090909?style=for-the-badge&logo=YouTube&logoColor=FF0000)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-
-
 # Screenshots
 <details>
   <summary>Open me!</summary>
@@ -342,6 +339,14 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 <h1 align="center">Kifirka</h1>
 <img src="https://raw.githubusercontent.com/Htomsik/Htomsik/main/Assets/ProileReadme/Chifirka.png">
 </details>
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+# Contact
+
+[![Konstantin](https://img.shields.io/badge/Konstantin-CLient-090909?style=for-the-badge&logo=vk&logoColor=red)](https://vk.com/jessnjake)
+[![Artem](https://img.shields.io/badge/Artem-Servers-090909?style=for-the-badge&logo=vk&logoColor=blue)](https://vk.com/id506987182)
+[![YouTube](https://img.shields.io/badge/LiteCall-YouTube-090909?style=for-the-badge&logo=YouTube&logoColor=FF0000)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -372,4 +377,14 @@ We started to create it with my [friend](https://github.com/Code-Nostra) as a th
 [SignalR-shield]: https://img.shields.io/badge/SignalR-090909?style=for-the-badge&logo=
 [SignalR-url]: https://docs.microsoft.com/ru-ru/aspnet/core/tutorials/signalr?view=aspnetcore-6.0&tabs=visual-studio
 
+[.Net-shield]: https://img.shields.io/badge/.Net-090909?style=for-the-badge&logo=
+[.Net-url]: https://dotnet.microsoft.com/en-us/
 
+[Asp.Net-shield]: https://img.shields.io/badge/Asp.Net-090909?style=for-the-badge&logo=
+[Asp.Net-url]: https://dotnet.microsoft.com/en-us/apps/aspnet
+
+[EntityFramework-shield]: https://img.shields.io/badge/EntityFramework-090909?style=for-the-badge&logo=
+[EntityFramework-url]: https://docs.microsoft.com/ru-ru/ef/
+
+[SqlLite-shield]: https://img.shields.io/badge/SqlLite-090909?style=for-the-badge&logo=
+[SqlLite-url]: https://www.sqlite.org/index.html
