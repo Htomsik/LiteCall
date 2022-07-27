@@ -272,7 +272,7 @@ public sealed class ChatServerSc : IChatServerSc
             else
                 _statusSc.DeleteStatus();
 
-            DisconnectFromServerNotificator.Notify();
+            _currentServerStore.Delete();
 
             isReconnectingDisconnect = false;
 

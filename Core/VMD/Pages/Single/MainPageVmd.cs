@@ -14,6 +14,7 @@ using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
 using DynamicData.Binding;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.Pages.Single;
 
@@ -57,17 +58,15 @@ public sealed class MainPageVmd : BaseVmd
 
         OpenSettingsCommand = new NavigationCommand(settingsPageNavigationSc);
         
-        DisconnectServerCommand = ReactiveCommand.CreateFromTask<object>(_ => CurrentServerStore?.Delete()!);
+        DisconnectServerCommand = ReactiveCommand.CreateFromTask(_ => CurrentServerStore?.Delete()!);
 
         SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
 
-        DeleteServerSavedCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted,CanDeleteServerSavedExecute());
+        DeleteSavedServerCommand = ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted,CanDeleteServerSavedExecute());
         
         ConnectServerSavedCommand =
             ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
-
-        DisconnectFromServerNotificator.Notificator += DisconnectServer;
-
+        
         CurrentServerStore!.CurrentServerDeleted += DisconnectServer;
 
         CurrentServerStore!.CurrentServerChanged += CurrentServerChanged;
@@ -173,7 +172,7 @@ public sealed class MainPageVmd : BaseVmd
     }
 
 
-    public IReactiveCommand DeleteServerSavedCommand { get; }
+    public IReactiveCommand DeleteSavedServerCommand { get; }
 
 
     private Task OnDeleteServerSavedExecuted()
@@ -217,15 +216,10 @@ public sealed class MainPageVmd : BaseVmd
         get => _accountStore;
         set => this.RaiseAndSetIfChanged(ref _accountStore, value);
     }
-
-    private CurrentServerStore? _currentServerStore;
-
-    public CurrentServerStore? CurrentServerStore
-    {
-        get => _currentServerStore;
-        set => this.RaiseAndSetIfChanged(ref _currentServerStore, value);
-    }
-
+    
+    [Reactive]
+    public CurrentServerStore? CurrentServerStore { get; set; }
+   
 
     private CurrentServerAccountStore? _currentServerAccountStore;
 

@@ -12,6 +12,7 @@ public sealed class NavigationCommand : CmdBase
     public NavigationCommand(INavigationSc navigationSc, Func<bool>? canExecute = null)
     {
         _navigationSc = navigationSc;
+        
         _canExecute = canExecute;
     }
 
