@@ -7,7 +7,7 @@ using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace LiteCall.Infrastructure.Converters;
+namespace LiteCall.Infrastructure.Converters.Image;
 
 public class ImageSourceConverter:IValueConverter
 {
@@ -26,7 +26,7 @@ public class ImageSourceConverter:IValueConverter
         return DependencyProperty.UnsetValue;
     }
     
-    private BitmapSource? GetBitmapSource(Image streamImage)
+    private BitmapSource? GetBitmapSource(System.Drawing.Image streamImage)
     {
         var bitmap = new Bitmap(streamImage);
 
@@ -44,10 +44,10 @@ public class ImageSourceConverter:IValueConverter
         return bitmapSource;
     }
 
-    private Image BytesToImage(byte[]? value)
+    private System.Drawing.Image BytesToImage(byte[]? value)
     {
         using var ms = new MemoryStream(value!);
-        return Image.FromStream(ms);
+        return System.Drawing.Image.FromStream(ms);
     }
     
     

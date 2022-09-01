@@ -7,13 +7,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
+    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
+    xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
+    xmlns:image="clr-namespace:LiteCall.Infrastructure.Converters.Image"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
-            <converters:GroupNotNullBoolConverter x:Key="GroupNotNullBoolConverter" />
-            <converters:ImageSourceConverter x:Key="ImageSourceConverter" />
+            <boolean:BoolToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+            <null:NullToBoolInverter x:Key="GroupNotNullBoolConverter" />
+            <image:ImageSourceConverter x:Key="ImageSourceConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 

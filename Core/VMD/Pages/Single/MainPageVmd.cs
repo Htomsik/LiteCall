@@ -247,9 +247,8 @@ public sealed class MainPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _savedServersStore, value);
     }
 
-    
-    public Visibility ButtonVisibleStatus =>
-        CurrentServerStore!.CurrentServer == null ? Visibility.Collapsed : Visibility.Visible;
+
+    public bool ButtonVisibleStatus => CurrentServerStore!.CurrentServer is null;
     
     private readonly INavigationSc _serverPageNavigationSc;
 

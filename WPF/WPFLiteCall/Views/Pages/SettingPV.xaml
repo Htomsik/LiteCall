@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     xmlns:accountManagement="clr-namespace:Core.VMD.Pages.AccountManagement;assembly=Core"
+    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     d:DesignHeight="450"
     d:DesignWidth="450"
     mc:Ignorable="d">
@@ -21,11 +22,11 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:IsAuthorizeToStingConverter x:Key="IsAuthorizeToStingConverter" />
+            <converters:IsAuthorizeBoolToStringConverter x:Key="IsAuthorizeToStingConverter" />
 
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <boolean:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-            <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+            <boolean:BoolToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>

@@ -12,10 +12,6 @@ public sealed class CurrentServerAccountStore : BaseVmd
     [Reactive]
     public Account? CurrentAccount { get; set; }
     
-    
-    
-    
-    
     public void Logout()
     {
         CurrentAccount = new Account();

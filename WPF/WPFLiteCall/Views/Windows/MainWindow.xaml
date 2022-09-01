@@ -11,6 +11,7 @@
     xmlns:viewModel="clr-namespace:Core.VMD.Pages.Single;assembly=Core"
     xmlns:authRegPages="clr-namespace:Core.VMD.Pages.AccountManagement.ChatServer;assembly=Core"
     xmlns:serverPages="clr-namespace:Core.VMD.ServerPages;assembly=Core"
+    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     x:Name="Window"
     Width="800"
     Height="450"
@@ -32,7 +33,7 @@
 
             <system:Double x:Key="MinScale">1.4</system:Double>
 
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <boolean:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         </ResourceDictionary>
 
