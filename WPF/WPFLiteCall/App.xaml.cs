@@ -19,7 +19,7 @@ public partial class App : Application
 
     public IHost Host => _host ?? Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
-
+   
     protected override async void OnStartup(StartupEventArgs e)
     {
         var host = Host;
@@ -49,8 +49,7 @@ public partial class App : Application
         startupWindow.Close();
 
         base.OnStartup(e);
-
-
+        
         await host.StartAsync().ConfigureAwait(false);
     }
 

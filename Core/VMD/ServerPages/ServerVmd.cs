@@ -527,13 +527,14 @@ public sealed class ServerVmd : BaseVmd
 
         AudioMessageBus.Bus -= AsyncGetAudioBus;
 
+        KickFromRoomNotifier.Notificator -= GroupDisconnected;
+
         _input.StopRecording();
 
         _waveOut.Stop();
         
-        CurrentServerAccountStore.Logout();
-
-        base.Dispose();
+        CurrentServerAccountStore?.Logout();
+        
     }
 
     #endregion

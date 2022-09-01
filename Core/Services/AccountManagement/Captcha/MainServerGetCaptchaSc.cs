@@ -7,6 +7,7 @@ namespace Core.Services.AccountManagement.Captcha;
 public sealed class MainServerGetCaptchaSc : IGetCaptchaSc
 {
     private readonly IHttpDataSc _httpDataSc;
+    
     private readonly IImageServices _imageServices;
 
 

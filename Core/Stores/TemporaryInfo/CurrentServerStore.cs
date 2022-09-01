@@ -16,7 +16,13 @@ public sealed class CurrentServerStore : BaseVmd
         get => _currentServer;
         set
         {
+            var oldvalue = _currentServer;
+            
             this.RaiseAndSetIfChanged(ref _currentServer, value);
+            
+            if(oldvalue!= value && value == null) 
+                OnCurrentServerDeleted();
+            
             OnCurrentServerChanged();
         }
     }
@@ -40,17 +46,18 @@ public sealed class CurrentServerStore : BaseVmd
 
     private void OnCurrentServerChanged()
     {
-        if (CurrentServer is null)
-            CurrentServerDeleted?.Invoke();
-        
         CurrentServerChanged?.Invoke();
+    }
+
+    private void OnCurrentServerDeleted()
+    {
+        CurrentServerDeleted?.Invoke();
     }
 
 
     public Task Delete()
     {
         CurrentServer = null;
-        
-        return  Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }

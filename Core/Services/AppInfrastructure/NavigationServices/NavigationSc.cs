@@ -8,6 +8,7 @@ public sealed class NavigationSc<TViewModel> : INavigationSc where TViewModel : 
 
 {
     private readonly Func<TViewModel> _createViewModel;
+    
     private readonly MainWindowNavigationStore _mainWindowNavigationStore;
 
     public NavigationSc(MainWindowNavigationStore mainWindowNavigationStore, Func<TViewModel> createViewModel)

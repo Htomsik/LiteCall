@@ -96,7 +96,7 @@
 
                         <MenuItem Command="{Binding ConnectServerSavedCommand}" Header="Connect" />
 
-                        <MenuItem Command="{Binding DeleteServerSavedCommand}" Header="Delete" />
+                        <MenuItem Command="{Binding DeleteSavedServerSavedCommand}" Header="Delete" />
 
                     </ContextMenu>
 
