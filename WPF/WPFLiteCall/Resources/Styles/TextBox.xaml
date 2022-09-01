@@ -1,8 +1,14 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters">
 
+    xmlns:stringConverters="clr-namespace:LiteCall.Infrastructure.Converters.String">
+    
+    <stringConverters:StringToStarConverter x:Key="StringToStarConverter" />
+    
+    <stringConverters:IsStringMoreThanZeroConverter x:Key="IsStringMoreThanZeroConverter" />
+    
+        
     <!--  Текстбоксы  -->
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="MaxLength" Value="15" />
@@ -209,16 +215,18 @@
                         <MultiDataTrigger>
 
                             <MultiDataTrigger.Conditions>
+                                
                                 <Condition
-                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static converters:IsHighterConverter.Instance}, ConverterParameter=Text, UpdateSourceTrigger=PropertyChanged}"
+                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={StaticResource IsStringMoreThanZeroConverter}, ConverterParameter=Text, UpdateSourceTrigger=PropertyChanged}"
                                     Value="True" />
+                                
                                 <Condition
                                     Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocusWithin, Mode=OneWay}"
                                     Value="False" />
                             </MultiDataTrigger.Conditions>
 
                             <Setter TargetName="Block" Property="Text"
-                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Converter={x:Static converters:StringToStarConverter.Instance}, ConverterParameter=Text}" />
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Text, Converter={StaticResource StringToStarConverter}, ConverterParameter=Text}" />
                             <Setter TargetName="Block" Property="Visibility" Value="Visible" />
                             <Setter TargetName="PART_ContentHost" Property="Visibility" Value="Hidden" />
 

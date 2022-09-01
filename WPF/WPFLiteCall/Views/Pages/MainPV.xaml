@@ -9,6 +9,8 @@
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:Core.VMD.ServerPages;assembly=Core"
+    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
+    xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
     d:DesignHeight="450"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -19,14 +21,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <boolean:BoolToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+            
+            <boolean:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-            <converters:VisibilityConverter x:Key="VisibilityConverter" />
-
-            <converters:AutVisConverter x:Key="NonAuthVisibilityConverter" />
-
-            <converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
-
-            <converters:IsCurrentServerNullConveter x:Key="IsCurrentServerNullConveter" />
+            <null:NullToBoolConverter x:Key="NullToBoolConverter" />
 
             <system:Double x:Key="PlusScale">1</system:Double>
             
@@ -183,7 +183,7 @@
                 BorderBrush="{StaticResource Important(Solid)}"
                 BorderThickness="1"
                 CornerRadius="25"
-                Visibility="{Binding ButtonVisibleStatus, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="{Binding ButtonVisibleStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}">
 
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -210,7 +210,7 @@
                 Height="35"
                 Command="{Binding ModalServerConnectionCommand}"
                 Style="{StaticResource ImgButton}"
-                Visibility="{Binding ButtonVisibleStatus, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="{Binding ButtonVisibleStatus, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
                     <StaticResource x:Key="Img" ResourceKey="PlusPath" />
                     <StaticResource x:Key="Scale" ResourceKey="PlusScale" />
@@ -237,7 +237,7 @@
                     <Style.Triggers>
 
                         <DataTrigger
-                            Binding="{Binding SelectedViewModel, Converter={StaticResource IsCurrentServerNullConveter}}"
+                            Binding="{Binding SelectedViewModel, Converter={StaticResource NullToBoolConverter}}"
                             Value="False">
 
                             <Setter Property="CornerRadius" Value="0 0 15 0" />
@@ -292,7 +292,7 @@
                                 <Style.Triggers>
 
                                     <DataTrigger
-                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}"
+                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource NullToBoolConverter}}"
                                         Value="False">
 
                                         <Setter Property="Text"
@@ -325,16 +325,16 @@
                             <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
                                 <Setter Property="Visibility"
-                                        Value="{Binding CurrentServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                        Value="{Binding CurrentServerAccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                 <Style.Triggers>
 
                                     <DataTrigger
-                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource IsCurrentServerNullConveter}}"
+                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource NullToBoolConverter}}"
                                         Value="True">
 
                                         <Setter Property="Visibility"
-                                                Value="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource NonAuthVisibilityConverter}}" />
+                                                Value="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                     </DataTrigger>
                                 </Style.Triggers>

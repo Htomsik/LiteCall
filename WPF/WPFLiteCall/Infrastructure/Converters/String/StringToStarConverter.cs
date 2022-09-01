@@ -4,12 +4,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace LiteCall.Infrastructure.Converters;
+namespace LiteCall.Infrastructure.Converters.String;
 
+/// <summary>
+///     Some string -> *
+/// </summary>
+[ValueConversion(typeof(string), typeof(string))]
 internal sealed class StringToStarConverter : IValueConverter
 {
-    public static readonly IValueConverter Instance = new StringToStarConverter();
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         var starCount = value.ToString()!.ToArray().Length;
@@ -20,7 +22,5 @@ internal sealed class StringToStarConverter : IValueConverter
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        return DependencyProperty.UnsetValue;
-    }
+    => throw new NotSupportedException($"{nameof(StringToStarConverter)}.{nameof(ConvertBack)}");
 }

@@ -6,12 +6,13 @@
              xmlns:local="clr-namespace:LiteCall.Views.Pages"
              xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
              xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
+             xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
              mc:Ignorable="d"
              >
     
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:Boolinverter x:Key="Boolinverter" />
+            <boolean:BoolInverter x:Key="Boolinverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     
