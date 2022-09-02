@@ -21,7 +21,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
 
         _settingsStore = settingsStore;
 
-        _accountStore.CurrentAccountChange += SaveDataInFile;
+        _accountStore.CurrentValueChangedNotifier += SaveDataInFile;
 
         _settingsStore.CurrentValueChangedNotifier += SaveDataInFile;
     }
@@ -34,7 +34,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
 
             var savedAccount = JsonConvert.DeserializeObject<AppSavedMainAccount>(fileText);
 
-            if (savedAccount?.MainAccount != null) _accountStore.CurrentAccount = savedAccount.MainAccount;
+            if (savedAccount?.MainAccount != null) _accountStore.CurrentValue = savedAccount.MainAccount;
 
             if (savedAccount?.Settings != null)
                 _settingsStore.CurrentValue = savedAccount.Settings;
@@ -49,7 +49,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
     {
         try
         {
-            var jsonNoNConvertedAccount = _accountStore.IsDefaultAccount ? null : _accountStore.CurrentAccount;
+            var jsonNoNConvertedAccount = _accountStore.IsDefaultAccount ? null : _accountStore.CurrentValue;
 
             if (jsonNoNConvertedAccount is not null) jsonNoNConvertedAccount.Token = null;
 

@@ -35,7 +35,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
         LogoutAccCommand = new AccountLogoutCmd(accountStore);
 
-        AccountStore!.CurrentAccountChange += AccountStatusChange;
+        AccountStore.CurrentValueChangedNotifier += AccountStatusChange;
 
         _settingsAccNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 

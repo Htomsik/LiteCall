@@ -67,7 +67,7 @@
                         <StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Current account: " />
-                                <TextBlock Text="{Binding AccountStore.CurrentAccount.Login}" />
+                                <TextBlock Text="{Binding AccountStore.CurrentValue.Login}" />
                             </StackPanel>
 
                             <!--  Тип аккаунта  -->
@@ -76,7 +76,7 @@
                                 <TextBlock Text="Account type: " />
 
                                 <TextBlock
-                                    Text="{Binding AccountStore.CurrentAccount.IsAuthorized, Converter={StaticResource IsAuthorizeToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                    Text="{Binding AccountStore.CurrentValue.IsAuthorized, Converter={StaticResource IsAuthorizeToStingConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                                     <TextBlock.Style>
 
@@ -130,7 +130,7 @@
 
                                     <Style.Triggers>
 
-                                        <DataTrigger Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}"
+                                        <DataTrigger Binding="{Binding AccountStore.CurrentValue.IsAuthorized}"
                                                      Value="True">
 
                                             <Setter Property="Visibility" Value="Visible" />
@@ -143,7 +143,7 @@
                                                 
                                                 <Condition Binding="{Binding IsDefault}" Value="False" />
                                                 
-                                                <Condition Binding="{Binding AccountStore.CurrentAccount.IsAuthorized}"
+                                                <Condition Binding="{Binding AccountStore.CurrentValue.IsAuthorized}"
                                                            Value="True" />
                                             </MultiDataTrigger.Conditions>
 

@@ -1,45 +1,18 @@
-﻿using Core.Models.Users;
-using Core.VMD.Base;
-using ReactiveUI;
+﻿using AppInfrastructure.Stores.DefaultStore;
+using Core.Models.Users;
 
 namespace Core.Stores.TemporaryInfo;
 
-public class MainAccountStore:BaseVmd
+/// <summary>
+///     Store wit Account of main server
+/// </summary>
+public class MainAccountStore:BaseLazyStore<Account>
 {
-    private readonly Account? _defaultAccount;
-
-    private Account? _currentAccount;
-
-
-    public MainAccountStore()
-    {
-        _defaultAccount = new Account { Login = "LC_User" };
-
-        _currentAccount = _defaultAccount;
-    }
-
-    public bool IsDefaultAccount => CurrentAccount == _defaultAccount;
-
-    public Account? CurrentAccount
-    {
-        get => _currentAccount;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _currentAccount, value);
-            OnCurrentAccountChangeChanged();
-        }
-    }
-
-
-    public event Action? CurrentAccountChange;
-
-    private void OnCurrentAccountChangeChanged()
-    {
-        CurrentAccountChange?.Invoke();
-    }
-
-    public void Logout()
-    {
-        CurrentAccount = _defaultAccount;
-    }
+    private readonly Account? _defaultAccount = new Account { Login = "LC_User" };
+    public MainAccountStore() =>  CurrentValue = _defaultAccount;
+    
+    public bool IsDefaultAccount => CurrentValue == _defaultAccount;
+    
+    public void Logout() => CurrentValue = _defaultAccount;
+  
 }

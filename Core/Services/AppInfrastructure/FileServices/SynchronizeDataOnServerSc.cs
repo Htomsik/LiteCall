@@ -29,7 +29,7 @@ public sealed class SynchronizeDataOnServerSc : ISyncDataOnServerSc
 
     public async Task<bool> SaveOnServer()
     {
-        if (string.IsNullOrEmpty(_accountStore?.CurrentAccount?.Password) ||
+        if (string.IsNullOrEmpty(_accountStore?.CurrentValue?.Password) ||
             _savedServersStore?.SavedServerAccounts?.ServersAccounts is null)
             return false;
 
@@ -39,15 +39,15 @@ public sealed class SynchronizeDataOnServerSc : ISyncDataOnServerSc
         foreach (var elem in savedServers.ServersAccounts)
             elem.Account!.Password = await _encryptSc.Base64Decrypt(elem.Account.Password);
 
-        return await _httpDataSc.PostSaveServersUserOnMainServer(_accountStore.CurrentAccount, savedServers);
+        return await _httpDataSc.PostSaveServersUserOnMainServer(_accountStore.CurrentValue, savedServers);
     }
 
 
     public async Task<bool> GetFromServer()
     {
-        if (string.IsNullOrEmpty(_accountStore?.CurrentAccount?.Password)) return false;
+        if (string.IsNullOrEmpty(_accountStore?.CurrentValue?.Password)) return false;
 
-        var dataFromServer = await _httpDataSc.GetSaveServersUserOnMainServer(_accountStore.CurrentAccount,
+        var dataFromServer = await _httpDataSc.GetSaveServersUserOnMainServer(_accountStore.CurrentValue,
             _savedServersStore.SavedServerAccounts?.LastUpdated);
 
         if (dataFromServer != null)

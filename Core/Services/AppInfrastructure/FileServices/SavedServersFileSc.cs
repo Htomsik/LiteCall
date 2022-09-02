@@ -23,7 +23,7 @@ public sealed class SavedServersFileSc : IFileSc
 
         _savedServersStore.ServersAccountsChange += SaveDataInFile;
 
-        _accountStore.CurrentAccountChange += GetDataFromFile;
+        _accountStore.CurrentValueChangedNotifier += GetDataFromFile;
     }
 
 
@@ -36,8 +36,8 @@ public sealed class SavedServersFileSc : IFileSc
             var allUsers = JsonConvert.DeserializeObject<List<CurrentAccountSavedServers>>(fileText);
 
             var currentUserServerStore = allUsers!.Find(s =>
-                s.MainServerAccount!.IsAuthorized! == _accountStore!.CurrentAccount!.IsAuthorized! &&
-                s!.MainServerAccount!.Login! == _accountStore!.CurrentAccount!.Login!);
+                s.MainServerAccount!.IsAuthorized! == _accountStore!.CurrentValue!.IsAuthorized! &&
+                s!.MainServerAccount!.Login! == _accountStore!.CurrentValue!.Login!);
 
             _savedServersStore.SavedServerAccounts!.ServersAccounts = currentUserServerStore?.ServersAccounts ??
                                                                       new ObservableCollection<ServerAccount>();
@@ -64,8 +64,8 @@ public sealed class SavedServersFileSc : IFileSc
                 if (allUsers!.Count != 0)
                 {
                     foreach (var elem in allUsers)
-                        if (elem.MainServerAccount!.Login == _accountStore.CurrentAccount!.Login &&
-                            elem.MainServerAccount.IsAuthorized == _accountStore.CurrentAccount.IsAuthorized)
+                        if (elem.MainServerAccount!.Login == _accountStore.CurrentValue!.Login &&
+                            elem.MainServerAccount.IsAuthorized == _accountStore.CurrentValue.IsAuthorized)
 
                             allUsers.Remove(elem);
                 }
@@ -83,7 +83,7 @@ public sealed class SavedServersFileSc : IFileSc
                 var newSavedServers = new CurrentAccountSavedServers
                 {
                     LastUpdated = DateTime.Now,
-                    MainServerAccount = _accountStore.CurrentAccount,
+                    MainServerAccount = _accountStore.CurrentValue,
                     ServersAccounts = _savedServersStore.SavedServerAccounts.ServersAccounts
                 };
 

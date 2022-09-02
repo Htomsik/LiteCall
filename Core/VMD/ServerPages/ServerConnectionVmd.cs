@@ -56,7 +56,7 @@ public class ServerConnectionVmd:BaseVmd
     {
         var serverAccount = new Account
         {
-            Login = _accountStore!.CurrentAccount!.Login
+            Login = _accountStore!.CurrentValue!.Login
         };
 
         Server? newServer;

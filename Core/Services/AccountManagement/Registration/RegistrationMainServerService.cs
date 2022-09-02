@@ -34,7 +34,7 @@ public sealed class RegistrationMainServerSc : IRegistrationSc
 
         newAccount.IsAuthorized = true;
 
-        _mainAccountStore.CurrentAccount = newAccount;
+        _mainAccountStore.CurrentValue = newAccount;
 
 
         return 2;

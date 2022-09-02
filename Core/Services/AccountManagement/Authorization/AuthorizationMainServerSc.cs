@@ -39,7 +39,7 @@ public sealed class AuthorizationMainServerSc : IAuthorizationSc
             throw new Exception();
         }
         
-        _mainAccountStore.CurrentAccount = newAccount;
+        _mainAccountStore.CurrentValue = newAccount;
         
     }
 }

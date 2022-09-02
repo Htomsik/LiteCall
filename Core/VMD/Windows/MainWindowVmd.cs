@@ -82,11 +82,11 @@ public sealed class MainWindowVmd : BaseVmd
 
     public AppExecutionState CurrentStatusMessage => _statusMessageStore.CurrentValue!;
 
-    public bool AdditionalIsOpen => _additionalVmdsNavigationStore.IsOpen;
+    public bool AdditionalIsOpen => _additionalVmdsNavigationStore.CurrentValue is not null;
 
-    public bool ModalIsOpen => _modalNavigationStore.IsOpen;
+    public bool ModalIsOpen => _modalNavigationStore.CurrentValue is not null;
 
-    public bool StatusMessageIsOpen => _statusMessageStore.IsOpen;
+    public bool StatusMessageIsOpen =>  !string.IsNullOrEmpty(_statusMessageStore?.CurrentValue?.Message);
 
     private async Task OnCloseAppExecuted()
     {
