@@ -5,6 +5,6 @@ namespace Core.Stores.AppInfrastructure.NavigationStores;
 /// <summary>
 ///     Server pages store
 /// </summary>
-public sealed class ServerVmdNavigationStore : BaseVmdNavigationStore
+public sealed class CurrentServerVmdNavigationStore : BaseVmdNavigationStore
 {
 }

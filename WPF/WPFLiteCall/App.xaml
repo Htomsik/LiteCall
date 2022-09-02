@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Locators/ConverterLocator.xaml" />
                 <ResourceDictionary Source="Resources/Base/Brushes.xaml" />
                 <ResourceDictionary Source="Resources/Styles/TextBox.xaml" />
                 <ResourceDictionary Source="Resources/Styles/TextBlock.xaml" />

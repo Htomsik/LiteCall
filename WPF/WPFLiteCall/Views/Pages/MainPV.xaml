@@ -5,12 +5,15 @@
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    d:DataContext="{d:DesignInstance {x:Type Vmds:MainPageVmd},
+                                     IsDesignTimeCreatable=True}"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:Core.VMD.ServerPages;assembly=Core"
     xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
+    xmlns:Vmds="clr-namespace:Core.VMD.MainVmds;assembly=Core"
     d:DesignHeight="450"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -22,12 +25,6 @@
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
-            <boolean:BoolToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
-            
-            <boolean:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-            <null:NullToBoolConverter x:Key="NullToBoolConverter" />
-
             <system:Double x:Key="PlusScale">1</system:Double>
             
             <system:Boolean x:Key="True">True</system:Boolean>
@@ -94,7 +91,7 @@
 
                     <ContextMenu>
 
-                        <MenuItem Command="{Binding ConnectServerSavedCommand}" Header="Connect" />
+                        <MenuItem Command="{Binding ConnectToSavedServerCommand}" Header="Connect" />
 
                         <MenuItem Command="{Binding DeleteSavedServerSavedCommand}" Header="Delete" />
 
@@ -183,7 +180,7 @@
                 BorderBrush="{StaticResource Important(Solid)}"
                 BorderThickness="1"
                 CornerRadius="25"
-                Visibility="{Binding ButtonVisibleStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}">
+                Visibility="{Binding CurrentServerIsNull, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}">
 
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -210,7 +207,7 @@
                 Height="35"
                 Command="{Binding ModalServerConnectionCommand}"
                 Style="{StaticResource ImgButton}"
-                Visibility="{Binding ButtonVisibleStatus, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="{Binding CurrentServerIsNull, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Resources>
                     <StaticResource x:Key="Img" ResourceKey="PlusPath" />
                     <StaticResource x:Key="Scale" ResourceKey="PlusScale" />
@@ -281,68 +278,18 @@
 
                     </Border>
    
-                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
-
-                        <TextBlock.Style>
-
-                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
-                                <Setter Property="Text" Value="{Binding AccountStore.CurrentValue.Login}" />
-
-                                <Style.Triggers>
-
-                                    <DataTrigger
-                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource NullToBoolConverter}}"
-                                        Value="False">
-
-                                        <Setter Property="Text"
-                                                Value="{Binding CurrentServerAccountStore.CurrentValue.CurrentServerLogin, UpdateSourceTrigger=PropertyChanged}" />
-
-                                        <Setter Property="Foreground" Value="{DynamicResource Important(Solid)}" />
-
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-
-                            </Style>
-                            
-                        </TextBlock.Style>
-
-                    </TextBlock>
-
-
+                    <!--Name Current Server or main account-->
+                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding CurrentAccountInfo.Login}"/>
+                    
+                    <!--Status of current Account-->
                     <TextBlock
                         Margin="5,5,0,0"
                         VerticalAlignment="Top"
                         FontSize="10"
                         Foreground="{DynamicResource Dangerous(Solid)}"
                         Text="[NA]"
+                        Visibility="{Binding CurrentAccountInfo.IsAuthorized, Converter={StaticResource BooleanToVisibilityInverter}}"
                         ToolTip="Non authoized User">
-
-
-                        <TextBlock.Style>
-
-                            <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
-                                <Setter Property="Visibility"
-                                        Value="{Binding CurrentServerAccountStore.CurrentValue.IsAuthorized, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                <Style.Triggers>
-
-                                    <DataTrigger
-                                        Binding="{Binding CurrentServerStore.CurrentServer, Converter={StaticResource NullToBoolConverter}}"
-                                        Value="True">
-
-                                        <Setter Property="Visibility"
-                                                Value="{Binding AccountStore.CurrentValue.IsAuthorized, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                    </DataTrigger>
-                                </Style.Triggers>
-
-                            </Style>
-                        </TextBlock.Style>
-
-
                     </TextBlock>
 
 
@@ -368,11 +315,12 @@
 
         </Border>
 
+        <!--Текущий выбранный server Vmd-->
         <ContentControl
             Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Content="{Binding SelectedViewModel}">
+            Content="{Binding CurrentServerVmd}">
 
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewModel:ServerVmd}">

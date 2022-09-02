@@ -8,13 +8,7 @@
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     mc:Ignorable="d">
-
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <boolean:BoolInverter x:Key="Boolinverter" />
-        </ResourceDictionary>
-    </UserControl.Resources>
-
+    
     <Grid MaxWidth="250" Background="Transparent">
 
 
@@ -85,7 +79,7 @@
                     x:Name="PasswordTextBox"
                     Grid.Row="2"
                     Margin="20,5"
-                    IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource Boolinverter}}"
+                    IsEnabled="{Binding CheckStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolInverter}}"
                     Style="{StaticResource PassTextBox}"
                     Tag="PASSWORD">
                     <TextBox.Text>

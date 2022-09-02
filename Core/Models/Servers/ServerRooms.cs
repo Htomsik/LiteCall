@@ -1,19 +1,17 @@
-﻿using Core.VMD.Base;
-using ReactiveUI;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.Models.Servers;
 
-public  sealed class ServerRooms : BaseVmd
+public  sealed class ServerRooms : ReactiveObject
 {
-    private ICollection<ServerUser>? _users;
-
+    [Reactive]
     public string? RoomName { get; set; }
 
-    public bool Guard { get; set; }
+    [Reactive]
+    public bool WithPassword { get; set; }
 
-    public ICollection<ServerUser>? Users
-    {
-        get => _users;
-        set => this.RaiseAndSetIfChanged(ref _users, value);
-    }
+    [Reactive]
+    public ICollection<ServerUser>? Users { get; set; }
+    
 }

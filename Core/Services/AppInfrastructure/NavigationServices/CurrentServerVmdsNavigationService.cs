@@ -6,8 +6,8 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 
 public sealed class MainPageServerNavigationService : BaseLazyStoreNavigationService<BaseVmd>
 {
-    public MainPageServerNavigationService(ServerVmdNavigationStore serverVmdNavigationStore,
-        Func<BaseVmd> createViewModel) : base(serverVmdNavigationStore, createViewModel){}
+    public MainPageServerNavigationService(CurrentServerVmdNavigationStore currentServerVmdNavigationStore,
+        Func<BaseVmd> createViewModel) : base(currentServerVmdNavigationStore, createViewModel){}
 
 
 

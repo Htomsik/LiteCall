@@ -1,16 +1,23 @@
-﻿using Core.Models.Users;
-using Core.VMD.Base;
-using ReactiveUI.Fody.Helpers;
+﻿using AppInfrastructure.Stores.DefaultStore;
+using Core.Models.Users;
+using DynamicData.Binding;
 
 namespace Core.Stores.TemporaryInfo;
 
-public sealed class CurrentServerAccountStore : BaseVmd
+public sealed class CurrentServerAccountStore : BaseLazyStore<Account>
 {
-    [Reactive]
-    public Account? CurrentAccount { get; set; }
-    
-    public void Logout()
+    public override Account? CurrentValue
     {
-        CurrentAccount = new Account();
+        get => (Account?)_currentValue.Value;
+        set
+        {
+            _currentValue = new Lazy<object?>(()=> value);
+            
+            CurrentValue?.WhenAnyPropertyChanged()
+                    .Subscribe(_ => OnCurrentValueChanged());
+            
+            OnCurrentValueChanged();
+        }
+        
     }
 }

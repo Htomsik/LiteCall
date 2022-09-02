@@ -7,25 +7,33 @@ namespace Core.Stores.TemporaryInfo;
 
 public sealed class CurrentServerStore : BaseVmd
 {
-    private Server? _currentServer;
-    
-    private ObservableCollection<ServerRooms>? _currentSeverRooms = new();
 
-    public Server? CurrentServer
-    {
-        get => _currentServer;
-        set
+    #region CurrentServer
+
+        private Server? _currentServer;
+        
+        public Server? CurrentServer
         {
-            var oldvalue = _currentServer;
-            
-            this.RaiseAndSetIfChanged(ref _currentServer, value);
-            
-            if(oldvalue!= value && value == null) 
-                OnCurrentServerDeleted();
-            
-            OnCurrentServerChanged();
+            get => _currentServer;
+            set
+            {
+                var oldvalue = _currentServer;
+                
+                this.RaiseAndSetIfChanged(ref _currentServer, value);
+                
+                if(oldvalue!= value && value == null) 
+                    OnCurrentServerDeleted();
+                
+                OnCurrentServerChanged();
+            }
         }
-    }
+
+    #endregion
+
+
+    #region CurrentServerRooms
+
+    private ObservableCollection<ServerRooms>? _currentSeverRooms = new();
 
     public ObservableCollection<ServerRooms>? CurrentServerRooms
     {
@@ -37,7 +45,9 @@ public sealed class CurrentServerStore : BaseVmd
         }
     }
 
-
+    #endregion
+    
+    
     public event Action? CurrentServerRoomsChanged;
     
     public event Action? CurrentServerDeleted;

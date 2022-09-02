@@ -1,0 +1,35 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
+    xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
+    xmlns:string="clr-namespace:LiteCall.Infrastructure.Converters.String"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!--  Bool converters  -->
+
+    <boolean:BoolInverter x:Key="BoolInverter" />
+
+    <boolean:BoolToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+
+    <boolean:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <!--  Null converters  -->
+
+    <null:NullToBoolConverter x:Key="NullToBoolConverter" />
+
+    <null:NullToBoolInverter x:Key="NullToBoolInverter" />
+
+    <null:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+
+    <!--  Images converters  -->
+    <ImageSourceConverter x:Key="ImageSourceConverter" />
+
+    <!--  String converters  -->
+    <string:IsAuthorizeBoolToStringConverter x:Key="IsAuthorizeBoolToStringConverter" />
+
+    <string:IsStringMoreThanZeroConverter x:Key="IsStringMoreThanZeroConverter" />
+
+    <string:StringToStarConverter x:Key="StringToStarConverter" />
+
+</ResourceDictionary>

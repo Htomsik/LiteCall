@@ -40,7 +40,7 @@ public static class StoresRegistration
 
         services.AddSingleton<SettingsAccountVmdNavigationStore>();
 
-        services.AddSingleton<ServerVmdNavigationStore>();
+        services.AddSingleton<CurrentServerVmdNavigationStore>();
 
         #endregion
 

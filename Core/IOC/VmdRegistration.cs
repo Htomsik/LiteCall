@@ -13,9 +13,10 @@ using Core.Services.Interfaces.Extra;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
+using Core.VMD.AdditionalVmds;
+using Core.VMD.MainVmds;
 using Core.VMD.Pages.AccountManagement;
 using Core.VMD.Pages.AccountManagement.ChatServer;
-using Core.VMD.Pages.Single;
 using Core.VMD.ServerPages;
 using Core.VMD.Windows;
 using Microsoft.Extensions.Configuration;
@@ -84,7 +85,7 @@ public static class VmdRegistration
                 s.GetRequiredService<CurrentServerAccountStore>(),
                 s.GetRequiredService<SavedServersStore>(),
                 s.GetRequiredService<CurrentServerStore>(),
-                s.GetRequiredService<ServerVmdNavigationStore>(),
+                s.GetRequiredService<CurrentServerVmdNavigationStore>(),
                 CreateSettingPageNavigationService(s),
                 CreateServerPageNavigationService(s),
                 CreateModalAuthorizationPageNavigationService(s),
@@ -165,7 +166,7 @@ public static class VmdRegistration
     private static INavigationServices CreateServerPageNavigationService(IServiceProvider serviceProvider)
     {
         return new MainPageServerNavigationService(
-            serviceProvider.GetRequiredService<ServerVmdNavigationStore>(),
+            serviceProvider.GetRequiredService<CurrentServerVmdNavigationStore>(),
             serviceProvider.GetRequiredService<ServerVmd>);
     }
 

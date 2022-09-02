@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
+
 namespace Core.Models.AccountManagement;
 
-public class Question
+public class Question 
 {
     [JsonPropertyName("id")] 
     public int Id { get; set; }

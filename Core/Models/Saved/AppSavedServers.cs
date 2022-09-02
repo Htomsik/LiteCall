@@ -7,8 +7,8 @@ namespace Core.Models.Saved;
 
 public class AppSavedServers : ReactiveObject
 {
-    [JsonProperty]
     [Reactive]
+    [JsonProperty]
     public ObservableCollection<ServerAccount>? ServersAccounts { get; set; }
     [JsonProperty]
     public DateTime? LastUpdated { get; set; }

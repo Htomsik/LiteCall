@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using AppInfrastructure.Services.NavigationServices.Close;
+using AppInfrastructure.Stores.DefaultStore;
 using Core.Infrastructure.CMD;
 using Core.Models.AppInfrastructure;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -13,7 +14,6 @@ namespace Core.VMD.Windows;
 
 public sealed class MainWindowVmd : BaseVmd
 {
-
     #region Properties and Fields
     
     #region CurrentStatusMessage
@@ -29,7 +29,7 @@ public sealed class MainWindowVmd : BaseVmd
 
     public BaseVmd? MainPageCurrentVmd => _mainWindowVmdNavigationStore.CurrentValue;
     
-    private readonly MainWindowVmdNavigationStore _mainWindowVmdNavigationStore;
+    private readonly IStore<BaseVmd> _mainWindowVmdNavigationStore;
 
     #endregion
 
@@ -62,7 +62,6 @@ public sealed class MainWindowVmd : BaseVmd
     
     
     #endregion
-    
     public MainWindowVmd(
         MainWindowVmdNavigationStore mainWindowVmdNavigationStore,
         AdditionalVmdsNavigationStore additionalVmdsNavigationStore,
@@ -135,7 +134,7 @@ public sealed class MainWindowVmd : BaseVmd
     /// <summary>
     ///     Close Application 
     /// </summary>
-    public IReactiveCommand CloseAppCommand { get; }
+    public ICommand CloseAppCommand { get; }
 
     /// <summary>
     ///     Close modal vmds
@@ -148,6 +147,5 @@ public sealed class MainWindowVmd : BaseVmd
     public ICommand CloseSettingsCommand { get; }
 
     #endregion
-
-
+    
 }

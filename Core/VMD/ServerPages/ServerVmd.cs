@@ -102,7 +102,7 @@ public sealed class ServerVmd : BaseVmd
 
         #endregion
         
-        this.WhenAny(x => x.CurrentServerAccountStore!.CurrentAccount!.CurrentServerLogin, x => x.Value)
+        this.WhenAny(x => x.CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin, x => x.Value)
             .Subscribe(x => CurrentServerAccountStoreChanged());
         
     }
@@ -115,7 +115,7 @@ public sealed class ServerVmd : BaseVmd
 
     private void CurrentServerAccountStoreChanged()
     {
-        CanServerConnect = !string.IsNullOrEmpty(CurrentServerAccountStore!.CurrentAccount!.CurrentServerLogin);
+        CanServerConnect = !string.IsNullOrEmpty(CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin);
     }
     
     #region Services
@@ -198,7 +198,7 @@ public sealed class ServerVmd : BaseVmd
         {
             DateSend = DateTime.Now,
             Text = CurrentMessage,
-            Sender = CurrentServerAccountStore!.CurrentAccount!.CurrentServerLogin
+            Sender = CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin
         };
 
         if (await _chatServerSc.SendMessage(newMessage))
@@ -253,7 +253,7 @@ public sealed class ServerVmd : BaseVmd
     {
         var connectedGroup = SelRooms;
 
-        if (connectedGroup!.Guard)
+        if (connectedGroup!.WithPassword)
         {
             RoomPasswordModalStatus = true;
             return;
@@ -307,7 +307,7 @@ public sealed class ServerVmd : BaseVmd
 
     private bool CanAdminDeleteRoomExecute(object p)
     {
-        if (CurrentServerAccountStore.CurrentAccount!.Role != "Admin") return false;
+        if (CurrentServerAccountStore.CurrentValue!.Role != "Admin") return false;
 
         return p is ServerRooms;
     }
@@ -327,7 +327,7 @@ public sealed class ServerVmd : BaseVmd
 
     private bool CanAdminDisconnectUserFromRoomExecute(object p)
     {
-        if (CurrentServerAccountStore.CurrentAccount!.Role != "Admin") return false;
+        if (CurrentServerAccountStore.CurrentValue!.Role != "Admin") return false;
 
         return p is ServerUser;
     }
@@ -532,9 +532,9 @@ public sealed class ServerVmd : BaseVmd
         _input.StopRecording();
 
         _waveOut.Stop();
-        
-        CurrentServerAccountStore?.Logout();
-        
+
+        CurrentServerAccountStore.CurrentValue = null;
+
     }
 
     #endregion
@@ -629,7 +629,7 @@ public sealed class ServerVmd : BaseVmd
     {
         return (from rooms in CurrentServerStore.CurrentServerRooms!
             from users in rooms.Users!
-            where users.Login == CurrentServerAccountStore.CurrentAccount!.CurrentServerLogin
+            where users.Login == CurrentServerAccountStore.CurrentValue!.CurrentServerLogin
             select rooms).FirstOrDefault()!;
     }
 

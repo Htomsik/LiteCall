@@ -1,9 +1,9 @@
-﻿using Core.VMD.Base;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Core.Models.AppInfrastructure;
 
-public class AppSettings:BaseVmd
+public class AppSettings:ReactiveObject
 {
     [Reactive]
     public int OutputDeviceId { get; set; }

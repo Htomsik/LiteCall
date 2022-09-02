@@ -32,7 +32,7 @@ public sealed class AuthCheckApiServerSc : IAuthorizationSc
         
             newAccount.Token = tokenResponse;
 
-            _currentServerAccountStore.CurrentAccount = newAccount;
+            _currentServerAccountStore.CurrentValue = newAccount;
         }
         catch (Exception)
         {

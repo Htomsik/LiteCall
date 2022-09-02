@@ -165,7 +165,7 @@ public sealed class ChatServerSc : IChatServerSc
         try
         {
             newName = await _hubConnectionStore!.CurrentHubConnection!
-                .InvokeAsync<string>("SetName", _currentServerAccountStore.CurrentAccount!.Login).ConfigureAwait(false);
+                .InvokeAsync<string>("SetName", _currentServerAccountStore.CurrentValue!.Login).ConfigureAwait(false);
         }
         catch
         {
@@ -178,7 +178,7 @@ public sealed class ChatServerSc : IChatServerSc
         if (newName == "non")
             await _currentServerStore.Delete();
         else
-            _currentServerAccountStore.CurrentAccount!.CurrentServerLogin = newName;
+            _currentServerAccountStore.CurrentValue!.CurrentServerLogin = newName;
     }
 
     private async Task GetServerRooms()
@@ -203,7 +203,7 @@ public sealed class ChatServerSc : IChatServerSc
         {
             var rooms = currentRoomUsers![index];
             foreach (var users in rooms.Users!)
-                if (users.Login == _currentServerAccountStore.CurrentAccount!.CurrentServerLogin)
+                if (users.Login == _currentServerAccountStore.CurrentValue!.CurrentServerLogin)
                     users.Role = "You";
         }
 
@@ -217,7 +217,7 @@ public sealed class ChatServerSc : IChatServerSc
 
         _hubConnectionStore!.CurrentHubConnection = new HubConnectionBuilder()
             .WithUrl(
-                $"https://{_currentServerStore.CurrentServer!.Ip}/LiteCall?token={_currentServerAccountStore.CurrentAccount!.Token}",
+                $"https://{_currentServerStore.CurrentServer!.Ip}/LiteCall?token={_currentServerAccountStore.CurrentValue!.Token}",
                 options =>
                 {
                     options.WebSocketConfiguration = conf =>
@@ -228,7 +228,7 @@ public sealed class ChatServerSc : IChatServerSc
                     {
                         ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                     };
-                    options.AccessTokenProvider = () => Task.FromResult(_currentServerAccountStore.CurrentAccount.Token);
+                    options.AccessTokenProvider = () => Task.FromResult(_currentServerAccountStore.CurrentValue.Token);
                 })
             .WithAutomaticReconnect(new[]
             {

@@ -165,7 +165,7 @@
                                         FontSize="18"
                                         Foreground="{DynamicResource Dangerous(Solid)}"
                                         Text="P"
-                                        Visibility="{Binding Guard, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        Visibility="{Binding WithPassword, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
 
                                 </Grid>

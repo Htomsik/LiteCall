@@ -12,7 +12,7 @@ using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
 using ReactiveUI;
 
-namespace Core.VMD.Pages.Single;
+namespace Core.VMD.AdditionalVmds;
 
 public sealed class SettingsPageVmd : BaseVmd
 {
