@@ -68,7 +68,7 @@ public sealed class AppExecutionStateSc : IStatusSc
     public async void ChangeStatus(AppExecutionState newStatusMessage)
     {
         if (!_isDelete)
-            _statusMessageStore.CurrentStatusMessage = newStatusMessage;
+            _statusMessageStore.CurrentValue = newStatusMessage;
         else
             return;
         if (newStatusMessage.Type != StateTypes.Error) return;
@@ -98,7 +98,7 @@ public sealed class AppExecutionStateSc : IStatusSc
     {
         if (_isDelete) return;
 
-        _statusMessageStore.CurrentStatusMessage = null;
+        _statusMessageStore.CurrentValue = null;
     }
 
     private async Task TimerDelete(int delay)

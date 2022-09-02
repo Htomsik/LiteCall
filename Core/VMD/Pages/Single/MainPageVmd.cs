@@ -1,10 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Core.Infrastructure.CMD;
-using Core.Infrastructure.Notifiers;
-using Core.Models.AppInfrastructure.StateStatuses;
 using Core.Models.Saved;
-using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -71,7 +67,7 @@ public sealed class MainPageVmd : BaseVmd
 
         CurrentServerStore!.CurrentServerChanged += CurrentServerChanged;
 
-        _mainPageServerNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+        _mainPageServerNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 
         this.WhenAnyPropertyChanged();
 
@@ -94,7 +90,7 @@ public sealed class MainPageVmd : BaseVmd
 
         SelectedViewModel.Dispose();
         
-        _mainPageServerNavigationStore.MainPageServerCurrentViewModel = null;
+        _mainPageServerNavigationStore.CurrentValue = null;
     }
 
     #region Команды
@@ -261,7 +257,7 @@ public sealed class MainPageVmd : BaseVmd
 
     private readonly MainPageServerNavigationStore _mainPageServerNavigationStore;
 
-    public BaseVmd? SelectedViewModel => _mainPageServerNavigationStore.MainPageServerCurrentViewModel;
+    public BaseVmd? SelectedViewModel => _mainPageServerNavigationStore.CurrentValue;
 
     #endregion
 }

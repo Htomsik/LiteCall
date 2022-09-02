@@ -1,6 +1,4 @@
-﻿using Core.Stores.TemporaryInfo;
-using Newtonsoft.Json;
-using ReactiveUI;
+﻿using Newtonsoft.Json;
 using ReactiveUI.Fody.Helpers;
 
 namespace Core.Models.Users;

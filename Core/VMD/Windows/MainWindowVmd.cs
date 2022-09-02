@@ -12,7 +12,7 @@ namespace Core.VMD.Windows;
 
 public sealed class MainWindowVmd : BaseVmd
 {
-    private readonly AdditionalNavigationStore _additionalNavigationStore;
+    private readonly AdditionalVmdsNavigationStore _additionalVmdsNavigationStore;
 
     private readonly ICloseAppSc _closeAppSc;
 
@@ -26,7 +26,7 @@ public sealed class MainWindowVmd : BaseVmd
 
 
     public MainWindowVmd(MainWindowNavigationStore mainWindowNavigationStore,
-        AdditionalNavigationStore additionalNavigationStore,
+        AdditionalVmdsNavigationStore additionalVmdsNavigationStore,
         ModalNavigationStore modalNavigationStore,
         AppExecutionStateStore statusMessageStore,
         INavigationSc closeModalNavigationScs,
@@ -36,7 +36,7 @@ public sealed class MainWindowVmd : BaseVmd
     {
         _mainWindowNavigationStore = mainWindowNavigationStore;
 
-        _additionalNavigationStore = additionalNavigationStore;
+        _additionalVmdsNavigationStore = additionalVmdsNavigationStore;
 
         _modalNavigationStore = modalNavigationStore;
 
@@ -46,13 +46,13 @@ public sealed class MainWindowVmd : BaseVmd
 
         _configuration = configuration;
 
-        _mainWindowNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+        _mainWindowNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 
-        _additionalNavigationStore.CurrentViewModelChanged += OnAdditionalCurrentViewModelChanged;
+        _additionalVmdsNavigationStore.CurrentValueChangedNotifier += OnAdditionalVmdsCurrentViewModelChanged;
 
-        _modalNavigationStore.CurrentViewModelChanged += OnModalCurrentViewModelChanged;
+        _modalNavigationStore.CurrentValueChangedNotifier += OnModalCurrentViewModelChanged;
 
-        _statusMessageStore.CurrentStatusMessageChanged += OnCurrentStatusMessageChanged;
+        _statusMessageStore.CurrentValueChangedNotifier += OnCurrentStatusMessageChanged;
 
         CloseModalCommand = new NavigationCommand(closeModalNavigationScs);
 
@@ -74,15 +74,15 @@ public sealed class MainWindowVmd : BaseVmd
     public ICommand CloseSettingsCommand { get; }
 
 
-    public BaseVmd? CurrentViewModel => _mainWindowNavigationStore.MainWindowCurrentViewModel;
+    public BaseVmd? CurrentViewModel => _mainWindowNavigationStore.CurrentValue;
 
-    public BaseVmd? ModalCurrentViewModel => _modalNavigationStore.ModalMainWindowCurrentViewModel;
+    public BaseVmd? ModalCurrentViewModel => _modalNavigationStore.CurrentValue;
 
-    public BaseVmd? AdditionalCurrentViewModel => _additionalNavigationStore.AdditionalMainWindowCurrentViewModel;
+    public BaseVmd? AdditionalCurrentViewModel => _additionalVmdsNavigationStore.CurrentValue;
 
-    public AppExecutionState CurrentStatusMessage => _statusMessageStore.CurrentStatusMessage!;
+    public AppExecutionState CurrentStatusMessage => _statusMessageStore.CurrentValue!;
 
-    public bool AdditionalIsOpen => _additionalNavigationStore.IsOpen;
+    public bool AdditionalIsOpen => _additionalVmdsNavigationStore.IsOpen;
 
     public bool ModalIsOpen => _modalNavigationStore.IsOpen;
 
@@ -107,7 +107,7 @@ public sealed class MainWindowVmd : BaseVmd
         this.RaisePropertyChanged(nameof(ModalIsOpen));
     }
 
-    private void OnAdditionalCurrentViewModelChanged()
+    private void OnAdditionalVmdsCurrentViewModelChanged()
     {
         this.RaisePropertyChanged(nameof(AdditionalCurrentViewModel));
 

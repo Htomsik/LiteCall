@@ -23,7 +23,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
 
         _accountStore.CurrentAccountChange += SaveDataInFile;
 
-        _settingsStore.CurrentSettingsChanged += SaveDataInFile;
+        _settingsStore.CurrentValueChangedNotifier += SaveDataInFile;
     }
 
     public async void GetDataFromFile()
@@ -37,7 +37,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
             if (savedAccount?.MainAccount != null) _accountStore.CurrentAccount = savedAccount.MainAccount;
 
             if (savedAccount?.Settings != null)
-                _settingsStore.CurrentSettings = savedAccount.Settings;
+                _settingsStore.CurrentValue = savedAccount.Settings;
         }
         catch
         {
@@ -57,7 +57,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
             var jsonSerializeObject = JsonConvert.SerializeObject(new AppSavedMainAccount
             {
                 MainAccount = jsonNoNConvertedAccount,
-                Settings = _settingsStore.CurrentSettings
+                Settings = _settingsStore.CurrentValue
             });
 
             await File.WriteAllTextAsync(FilePath, jsonSerializeObject);

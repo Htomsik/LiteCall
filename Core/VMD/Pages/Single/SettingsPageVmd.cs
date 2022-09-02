@@ -9,7 +9,6 @@ using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
-using NAudio.CoreAudioApi;
 using ReactiveUI;
 
 namespace Core.VMD.Pages.Single;
@@ -38,7 +37,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
         AccountStore!.CurrentAccountChange += AccountStatusChange;
 
-        _settingsAccNavigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+        _settingsAccNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 
         AccountStatusChange();
         
@@ -63,7 +62,7 @@ public sealed class SettingsPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _outputDevices, value);
     }
 
-    public BaseVmd? AccountCurrentVmd => _settingsAccNavigationStore.SettingsAccCurrentViewModel;
+    public BaseVmd? AccountCurrentVmd => _settingsAccNavigationStore.CurrentValue;
 
     public ICommand LogoutAccCommand { get; }
 
@@ -107,23 +106,23 @@ public sealed class SettingsPageVmd : BaseVmd
 
     public int CaptureDeviceId
     {
-        get => SettingsStore!.CurrentSettings!.CaptureDeviceId;
+        get => SettingsStore!.CurrentValue!.CaptureDeviceId;
         set
         {
             this.RaiseAndSetIfChanged(ref _inputDeviceId, value);
 
-            SettingsStore!.CurrentSettings!.CaptureDeviceId = value;
+            SettingsStore!.CurrentValue!.CaptureDeviceId = value;
         }
     }
 
     public int OutputDeviceId
     {
-        get => SettingsStore!.CurrentSettings!.OutputDeviceId;
+        get => SettingsStore!.CurrentValue!.OutputDeviceId;
         set
         {
             this.RaiseAndSetIfChanged(ref _outputDeviceId, value);
 
-            SettingsStore!.CurrentSettings!.OutputDeviceId = value;
+            SettingsStore!.CurrentValue!.OutputDeviceId = value;
         }
     }
     

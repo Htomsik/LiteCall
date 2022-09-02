@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Core.VMD.Base;
 using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;

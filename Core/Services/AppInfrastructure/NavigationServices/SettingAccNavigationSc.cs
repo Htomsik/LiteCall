@@ -19,6 +19,6 @@ public sealed class SettingAccNavigationSc<TViewModel> : INavigationSc where TVi
 
     public void Navigate()
     {
-        _settingsAccNavigationStore.SettingsAccCurrentViewModel = _createViewModel();
+        _settingsAccNavigationStore.CurrentValue = _createViewModel();
     }
 }

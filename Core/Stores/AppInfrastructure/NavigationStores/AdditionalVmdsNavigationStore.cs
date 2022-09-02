@@ -3,11 +3,12 @@
 namespace Core.Stores.AppInfrastructure.NavigationStores;
 
 /// <summary>
-///     Store for modal vmds
+///     Additional vmds store (Settings/modal and other)
 /// </summary>
-public sealed class ModalNavigationStore : BaseVmdNavigationStore
+public sealed class AdditionalVmdsNavigationStore : BaseVmdNavigationStore
 {
     public bool IsOpen => CurrentValue != null;
     
     public void Close() => CurrentValue = default;
+    
 }

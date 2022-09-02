@@ -5,15 +5,15 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 
 public sealed class CloseAdditionalNavigationSc : INavigationSc
 {
-    private readonly AdditionalNavigationStore _navigationStore;
+    private readonly AdditionalVmdsNavigationStore _vmdsNavigationStore;
 
-    public CloseAdditionalNavigationSc(AdditionalNavigationStore navigationStore)
+    public CloseAdditionalNavigationSc(AdditionalVmdsNavigationStore vmdsNavigationStore)
     {
-        _navigationStore = navigationStore;
+        _vmdsNavigationStore = vmdsNavigationStore;
     }
 
     public void Navigate()
     {
-        _navigationStore.Close();
+        _vmdsNavigationStore.Close();
     }
 }

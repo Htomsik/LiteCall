@@ -34,7 +34,7 @@ internal static class StoresRegistration
 
         services.AddSingleton<MainWindowNavigationStore>();
 
-        services.AddSingleton<AdditionalNavigationStore>();
+        services.AddSingleton<AdditionalVmdsNavigationStore>();
 
         services.AddSingleton<ModalNavigationStore>();
 

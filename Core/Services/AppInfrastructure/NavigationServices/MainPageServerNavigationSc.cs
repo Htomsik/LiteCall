@@ -19,6 +19,6 @@ public sealed class MainPageServerNavigationScs<TViewModel> : INavigationSc wher
 
     public void Navigate()
     {
-        _mainPageServerNavigationStore.MainPageServerCurrentViewModel = _createViewModel();
+        _mainPageServerNavigationStore.CurrentValue = _createViewModel();
     }
 }

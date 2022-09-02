@@ -6,20 +6,20 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 
 public sealed class AdditionalNavigationSc<TViewModel> : INavigationSc where TViewModel : BaseVmd
 {
-    private readonly AdditionalNavigationStore _additionalNavigationStore;
+    private readonly AdditionalVmdsNavigationStore _additionalVmdsNavigationStore;
 
     private readonly Func<TViewModel> _createViewModel;
 
-    public AdditionalNavigationSc(AdditionalNavigationStore additionalNavigationStore,
+    public AdditionalNavigationSc(AdditionalVmdsNavigationStore additionalVmdsNavigationStore,
         Func<TViewModel> createViewModel)
     {
-        _additionalNavigationStore = additionalNavigationStore;
+        _additionalVmdsNavigationStore = additionalVmdsNavigationStore;
 
         _createViewModel = createViewModel;
     }
 
     public void Navigate()
     {
-        _additionalNavigationStore.AdditionalMainWindowCurrentViewModel = _createViewModel();
+        _additionalVmdsNavigationStore.CurrentValue = _createViewModel();
     }
 }

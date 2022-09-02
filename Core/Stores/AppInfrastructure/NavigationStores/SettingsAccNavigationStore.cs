@@ -1,31 +1,12 @@
-﻿using Core.VMD.Base;
+﻿using Core.Stores.AppInfrastructure.NavigationStores.Base;
 
 namespace Core.Stores.AppInfrastructure.NavigationStores;
 
-public sealed class SettingsAccNavigationStore
+/// <summary>
+///     Store vmds for settings
+/// </summary>
+public sealed class SettingsAccNavigationStore : BaseVmdNavigationStore
 {
-    private BaseVmd? _settingsAccCurrentViewModel;
-
-    public BaseVmd? SettingsAccCurrentViewModel
-    {
-        get => _settingsAccCurrentViewModel;
-        set
-        {
-            _settingsAccCurrentViewModel = value;
-            OnCurrentViewModelChanged();
-        }
-    }
-
-    public event Action? CurrentViewModelChanged;
-
-
-    public void Close()
-    {
-        SettingsAccCurrentViewModel = null;
-    }
-
-    private void OnCurrentViewModelChanged()
-    {
-        CurrentViewModelChanged?.Invoke();
-    }
+    public void Close() => CurrentValue = null;
+    
 }

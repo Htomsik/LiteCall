@@ -21,6 +21,6 @@ public sealed class NavigationSc<TViewModel> : INavigationSc where TViewModel : 
 
     public void Navigate()
     {
-        _mainWindowNavigationStore.MainWindowCurrentViewModel = _createViewModel();
+        _mainWindowNavigationStore.CurrentValue = _createViewModel();
     }
 }

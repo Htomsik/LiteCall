@@ -18,6 +18,6 @@ public sealed class ModalNavigateSc<TViewModel> : INavigationSc where TViewModel
 
     public void Navigate()
     {
-        _modalNavigationStore.ModalMainWindowCurrentViewModel = _createViewModel();
+        _modalNavigationStore.CurrentValue = _createViewModel();
     }
 }

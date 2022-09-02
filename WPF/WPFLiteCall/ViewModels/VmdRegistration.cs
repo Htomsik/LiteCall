@@ -1,12 +1,10 @@
 ﻿using System;
-using Core.Services;
 using Core.Services.AccountManagement.Authorization;
 using Core.Services.AccountManagement.Captcha;
 using Core.Services.AccountManagement.PasswordRecovery;
 using Core.Services.AccountManagement.PasswordRecovery.Questions;
 using Core.Services.AccountManagement.Registration;
 using Core.Services.AppInfrastructure.NavigationServices;
-using Core.Services.Connections;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
@@ -116,7 +114,7 @@ internal static class VmdRegistration
 
 
         services.AddSingleton(s => new MainWindowVmd(
-            s.GetRequiredService<MainWindowNavigationStore>(), s.GetRequiredService<AdditionalNavigationStore>(),
+            s.GetRequiredService<MainWindowNavigationStore>(), s.GetRequiredService<AdditionalVmdsNavigationStore>(),
             s.GetRequiredService<ModalNavigationStore>(),
             s.GetRequiredService<AppExecutionStateStore>(),
             s.GetRequiredService<CloseModalNavigationSc>(),
@@ -159,7 +157,7 @@ internal static class VmdRegistration
     private static INavigationSc CreateSettingPageNavigationService(IServiceProvider serviceProvider)
     {
         return new AdditionalNavigationSc<SettingsPageVmd>(
-            serviceProvider.GetRequiredService<AdditionalNavigationStore>(),
+            serviceProvider.GetRequiredService<AdditionalVmdsNavigationStore>(),
             serviceProvider.GetRequiredService<SettingsPageVmd>);
     }
 

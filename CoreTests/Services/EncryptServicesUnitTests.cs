@@ -1,5 +1,4 @@
 ﻿using Core.Services.Extra;
-using Core.Services.Interfaces.Extra;
 
 namespace CoreTests.Services;
 
