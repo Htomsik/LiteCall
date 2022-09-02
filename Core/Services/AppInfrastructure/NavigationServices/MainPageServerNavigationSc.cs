@@ -7,18 +7,18 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 public sealed class MainPageServerNavigationScs<TViewModel> : INavigationSc where TViewModel : BaseVmd
 {
     private readonly Func<TViewModel> _createViewModel;
-    private readonly MainPageServerNavigationStore _mainPageServerNavigationStore;
+    private readonly ServerVmdNavigationStore _serverVmdNavigationStore;
 
-    public MainPageServerNavigationScs(MainPageServerNavigationStore MainPageServerNavigationStore,
+    public MainPageServerNavigationScs(ServerVmdNavigationStore serverVmdNavigationStore,
         Func<TViewModel> createViewModel)
     {
-        _mainPageServerNavigationStore = MainPageServerNavigationStore;
+        _serverVmdNavigationStore = serverVmdNavigationStore;
 
         _createViewModel = createViewModel;
     }
 
     public void Navigate()
     {
-        _mainPageServerNavigationStore.CurrentValue = _createViewModel();
+        _serverVmdNavigationStore.CurrentValue = _createViewModel();
     }
 }

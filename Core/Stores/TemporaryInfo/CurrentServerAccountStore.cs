@@ -6,7 +6,6 @@ namespace Core.Stores.TemporaryInfo;
 
 public sealed class CurrentServerAccountStore : BaseVmd
 {
-    
     [Reactive]
     public Account? CurrentAccount { get; set; }
     

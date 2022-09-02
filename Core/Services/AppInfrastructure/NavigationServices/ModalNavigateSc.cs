@@ -7,17 +7,17 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 public sealed class ModalNavigateSc<TViewModel> : INavigationSc where TViewModel : BaseVmd
 {
     private readonly Func<TViewModel> _createViewModel;
-    private readonly ModalNavigationStore _modalNavigationStore;
+    private readonly ModalVmdNavigationStore _modalVmdNavigationStore;
 
-    public ModalNavigateSc(ModalNavigationStore modalNavigationStore, Func<TViewModel> createViewModel)
+    public ModalNavigateSc(ModalVmdNavigationStore modalVmdNavigationStore, Func<TViewModel> createViewModel)
     {
-        _modalNavigationStore = modalNavigationStore;
+        _modalVmdNavigationStore = modalVmdNavigationStore;
 
         _createViewModel = createViewModel;
     }
 
     public void Navigate()
     {
-        _modalNavigationStore.CurrentValue = _createViewModel();
+        _modalVmdNavigationStore.CurrentValue = _createViewModel();
     }
 }

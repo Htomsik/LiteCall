@@ -83,7 +83,7 @@ internal static class VmdRegistration
                 s.GetRequiredService<CurrentServerAccountStore>(),
                 s.GetRequiredService<SavedServersStore>(),
                 s.GetRequiredService<CurrentServerStore>(),
-                s.GetRequiredService<MainPageServerNavigationStore>(),
+                s.GetRequiredService<ServerVmdNavigationStore>(),
                 CreateSettingPageNavigationService(s),
                 CreateServerPageNavigationService(s),
                 CreateModalAuthorizationPageNavigationService(s),
@@ -97,7 +97,7 @@ internal static class VmdRegistration
             s.GetRequiredService<SavedServersStore>(), s.GetRequiredService<AppSettingsStore>(),
             CreateAutPageNavigationServices(s), s.GetRequiredService<IHttpDataSc>(),
             s.GetRequiredService<IStatusSc>(),
-            s.GetRequiredService<SettingsAccNavigationStore>()
+            s.GetRequiredService<SettingsAccountVmdNavigationStore>()
         ));
         
         
@@ -114,8 +114,8 @@ internal static class VmdRegistration
 
 
         services.AddSingleton(s => new MainWindowVmd(
-            s.GetRequiredService<MainWindowNavigationStore>(), s.GetRequiredService<AdditionalVmdsNavigationStore>(),
-            s.GetRequiredService<ModalNavigationStore>(),
+            s.GetRequiredService<MainWindowVmdNavigationStore>(), s.GetRequiredService<AdditionalVmdsNavigationStore>(),
+            s.GetRequiredService<ModalVmdNavigationStore>(),
             s.GetRequiredService<AppExecutionStateStore>(),
             s.GetRequiredService<CloseModalNavigationSc>(),
             s.GetRequiredService<CloseAdditionalNavigationSc>(), 
@@ -131,26 +131,26 @@ internal static class VmdRegistration
     private static INavigationSc CreateAutPageNavigationServices(IServiceProvider serviceProvider)
     {
         return new SettingAccNavigationSc<AuthorizationPageVmd>
-        (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
+        (serviceProvider.GetRequiredService<SettingsAccountVmdNavigationStore>(),
             serviceProvider.GetRequiredService<AuthorizationPageVmd>);
     }
     private static INavigationSc CreateRegistrationPageNavigationServices(IServiceProvider serviceProvider)
     {
         return new SettingAccNavigationSc<RegistrationPageVmd>
-        (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
+        (serviceProvider.GetRequiredService<SettingsAccountVmdNavigationStore>(),
             serviceProvider.GetRequiredService<RegistrationPageVmd>);
     }
 
     private static INavigationSc CreatePasswordRecoveryPageNavigationService(IServiceProvider serviceProvider)
     {
         return new SettingAccNavigationSc<PasswordRecoveryVmd>
-        (serviceProvider.GetRequiredService<SettingsAccNavigationStore>(),
+        (serviceProvider.GetRequiredService<SettingsAccountVmdNavigationStore>(),
             serviceProvider.GetRequiredService<PasswordRecoveryVmd>);
     }
 
     private static INavigationSc CreateMainPageNavigationServices(IServiceProvider serviceProvider)
     {
-        return new NavigationSc<MainPageVmd>(serviceProvider.GetRequiredService<MainWindowNavigationStore>(),
+        return new NavigationSc<MainPageVmd>(serviceProvider.GetRequiredService<MainWindowVmdNavigationStore>(),
             serviceProvider.GetRequiredService<MainPageVmd>);
     }
 
@@ -164,7 +164,7 @@ internal static class VmdRegistration
     private static INavigationSc CreateServerPageNavigationService(IServiceProvider serviceProvider)
     {
         return new MainPageServerNavigationScs<ServerVmd>(
-            serviceProvider.GetRequiredService<MainPageServerNavigationStore>(),
+            serviceProvider.GetRequiredService<ServerVmdNavigationStore>(),
             serviceProvider.GetRequiredService<ServerVmd>);
     }
 
@@ -175,27 +175,27 @@ internal static class VmdRegistration
     private static INavigationSc CreateModalRegistrationPageNavigationServices(IServiceProvider serviceProvider)
     {
         return new ModalNavigateSc<ServerRegistrationModalVmd>
-        (serviceProvider.GetRequiredService<ModalNavigationStore>(),
+        (serviceProvider.GetRequiredService<ModalVmdNavigationStore>(),
             serviceProvider.GetRequiredService<ServerRegistrationModalVmd>);
     }
 
     private static INavigationSc CreateModalAuthorizationPageNavigationService(IServiceProvider serviceProvider)
     {
         return new ModalNavigateSc<ServerAuthorizationModalVmd>(
-            serviceProvider.GetRequiredService<ModalNavigationStore>(),
+            serviceProvider.GetRequiredService<ModalVmdNavigationStore>(),
             serviceProvider.GetRequiredService<ServerAuthorizationModalVmd>);
     }
 
     private static INavigationSc CreateModalPasswordRecoveryPageNavigationService(IServiceProvider serviceProvider)
     {
         return new ModalNavigateSc<ServerPasswordRecoveryModalVmd>(
-            serviceProvider.GetRequiredService<ModalNavigationStore>(),
+            serviceProvider.GetRequiredService<ModalVmdNavigationStore>(),
             serviceProvider.GetRequiredService<ServerPasswordRecoveryModalVmd>);
     }
     
     private static INavigationSc CreateModalServerConnectionNavigationService(IServiceProvider serviceProvider)
     {
-        return new ModalNavigateSc<ServerConnectionVmd>(serviceProvider.GetRequiredService<ModalNavigationStore>(), serviceProvider.GetRequiredService<ServerConnectionVmd>);
+        return new ModalNavigateSc<ServerConnectionVmd>(serviceProvider.GetRequiredService<ModalVmdNavigationStore>(), serviceProvider.GetRequiredService<ServerConnectionVmd>);
     }
 
     #endregion

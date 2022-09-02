@@ -9,11 +9,11 @@ public sealed class NavigationSc<TViewModel> : INavigationSc where TViewModel : 
 {
     private readonly Func<TViewModel> _createViewModel;
     
-    private readonly MainWindowNavigationStore _mainWindowNavigationStore;
+    private readonly MainWindowVmdNavigationStore _mainWindowVmdNavigationStore;
 
-    public NavigationSc(MainWindowNavigationStore mainWindowNavigationStore, Func<TViewModel> createViewModel)
+    public NavigationSc(MainWindowVmdNavigationStore mainWindowVmdNavigationStore, Func<TViewModel> createViewModel)
     {
-        _mainWindowNavigationStore = mainWindowNavigationStore;
+        _mainWindowVmdNavigationStore = mainWindowVmdNavigationStore;
 
         _createViewModel = createViewModel;
     }
@@ -21,6 +21,6 @@ public sealed class NavigationSc<TViewModel> : INavigationSc where TViewModel : 
 
     public void Navigate()
     {
-        _mainWindowNavigationStore.CurrentValue = _createViewModel();
+        _mainWindowVmdNavigationStore.CurrentValue = _createViewModel();
     }
 }

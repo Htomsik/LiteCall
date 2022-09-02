@@ -5,8 +5,6 @@ namespace Core.Stores.AppInfrastructure.NavigationStores;
 /// <summary>
 ///     Store vmds for settings
 /// </summary>
-public sealed class SettingsAccNavigationStore : BaseVmdNavigationStore
+public sealed class SettingsAccountVmdNavigationStore : BaseVmdNavigationStore
 {
-    public void Close() => CurrentValue = null;
-    
 }

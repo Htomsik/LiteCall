@@ -12,8 +12,6 @@ public sealed class CloseAdditionalNavigationSc : INavigationSc
         _vmdsNavigationStore = vmdsNavigationStore;
     }
 
-    public void Navigate()
-    {
-        _vmdsNavigationStore.Close();
-    }
+    public void Navigate() => _vmdsNavigationStore.CurrentValue = default;
+
 }

@@ -7,7 +7,4 @@ namespace Core.Stores.AppInfrastructure.NavigationStores;
 /// </summary>
 public sealed class AdditionalVmdsNavigationStore : BaseVmdNavigationStore
 {
-    
-    public void Close() => CurrentValue = default;
-    
 }

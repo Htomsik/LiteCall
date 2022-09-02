@@ -3,8 +3,8 @@
 namespace Core.Stores.AppInfrastructure.NavigationStores;
 
 /// <summary>
-///     Server pages store
+///     Store for modal vmds
 /// </summary>
-public sealed class MainPageServerNavigationStore : BaseVmdNavigationStore
+public sealed class ModalVmdNavigationStore : BaseVmdNavigationStore
 {
 }

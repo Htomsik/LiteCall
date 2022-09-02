@@ -32,15 +32,15 @@ internal static class StoresRegistration
 
         #region NavigationStores
 
-        services.AddSingleton<MainWindowNavigationStore>();
+        services.AddSingleton<MainWindowVmdNavigationStore>();
 
         services.AddSingleton<AdditionalVmdsNavigationStore>();
 
-        services.AddSingleton<ModalNavigationStore>();
+        services.AddSingleton<ModalVmdNavigationStore>();
 
-        services.AddSingleton<SettingsAccNavigationStore>();
+        services.AddSingleton<SettingsAccountVmdNavigationStore>();
 
-        services.AddSingleton<MainPageServerNavigationStore>();
+        services.AddSingleton<ServerVmdNavigationStore>();
 
         #endregion
 

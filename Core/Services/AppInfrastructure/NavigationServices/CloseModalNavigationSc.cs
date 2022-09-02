@@ -5,16 +5,16 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 
 public sealed class CloseModalNavigationSc : INavigationSc
 {
-    private readonly ModalNavigationStore _modalNavigationStore;
+    private readonly ModalVmdNavigationStore _modalVmdNavigationStore;
 
 
-    public CloseModalNavigationSc(ModalNavigationStore modalNavigationStore)
+    public CloseModalNavigationSc(ModalVmdNavigationStore modalVmdNavigationStore)
     {
-        _modalNavigationStore = modalNavigationStore;
+        _modalVmdNavigationStore = modalVmdNavigationStore;
     }
 
     public void Navigate()
     {
-        _modalNavigationStore.Close();
+        _modalVmdNavigationStore.CurrentValue = default;
     }
 }

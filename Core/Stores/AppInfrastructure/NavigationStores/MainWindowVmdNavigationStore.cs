@@ -3,9 +3,8 @@
 namespace Core.Stores.AppInfrastructure.NavigationStores;
 
 /// <summary>
-///     Store for modal vmds
+///     MainWindow vmd store
 /// </summary>
-public sealed class ModalNavigationStore : BaseVmdNavigationStore
+public sealed class MainWindowVmdNavigationStore : BaseVmdNavigationStore
 {
-    public void Close() => CurrentValue = default;
 }

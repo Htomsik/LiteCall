@@ -18,27 +18,27 @@ public sealed class MainWindowVmd : BaseVmd
 
     private readonly IConfiguration _configuration;
 
-    private readonly MainWindowNavigationStore _mainWindowNavigationStore;
+    private readonly MainWindowVmdNavigationStore _mainWindowVmdNavigationStore;
 
-    private readonly ModalNavigationStore _modalNavigationStore;
+    private readonly ModalVmdNavigationStore _modalVmdNavigationStore;
 
     private readonly AppExecutionStateStore _statusMessageStore;
 
 
-    public MainWindowVmd(MainWindowNavigationStore mainWindowNavigationStore,
+    public MainWindowVmd(MainWindowVmdNavigationStore mainWindowVmdNavigationStore,
         AdditionalVmdsNavigationStore additionalVmdsNavigationStore,
-        ModalNavigationStore modalNavigationStore,
+        ModalVmdNavigationStore modalVmdNavigationStore,
         AppExecutionStateStore statusMessageStore,
         INavigationSc closeModalNavigationScs,
         INavigationSc closeAdditionalNavigationSc,
         ICloseAppSc closeAppSc,
         IConfiguration configuration)
     {
-        _mainWindowNavigationStore = mainWindowNavigationStore;
+        _mainWindowVmdNavigationStore = mainWindowVmdNavigationStore;
 
         _additionalVmdsNavigationStore = additionalVmdsNavigationStore;
 
-        _modalNavigationStore = modalNavigationStore;
+        _modalVmdNavigationStore = modalVmdNavigationStore;
 
         _statusMessageStore = statusMessageStore;
 
@@ -46,11 +46,11 @@ public sealed class MainWindowVmd : BaseVmd
 
         _configuration = configuration;
 
-        _mainWindowNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
+        _mainWindowVmdNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 
         _additionalVmdsNavigationStore.CurrentValueChangedNotifier += OnAdditionalVmdsCurrentViewModelChanged;
 
-        _modalNavigationStore.CurrentValueChangedNotifier += OnModalCurrentViewModelChanged;
+        _modalVmdNavigationStore.CurrentValueChangedNotifier += OnModalVmdCurrentViewModelChanged;
 
         _statusMessageStore.CurrentValueChangedNotifier += OnCurrentStatusMessageChanged;
 
@@ -74,9 +74,9 @@ public sealed class MainWindowVmd : BaseVmd
     public ICommand CloseSettingsCommand { get; }
 
 
-    public BaseVmd? CurrentViewModel => _mainWindowNavigationStore.CurrentValue;
+    public BaseVmd? CurrentViewModel => _mainWindowVmdNavigationStore.CurrentValue;
 
-    public BaseVmd? ModalCurrentViewModel => _modalNavigationStore.CurrentValue;
+    public BaseVmd? ModalCurrentViewModel => _modalVmdNavigationStore.CurrentValue;
 
     public BaseVmd? AdditionalCurrentViewModel => _additionalVmdsNavigationStore.CurrentValue;
 
@@ -84,7 +84,7 @@ public sealed class MainWindowVmd : BaseVmd
 
     public bool AdditionalIsOpen => _additionalVmdsNavigationStore.CurrentValue is not null;
 
-    public bool ModalIsOpen => _modalNavigationStore.CurrentValue is not null;
+    public bool ModalIsOpen => _modalVmdNavigationStore.CurrentValue is not null;
 
     public bool StatusMessageIsOpen =>  !string.IsNullOrEmpty(_statusMessageStore?.CurrentValue?.Message);
 
@@ -100,7 +100,7 @@ public sealed class MainWindowVmd : BaseVmd
     }
 
 
-    private void OnModalCurrentViewModelChanged()
+    private void OnModalVmdCurrentViewModelChanged()
     {
         this.RaisePropertyChanged(nameof(ModalCurrentViewModel));
 

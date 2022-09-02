@@ -4,15 +4,21 @@ using Core.Models.Users;
 namespace Core.Stores.TemporaryInfo;
 
 /// <summary>
-///     Store wit Account of main server
+///     Store with account of main server
 /// </summary>
-public class MainAccountStore:BaseLazyStore<Account>
+public class MainAccountStore:BaseLazyCustomDefaultStore<Account>
 {
-    private readonly Account? _defaultAccount = new Account { Login = "LC_User" };
-    public MainAccountStore() =>  CurrentValue = _defaultAccount;
+    public bool IsDefaultAccount => CurrentValue == DefaultValue;
     
-    public bool IsDefaultAccount => CurrentValue == _defaultAccount;
+    public void Logout() => CurrentValue = null;
+
+    #region Constructors
     
-    public void Logout() => CurrentValue = _defaultAccount;
-  
+    public MainAccountStore() : base(null,new Account { Login = "LC_User" })
+    {
+        
+    }
+
+    #endregion
+   
 }

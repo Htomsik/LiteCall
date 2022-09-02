@@ -7,18 +7,18 @@ namespace Core.Services.AppInfrastructure.NavigationServices;
 public sealed class SettingAccNavigationSc<TViewModel> : INavigationSc where TViewModel : BaseVmd
 {
     private readonly Func<TViewModel> _createViewModel;
-    private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
+    private readonly SettingsAccountVmdNavigationStore _settingsAccountVmdNavigationStore;
 
-    public SettingAccNavigationSc(SettingsAccNavigationStore settingsAccNavigationStore,
+    public SettingAccNavigationSc(SettingsAccountVmdNavigationStore settingsAccountVmdNavigationStore,
         Func<TViewModel> createViewModel)
     {
-        _settingsAccNavigationStore = settingsAccNavigationStore;
+        _settingsAccountVmdNavigationStore = settingsAccountVmdNavigationStore;
 
         _createViewModel = createViewModel;
     }
 
     public void Navigate()
     {
-        _settingsAccNavigationStore.CurrentValue = _createViewModel();
+        _settingsAccountVmdNavigationStore.CurrentValue = _createViewModel();
     }
 }

@@ -19,7 +19,7 @@ public sealed class MainPageVmd : BaseVmd
     public MainPageVmd(MainAccountStore? accountStore, CurrentServerAccountStore? currentServerAccountStore,
         SavedServersStore? savedServersStore,
         CurrentServerStore? currentServerStore,
-        MainPageServerNavigationStore mainPageServerNavigationStore,
+        ServerVmdNavigationStore serverVmdNavigationStore,
         INavigationSc settingsPageNavigationSc,
         INavigationSc serverPageNavigationSc,
         INavigationSc openModalServerAuthorizationNavigationSc,
@@ -38,7 +38,7 @@ public sealed class MainPageVmd : BaseVmd
 
         _authorizationServices = authorizationApiServices;
 
-        _mainPageServerNavigationStore = mainPageServerNavigationStore;
+        _serverVmdNavigationStore = serverVmdNavigationStore;
 
         _serverPageNavigationSc = serverPageNavigationSc;
 
@@ -67,7 +67,7 @@ public sealed class MainPageVmd : BaseVmd
 
         CurrentServerStore!.CurrentServerChanged += CurrentServerChanged;
 
-        _mainPageServerNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
+        _serverVmdNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 
         this.WhenAnyPropertyChanged();
 
@@ -90,7 +90,7 @@ public sealed class MainPageVmd : BaseVmd
 
         SelectedViewModel.Dispose();
         
-        _mainPageServerNavigationStore.CurrentValue = null;
+        _serverVmdNavigationStore.CurrentValue = null;
     }
 
     #region Команды
@@ -255,9 +255,9 @@ public sealed class MainPageVmd : BaseVmd
 
     private readonly IAuthorizationSc? _authorizationServices;
 
-    private readonly MainPageServerNavigationStore _mainPageServerNavigationStore;
+    private readonly ServerVmdNavigationStore _serverVmdNavigationStore;
 
-    public BaseVmd? SelectedViewModel => _mainPageServerNavigationStore.CurrentValue;
+    public BaseVmd? SelectedViewModel => _serverVmdNavigationStore.CurrentValue;
 
     #endregion
 }

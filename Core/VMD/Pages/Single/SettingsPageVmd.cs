@@ -17,7 +17,7 @@ public sealed class SettingsPageVmd : BaseVmd
 {
     public SettingsPageVmd(MainAccountStore? accountStore, SavedServersStore? savedServersStore, AppSettingsStore? settingsStore,
         INavigationSc authNavigationSc, IHttpDataSc httpDataSc, IStatusSc statusSc,
-        SettingsAccNavigationStore settingsAccNavigationStore)
+        SettingsAccountVmdNavigationStore settingsAccountVmdNavigationStore)
     {
         AccountStore = accountStore;
 
@@ -25,7 +25,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
         SettingsStore = settingsStore;
 
-        _settingsAccNavigationStore = settingsAccNavigationStore;
+        _settingsAccountVmdNavigationStore = settingsAccountVmdNavigationStore;
 
         _authNavigationSc = authNavigationSc;
 
@@ -37,7 +37,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
         AccountStore.CurrentValueChangedNotifier += AccountStatusChange;
 
-        _settingsAccNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
+        _settingsAccountVmdNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
 
         AccountStatusChange();
         
@@ -62,7 +62,7 @@ public sealed class SettingsPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _outputDevices, value);
     }
 
-    public BaseVmd? AccountCurrentVmd => _settingsAccNavigationStore.CurrentValue;
+    public BaseVmd? AccountCurrentVmd => _settingsAccountVmdNavigationStore.CurrentValue;
 
     public ICommand LogoutAccCommand { get; }
 
@@ -106,7 +106,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
     public int CaptureDeviceId
     {
-        get => SettingsStore!.CurrentValue!.CaptureDeviceId;
+        get => SettingsStore.CurrentValue.CaptureDeviceId;
         set
         {
             this.RaiseAndSetIfChanged(ref _inputDeviceId, value);
@@ -138,7 +138,7 @@ public sealed class SettingsPageVmd : BaseVmd
         if (AccountStore.IsDefaultAccount)
             _authNavigationSc.Navigate();
         else
-            _settingsAccNavigationStore.Close();
+            _settingsAccountVmdNavigationStore.CurrentValue = default;
     }
  
     private IObservable<bool> CanAddNewServerExecute() => this.WhenAnyValue(x=>
@@ -195,7 +195,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
     private MainAccountStore? _accountStore;
 
-    private readonly SettingsAccNavigationStore _settingsAccNavigationStore;
+    private readonly SettingsAccountVmdNavigationStore _settingsAccountVmdNavigationStore;
 
     private SavedServersStore? _savedServersStore;
 
