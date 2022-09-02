@@ -12,9 +12,9 @@ using Core.Stores.TemporaryInfo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LiteCall.Services;
+namespace Core.IOC;
 
-internal static class ServicesRegistration
+public static class ServicesRegistration
 {
     public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -40,9 +40,7 @@ internal static class ServicesRegistration
         services.AddSingleton<IHttpDataSc, HttpDataSc>(s =>
             new HttpDataSc(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),
                 configuration, s.GetRequiredService<HttpClientStore>()));
-
-        services.AddTransient<ICloseAppSc, CloseAppSc>();
-
+        
         services.AddTransient<ISyncDataOnServerSc, SynchronizeDataOnServerSc>();
 
         services.AddTransient<IChatServerSc, ChatServerSc>();

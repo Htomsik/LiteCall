@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using System.Windows;
 using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.IOC;
 using Core.Services.AppInfrastructure.FileServices;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.VMD.Windows;
+using LiteCall.IOC;
 using LiteCall.Services;
-using LiteCall.Stores;
-using LiteCall.ViewModels;
 using LiteCall.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -76,6 +76,7 @@ public partial class App : Application
 
         services
             .RegisterServices(host.Configuration)
+            .RegisterWpfServices()
             .RegisterStores()
             .RegisterVmd(host.Configuration);
     }

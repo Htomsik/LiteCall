@@ -1,5 +1,4 @@
-﻿using System;
-using AppInfrastructure.Services.NavigationServices.Navigation;
+﻿using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Services.AccountManagement.Authorization;
 using Core.Services.AccountManagement.Captcha;
 using Core.Services.AccountManagement.PasswordRecovery;
@@ -22,9 +21,9 @@ using Core.VMD.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LiteCall.ViewModels;
+namespace Core.IOC;
 
-internal static class VmdRegistration
+public static class VmdRegistration
 {
     public static IServiceCollection RegisterVmd(this IServiceCollection services, IConfiguration configuration)
     {

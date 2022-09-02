@@ -4,9 +4,9 @@ using Core.Stores.Connections;
 using Core.Stores.TemporaryInfo;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LiteCall.Stores;
+namespace Core.IOC;
 
-internal static class StoresRegistration
+public static class StoresRegistration
 {
     public static IServiceCollection RegisterStores(this IServiceCollection services)
     {
