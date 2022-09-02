@@ -1,6 +1,4 @@
-﻿using AppInfrastructure.Services.NavigationServices.Navigation;
-using AppInfrastructure.Services.StoreServices;
-using Core.Services.Interfaces.AppInfrastructure;
+﻿using AppInfrastructure.Services.StoreServices;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.Base;
 

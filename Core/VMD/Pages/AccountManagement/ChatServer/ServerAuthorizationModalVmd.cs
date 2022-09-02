@@ -1,6 +1,5 @@
 ﻿using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Services.Interfaces.AccountManagement;
-using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
 
 namespace Core.VMD.Pages.AccountManagement.ChatServer;

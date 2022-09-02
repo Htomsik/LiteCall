@@ -1,8 +1,6 @@
 ﻿using AppInfrastructure.Services.NavigationServices.Close;
-using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
-using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 

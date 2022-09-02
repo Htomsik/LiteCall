@@ -1,6 +1,5 @@
 ﻿using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD.Base;
-using Core.Services.Interfaces.AppInfrastructure;
 
 namespace Core.Infrastructure.CMD;
 

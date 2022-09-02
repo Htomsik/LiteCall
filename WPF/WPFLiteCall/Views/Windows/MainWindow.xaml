@@ -71,9 +71,10 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <!--MainPage vmds-->
             <ContentControl
                 Grid.Row="1"
-                Content="{Binding CurrentViewModel}"
+                Content="{Binding MainPageCurrentVmd}"
                 LostFocus="LostFocus"
                 SizeChanged="SizeChanged">
                 <ContentControl.Resources>
@@ -104,7 +105,7 @@
 
                 <ContentControl
                     VerticalAlignment="Stretch"
-                    Content="{Binding AdditionalCurrentViewModel}">
+                    Content="{Binding CurrentAdditionalVmd}">
 
                     <ContentControl.Resources>
 
@@ -172,7 +173,7 @@
                         Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        Content="{Binding ModalCurrentViewModel}">
+                        Content="{Binding ModalCurrentVmd}">
 
                         <ContentControl.Resources>
 
