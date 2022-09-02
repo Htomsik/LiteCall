@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.Saved;
 using Core.Models.Users;
@@ -20,10 +21,10 @@ public sealed class MainPageVmd : BaseVmd
         SavedServersStore? savedServersStore,
         CurrentServerStore? currentServerStore,
         ServerVmdNavigationStore serverVmdNavigationStore,
-        INavigationSc settingsPageNavigationSc,
-        INavigationSc serverPageNavigationSc,
-        INavigationSc openModalServerAuthorizationNavigationSc,
-        INavigationSc openModalServerConnectionNavigationSc,
+        INavigationServices settingsPageNavigationServices,
+        INavigationServices serverPageNavigationServices,
+        INavigationServices openModalServerAuthorizationNavigationServices,
+        INavigationServices openModalServerConnectionNavigationServices,
         IAuthorizationSc? authorizationApiServices,
         IStatusSc statusSc,
         IHttpDataSc httpDataSc)
@@ -40,19 +41,19 @@ public sealed class MainPageVmd : BaseVmd
 
         _serverVmdNavigationStore = serverVmdNavigationStore;
 
-        _serverPageNavigationSc = serverPageNavigationSc;
+        _serverPageNavigationServices = serverPageNavigationServices;
 
         _statusSc = statusSc;
 
         _httpDataSc = httpDataSc;
 
 
-        ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationSc,
+        ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationServices,
             CanModalRegistrationOpenCommandExecuted);
 
-        ModalServerConnectionCommand = new NavigationCommand(openModalServerConnectionNavigationSc);
+        ModalServerConnectionCommand = new NavigationCommand(openModalServerConnectionNavigationServices);
 
-        OpenSettingsCommand = new NavigationCommand(settingsPageNavigationSc);
+        OpenSettingsCommand = new NavigationCommand(settingsPageNavigationServices);
         
         DisconnectServerCommand = ReactiveCommand.CreateFromTask(_ => CurrentServerStore?.Delete()!);
 
@@ -142,7 +143,7 @@ public sealed class MainPageVmd : BaseVmd
         
         CurrentServerStore!.CurrentServer = SelectedServerAccount.SavedServer;
 
-        _serverPageNavigationSc.Navigate();
+        _serverPageNavigationServices.Navigate();
         
     }
 
@@ -246,7 +247,7 @@ public sealed class MainPageVmd : BaseVmd
 
     public bool ButtonVisibleStatus => CurrentServerStore!.CurrentServer is null;
     
-    private readonly INavigationSc _serverPageNavigationSc;
+    private readonly INavigationServices _serverPageNavigationServices;
 
     private readonly IStatusSc _statusSc;
 

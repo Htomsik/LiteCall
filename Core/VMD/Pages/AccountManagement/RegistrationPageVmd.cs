@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
@@ -52,7 +53,7 @@ public class RegistrationPageVmd : BaseVmd
 
     private Question? _selectedQuestion;
 
-    public RegistrationPageVmd(INavigationSc authPageNavigationScs,
+    public RegistrationPageVmd(INavigationServices authPageNavigationServiceses,
         IRegistrationSc registrationSc, IStatusSc statusSc,
         IGetCaptchaSc getCaptchaSc, IGetRecoveryQuestionsSc getRecoveryQuestionsSc,
         IEncryptSc encryptSc)
@@ -70,7 +71,7 @@ public class RegistrationPageVmd : BaseVmd
         
         OpenModalCommand = ReactiveCommand.CreateFromTask(OnOpenModalCommandExecuted, CanOpenModalCommandExecute());
         
-        OpenAuthPageCommand = new NavigationCommand(authPageNavigationScs);
+        OpenAuthPageCommand = new NavigationCommand(authPageNavigationServiceses);
         
      
         

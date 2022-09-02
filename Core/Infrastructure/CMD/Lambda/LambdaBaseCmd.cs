@@ -6,12 +6,12 @@ namespace Core.Infrastructure.CMD.Lambda;
 /// <summary>
 /// Dont use it
 /// </summary>
-public class LambdaCmd:CmdBase
+public class LambdaBaseCmd:BaseCmd
 {
     private readonly Func<object, bool> _canExecute;
     private readonly Action<object> _execute;
 
-    public LambdaCmd(Action<object> execute, Func<object, bool> canExecute = null!)
+    public LambdaBaseCmd(Action<object> execute, Func<object, bool> canExecute = null!)
     {
         _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         _canExecute = canExecute;

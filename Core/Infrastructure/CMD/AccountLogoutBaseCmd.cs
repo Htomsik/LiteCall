@@ -3,11 +3,11 @@ using Core.Stores.TemporaryInfo;
 
 namespace Core.Infrastructure.CMD;
 
-public class AccountLogoutCmd:CmdBase
+public class AccountLogoutBaseCmd:BaseCmd
 {
   private readonly MainAccountStore? _currentAccountStore;
 
-    public AccountLogoutCmd(MainAccountStore? currentAccountStore)
+    public AccountLogoutBaseCmd(MainAccountStore? currentAccountStore)
     {
         _currentAccountStore = currentAccountStore;
     }

@@ -1,4 +1,6 @@
-﻿using Core.Models.Users;
+﻿using AppInfrastructure.Services.NavigationServices.Close;
+using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
@@ -8,7 +10,7 @@ namespace Core.Services.AccountManagement.Authorization;
 
 public sealed class AuthorizationApiServerSc : IAuthorizationSc
 {
-    private readonly INavigationSc _closeModalNavigationSc;
+    private readonly ICloseServices _closeModalNavigationServices;
 
     private readonly CurrentServerStore _currentServerStore;
 
@@ -17,14 +19,14 @@ public sealed class AuthorizationApiServerSc : IAuthorizationSc
     private readonly SavedServersStore _savedServersStore;
 
     public AuthorizationApiServerSc(SavedServersStore savedServersStore,
-        CurrentServerStore currentServerStore, INavigationSc closeModalNavigationSc,
+        CurrentServerStore currentServerStore, ICloseServices closeModalNavigationServices,
         IHttpDataSc httpDataSc)
     {
         _savedServersStore = savedServersStore;
 
         _currentServerStore = currentServerStore;
 
-        _closeModalNavigationSc = closeModalNavigationSc;
+        _closeModalNavigationServices = closeModalNavigationServices;
 
         _httpDataSc = httpDataSc;
     }
@@ -54,7 +56,7 @@ public sealed class AuthorizationApiServerSc : IAuthorizationSc
         
         _savedServersStore.Replace(_currentServerStore.CurrentServer, newAccount);
 
-        _closeModalNavigationSc.Navigate();
+        _closeModalNavigationServices.Close();
         
     }
 }

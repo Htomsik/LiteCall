@@ -1,4 +1,7 @@
 ﻿using System.Windows.Input;
+using AppInfrastructure.Services.NavigationServices.Close;
+using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.Infrastructure;
 using Core.Infrastructure.CMD;
 using Core.Models.AppInfrastructure;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -29,8 +32,8 @@ public sealed class MainWindowVmd : BaseVmd
         AdditionalVmdsNavigationStore additionalVmdsNavigationStore,
         ModalVmdNavigationStore modalVmdNavigationStore,
         AppExecutionStateStore statusMessageStore,
-        INavigationSc closeModalNavigationScs,
-        INavigationSc closeAdditionalNavigationSc,
+        ICloseServices closeModalNavigationServiceses,
+        ICloseServices closeAdditionalNavigationServices,
         ICloseAppSc closeAppSc,
         IConfiguration configuration)
     {
@@ -54,9 +57,9 @@ public sealed class MainWindowVmd : BaseVmd
 
         _statusMessageStore.CurrentValueChangedNotifier += OnCurrentStatusMessageChanged;
 
-        CloseModalCommand = new NavigationCommand(closeModalNavigationScs);
+        CloseModalCommand = new CloseNavigationCmd(closeModalNavigationServiceses);
 
-        CloseSettingsCommand = new NavigationCommand(closeAdditionalNavigationSc);
+        CloseSettingsCommand = new CloseNavigationCmd(closeAdditionalNavigationServices);
         
         CloseAppCommand = ReactiveCommand.CreateFromTask(OnCloseAppExecuted);
     }

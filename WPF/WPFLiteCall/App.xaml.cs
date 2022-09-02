@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Services.AppInfrastructure.FileServices;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.VMD.Windows;
@@ -30,7 +31,7 @@ public partial class App : Application
 
         await host.Services.GetRequiredService<ISyncDataOnServerSc>().GetFromServer();
 
-        var initialNavigationService = host.Services.GetRequiredService<INavigationSc>();
+        var initialNavigationService = host.Services.GetRequiredService<INavigationServices>();
 
         initialNavigationService.Navigate();
 

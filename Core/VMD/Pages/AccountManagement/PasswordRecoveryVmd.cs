@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
@@ -18,7 +19,7 @@ public class PasswordRecoveryVmd : BaseVmd
 
     private readonly IRecoveryPasswordSc _recoveryPasswordSc;
 
-    public PasswordRecoveryVmd(INavigationSc authPageNavigationScs, IStatusSc statusSc,
+    public PasswordRecoveryVmd(INavigationServices authPageNavigationServiceses, IStatusSc statusSc,
         IGetRecoveryQuestionsSc getRecoveryQuestionsSc,
         IRecoveryPasswordSc recoveryPasswordSc, IEncryptSc encryptSc)
     {
@@ -44,7 +45,7 @@ public class PasswordRecoveryVmd : BaseVmd
 
         #region Навигационные
 
-        OpenAuthPageCommand = new NavigationCommand(authPageNavigationScs);
+        OpenAuthPageCommand = new NavigationCommand(authPageNavigationServiceses);
 
         #endregion
 

@@ -1,17 +1,18 @@
-﻿using Core.Infrastructure.CMD.Base;
+﻿using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.Infrastructure.CMD.Base;
 using Core.Services.Interfaces.AppInfrastructure;
 
 namespace Core.Infrastructure.CMD;
 
-public sealed class NavigationCommand : CmdBase
+public sealed class NavigationCommand : BaseCmd
 {
     private readonly Func<bool>? _canExecute;
 
-    private readonly INavigationSc _navigationSc;
+    private readonly INavigationServices _navigationServices;
 
-    public NavigationCommand(INavigationSc navigationSc, Func<bool>? canExecute = null)
+    public NavigationCommand(INavigationServices navigationServices, Func<bool>? canExecute = null)
     {
-        _navigationSc = navigationSc;
+        _navigationServices = navigationServices;
         
         _canExecute = canExecute;
     }
@@ -23,8 +24,7 @@ public sealed class NavigationCommand : CmdBase
 
     public override void Execute(object? parameter)
     {
-        _navigationSc.Navigate();
+        _navigationServices.Navigate();
     }
-
-    public override event EventHandler? CanExecuteChanged;
+    
 }

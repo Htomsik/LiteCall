@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using AppInfrastructure.Services.NavigationServices.Close;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Models.AccountManagement;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
@@ -10,7 +12,7 @@ namespace Core.Services.AccountManagement.Registration;
 
 public sealed class RegistrationApiServerSc : IRegistrationSc
 {
-    private readonly INavigationSc _closeModalNavigationSc;
+    private readonly ICloseServices _closeModalNavigationServices;
 
     private readonly CurrentServerStore _currentServerStore;
     
@@ -20,9 +22,9 @@ public sealed class RegistrationApiServerSc : IRegistrationSc
 
 
     public RegistrationApiServerSc(SavedServersStore savedServersStore, CurrentServerStore currentServerStore,
-        INavigationSc closeModalNavigationSc, IHttpDataSc httpDataSc)
+        ICloseServices closeModalNavigationServices, IHttpDataSc httpDataSc)
     {
-        _closeModalNavigationSc = closeModalNavigationSc;
+        _closeModalNavigationServices = closeModalNavigationServices;
 
         _savedServersStore = savedServersStore;
 
@@ -49,7 +51,7 @@ public sealed class RegistrationApiServerSc : IRegistrationSc
 
         _savedServersStore.Replace(_currentServerStore.CurrentServer, newAccount);
 
-        _closeModalNavigationSc.Navigate();
+        _closeModalNavigationServices.Close();
 
         return 2;
     }

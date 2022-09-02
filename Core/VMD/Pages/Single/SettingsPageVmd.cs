@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.Saved;
 using Core.Models.Users;
@@ -16,7 +17,7 @@ namespace Core.VMD.Pages.Single;
 public sealed class SettingsPageVmd : BaseVmd
 {
     public SettingsPageVmd(MainAccountStore? accountStore, SavedServersStore? savedServersStore, AppSettingsStore? settingsStore,
-        INavigationSc authNavigationSc, IHttpDataSc httpDataSc, IStatusSc statusSc,
+        INavigationServices authNavigationServices, IHttpDataSc httpDataSc, IStatusSc statusSc,
         SettingsAccountVmdNavigationStore settingsAccountVmdNavigationStore)
     {
         AccountStore = accountStore;
@@ -27,13 +28,13 @@ public sealed class SettingsPageVmd : BaseVmd
 
         _settingsAccountVmdNavigationStore = settingsAccountVmdNavigationStore;
 
-        _authNavigationSc = authNavigationSc;
+        _authNavigationServices = authNavigationServices;
 
         _httpDataSc = httpDataSc;
 
         _statusSc = statusSc;
 
-        LogoutAccCommand = new AccountLogoutCmd(accountStore);
+        LogoutAccCommand = new AccountLogoutBaseCmd(accountStore);
 
         AccountStore.CurrentValueChangedNotifier += AccountStatusChange;
 
@@ -136,7 +137,7 @@ public sealed class SettingsPageVmd : BaseVmd
         IsDefault = AccountStore!.IsDefaultAccount;
 
         if (AccountStore.IsDefaultAccount)
-            _authNavigationSc.Navigate();
+            _authNavigationServices.Navigate();
         else
             _settingsAccountVmdNavigationStore.CurrentValue = default;
     }
@@ -183,7 +184,7 @@ public sealed class SettingsPageVmd : BaseVmd
 
     #region Services
 
-    private readonly INavigationSc _authNavigationSc;
+    private readonly INavigationServices _authNavigationServices;
 
     private readonly IHttpDataSc _httpDataSc;
 

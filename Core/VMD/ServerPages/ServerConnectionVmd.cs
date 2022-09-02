@@ -1,4 +1,6 @@
-﻿using Core.Models.Servers;
+﻿using AppInfrastructure.Services.NavigationServices.Close;
+using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -21,16 +23,16 @@ public class ServerConnectionVmd:BaseVmd
 
     private readonly CurrentServerStore _currentServerStore;
     
-    private readonly INavigationSc _serverPageNavigationSc;
+    private readonly INavigationServices _serverPageNavigationServices;
     
-    private readonly INavigationSc _closeModalNavigationSc;
+    private readonly ICloseServices _closeModalNavigationServices;
 
     public ServerConnectionVmd(IAuthorizationSc? authorizationServices,
         SavedServersStore savedServersStore,
         MainAccountStore? accountStore,
         CurrentServerStore currentServerStore,
         IHttpDataSc httpDataSc, 
-        INavigationSc serverPageNavigationSc,INavigationSc closeModalNavigationSc)
+        INavigationServices serverPageNavigationServices,ICloseServices closeModalNavigationServices)
     {
         _authorizationServices = authorizationServices;
         
@@ -42,9 +44,9 @@ public class ServerConnectionVmd:BaseVmd
         
         _currentServerStore = currentServerStore;
         
-        _serverPageNavigationSc = serverPageNavigationSc;
+        _serverPageNavigationServices = serverPageNavigationServices;
         
-        _closeModalNavigationSc = closeModalNavigationSc;
+        _closeModalNavigationServices = closeModalNavigationServices;
 
         ServerConnectCommand = ReactiveCommand.CreateFromTask(OnServerConnect,CanServerConnect);
         
@@ -95,9 +97,9 @@ public class ServerConnectionVmd:BaseVmd
         {
             _currentServerStore!.CurrentServer = newServer;
             
-            _closeModalNavigationSc.Navigate();
+            _closeModalNavigationServices.Close();
             
-            _serverPageNavigationSc.Navigate();
+            _serverPageNavigationServices.Navigate();
 
         }
     }

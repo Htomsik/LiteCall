@@ -3,9 +3,9 @@
 
 namespace Core.Infrastructure.CMD.Base;
 
-public abstract class CmdBase : ICommand
+public abstract class BaseCmd : ICommand
 {
-    public abstract event EventHandler? CanExecuteChanged;
+    public virtual event EventHandler? CanExecuteChanged;
     
     public abstract bool CanExecute(object? parameter);
 

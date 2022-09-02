@@ -27,9 +27,9 @@ internal static class ServicesRegistration
         services.AddSingleton(s =>
             new SavedMainAccountFileSc(s.GetRequiredService<MainAccountStore>(), s.GetRequiredService<AppSettingsStore>()));
 
-        services.AddTransient<CloseAdditionalNavigationSc>();
+        services.AddTransient<CloseAdditionalNavigationServices>();
 
-        services.AddTransient<CloseModalNavigationSc>();
+        services.AddTransient<CloseModalNavigationServices>();
 
         services.AddSingleton<IStatusSc, AppExecutionStateSc>();
 

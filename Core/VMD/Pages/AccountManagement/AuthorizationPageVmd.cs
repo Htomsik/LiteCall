@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
@@ -13,8 +14,8 @@ public class AuthorizationPageVmd : BaseVmd
 {
     private readonly IEncryptSc _encryptSc;
 
-    public AuthorizationPageVmd(INavigationSc registrationNavigationScs,
-        INavigationSc passwordRecoveryNavigationSc, IAuthorizationSc authorizationSc,
+    public AuthorizationPageVmd(INavigationServices registrationNavigationServiceses,
+        INavigationServices passwordRecoveryNavigationServices, IAuthorizationSc authorizationSc,
         IEncryptSc encryptSc)
     {
         _encryptSc = encryptSc;
@@ -23,9 +24,9 @@ public class AuthorizationPageVmd : BaseVmd
         
         AuthCommand = ReactiveCommand.CreateFromTask(OnAuthExecuted, CanAuthExecute);
 
-        OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationScs);
+        OpenRegistrationPageCommand = new NavigationCommand(registrationNavigationServiceses);
 
-        OpenRecoveryPasswordPageCommand = new NavigationCommand(passwordRecoveryNavigationSc);
+        OpenRecoveryPasswordPageCommand = new NavigationCommand(passwordRecoveryNavigationServices);
     }
 
 

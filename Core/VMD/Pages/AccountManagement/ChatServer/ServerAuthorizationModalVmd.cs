@@ -1,4 +1,5 @@
-﻿using Core.Services.Interfaces.AccountManagement;
+﻿using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Extra;
 
@@ -6,9 +7,9 @@ namespace Core.VMD.Pages.AccountManagement.ChatServer;
 
 public sealed class ServerAuthorizationModalVmd : AuthorizationPageVmd
 {
-    public ServerAuthorizationModalVmd(INavigationSc registrationNavigationScs,
-        INavigationSc passwordRecoveryNavigationSc, IAuthorizationSc authorizationSc,
-        IEncryptSc encryptSc) : base(registrationNavigationScs, passwordRecoveryNavigationSc,
+    public ServerAuthorizationModalVmd(INavigationServices registrationNavigationServiceses,
+        INavigationServices passwordRecoveryNavigationServices, IAuthorizationSc authorizationSc,
+        IEncryptSc encryptSc) : base(registrationNavigationServiceses, passwordRecoveryNavigationServices,
         authorizationSc, encryptSc)
     {
     }
