@@ -1,7 +1,7 @@
 ﻿using AppInfrastructure.Services.NavigationServices.Close;
 using Core.Infrastructure.CMD.Base;
 
-namespace Core.Infrastructure;
+namespace Core.Infrastructure.CMD;
 
 /// <summary>
 ///     Навигационная команда для закрытия

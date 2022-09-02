@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace LiteCall.Infrastructure.Converters;
+namespace LiteCall.Infrastructure.Converters.String;
 
 /// <summary>
 ///     True - Authorized

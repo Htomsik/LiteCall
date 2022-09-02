@@ -6,8 +6,9 @@ using Core.VMD.Base;
 
 namespace Core.Services.AppInfrastructure.NavigationServices;
 
-public sealed class SettingAccNavigationServices : BaseLazyStoreNavigationService<BaseVmd>
+public sealed class MainPageVmdsNavigationService : BaseLazyStoreNavigationService<BaseVmd>
+
 {
-    public SettingAccNavigationServices(SettingsAccountVmdNavigationStore settingsAccountVmdNavigationStore,
-        Func<BaseVmd> createViewModel) : base(settingsAccountVmdNavigationStore,createViewModel){}
+    public MainPageVmdsNavigationService(MainWindowVmdNavigationStore mainWindowVmdNavigationStore, Func<BaseVmd> createViewModel) : base(mainWindowVmdNavigationStore, createViewModel){}
+        
 }

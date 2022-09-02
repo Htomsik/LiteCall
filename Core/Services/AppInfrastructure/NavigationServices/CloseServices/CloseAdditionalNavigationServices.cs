@@ -1,11 +1,8 @@
-﻿using AppInfrastructure.Services.NavigationServices.Close;
-using AppInfrastructure.Services.NavigationServices.Navigation;
-using AppInfrastructure.Services.StoreServices;
-using Core.Services.Interfaces.AppInfrastructure;
+﻿using AppInfrastructure.Services.StoreServices;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.Base;
 
-namespace Core.Services.AppInfrastructure.NavigationServices;
+namespace Core.Services.AppInfrastructure.NavigationServices.CloseServices;
 
 public sealed class CloseAdditionalNavigationServices : BaseLazyStoreCloseService<BaseVmd>
 {
