@@ -29,8 +29,7 @@ public sealed class CurrentServerStore : BaseVmd
         }
 
     #endregion
-
-
+    
     #region CurrentServerRooms
 
     private ObservableCollection<ServerRooms>? _currentSeverRooms = new();
@@ -46,7 +45,6 @@ public sealed class CurrentServerStore : BaseVmd
     }
 
     #endregion
-    
     
     public event Action? CurrentServerRoomsChanged;
     

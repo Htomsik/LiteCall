@@ -1,9 +1,12 @@
 ﻿<UserControl
+    d:DataContext="{d:DesignInstance {x:Type Vmds:SettingsPageVmd},
+                                     IsDesignTimeCreatable=True}"
     d:DesignHeight="450"
     d:DesignWidth="450"
     mc:Ignorable="d"
-    x:Class="LiteCall.Views.Pages.SettingPV"
+    x:Class="LiteCall.Views.AdditionalVW.SettingPV"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Vmds="clr-namespace:Core.VMD.AdditionalVmds;assembly=Core"
     xmlns:accountManagement="clr-namespace:Core.VMD.Pages.AccountManagement;assembly=Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LiteCall.Views.Pages"
@@ -23,13 +26,17 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-
     <Grid
         Background="{DynamicResource Background(Solid)}"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
+        <!--  Разделы  -->
         <TabControl
             BorderThickness="0"
             Grid.Row="0"
@@ -492,6 +499,47 @@
 
             </TabItem>
         </TabControl>
+
+        <Grid Grid.Row="1">
+
+            <!--  settings close button  -->
+            <Button
+                Command="{Binding CloseAdditionalVmdCommand}"
+                Height="25"
+                HorizontalAlignment="Left"
+                Margin="5"
+                RenderTransformOrigin="0.5,0.5"
+                Style="{DynamicResource ImgButton}"
+                VerticalAlignment="Bottom"
+                Width="25">
+
+                <Button.RenderTransform>
+                    <RotateTransform Angle="-90" />
+                </Button.RenderTransform>
+
+                <Button.Resources>
+                    <StaticResource ResourceKey="PointerPath" x:Key="Img" />
+                </Button.Resources>
+
+            </Button>
+
+            <!--  Version name  -->
+            <StackPanel Grid.Row="1" HorizontalAlignment="Right">
+
+                <StackPanel Margin="0,0,25,0" Orientation="Horizontal">
+                    <TextBlock FontSize="12">Branch:</TextBlock>
+                    <TextBlock FontSize="12" Text="{Binding Branch}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="12">Version:</TextBlock>
+                    <TextBlock FontSize="12" Text="{Binding Version}" />
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+
 
 
     </Grid>

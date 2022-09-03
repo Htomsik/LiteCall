@@ -73,4 +73,8 @@
         </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Views\SettingsVW" />
+    </ItemGroup>
+
 </Project>

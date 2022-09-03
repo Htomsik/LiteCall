@@ -25,4 +25,8 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="VMD\AdditionalVmds\SettingsVmds" />
+    </ItemGroup>
+
 </Project>

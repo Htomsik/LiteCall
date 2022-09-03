@@ -4,50 +4,79 @@ using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.Saved;
 using Core.Models.Users;
+using Core.Services.AppInfrastructure.NavigationServices.CloseServices;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
+using Core.VMD.AdditionalVmds.Base;
 using Core.VMD.Base;
+using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 
 namespace Core.VMD.AdditionalVmds;
 
-public sealed class SettingsPageVmd : BaseVmd
+public sealed class SettingsPageVmd : BaseAdditionalVmd
 {
-    public SettingsPageVmd(MainAccountStore? accountStore, SavedServersStore? savedServersStore, AppSettingsStore? settingsStore,
-        INavigationServices authNavigationServices, IHttpDataSc httpDataSc, IStatusSc statusSc,
-        SettingsAccountVmdNavigationStore settingsAccountVmdNavigationStore)
+    public SettingsPageVmd(MainAccountStore? accountStore,
+        SavedServersStore? savedServersStore,
+        AppSettingsStore? settingsStore,
+        INavigationServices authNavigationServices,
+        IHttpDataSc httpDataSc, 
+        IStatusSc statusSc,
+        SettingsAccountVmdNavigationStore settingsAccountVmdNavigationStore,
+        CloseAdditionalNavigationServices closeAdditionalNavigationServices, 
+        IConfiguration configuration ) : base(closeAdditionalNavigationServices)
     {
+
+        #region Properties and Fileds Initializing
+
+        _configuration = configuration;
+        
+        InputDevices = new ObservableCollection<string>();
+
+        OutputDevices = new ObservableCollection<string>();
+
+        #endregion
+        
+        #region Stores and Services  Initializing
+
         AccountStore = accountStore;
 
         SavedServersStore = savedServersStore;
 
         SettingsStore = settingsStore;
-
+        
         _settingsAccountVmdNavigationStore = settingsAccountVmdNavigationStore;
-
+        
+        
         _authNavigationServices = authNavigationServices;
 
         _httpDataSc = httpDataSc;
 
         _statusSc = statusSc;
 
-        LogoutAccCommand = new AccountLogoutBaseCmd(accountStore);
+
+        #endregion
+        
+        #region Subscriptions
 
         AccountStore.CurrentValueChangedNotifier += AccountStatusChange;
 
-        _settingsAccountVmdNavigationStore.CurrentValueChangedNotifier += OnCurrentViewModelChanged;
+        _settingsAccountVmdNavigationStore.CurrentValueChangedNotifier += ()=> this.RaisePropertyChanged(nameof(AccountCurrentVmd));
 
-        AccountStatusChange();
+        #endregion
         
+        #region Commands Initializnign
+
         AddNewServerCommand = ReactiveCommand.CreateFromTask(OnAddNewServerExecuted, CanAddNewServerExecute());
+        
+        LogoutAccCommand = new AccountLogoutBaseCmd(accountStore);
 
-        InputDevices = new ObservableCollection<string>();
-
-        OutputDevices = new ObservableCollection<string>();
-
+        #endregion
+        
+        AccountStatusChange();
        
     }
 
@@ -81,12 +110,8 @@ public sealed class SettingsPageVmd : BaseVmd
         set => this.RaiseAndSetIfChanged(ref _newSeverLogin, value);
     }
 
-    public bool IsDefault
-    {
-        get => _isDefault;
-        set => this.RaiseAndSetIfChanged(ref _isDefault, value);
-    }
-
+    public bool IsDefault => AccountStore.IsDefaultAccount;
+    
     public MainAccountStore? AccountStore
     {
         get => _accountStore;
@@ -127,14 +152,9 @@ public sealed class SettingsPageVmd : BaseVmd
         }
     }
     
-    private void OnCurrentViewModelChanged()
-    {
-        ((IReactiveObject)this).RaisePropertyChanged(nameof(AccountCurrentVmd));
-    }
-
     private void AccountStatusChange()
     {
-        IsDefault = AccountStore!.IsDefaultAccount;
+        this.RaisePropertyChanged(nameof(IsDefault));
 
         if (AccountStore.IsDefaultAccount)
             _authNavigationServices.Navigate();
@@ -207,9 +227,7 @@ public sealed class SettingsPageVmd : BaseVmd
     #region Pivate fields
 
     private ObservableCollection<string>? _inputDeviceses;
-
-    private bool _isDefault;
-
+    
     private string? _newServerApiIp;
 
     private string? _newSeverLogin;
@@ -219,6 +237,26 @@ public sealed class SettingsPageVmd : BaseVmd
     private int _outputDeviceId;
 
     private int _inputDeviceId;
+
+    #endregion
+
+    
+    #region Properties and fields
+
+    /// <summary>
+    ///     Current app version
+    /// </summary>
+    public string Version => _configuration["AppSettings:AppVersions"] ?? "NonIdentify";
+
+    /// <summary>
+    ///     Current app branch
+    /// </summary>
+    public string Branch => _configuration["AppSettings:Branch"] ?? "NonIdentify";
+    
+    /// <summary>
+    ///     appsettings.json 
+    /// </summary>
+    private readonly IConfiguration _configuration;
 
     #endregion
 }

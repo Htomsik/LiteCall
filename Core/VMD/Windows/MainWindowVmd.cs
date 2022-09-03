@@ -52,13 +52,9 @@ public sealed class MainWindowVmd : BaseVmd
 
     #endregion
     
-    public string Version => _configuration["AppSettings:AppVersions"] ?? "NonIdentify";
-
-    public string Branch => _configuration["AppSettings:Branch"] ?? "NonIdentify";
+ 
     
     private readonly ICloseAppSc _closeAppSc;
-
-    private readonly IConfiguration _configuration;
     
     
     #endregion
@@ -68,11 +64,9 @@ public sealed class MainWindowVmd : BaseVmd
         ModalVmdNavigationStore modalVmdNavigationStore,
         AppExecutionStateStore statusMessageStore,
         ICloseServices closeModalNavigationService,
-        ICloseServices closeAdditionalNavigationServices,
-        ICloseAppSc closeAppSc,
-        IConfiguration configuration)
+        ICloseAppSc closeAppSc)
     {
-        #region Stora and services Initializing
+        #region Stores and services Initializing
 
         _mainWindowVmdNavigationStore = mainWindowVmdNavigationStore;
 
@@ -83,10 +77,7 @@ public sealed class MainWindowVmd : BaseVmd
         _statusMessageStore = statusMessageStore;
 
         _closeAppSc = closeAppSc;
-
-        _configuration = configuration;
-
-
+        
         #endregion
         
         #region Subscripptions
@@ -120,8 +111,6 @@ public sealed class MainWindowVmd : BaseVmd
         #region Command Initializing 
 
         CloseModalCommand = new CloseNavigationCmd(closeModalNavigationService);
-
-        CloseSettingsCommand = new CloseNavigationCmd(closeAdditionalNavigationServices);
         
         CloseAppCommand = ReactiveCommand.CreateFromTask(()=>  _closeAppSc?.Close());
 
@@ -140,12 +129,7 @@ public sealed class MainWindowVmd : BaseVmd
     ///     Close modal vmds
     /// </summary>
     public ICommand CloseModalCommand { get; }
-
-    /// <summary>
-    ///     Close SettingsVmds
-    /// </summary>
-    public ICommand CloseSettingsCommand { get; }
-
+    
     #endregion
     
 }

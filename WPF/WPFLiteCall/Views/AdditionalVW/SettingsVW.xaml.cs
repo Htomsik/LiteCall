@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LiteCall.Views.Pages;
+namespace LiteCall.Views.AdditionalVW;
 
 /// <summary>
 ///     Логика взаимодействия для SettingPV.xaml

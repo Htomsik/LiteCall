@@ -99,7 +99,9 @@ public static class VmdRegistration
             s.GetRequiredService<SavedServersStore>(), s.GetRequiredService<AppSettingsStore>(),
             CreateAutPageNavigationServices(s), s.GetRequiredService<IHttpDataSc>(),
             s.GetRequiredService<IStatusSc>(),
-            s.GetRequiredService<SettingsAccountVmdNavigationStore>()
+            s.GetRequiredService<SettingsAccountVmdNavigationStore>(),
+            s.GetRequiredService<CloseAdditionalNavigationServices>(),
+            configuration
         ));
         
         
@@ -120,8 +122,7 @@ public static class VmdRegistration
             s.GetRequiredService<ModalVmdNavigationStore>(),
             s.GetRequiredService<AppExecutionStateStore>(),
             s.GetRequiredService<CloseModalNavigationServices>(),
-            s.GetRequiredService<CloseAdditionalNavigationServices>(), 
-            s.GetRequiredService<ICloseAppSc>(), configuration));
+            s.GetRequiredService<ICloseAppSc>()));
 
         #endregion
 
