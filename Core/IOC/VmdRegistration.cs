@@ -14,11 +14,12 @@ using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.AdditionalVmds;
+using Core.VMD.AppInfrastructure.Windows;
+using Core.VMD.AppInfrastructure.Windows.MainWindow;
 using Core.VMD.MainVmds;
 using Core.VMD.Pages.AccountManagement;
 using Core.VMD.Pages.AccountManagement.ChatServer;
 using Core.VMD.ServerPages;
-using Core.VMD.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

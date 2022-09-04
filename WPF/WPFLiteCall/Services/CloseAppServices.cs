@@ -13,7 +13,7 @@ internal sealed class CloseAppSc : ICloseAppSc
         _synchronizeDataOnServerSc = synchronizeDataOnServerSc;
     }
 
-    public async Task Close()
+    public async void Close()
     {
         Application.Current.Shutdown();
         await _synchronizeDataOnServerSc?.SaveOnServer()!;

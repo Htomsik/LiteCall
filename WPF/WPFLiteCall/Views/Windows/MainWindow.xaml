@@ -7,7 +7,7 @@
     Width="800"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
-    d:DataContext="{d:DesignInstance {x:Type Vmds:MainWindowVmd},
+    d:DataContext="{d:DesignInstance {x:Type mainWindow:MainWindowVmd},
                                      IsDesignTimeCreatable=True}"
     d:DesignHeight="400"
     d:DesignWidth="400"
@@ -15,13 +15,14 @@
     x:Class="LiteCall.Views.Windows.MainWindow"
     x:Name="Window"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:Vmds="clr-namespace:Core.VMD.Windows;assembly=Core"
+    xmlns:Vmds="clr-namespace:Core.VMD.AppInfrastructure.Windows;assembly=Core"
     xmlns:additionalVmds="clr-namespace:Core.VMD.AdditionalVmds;assembly=Core"
     xmlns:additionalVw="clr-namespace:LiteCall.Views.AdditionalVW"
     xmlns:authRegPages="clr-namespace:Core.VMD.Pages.AccountManagement.ChatServer;assembly=Core"
     xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mainWindow="clr-namespace:Core.VMD.AppInfrastructure.Windows.MainWindow;assembly=Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
@@ -170,7 +171,6 @@
 
         <!--  Upper Dock Panel  -->
         <Border>
-
             <DockPanel Background="{DynamicResource Background(Solid)}" MouseLeftButtonDown="DragPanel">
 
                 <!--  App Icon and Titile  -->
@@ -178,11 +178,11 @@
 
                     <Image
                         Margin="2"
-                        Source=".../../../../Resources/Assets/Icons/AppIcon.png"
+                        Source="{Binding ImagePath}"
                         Stretch="Uniform" />
                     <TextBlock
                         Margin="5,0,0,0"
-                        Text="WPFLiteCall"
+                        Text="{Binding Title}"
                         VerticalAlignment="Center" />
 
                 </StackPanel>
@@ -230,7 +230,7 @@
 
                     <!--  Close App button  -->
                     <Button
-                        Command="{Binding CloseAppCommand}"
+                        Command="{Binding CloseWindowCommand}"
                         Height="25"
                         Margin="5,0,0,0"
                         Style="{DynamicResource ImgButton}"

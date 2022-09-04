@@ -6,13 +6,13 @@ using Core.Models.AppInfrastructure;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
+using Core.VMD.AppInfrastructure.Windows.Base;
 using Core.VMD.Base;
-using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 
-namespace Core.VMD.Windows;
+namespace Core.VMD.AppInfrastructure.Windows.MainWindow;
 
-public sealed class MainWindowVmd : BaseVmd
+public sealed class MainWindowVmd : BaseWindowVmdVmd
 {
     #region Properties and Fields
     
@@ -52,11 +52,6 @@ public sealed class MainWindowVmd : BaseVmd
 
     #endregion
     
- 
-    
-    private readonly ICloseAppSc _closeAppSc;
-    
-    
     #endregion
     public MainWindowVmd(
         MainWindowVmdNavigationStore mainWindowVmdNavigationStore,
@@ -64,7 +59,7 @@ public sealed class MainWindowVmd : BaseVmd
         ModalVmdNavigationStore modalVmdNavigationStore,
         AppExecutionStateStore statusMessageStore,
         ICloseServices closeModalNavigationService,
-        ICloseAppSc closeAppSc)
+        ICloseServices closeAppSc) : base(closeAppSc)
     {
         #region Stores and services Initializing
 
@@ -76,7 +71,7 @@ public sealed class MainWindowVmd : BaseVmd
 
         _statusMessageStore = statusMessageStore;
 
-        _closeAppSc = closeAppSc;
+     
         
         #endregion
         
@@ -112,19 +107,12 @@ public sealed class MainWindowVmd : BaseVmd
 
         CloseModalCommand = new CloseNavigationCmd(closeModalNavigationService);
         
-        CloseAppCommand = ReactiveCommand.CreateFromTask(()=>  _closeAppSc?.Close());
-
         #endregion
         
     }
 
     #region Commands
-
-    /// <summary>
-    ///     Close Application 
-    /// </summary>
-    public ICommand CloseAppCommand { get; }
-
+    
     /// <summary>
     ///     Close modal vmds
     /// </summary>
