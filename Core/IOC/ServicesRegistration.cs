@@ -1,6 +1,8 @@
 ﻿using Core.Services.AppInfrastructure;
 using Core.Services.AppInfrastructure.FileServices;
 using Core.Services.AppInfrastructure.NavigationServices.CloseServices;
+using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie;
+using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie.Base;
 using Core.Services.Connections;
 using Core.Services.Extra;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -45,6 +47,10 @@ public static class ServicesRegistration
 
         services.AddTransient<IChatServerSc, ChatServerSc>();
 
+        services.AddTransient<BaseIocTypeNavigationService>();
+
+        services.AddTransient<SettingsVmdsIocTypeNavigationService>();
+        
         #endregion
 
         return services;

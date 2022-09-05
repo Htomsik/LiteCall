@@ -1,0 +1,50 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Menu="clr-namespace:Core.Models.AppInfrastructure.Menu;assembly=Core"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  Datatemplate for MenuItem  -->
+    <DataTemplate DataType="{x:Type Menu:MenuItem}" x:Key="MenuItemDataTemplate">
+        <Border
+            Background="Transparent"
+            BorderBrush="{DynamicResource Fonts(Solid)}"
+            BorderThickness="0,0,0,1">
+
+            <!--  Name  -->
+            <TextBlock
+                FontWeight="Bold"
+                HorizontalAlignment="Left"
+                Margin="8,0,0,0"
+                Text="{Binding Name.Value}"
+                VerticalAlignment="Center" />
+
+        </Border>
+    </DataTemplate>
+
+    <!--  Datatemplate for MenuItemWithCommand  -->
+    <DataTemplate DataType="{x:Type Menu:MenuItemWithCommand}" x:Key="MenuItemWithCommandDataTemplate">
+
+        <Border
+            Background="Transparent"
+            BorderBrush="{DynamicResource Fonts(Solid)}"
+            BorderThickness="0,0,0,1">
+
+            <Border.InputBindings>
+                <MouseBinding
+                    Command="{Binding Command.Value}"
+                    CommandParameter="{Binding Parameter.Value}"
+                    MouseAction="LeftClick" />
+            </Border.InputBindings>
+
+            <!--  Name  -->
+            <TextBlock
+                FontWeight="Bold"
+                HorizontalAlignment="Left"
+                Margin="8,0,0,0"
+                Text="{Binding Name.Value}"
+                VerticalAlignment="Center" />
+
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>

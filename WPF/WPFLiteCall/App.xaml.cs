@@ -5,7 +5,6 @@ using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.IOC;
 using Core.Services.AppInfrastructure.FileServices;
 using Core.Services.Interfaces.AppInfrastructure;
-using Core.VMD.AppInfrastructure.Windows;
 using Core.VMD.AppInfrastructure.Windows.MainWindow;
 using LiteCall.IOC;
 using LiteCall.Views.Windows;
@@ -16,9 +15,11 @@ namespace LiteCall;
 
 public partial class App : Application
 {
-    private IHost? _host;
+    private static IHost? _host;
 
-    public IHost Host => _host ?? Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+    public static  IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+    
+    public static IServiceProvider Services => Host.Services;
 
    
     protected override async void OnStartup(StartupEventArgs e)

@@ -3,7 +3,6 @@ using AppInfrastructure.Services.NavigationServices.Close;
 using AppInfrastructure.Stores.DefaultStore;
 using Core.Infrastructure.CMD;
 using Core.Models.AppInfrastructure;
-using Core.Services.Interfaces.AppInfrastructure;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.AppInfrastructure.Windows.Base;

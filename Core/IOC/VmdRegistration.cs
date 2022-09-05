@@ -14,7 +14,7 @@ using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.AdditionalVmds;
-using Core.VMD.AppInfrastructure.Windows;
+using Core.VMD.AdditionalVmds.SettingsVmds;
 using Core.VMD.AppInfrastructure.Windows.MainWindow;
 using Core.VMD.MainVmds;
 using Core.VMD.Pages.AccountManagement;
@@ -95,16 +95,20 @@ public static class VmdRegistration
                 s.GetRequiredService<IStatusSc>(),
                 s.GetRequiredService<IHttpDataSc>()));
 
-        services.AddTransient(s => new SettingsPageVmd(
+        services.AddTransient<SettingsVmd>();
+
+        services.AddTransient<AboutProgramSettingsVmd>();
+        
+        services.AddTransient(s => new AccountSettingsVmd(
+            s.GetRequiredService<AppSettingsStore>(),
             s.GetRequiredService<MainAccountStore>(),
-            s.GetRequiredService<SavedServersStore>(), s.GetRequiredService<AppSettingsStore>(),
-            CreateAutPageNavigationServices(s), s.GetRequiredService<IHttpDataSc>(),
-            s.GetRequiredService<IStatusSc>(),
-            s.GetRequiredService<SettingsAccountVmdNavigationStore>(),
-            s.GetRequiredService<CloseAdditionalNavigationServices>(),
-            configuration
+            s.GetRequiredService<SettingsAccountManagementVmdNavigationStore>(),
+            CreateAutPageNavigationServices(s)
         ));
         
+        services.AddTransient<AudioSettingsVmd>();
+        
+        services.AddTransient<SavedServersSettingsVmd>();
         
         services.AddTransient(s =>
             new ServerVmd(s.GetRequiredService<CurrentServerAccountStore>(), 
@@ -124,6 +128,8 @@ public static class VmdRegistration
             s.GetRequiredService<AppExecutionStateStore>(),
             s.GetRequiredService<CloseModalNavigationServices>(),
             s.GetRequiredService<ICloseAppSc>()));
+        
+        
 
         #endregion
 
@@ -132,23 +138,23 @@ public static class VmdRegistration
 
     #region Создание навигационных сервисов для базовых VMD
 
-    private static INavigationServices CreateAutPageNavigationServices(IServiceProvider serviceProvider)
+    private static IFullNavigationService CreateAutPageNavigationServices(IServiceProvider serviceProvider)
     {
-        return new SettingAccNavigationServices
-        (serviceProvider.GetRequiredService<SettingsAccountVmdNavigationStore>(),
+        return new SettingsAccountManagementVmdFullNavigationServices
+        (serviceProvider.GetRequiredService<SettingsAccountManagementVmdNavigationStore>(),
             serviceProvider.GetRequiredService<AuthorizationPageVmd>);
     }
     private static INavigationServices CreateRegistrationPageNavigationServices(IServiceProvider serviceProvider)
     {
-        return new SettingAccNavigationServices
-        (serviceProvider.GetRequiredService<SettingsAccountVmdNavigationStore>(),
+        return new SettingsAccountManagementVmdFullNavigationServices
+        (serviceProvider.GetRequiredService<SettingsAccountManagementVmdNavigationStore>(),
             serviceProvider.GetRequiredService<RegistrationPageVmd>);
     }
 
     private static INavigationServices CreatePasswordRecoveryPageNavigationService(IServiceProvider serviceProvider)
     {
-        return new SettingAccNavigationServices
-        (serviceProvider.GetRequiredService<SettingsAccountVmdNavigationStore>(),
+        return new SettingsAccountManagementVmdFullNavigationServices
+        (serviceProvider.GetRequiredService<SettingsAccountManagementVmdNavigationStore>(),
             serviceProvider.GetRequiredService<PasswordRecoveryVmd>);
     }
 
@@ -162,7 +168,7 @@ public static class VmdRegistration
     {
         return new AdditionalVmdsNavigationServices(
             serviceProvider.GetRequiredService<AdditionalVmdsNavigationStore>(),
-            serviceProvider.GetRequiredService<SettingsPageVmd>);
+            serviceProvider.GetRequiredService<SettingsVmd>);
     }
 
     private static INavigationServices CreateServerPageNavigationService(IServiceProvider serviceProvider)

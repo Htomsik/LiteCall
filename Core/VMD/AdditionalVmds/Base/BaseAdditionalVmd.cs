@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using AppInfrastructure.Services.NavigationServices.Close;
 using Core.Infrastructure.CMD;
 using Core.VMD.Base;

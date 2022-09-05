@@ -1,0 +1,110 @@
+﻿<UserControl
+    d:DataContext="{d:DesignInstance {x:Type SettingsVW:AccountSettingsVmd},
+                                     IsDesignTimeCreatable=True}"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d"
+    x:Class="LiteCall.Views.SettingsVW.AccountSettingsVW"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:SettingsVW="clr-namespace:Core.VMD.AdditionalVmds.SettingsVmds;assembly=Core"
+    xmlns:accountManagement="clr-namespace:Core.VMD.Pages.AccountManagement;assembly=Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="clr-namespace:LiteCall.Views.Pages"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Current account: " />
+                <TextBlock Text="{Binding AccountLogin}" />
+            </StackPanel>
+
+            <!--  Тип аккаунта  -->
+            <StackPanel Orientation="Horizontal">
+
+                <TextBlock Text="Account type: " />
+
+                <TextBlock Text="{Binding IsAuthorizedAccount, Converter={StaticResource IsAuthorizeBoolToStringConverter}, UpdateSourceTrigger=PropertyChanged}">
+
+                    <TextBlock.Style>
+
+                        <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+
+                            <Setter Property="Foreground" Value="{DynamicResource Dangerous(Solid)}" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="Authorized">
+
+                                    <Setter Property="Foreground" Value="{DynamicResource Green(Solid)}" />
+
+                                </DataTrigger>
+                            </Style.Triggers>
+
+                        </Style>
+
+                    </TextBlock.Style>
+
+                </TextBlock>
+
+                <TextBlock
+                    Foreground="{DynamicResource Dangerous(Solid)}"
+                    Margin="5,0,0,0"
+                    Text="Default"
+                    Visibility="{Binding IsDefaultAccount, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+
+            </StackPanel>
+
+        </StackPanel>
+
+        <!--  Кнопка выхода из аккаунта  -->
+        <Button
+            Command="{Binding CurrentAccountLogoutCommand}"
+            Grid.Row="1"
+            HorizontalAlignment="Left"
+            Margin="5"
+            Padding="3"
+            Visibility="{Binding IsDefaultAccount, Converter={StaticResource BooleanToVisibilityInverter}}">
+
+            <TextBlock Text="Logout" />
+
+        </Button>
+
+
+        <ContentControl
+            Content="{Binding CurrentAccountManagmentVmd, UpdateSourceTrigger=PropertyChanged}"
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            Margin="5"
+            VerticalAlignment="Top">
+
+            <ContentControl.Resources>
+
+                <DataTemplate DataType="{x:Type accountManagement:AuthorizationPageVmd}">
+                    <pages:AuthorisationPV />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type accountManagement:RegistrationPageVmd}">
+                    <pages:RegistrationPV />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type accountManagement:PasswordRecoveryVmd}">
+                    <pages:PasswordRecoveryPV />
+                </DataTemplate>
+
+            </ContentControl.Resources>
+
+
+        </ContentControl>
+
+    </Grid>
+</UserControl>

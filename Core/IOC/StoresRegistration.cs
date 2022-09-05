@@ -28,6 +28,10 @@ public static class StoresRegistration
 
         services.AddSingleton<HubConnectionStore>();
 
+        services.AddSingleton<SettingsVmdsNavigationStore>();
+
+        services.AddSingleton<SettingsAccountManagementVmdNavigationStore>();
+
         #endregion
 
         #region NavigationStores
@@ -38,7 +42,7 @@ public static class StoresRegistration
 
         services.AddSingleton<ModalVmdNavigationStore>();
 
-        services.AddSingleton<SettingsAccountVmdNavigationStore>();
+        services.AddSingleton<SettingsAccountManagementVmdNavigationStore>();
 
         services.AddSingleton<CurrentServerVmdNavigationStore>();
 

@@ -84,7 +84,7 @@
                     <pages:MainPV />
                 </DataTemplate>
 
-                <DataTemplate DataType="{x:Type additionalVmds:SettingsPageVmd}">
+                <DataTemplate DataType="{x:Type additionalVmds:SettingsVmd}">
                     <additionalVw:SettingPV />
                 </DataTemplate>
 
@@ -102,7 +102,7 @@
 
                 <ContentControl.Resources>
 
-                    <DataTemplate DataType="{x:Type additionalVmds:SettingsPageVmd}">
+                    <DataTemplate DataType="{x:Type additionalVmds:SettingsVmd}">
                         <additionalVw:SettingPV />
                     </DataTemplate>
 
