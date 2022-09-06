@@ -18,21 +18,24 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!--  Account info  -->
         <StackPanel>
+
+            <!--  Name  -->
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Current account: " />
                 <TextBlock Text="{Binding AccountLogin}" />
             </StackPanel>
 
-            <!--  Тип аккаунта  -->
+            <!--  Type  -->
             <StackPanel Orientation="Horizontal">
 
                 <TextBlock Text="Account type: " />
 
+                <!--  Account type detect (Authorized/Not Authorized)  -->
                 <TextBlock Text="{Binding IsAuthorizedAccount, Converter={StaticResource IsAuthorizeBoolToStringConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                     <TextBlock.Style>
@@ -55,37 +58,39 @@
 
                 </TextBlock>
 
+                <!--  is default type detect  -->
                 <TextBlock
                     Foreground="{DynamicResource Dangerous(Solid)}"
                     Margin="5,0,0,0"
                     Text="Default"
                     Visibility="{Binding IsDefaultAccount, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-
             </StackPanel>
+
+            <!--  Leave from Account Button  -->
+            <Button
+                Command="{Binding CurrentAccountLogoutCommand}"
+                Grid.Row="1"
+                HorizontalAlignment="Left"
+                Margin="5"
+                Padding="3"
+                Visibility="{Binding IsDefaultAccount, Converter={StaticResource BooleanToVisibilityInverter}}">
+
+                <TextBlock Text="Logout" />
+
+            </Button>
 
         </StackPanel>
 
-        <!--  Кнопка выхода из аккаунта  -->
-        <Button
-            Command="{Binding CurrentAccountLogoutCommand}"
-            Grid.Row="1"
-            HorizontalAlignment="Left"
-            Margin="5"
-            Padding="3"
-            Visibility="{Binding IsDefaultAccount, Converter={StaticResource BooleanToVisibilityInverter}}">
-
-            <TextBlock Text="Logout" />
-
-        </Button>
 
 
+        <!--  Current Account management vmd  -->
         <ContentControl
             Content="{Binding CurrentAccountManagmentVmd, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="2"
-            HorizontalAlignment="Stretch"
+            HorizontalAlignment="Left"
             Margin="5"
-            VerticalAlignment="Top">
+            VerticalAlignment="Center">
 
             <ContentControl.Resources>
 
