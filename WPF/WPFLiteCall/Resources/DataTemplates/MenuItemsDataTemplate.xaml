@@ -8,13 +8,13 @@
         <Border
             Background="Transparent"
             BorderBrush="{DynamicResource Fonts(Solid)}"
-            BorderThickness="0,0,0,1">
+            BorderThickness="0,0,0,1"
+            Padding="5">
 
             <!--  Name  -->
             <TextBlock
                 FontWeight="Bold"
                 HorizontalAlignment="Left"
-                Margin="8,0,0,0"
                 Text="{Binding Name.Value}"
                 VerticalAlignment="Center" />
 
@@ -27,7 +27,8 @@
         <Border
             Background="Transparent"
             BorderBrush="{DynamicResource Fonts(Solid)}"
-            BorderThickness="0,0,0,1">
+            BorderThickness="0,0,0,1"
+            Padding="5">
 
             <Border.InputBindings>
                 <MouseBinding
@@ -40,7 +41,6 @@
             <TextBlock
                 FontWeight="Bold"
                 HorizontalAlignment="Left"
-                Margin="8,0,0,0"
                 Text="{Binding Name.Value}"
                 VerticalAlignment="Center" />
 
