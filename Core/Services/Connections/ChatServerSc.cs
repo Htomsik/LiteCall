@@ -217,7 +217,7 @@ public sealed class ChatServerSc : IChatServerSc
 
         _hubConnectionStore!.CurrentHubConnection = new HubConnectionBuilder()
             .WithUrl(
-                $"https://{_currentServerStore.CurrentServer!.Ip}/LiteCall?token={_currentServerAccountStore.CurrentValue!.Token}",
+                $"https://{_currentServerStore?.CurrentServer?.Ip}/LiteCall?token={_currentServerAccountStore?.CurrentValue?.Token}",
                 options =>
                 {
                     options.WebSocketConfiguration = conf =>

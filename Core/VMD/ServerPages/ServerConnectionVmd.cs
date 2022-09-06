@@ -76,8 +76,8 @@ public class ServerConnectionVmd:BaseVmd
         try
         {
             var dictionaryServerAccount =
-                _savedServersStore!.SavedServerAccounts!.ServersAccounts!.First(s =>
-                    s.SavedServer!.ApiIp == newServer!.ApiIp!.ToLower());
+                _savedServersStore?.CurrentValue?.ServersAccounts!.First(s =>
+                    s.SavedServer?.ApiIp == newServer!.ApiIp!.ToLower());
 
             await _authorizationServices!.Login(dictionaryServerAccount.Account!.IsAuthorized,
                 dictionaryServerAccount.Account, newServer!.ApiIp);

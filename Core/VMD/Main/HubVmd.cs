@@ -12,24 +12,20 @@ using Core.VMD.Base;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace Core.VMD.MainVmds;
+namespace Core.VMD.Main;
 
 
-public sealed class MainPageVmd : BaseVmd
+public sealed class HubVmd : BaseVmd
 {
-    public MainPageVmd(
+    public HubVmd(
         MainAccountStore accountStore,
         CurrentServerAccountStore currentServerAccountStore,
         SavedServersStore savedServersStore,
         CurrentServerStore currentServerStore,
         CurrentServerVmdNavigationStore currentServerVmdNavigationStore,
         INavigationServices settingsPageNavigationServices,
-        INavigationServices serverPageNavigationServices,
         INavigationServices openModalServerAuthorizationNavigationServices,
-        INavigationServices openModalServerConnectionNavigationServices,
-        IAuthorizationSc? authorizationApiServices,
-        IStatusSc statusService,
-        IHttpDataSc httpDataService)
+        INavigationServices openModalServerConnectionNavigationServices)
     {
         #region Store and services Initializing
 
@@ -43,15 +39,7 @@ public sealed class MainPageVmd : BaseVmd
 
         _currentServerVmdNavigationStore = currentServerVmdNavigationStore;
 
-
-        _serverPageNavigationServices = serverPageNavigationServices;
-
-        _authorizationServices = authorizationApiServices;
-
-        _statusService = statusService;
-
-        _httpDataService = httpDataService;
-
+        
         #endregion
 
         #region Commands Initializing
@@ -65,13 +53,7 @@ public sealed class MainPageVmd : BaseVmd
         DisconnectServerCommand = ReactiveCommand.CreateFromTask(_ => CurrentServerStore?.Delete()!);
 
         SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
-
-        DeleteSavedServerCommand =
-            ReactiveCommand.CreateFromTask(OnDeleteServerSavedExecuted, CanDeleteServerSavedExecute());
-
-        ConnectToSavedServerCommand =
-            ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
-
+        
         #endregion
 
         #region SubScription
@@ -113,17 +95,6 @@ public sealed class MainPageVmd : BaseVmd
 
     #endregion
 
-    #region Services
-    
-    private readonly INavigationServices _serverPageNavigationServices;
-
-    private readonly IStatusSc _statusService;
-
-    private readonly IHttpDataSc _httpDataService;
-    
-    private readonly IAuthorizationSc? _authorizationServices;
-
-    #endregion
     
     #region Properties and Fields
 
@@ -196,50 +167,7 @@ public sealed class MainPageVmd : BaseVmd
     ///     Disconnect from current server
     /// </summary>
     public IReactiveCommand DisconnectServerCommand { get; }
-
-    #region ConnectToSavedServerCommand : Connect to selected saved server
-
-    public IReactiveCommand ConnectToSavedServerCommand { get; }
-
-    private IObservable<bool> CanConnectServerSavedExecute()
-    {
-        return this.WhenAnyValue(x => x.SelectedServerAccount,
-            x => x.CurrentServerStore, (account, store) => account?.SavedServer?.ApiIp != store?.CurrentServer?.ApiIp);
-    }
     
-    private async Task OnConnectServerSavedExecuted()
-    {
-        var serverStatus =
-            await Task.Run(() => _httpDataService.CheckServerStatus(SelectedServerAccount!.SavedServer!.ApiIp));
-
-        if (!serverStatus) return;
-
-        if (CurrentServerVmd != default) DisconnectFromServer();
-
-        var newServerAccount = new Account
-        {
-            Login = SelectedServerAccount!.Account!.Login
-        };
-
-        try
-        {
-            await _authorizationServices!.Login(SelectedServerAccount.Account.IsAuthorized,
-                SelectedServerAccount.Account, SelectedServerAccount.SavedServer!.ApiIp);
-
-            newServerAccount = SelectedServerAccount.Account;
-        }
-        catch
-        {
-            await _authorizationServices!.Login(false, newServerAccount, SelectedServerAccount.SavedServer!.Ip);
-        }
-
-        CurrentServerStore!.CurrentServer = SelectedServerAccount.SavedServer;
-
-        _serverPageNavigationServices.Navigate();
-    }
-
-    #endregion
-
     #region SaveServerCommand :  Save current server
 
     /// <summary>
@@ -252,7 +180,7 @@ public sealed class MainPageVmd : BaseVmd
         return this.WhenAnyValue(x => x.SavedServersStore,
             savedServersStore =>
             {
-                return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
+                return savedServersStore?.CurrentValue?.ServersAccounts?.FirstOrDefault(x =>
                     x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
             });
     }
@@ -268,41 +196,6 @@ public sealed class MainPageVmd : BaseVmd
 
     #endregion
     
-    #region DeleteSavedServerCommand : Delete selected saved server
-
-    /// <summary>
-    ///     Delete selected saved server
-    /// </summary>
-    public IReactiveCommand DeleteSavedServerCommand { get; }
-
-
-    private Task OnDeleteServerSavedExecuted()
-    {
-        try
-        {
-            SavedServersStore!.Remove(SelectedServerAccount);
-
-            SelectedServerAccount = null;
-        }
-        catch
-        {
-            //ignored
-        }
-
-        return Task.CompletedTask;
-    }
-
-    private IObservable<bool> CanDeleteServerSavedExecute()
-    {
-        return this.WhenAnyValue(x => x.SavedServersStore,
-            savedServersStore =>
-            {
-                return savedServersStore?.SavedServerAccounts?.ServersAccounts?.FirstOrDefault(x =>
-                    x.SavedServer?.ApiIp == SelectedServerAccount?.SavedServer!.ApiIp) is not null;
-            });
-    }
-
-    #endregion
     
     #endregion
     

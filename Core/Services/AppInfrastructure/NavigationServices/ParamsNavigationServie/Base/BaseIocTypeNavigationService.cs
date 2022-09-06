@@ -1,6 +1,6 @@
 ﻿using AppInfrastructure.Services.StoreServices.Parametrize;
 using AppInfrastructure.Stores.DefaultStore;
-using Core.Services.Retranslations.Base;
+using Core.Services.Retranslators.Base;
 using Core.VMD.Base;
 
 namespace Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie.Base;

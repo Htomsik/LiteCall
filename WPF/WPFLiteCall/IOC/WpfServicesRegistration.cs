@@ -1,6 +1,6 @@
 ﻿using System;
 using Core.Services.Interfaces.AppInfrastructure;
-using Core.Services.Retranslations.Base;
+using Core.Services.Retranslators.Base;
 using Core.VMD.Base;
 using LiteCall.Services;
 using LiteCall.Services.Retranslators;

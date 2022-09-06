@@ -22,13 +22,14 @@
     xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:main="clr-namespace:LiteCall.Views.Main"
     xmlns:mainWindow="clr-namespace:Core.VMD.AppInfrastructure.Windows.MainWindow;assembly=Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:serverPages="clr-namespace:Core.VMD.ServerPages;assembly=Core"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    xmlns:viewModel="clr-namespace:Core.VMD.MainVmds;assembly=Core"
+    xmlns:viewModel="clr-namespace:Core.VMD.Main;assembly=Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Window.Resources>
@@ -80,8 +81,8 @@
             SizeChanged="SizeChanged">
             <ContentControl.Resources>
 
-                <DataTemplate DataType="{x:Type viewModel:MainPageVmd}">
-                    <pages:MainPV />
+                <DataTemplate DataType="{x:Type viewModel:HubVmd}">
+                    <main:HubVW />
                 </DataTemplate>
 
                 <DataTemplate DataType="{x:Type additionalVmds:SettingsVmd}">

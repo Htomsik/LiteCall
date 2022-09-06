@@ -35,7 +35,7 @@ public class SavedServersSettingsVmd : BaseSettingsVmd
     /// <summary>
     ///     Saved servers in current main Account
     /// </summary>
-    public AppSavedServers? SavedServers => _savedServersStore.SavedServerAccounts;
+    public AppSavedServers? SavedServers => _savedServersStore.CurrentValue;
     
     /// <summary>
     ///     Ip of Authorized Api server
@@ -76,7 +76,7 @@ public class SavedServersSettingsVmd : BaseSettingsVmd
 
         #region Subscription
 
-        _savedServersStore.ServersAccountsChange += () => this.RaisePropertyChanged(nameof(SavedServers));
+        _savedServersStore.CurrentValueChangedNotifier += () => this.RaisePropertyChanged(nameof(SavedServers));
 
         #endregion
         

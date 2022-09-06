@@ -1,4 +1,4 @@
-﻿namespace Core.Services.Retranslations.Base;
+﻿namespace Core.Services.Retranslators.Base;
 
 /// <summary>
 ///     Retraslator bewtwen nonConnetions modules

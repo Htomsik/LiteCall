@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using AppInfrastructure.Stores.DefaultStore;
 using Core.Models.Saved;
 using Core.Models.Servers;
 using Core.Models.Users;
@@ -7,30 +8,9 @@ using ReactiveUI;
 
 namespace Core.Stores.TemporaryInfo;
 
-public sealed class SavedServersStore : BaseVmd
+public sealed class SavedServersStore : BaseLazyStore<AppSavedServers>
 {
-    private AppSavedServers? _savedServerAccounts =
-        new() { ServersAccounts = new ObservableCollection<ServerAccount>() };
-
-    public AppSavedServers? SavedServerAccounts
-    {
-        get => _savedServerAccounts;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _savedServerAccounts, value);
-            OnCurrentSeverAccountChanged();
-        }
-    }
-
-
-    public event Action? ServersAccountsChange;
-
-    private void OnCurrentSeverAccountChanged()
-    {
-        ServersAccountsChange?.Invoke();
-    }
-
-
+    
     public void Add(ServerAccount newServerAccount)
     {
         ServerAccount? findAccount = null;
@@ -38,7 +18,7 @@ public sealed class SavedServersStore : BaseVmd
         try
         {
             findAccount =
-                SavedServerAccounts?.ServersAccounts?.First(x =>
+                CurrentValue?.ServersAccounts?.First(x =>
                     x.SavedServer!.ApiIp == newServerAccount.SavedServer!.ApiIp);
         }
         catch (Exception)
@@ -48,23 +28,23 @@ public sealed class SavedServersStore : BaseVmd
         
         if (findAccount != null) throw new Exception("Server already added");
         
-        if (SavedServerAccounts!.ServersAccounts is null)
-            SavedServerAccounts.ServersAccounts = new ObservableCollection<ServerAccount>();
+        if (CurrentValue?.ServersAccounts is null)
+            CurrentValue.ServersAccounts = new ObservableCollection<ServerAccount>();
 
-        SavedServerAccounts.ServersAccounts.Add(newServerAccount);
+        CurrentValue?.ServersAccounts.Add(newServerAccount);
         
-        OnCurrentSeverAccountChanged();
+        OnCurrentValueChanged();
     }
 
     public void Remove(ServerAccount? deletedServer)
     {
         try
         {
-            var findAccount = SavedServerAccounts?.ServersAccounts?.First(x =>
+            var findAccount = CurrentValue?.ServersAccounts?.First(x =>
                 x.SavedServer!.ApiIp == deletedServer!.SavedServer!.ApiIp)!;
             
-            SavedServerAccounts?.ServersAccounts?.Remove(findAccount);
-            OnCurrentSeverAccountChanged();
+            CurrentValue?.ServersAccounts?.Remove(findAccount);
+            OnCurrentValueChanged();
         }
         catch
         {
@@ -80,13 +60,13 @@ public sealed class SavedServersStore : BaseVmd
         try
         {
             findAccount =
-                SavedServerAccounts!.ServersAccounts?.First(x => x.SavedServer!.ApiIp == replacedServer!.ApiIp);
+                CurrentValue?.ServersAccounts?.First(x => x.SavedServer!.ApiIp == replacedServer!.ApiIp);
 
-            SavedServerAccounts.ServersAccounts?.Remove(findAccount!);
+            CurrentValue.ServersAccounts?.Remove(findAccount!);
 
             findAccount!.Account = newAccount;
 
-            SavedServerAccounts.ServersAccounts?.Add(findAccount);
+            CurrentValue.ServersAccounts?.Add(findAccount);
         }
         catch
         {
@@ -96,10 +76,10 @@ public sealed class SavedServersStore : BaseVmd
                 SavedServer = replacedServer
             };
 
-            SavedServerAccounts?.ServersAccounts?.Add(findAccount);
+            CurrentValue?.ServersAccounts?.Add(findAccount);
         }
 
 
-        OnCurrentSeverAccountChanged();
+        OnCurrentValueChanged();
     }
 }

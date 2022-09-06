@@ -16,7 +16,7 @@ using Core.Stores.TemporaryInfo;
 using Core.VMD.AdditionalVmds;
 using Core.VMD.AdditionalVmds.SettingsVmds;
 using Core.VMD.AppInfrastructure.Windows.MainWindow;
-using Core.VMD.MainVmds;
+using Core.VMD.Main;
 using Core.VMD.Pages.AccountManagement;
 using Core.VMD.Pages.AccountManagement.ChatServer;
 using Core.VMD.ServerPages;
@@ -82,18 +82,14 @@ public static class VmdRegistration
         #region Остальные VMD
 
         services.AddTransient(
-            s => new MainPageVmd(s.GetRequiredService<MainAccountStore>(),
+            s => new HubVmd(s.GetRequiredService<MainAccountStore>(),
                 s.GetRequiredService<CurrentServerAccountStore>(),
                 s.GetRequiredService<SavedServersStore>(),
                 s.GetRequiredService<CurrentServerStore>(),
                 s.GetRequiredService<CurrentServerVmdNavigationStore>(),
                 CreateSettingPageNavigationService(s),
-                CreateServerPageNavigationService(s),
                 CreateModalAuthorizationPageNavigationService(s),
-                CreateModalServerConnectionNavigationService(s),
-                CreateAuthCheckApiServerServices(s),
-                s.GetRequiredService<IStatusSc>(),
-                s.GetRequiredService<IHttpDataSc>()));
+                CreateModalServerConnectionNavigationService(s)));
 
         services.AddTransient<SettingsVmd>();
 
@@ -161,7 +157,7 @@ public static class VmdRegistration
     private static INavigationServices CreateMainPageNavigationServices(IServiceProvider serviceProvider)
     {
         return new MainPageVmdsNavigationService(serviceProvider.GetRequiredService<MainWindowVmdNavigationStore>(),
-            serviceProvider.GetRequiredService<MainPageVmd>);
+            serviceProvider.GetRequiredService<HubVmd>);
     }
 
     private static INavigationServices CreateSettingPageNavigationService(IServiceProvider serviceProvider)

@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Services.Retranslations.Base;
+using Core.Services.Retranslators.Base;
 using Core.VMD.Base;
 using Microsoft.Extensions.DependencyInjection;
 
