@@ -12,6 +12,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+
+    <!--  Audio management  -->
     <Grid
         HorizontalAlignment="Center"
         Margin="5"
@@ -23,6 +25,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
+        <!--  Input device selection  -->
         <StackPanel>
             <TextBlock Text="Input device:" />
             <ComboBox
@@ -31,7 +34,7 @@
                 Tag="Default" />
         </StackPanel>
 
-
+        <!--  Output device selection  -->
         <StackPanel Grid.Row="1">
             <TextBlock Text="Output device:" />
             <ComboBox
