@@ -1,34 +1,35 @@
 ﻿<UserControl
+    d:DataContext="{d:DesignInstance {x:Type Vmds:MainPageVmd},
+                                     IsDesignTimeCreatable=True}"
+    d:DesignHeight="450"
+    d:DesignWidth="400"
+    mc:Ignorable="d"
     x:Class="LiteCall.Views.Pages.MainPV"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Vmds="clr-namespace:Core.VMD.MainVmds;assembly=Core"
+    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
     xmlns:converters="clr-namespace:LiteCall.Infrastructure.Converters"
     xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    d:DataContext="{d:DesignInstance {x:Type Vmds:MainPageVmd},
-                                     IsDesignTimeCreatable=True}"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModel="clr-namespace:Core.VMD.ServerPages;assembly=Core"
-    xmlns:boolean="clr-namespace:LiteCall.Infrastructure.Converters.Boolean"
-    xmlns:null="clr-namespace:LiteCall.Infrastructure.Converters.Null"
-    xmlns:Vmds="clr-namespace:Core.VMD.MainVmds;assembly=Core"
-    d:DesignHeight="450"
-    d:DesignWidth="400"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Resources/Styles/Lists.xaml" />
+                <ResourceDictionary Source="../../Resources/DataTemplates/SavedServersDataTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <system:Double x:Key="PlusScale">1</system:Double>
-            
+
             <system:Boolean x:Key="True">True</system:Boolean>
-            
+
             <system:Boolean x:Key="False">False</system:Boolean>
 
         </ResourceDictionary>
@@ -62,8 +63,8 @@
             <Path
                 Grid.Row="1"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Style="{DynamicResource SunPath}">
+                Style="{DynamicResource SunPath}"
+                VerticalAlignment="Center">
                 <Path.RenderTransform>
 
                     <ScaleTransform CenterX="12" CenterY="12" ScaleX="9" ScaleY="9" />
@@ -82,8 +83,10 @@
             </Grid.RowDefinitions>
 
 
+            <!--  Saved servers list  -->
             <ListView
                 Grid.Row="1"
+                ItemTemplate="{DynamicResource SavedServerCircleDataTemplate}"
                 ItemsSource="{Binding SavedServersStore.SavedServerAccounts.ServersAccounts}"
                 SelectedItem="{Binding SelectedServerAccount, UpdateSourceTrigger=PropertyChanged}">
 
@@ -99,95 +102,25 @@
 
                 </ListView.ContextMenu>
 
-                <ListView.ItemTemplate>
-
-                    <DataTemplate>
-
-                        <Border
-                            x:Name="Border"
-                            Width="45"
-                            Height="45"
-                            Background="Transparent"
-                            BorderBrush="{DynamicResource Fonts(Solid)}"
-                            BorderThickness="1"
-                            CornerRadius="22"
-                            ToolTipService.InitialShowDelay="0">
-
-                            <Border.ToolTip>
-                                <ToolTip Placement="Right">
-
-                                    <StackPanel>
-
-                                        <StackPanel Orientation="Horizontal">
-
-                                            <TextBlock Foreground="{DynamicResource Important(Solid)}" Text="Ip: " />
-
-                                            <TextBlock Text="{Binding SavedServer.ApiIp}" />
-
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal">
-
-                                            <TextBlock Foreground="{DynamicResource Important(Solid)}"
-                                                       Text="Nickname: " />
-
-                                            <TextBlock Text="{Binding Account.Login}" />
-
-                                            <TextBlock
-                                                VerticalAlignment="Top"
-                                                FontSize="15"
-                                                Foreground="{DynamicResource Dangerous(Solid)}"
-                                                Text="[NA]"
-                                                Visibility="{Binding Account.IsAuthorized, Converter={StaticResource BooleanToVisibilityInverter}}" />
-
-                                        </StackPanel>
-
-                                    </StackPanel>
-
-                                </ToolTip>
-                            </Border.ToolTip>
-
-                            <TextBlock
-                                x:Name="TitleTB"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Foreground="White"
-                                Text="{Binding SavedServer.Title[0]}" />
-
-
-                        </Border>
-
-                        <DataTemplate.Triggers>
-
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="Background"
-                                        Value="{DynamicResource Button2(Solid)}" />
-                            </Trigger>
-
-                        </DataTemplate.Triggers>
-
-
-                    </DataTemplate>
-                </ListView.ItemTemplate>
             </ListView>
 
-            
-            <!--Server connection-->
+
+            <!--  Current server  -->
             <Border
-                Width="45"
-                Height="45"
                 Background="Transparent"
                 BorderBrush="{StaticResource Important(Solid)}"
                 BorderThickness="1"
                 CornerRadius="25"
-                Visibility="{Binding CurrentServerIsNull, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}">
+                Height="45"
+                Visibility="{Binding CurrentServerIsNull, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}"
+                Width="45">
 
                 <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
                     FontSize="20"
                     Foreground="{DynamicResource Important(Solid)}"
-                    Text="{Binding CurrentServerStore.CurrentServer.Title[0]}" />
+                    HorizontalAlignment="Center"
+                    Text="{Binding CurrentServerStore.CurrentServer.Title[0]}"
+                    VerticalAlignment="Center" />
 
                 <Border.ContextMenu>
                     <ContextMenu>
@@ -195,33 +128,34 @@
 
                         <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
 
-                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}"
-                                  Header="Authorization in current server" />
+                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorization in current server" />
                     </ContextMenu>
                 </Border.ContextMenu>
 
             </Border>
 
+
+            <!--  Server connection button  -->
             <Button
-                Width="35"
-                Height="35"
                 Command="{Binding ModalServerConnectionCommand}"
+                Height="35"
                 Style="{StaticResource ImgButton}"
-                Visibility="{Binding CurrentServerIsNull, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                Visibility="{Binding CurrentServerIsNull, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
+                Width="35">
                 <Button.Resources>
-                    <StaticResource x:Key="Img" ResourceKey="PlusPath" />
-                    <StaticResource x:Key="Scale" ResourceKey="PlusScale" />
+                    <StaticResource ResourceKey="PlusPath" x:Key="Img" />
+                    <StaticResource ResourceKey="PlusScale" x:Key="Scale" />
                 </Button.Resources>
             </Button>
 
         </Grid>
 
         <Border
-            Grid.Row="1"
+            Background="{StaticResource Background3(Solid)}"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            MinWidth="200"
-            Background="{StaticResource Background3(Solid)}">
+            Grid.Row="1"
+            MinWidth="200">
 
             <Border.Style>
 
@@ -233,9 +167,7 @@
 
                     <Style.Triggers>
 
-                        <DataTrigger
-                            Binding="{Binding SelectedViewModel, Converter={StaticResource NullToBoolConverter}}"
-                            Value="False">
+                        <DataTrigger Binding="{Binding SelectedViewModel, Converter={StaticResource NullToBoolConverter}}" Value="False">
 
                             <Setter Property="CornerRadius" Value="0 0 15 0" />
 
@@ -248,28 +180,28 @@
 
             </Border.Style>
 
-            <!--Down toolbar-->
+            <!--  Down toolbar  -->
             <Grid>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                
+
                 <StackPanel Orientation="Horizontal">
 
                     <Border
-                        Width="40"
-                        Height="40"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Background="{DynamicResource Background4(Solid)}"
                         BorderBrush="{DynamicResource Fonts(Solid)}"
                         BorderThickness="1"
                         ClipToBounds="True"
-                        CornerRadius="20">
+                        CornerRadius="20"
+                        Height="40"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="40">
 
-                        <Viewbox Width="25" Height="25">
+                        <Viewbox Height="25" Width="25">
                             <Path
                                 Fill="{DynamicResource Fonts(Solid)}"
                                 Stretch="Uniform"
@@ -277,36 +209,38 @@
                         </Viewbox>
 
                     </Border>
-   
-                    <!--Name Current Server or main account-->
-                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding CurrentAccountInfo.Login}"/>
-                    
-                    <!--Status of current Account-->
+
+                    <!--  Name Current Server or main account  -->
                     <TextBlock
-                        Margin="5,5,0,0"
-                        VerticalAlignment="Top"
+                        Margin="5,0,0,0"
+                        Text="{Binding CurrentAccountInfo.Login}"
+                        VerticalAlignment="Center" />
+
+                    <!--  Status of current Account  -->
+                    <TextBlock
                         FontSize="10"
                         Foreground="{DynamicResource Dangerous(Solid)}"
+                        Margin="5,5,0,0"
                         Text="[NA]"
-                        Visibility="{Binding CurrentAccountInfo.IsAuthorized, Converter={StaticResource BooleanToVisibilityInverter}}"
-                        ToolTip="Non authoized User">
-                    </TextBlock>
+                        ToolTip="Non authoized User"
+                        VerticalAlignment="Top"
+                        Visibility="{Binding CurrentAccountInfo.IsAuthorized, Converter={StaticResource BooleanToVisibilityInverter}}" />
 
 
                 </StackPanel>
 
                 <Button
-                    Grid.Column="1"
-                    Width="25"
-                    Height="25"
-                    Margin="0,0,5,0"
-                    HorizontalAlignment="Right"
                     Command="{Binding OpenSettingsCommand}"
                     CommandParameter="1"
+                    Grid.Column="1"
+                    Height="25"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,5,0"
                     Style="{DynamicResource ImgButton}"
-                    ToolTip="Create new group">
+                    ToolTip="Create new group"
+                    Width="25">
                     <Button.Resources>
-                        <StaticResource x:Key="Img" ResourceKey="SettingsPath" />
+                        <StaticResource ResourceKey="SettingsPath" x:Key="Img" />
                     </Button.Resources>
 
                 </Button>
@@ -315,12 +249,12 @@
 
         </Border>
 
-        <!--Текущий выбранный server Vmd-->
+        <!--  Текущий выбранный server Vmd  -->
         <ContentControl
-            Grid.RowSpan="2"
+            Content="{Binding CurrentServerVmd}"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Content="{Binding CurrentServerVmd}">
+            Grid.RowSpan="2">
 
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewModel:ServerVmd}">
@@ -328,6 +262,6 @@
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
-        
+
     </Grid>
 </UserControl>

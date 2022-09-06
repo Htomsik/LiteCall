@@ -5,7 +5,7 @@ using ReactiveUI.Fody.Helpers;
 
 namespace Core.Models.Saved;
 
-public  sealed class ServerAccount : ReactiveObject
+public sealed class ServerAccount : ReactiveObject
 {
     [Reactive]
     public Server? SavedServer { get; set; }
