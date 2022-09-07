@@ -3,9 +3,6 @@ using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Infrastructure.CMD;
 using Core.Models.Saved;
 using Core.Models.Users;
-using Core.Services.Interfaces.AccountManagement;
-using Core.Services.Interfaces.AppInfrastructure;
-using Core.Services.Interfaces.Connections;
 using Core.Services.Retranslators.Base;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
@@ -20,9 +17,8 @@ namespace Core.VMD.Main;
 public sealed class HubVmd : BaseVmd
 {
     public HubVmd(
-        MainAccountStore accountStore,
+        MainAccountStore mainAccountStore,
         CurrentServerAccountStore currentServerAccountStore,
-        SavedServersStore savedServersStore,
         CurrentServerStore currentServerStore,
         CurrentServerVmdNavigationStore currentServerVmdNavigationStore,
         INavigationServices settingsPageNavigationServices,
@@ -32,11 +28,9 @@ public sealed class HubVmd : BaseVmd
     {
         #region Store and services Initializing
 
-        _mainAccountStore = accountStore;
+        _mainMainAccountStore = mainAccountStore;
 
         _currentServerAccountStore = currentServerAccountStore;
-
-        SavedServersStore = savedServersStore;
 
         CurrentServerStore = currentServerStore;
 
@@ -86,13 +80,13 @@ public sealed class HubVmd : BaseVmd
     /// <summary>
     ///     Current main account
     /// </summary>
-    private readonly MainAccountStore _mainAccountStore;
+    private readonly MainAccountStore _mainMainAccountStore;
     
     /// <summary>
     ///     Current server store
     /// </summary>
     [Reactive] 
-    public CurrentServerStore? CurrentServerStore { get; set; }
+    public CurrentServerStore? CurrentServerStore { get;  }
     
     /// <summary>
     ///     Saved servers for current main account
@@ -121,7 +115,7 @@ public sealed class HubVmd : BaseVmd
     #region CurrentAccountInfo : отображаемое текущая информаация об аккаунте
 
     public Account? CurrentAccountInfo => _currentServerAccountStore?.CurrentValue?.CurrentServerLogin is null 
-        ? _mainAccountStore?.CurrentValue 
+        ? _mainMainAccountStore?.CurrentValue 
         : new Account
     {
         Login = _currentServerAccountStore.CurrentValue.CurrentServerLogin,

@@ -87,7 +87,6 @@ public static class VmdRegistration
         services.AddTransient(
             s => new HubVmd(s.GetRequiredService<MainAccountStore>(),
                 s.GetRequiredService<CurrentServerAccountStore>(),
-                s.GetRequiredService<SavedServersStore>(),
                 s.GetRequiredService<CurrentServerStore>(),
                 s.GetRequiredService<CurrentServerVmdNavigationStore>(),
                 CreateSettingPageNavigationService(s),
