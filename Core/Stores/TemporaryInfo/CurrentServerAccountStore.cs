@@ -1,23 +1,9 @@
-﻿using AppInfrastructure.Stores.DefaultStore;
-using Core.Models.Users;
-using DynamicData.Binding;
+﻿using Core.Models.Users;
+using Core.Stores.Base;
 
 namespace Core.Stores.TemporaryInfo;
 
-public sealed class CurrentServerAccountStore : BaseLazyStore<Account>
+public sealed class CurrentServerAccountStore : BaseReactiveDateStore<Account>
 {
-    public override Account? CurrentValue
-    {
-        get => (Account?)_currentValue.Value;
-        set
-        {
-            _currentValue = new Lazy<object?>(()=> value);
-            
-            CurrentValue?.WhenAnyPropertyChanged()
-                    .Subscribe(_ => OnCurrentValueChanged());
-            
-            OnCurrentValueChanged();
-        }
-        
-    }
+ 
 }

@@ -3,12 +3,13 @@ using AppInfrastructure.Stores.DefaultStore;
 using Core.Models.Saved;
 using Core.Models.Servers;
 using Core.Models.Users;
+using Core.Stores.Base;
 using Core.VMD.Base;
 using ReactiveUI;
 
 namespace Core.Stores.TemporaryInfo;
 
-public sealed class SavedServersStore : BaseLazyStore<AppSavedServers>
+public sealed class SavedServersStore : BaseReactiveDateStore<AppSavedServers>
 {
     
     public void Add(ServerAccount newServerAccount)
@@ -26,7 +27,9 @@ public sealed class SavedServersStore : BaseLazyStore<AppSavedServers>
             // ignored
         }
         
-        if (findAccount != null) throw new Exception("Server already added");
+       // if (findAccount != null) throw new Exception("Server already added");
+
+       if (findAccount != null) return;
         
         if (CurrentValue?.ServersAccounts is null)
             CurrentValue.ServersAccounts = new ObservableCollection<ServerAccount>();
