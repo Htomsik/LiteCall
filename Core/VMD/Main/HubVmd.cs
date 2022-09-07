@@ -7,14 +7,14 @@ using Core.Services.Retranslators.Base;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
-using Core.VMD.Main.HubVmds;
+using Core.VMD.Main.HubVmds.Base;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.Main;
 
 
-public sealed class HubVmd : BaseVmd
+public sealed class HubVmd : BaseHubVmd
 {
     public HubVmd(
         MainAccountStore mainAccountStore,
@@ -24,7 +24,10 @@ public sealed class HubVmd : BaseVmd
         INavigationServices settingsPageNavigationServices,
         INavigationServices openModalServerAuthorizationNavigationServices,
         INavigationServices openModalServerConnectionNavigationServices,
-        IRetranslor<Type, BaseVmd> iocRetranslator)
+        IRetranslor<Type, BaseVmd> iocRetranslator) 
+        : base(settingsPageNavigationServices,
+            currentServerVmdNavigationStore,
+            iocRetranslator)
     {
         #region Store and services Initializing
 
@@ -33,11 +36,6 @@ public sealed class HubVmd : BaseVmd
         _currentServerAccountStore = currentServerAccountStore;
 
         CurrentServerStore = currentServerStore;
-
-        _currentServerVmdNavigationStore = currentServerVmdNavigationStore;
-
-
-        _IocRetranslator = iocRetranslator;
         
         #endregion
 
@@ -46,9 +44,7 @@ public sealed class HubVmd : BaseVmd
         ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationServices,()=> !_currentServerAccountStore.CurrentValue.IsAuthorized);
 
         ModalServerConnectionCommand = new NavigationCommand(openModalServerConnectionNavigationServices);
-
-        OpenSettingsCommand = new NavigationCommand(settingsPageNavigationServices);
-
+        
         DisconnectServerCommand = ReactiveCommand.CreateFromTask(_ => CurrentServerStore?.Delete()!);
 
         SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
@@ -62,12 +58,9 @@ public sealed class HubVmd : BaseVmd
         _currentServerAccountStore.CurrentValueChangedNotifier += () => this.RaisePropertyChanged(nameof(CurrentAccountInfo));
         
         CurrentServerStore.CurrentServerChanged += () => this.RaisePropertyChanged(nameof(CurrentServerIsNull));
-
-        _currentServerVmdNavigationStore.CurrentValueChangedNotifier += ()=>   this.RaisePropertyChanged(nameof(CurrentServerVmd));
         
         #endregion
-
-        CurrentSavedServersVmd = _IocRetranslator.Retranslate(typeof(SavedServersVmd));
+        
     }
 
     #region Stores
@@ -86,7 +79,7 @@ public sealed class HubVmd : BaseVmd
     ///     Current server store
     /// </summary>
     [Reactive] 
-    public CurrentServerStore? CurrentServerStore { get;  }
+    public CurrentServerStore? CurrentServerStore { get; set; }
     
     /// <summary>
     ///     Saved servers for current main account
@@ -95,22 +88,8 @@ public sealed class HubVmd : BaseVmd
     public SavedServersStore? SavedServersStore { get; set; }
 
     #endregion
-
-    #region Services
-
-    private readonly IRetranslor<Type, BaseVmd> _IocRetranslator;
-
-    #endregion
     
     #region Properties and Fields
-
-    #region CurrentServerVmd
-
-    private readonly CurrentServerVmdNavigationStore _currentServerVmdNavigationStore;
-
-    public BaseVmd? CurrentServerVmd => _currentServerVmdNavigationStore.CurrentValue;
-
-    #endregion
     
     #region CurrentAccountInfo : отображаемое текущая информаация об аккаунте
 
@@ -126,35 +105,11 @@ public sealed class HubVmd : BaseVmd
     #endregion
     
     public bool CurrentServerIsNull => CurrentServerStore?.CurrentServer is null;
-
-    public BaseVmd CurrentSavedServersVmd { get; }
-
-    #endregion
-
-    #region Methods
-
-    /// <summary>
-    ///     Invoke when disconnected from server
-    /// </summary>
-    void DisconnectFromServer()
-    {
-        if (CurrentServerVmd == null) return;
-
-        CurrentServerVmd.Dispose();
-
-        _currentServerVmdNavigationStore.CurrentValue = null;
-    }
-
-
+    
     #endregion
     
     #region Commands
-
-    /// <summary>
-    ///     Open AdditionalVmds with settings
-    /// </summary>
-    public ICommand OpenSettingsCommand { get; }
-
+    
     /// <summary>
     ///     Open modalVmds with serverConnection
     /// </summary>
