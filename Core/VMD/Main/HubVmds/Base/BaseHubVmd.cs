@@ -52,6 +52,7 @@ public abstract class BaseHubVmd : BaseVmd, IHubVmd
 
         #endregion
         
+        //Dummy code. Think how refactor this. Maybe use local navigation store?
         CurrentSavedServersVmd = iocRetranslator.Retranslate(typeof(SavedServersVmd));
         
     }

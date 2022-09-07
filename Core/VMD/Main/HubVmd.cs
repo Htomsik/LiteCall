@@ -13,7 +13,6 @@ using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.Main;
 
-
 public sealed class HubVmd : BaseHubVmd
 {
     public HubVmd(
