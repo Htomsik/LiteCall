@@ -20,6 +20,7 @@ public sealed class HubVmd : BaseHubVmd
         CurrentServerAccountStore currentServerAccountStore,
         CurrentServerStore currentServerStore,
         CurrentServerVmdNavigationStore currentServerVmdNavigationStore,
+        SavedServersStore savedServersStore,
         INavigationServices settingsPageNavigationServices,
         INavigationServices openModalServerAuthorizationNavigationServices,
         INavigationServices openModalServerConnectionNavigationServices,
@@ -35,6 +36,8 @@ public sealed class HubVmd : BaseHubVmd
         _currentServerAccountStore = currentServerAccountStore;
 
         CurrentServerStore = currentServerStore;
+
+        _savedServersStore = savedServersStore;
         
         #endregion
 
@@ -79,12 +82,11 @@ public sealed class HubVmd : BaseHubVmd
     /// </summary>
     [Reactive] 
     public CurrentServerStore? CurrentServerStore { get; set; }
-    
+
     /// <summary>
     ///     Saved servers for current main account
     /// </summary>
-    [Reactive]
-    public SavedServersStore? SavedServersStore { get; set; }
+    private readonly SavedServersStore _savedServersStore;
 
     #endregion
     
@@ -133,7 +135,7 @@ public sealed class HubVmd : BaseHubVmd
 
     private IObservable<bool> CanSaveServerCommandExecute()
     {
-        return this.WhenAnyValue(x => x.SavedServersStore,
+        return this.WhenAnyValue(x => x._savedServersStore,
             savedServersStore =>
             {
                 return savedServersStore?.CurrentValue?.ServersAccounts?.FirstOrDefault(x =>
@@ -143,7 +145,7 @@ public sealed class HubVmd : BaseHubVmd
 
     private Task OnSaveServerCommandExecuted()
     {
-        SavedServersStore!.Add(new ServerAccount
+        _savedServersStore.Add(new ServerAccount
             { Account = _currentServerAccountStore!.CurrentValue, SavedServer = CurrentServerStore!.CurrentServer });
 
         return Task.CompletedTask;

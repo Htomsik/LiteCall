@@ -89,6 +89,7 @@ public static class VmdRegistration
                 s.GetRequiredService<CurrentServerAccountStore>(),
                 s.GetRequiredService<CurrentServerStore>(),
                 s.GetRequiredService<CurrentServerVmdNavigationStore>(),
+                s.GetRequiredService<SavedServersStore>(),
                 CreateSettingPageNavigationService(s),
                 CreateModalAuthorizationPageNavigationService(s),
                 CreateModalServerConnectionNavigationService(s),
