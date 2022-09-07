@@ -26,16 +26,16 @@
         <ListView
             ItemTemplate="{DynamicResource SavedServerCircleDataTemplate}"
             ItemsSource="{Binding SavedServes}"
-            SelectedItem="{Binding SelectedServerAccount, UpdateSourceTrigger=PropertyChanged}">
+            SelectedItem="{Binding SelectedServerAccount}">
 
             <ListView.ContextMenu>
 
                 <!--  ContextMenu with commands : Connect, Delete  -->
                 <ContextMenu>
 
-                    <MenuItem Command="{Binding ConnectToServerCommand}" Header="Connect" />
+                    <MenuItem Command="{Binding ConnectToServerCommand, UpdateSourceTrigger=PropertyChanged}" Header="Connect" />
 
-                    <MenuItem Command="{Binding DeleteServerCommand}" Header="Delete" />
+                    <MenuItem Command="{Binding DeleteServerCommand, UpdateSourceTrigger=PropertyChanged}" Header="Delete" />
 
                 </ContextMenu>
 

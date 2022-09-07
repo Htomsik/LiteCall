@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Models.Saved;
+using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.Connections;
@@ -35,7 +36,7 @@ public class SavedServersVmd : BaseVmd
 
     #endregion
 
-    #region Properties and Fields
+    #region Properties 
 
     /// <summary>
     ///     Saved servers in current main account
@@ -47,6 +48,12 @@ public class SavedServersVmd : BaseVmd
     /// </summary>
     [Reactive]
     public ServerAccount SelectedServerAccount { get; set; }
+
+    #endregion
+
+    #region Fields
+
+    private Server? _currentServer => _currentServerStore.CurrentServer;
 
     #endregion
     
@@ -79,7 +86,13 @@ public class SavedServersVmd : BaseVmd
         #region Subsriptions
 
         _savedServersStore.CurrentValueChangedNotifier += () => this.RaisePropertyChanged(nameof(SavedServes));
-
+        
+        // Refactoring this later. Then add repositories support in LiteApp
+        _currentServerStore.CurrentServerChanged += () => this.RaisePropertyChanged(nameof(_currentServer));
+        
+        // Refactoring this later. Then add repositories support in LiteApp
+        _currentServerStore.CurrentServerDeleted += () => this.RaisePropertyChanged(nameof(_currentServer));
+        
         #endregion
 
         #region Commands Initializing
@@ -105,8 +118,11 @@ public class SavedServersVmd : BaseVmd
     
     private IObservable<bool> CanConnectServerSavedExecute()
     {
-        return this.WhenAnyValue(x => x.SelectedServerAccount,
-            x => x._currentServerStore, (account, store) => account?.SavedServer?.ApiIp != store?.CurrentServer?.ApiIp);
+        return this.WhenAnyValue(x =>
+                x.SelectedServerAccount, 
+            x => x._currentServer, 
+            (selectedAccount, currentServer) =>
+                selectedAccount?.SavedServer?.ApiIp != currentServer?.ApiIp);
     }
     
     private async Task OnConnectServerSavedExecuted()
@@ -164,9 +180,12 @@ public class SavedServersVmd : BaseVmd
         return Task.CompletedTask;
     }
 
-    private IObservable<bool> CanDeleteServerExecute() => this.WhenAnyValue(x => x.SavedServes, 
-        (savedServes)=> 
-            savedServes?.FirstOrDefault(x => x.SavedServer?.ApiIp == SelectedServerAccount?.SavedServer?.ApiIp) is not null);
+    private IObservable<bool> CanDeleteServerExecute() => 
+        this.WhenAnyValue(
+            x => x.SavedServes,
+            x => x.SelectedServerAccount,
+        (savedServes, selectedServerAccount)=> 
+            savedServes?.FirstOrDefault(x => x.SavedServer?.ApiIp == selectedServerAccount?.SavedServer?.ApiIp) is not null);
 
 
     #endregion
