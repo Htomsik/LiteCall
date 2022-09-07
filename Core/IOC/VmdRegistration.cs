@@ -10,13 +10,16 @@ using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
+using Core.Services.Retranslators.Base;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.AdditionalVmds;
 using Core.VMD.AdditionalVmds.SettingsVmds;
 using Core.VMD.AppInfrastructure.Windows.MainWindow;
+using Core.VMD.Base;
 using Core.VMD.Main;
+using Core.VMD.Main.HubVmds;
 using Core.VMD.Pages.AccountManagement;
 using Core.VMD.Pages.AccountManagement.ChatServer;
 using Core.VMD.ServerPages;
@@ -89,7 +92,8 @@ public static class VmdRegistration
                 s.GetRequiredService<CurrentServerVmdNavigationStore>(),
                 CreateSettingPageNavigationService(s),
                 CreateModalAuthorizationPageNavigationService(s),
-                CreateModalServerConnectionNavigationService(s)));
+                CreateModalServerConnectionNavigationService(s),
+                s.GetRequiredService<IRetranslor<Type,BaseVmd>>()));
 
         services.AddTransient<SettingsVmd>();
 
@@ -124,6 +128,16 @@ public static class VmdRegistration
             s.GetRequiredService<AppExecutionStateStore>(),
             s.GetRequiredService<CloseModalNavigationServices>(),
             s.GetRequiredService<ICloseAppSc>()));
+
+
+
+        services.AddTransient<SavedServersVmd>(s => new SavedServersVmd(
+            s.GetRequiredService<SavedServersStore>(),
+            s.GetRequiredService<CurrentServerStore>(),
+            s.GetRequiredService<IHttpDataSc>(),
+            CreateServerPageNavigationService(s),
+            CreateAuthCheckApiServerServices(s)
+            ));
         
         
 

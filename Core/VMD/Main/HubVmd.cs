@@ -6,9 +6,11 @@ using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
+using Core.Services.Retranslators.Base;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
+using Core.VMD.Main.HubVmds;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -25,7 +27,8 @@ public sealed class HubVmd : BaseVmd
         CurrentServerVmdNavigationStore currentServerVmdNavigationStore,
         INavigationServices settingsPageNavigationServices,
         INavigationServices openModalServerAuthorizationNavigationServices,
-        INavigationServices openModalServerConnectionNavigationServices)
+        INavigationServices openModalServerConnectionNavigationServices,
+        IRetranslor<Type, BaseVmd> iocRetranslator)
     {
         #region Store and services Initializing
 
@@ -39,6 +42,8 @@ public sealed class HubVmd : BaseVmd
 
         _currentServerVmdNavigationStore = currentServerVmdNavigationStore;
 
+
+        _IocRetranslator = iocRetranslator;
         
         #endregion
 
@@ -67,6 +72,8 @@ public sealed class HubVmd : BaseVmd
         _currentServerVmdNavigationStore.CurrentValueChangedNotifier += ()=>   this.RaisePropertyChanged(nameof(CurrentServerVmd));
         
         #endregion
+
+        CurrentSavedServersVmd = _IocRetranslator.Retranslate(typeof(SavedServersVmd));
     }
 
     #region Stores
@@ -95,6 +102,11 @@ public sealed class HubVmd : BaseVmd
 
     #endregion
 
+    #region Services
+
+    private readonly IRetranslor<Type, BaseVmd> _IocRetranslator;
+
+    #endregion
     
     #region Properties and Fields
 
@@ -119,14 +131,10 @@ public sealed class HubVmd : BaseVmd
     
     #endregion
     
-    /// <summary>
-    ///     Current selected saved server account
-    /// </summary>
-    [Reactive]
-    public ServerAccount? SelectedServerAccount { get; set; }
-    
     public bool CurrentServerIsNull => CurrentServerStore?.CurrentServer is null;
-    
+
+    public BaseVmd CurrentSavedServersVmd { get; }
+
     #endregion
 
     #region Methods

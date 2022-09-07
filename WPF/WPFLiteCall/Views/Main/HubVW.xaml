@@ -7,7 +7,9 @@
     x:Class="LiteCall.Views.Main.HubVW"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Vmds="clr-namespace:Core.VMD.Main;assembly=Core"
+    xmlns:addons="clr-namespace:LiteCall.Views.Addons"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hubVmds="clr-namespace:Core.VMD.Main.HubVmds;assembly=Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:LiteCall.Views.Pages"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
@@ -30,7 +32,6 @@
 
         </ResourceDictionary>
     </UserControl.Resources>
-
 
     <Grid>
 
@@ -79,8 +80,6 @@
             </Grid.RowDefinitions>
 
 
-
-
             <!--  Current server  -->
             <Border
                 Background="Transparent"
@@ -110,7 +109,6 @@
 
             </Border>
 
-
             <!--  Server connection button  -->
             <Button
                 Command="{Binding ModalServerConnectionCommand}"
@@ -124,8 +122,22 @@
                 </Button.Resources>
             </Button>
 
+            <!--  Current SavedServersVmd  -->
+            <ContentControl Content="{Binding CurrentSavedServersVmd}" Grid.Row="1">
+
+                <ContentControl.Resources>
+
+                    <DataTemplate DataType="{x:Type hubVmds:SavedServersVmd}">
+                        <addons:SavedServersVW />
+                    </DataTemplate>
+
+                </ContentControl.Resources>
+            </ContentControl>
+
+
         </Grid>
 
+        <!--  Down toolbar  -->
         <Border
             Background="{StaticResource Background3(Solid)}"
             Grid.Column="0"
@@ -156,7 +168,7 @@
 
             </Border.Style>
 
-            <!--  Down toolbar  -->
+
             <Grid>
 
                 <Grid.ColumnDefinitions>

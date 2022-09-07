@@ -86,6 +86,9 @@ public class SavedServersVmd : BaseVmd
 
         DeleteServerCommand = ReactiveCommand.CreateFromTask(OnDeleteServerExecuted, CanDeleteServerExecute());
 
+        ConnectToServerCommand =
+            ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
+
         #endregion
     }
 
@@ -163,7 +166,7 @@ public class SavedServersVmd : BaseVmd
 
     private IObservable<bool> CanDeleteServerExecute() => this.WhenAnyValue(x => x.SavedServes, 
         (savedServes)=> 
-            savedServes.FirstOrDefault(x => x.SavedServer?.ApiIp == SelectedServerAccount?.SavedServer?.ApiIp) is not null);
+            savedServes?.FirstOrDefault(x => x.SavedServer?.ApiIp == SelectedServerAccount?.SavedServer?.ApiIp) is not null);
 
 
     #endregion

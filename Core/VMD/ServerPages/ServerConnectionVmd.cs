@@ -26,9 +26,10 @@ public class ServerConnectionVmd:BaseVmd
     
     private readonly ICloseServices _closeModalNavigationServices;
 
-    public ServerConnectionVmd(IAuthorizationSc? authorizationServices,
+    public ServerConnectionVmd(
+        IAuthorizationSc authorizationServices,
         SavedServersStore savedServersStore,
-        MainAccountStore? accountStore,
+        MainAccountStore accountStore,
         CurrentServerStore currentServerStore,
         IHttpDataSc httpDataSc, 
         INavigationServices serverPageNavigationServices,ICloseServices closeModalNavigationServices)
