@@ -30,7 +30,7 @@ public partial class App : Application
 
         host.Services.GetRequiredService<SavedServersFileSc>().GetDataFromFile();
 
-        await host.Services.GetRequiredService<ISyncDataOnServerSc>().GetFromServer();
+      //  await host.Services.GetRequiredService<ISyncDataOnServerSc>().GetFromServer();
 
         var initialNavigationService = host.Services.GetRequiredService<INavigationServices>();
 

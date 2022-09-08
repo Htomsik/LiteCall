@@ -15,6 +15,8 @@ internal sealed class CloseAppSc : ICloseAppSc
     public async void Close()
     {
         Application.Current.Shutdown();
-        await _synchronizeDataOnServerSc?.SaveOnServer()!;
+        
+        // Temporary removed (Maybe not temporary if u want remove main server)
+        // await _synchronizeDataOnServerSc?.SaveOnServer()!;
     }
 }
