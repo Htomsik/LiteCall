@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using AppInfrastructure.Services.NavigationServices.Close;
 using Core.Models.AccountManagement;
+using Core.Models.Saved;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.Connections;
@@ -47,7 +48,7 @@ public sealed class RegistrationApiServerSc : IRegistrationSc
 
         newAccount.IsAuthorized = true;
 
-        _savedServersStore.Replace(_currentServerStore.CurrentServer, newAccount);
+        _savedServersStore.Replace(new ServerAccount(_currentServerStore.CurrentServer,newAccount));
 
         _closeModalNavigationServices.Close();
 

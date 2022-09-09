@@ -41,7 +41,7 @@ public class SavedServersVmd : BaseVmd
     /// <summary>
     ///     Saved servers in current main account
     /// </summary>
-    public ObservableCollection<ServerAccount> SavedServes => _savedServersStore?.CurrentValue?.ServersAccounts;
+    public ObservableCollection<ServerAccount> SavedServes => _savedServersStore?.CurrentValue;
     
     /// <summary>
     ///     Current selected saved server account
@@ -168,7 +168,7 @@ public class SavedServersVmd : BaseVmd
     {
         try
         {
-            _savedServersStore.Remove(SelectedServerAccount);
+            _savedServersStore.RemoveFromEnumerable(SelectedServerAccount);
 
             SelectedServerAccount = null;
         }

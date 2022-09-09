@@ -43,7 +43,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Top">
 
-            <ListView ItemsSource="{Binding SavedServers.ServersAccounts, UpdateSourceTrigger=PropertyChanged}" x:Name="ServesListView">
+            <ListView ItemsSource="{Binding SavedServers, UpdateSourceTrigger=PropertyChanged}" x:Name="ServesListView">
 
                 <ListView.ItemTemplate>
 

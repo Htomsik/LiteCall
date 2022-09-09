@@ -11,4 +11,20 @@ public sealed class ServerAccount : ReactiveObject
     public Server? SavedServer { get; set; }
     [Reactive]
     public Account? Account { get; set; }
+
+    #region Constructors
+
+    public ServerAccount(){}
+
+    public ServerAccount(Server savedServer, Account account)
+    {
+        SavedServer = savedServer;
+        Account = account;
+    }
+   
+
+    #endregion
+   
+    
+    
 }

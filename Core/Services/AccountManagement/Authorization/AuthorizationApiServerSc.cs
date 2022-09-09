@@ -1,4 +1,5 @@
 ﻿using AppInfrastructure.Services.NavigationServices.Close;
+using Core.Models.Saved;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.Connections;
@@ -52,7 +53,7 @@ public sealed class AuthorizationApiServerSc : IAuthorizationSc
             throw new Exception();
         }
         
-        _savedServersStore.Replace(_currentServerStore.CurrentServer, newAccount);
+        _savedServersStore.Replace(new ServerAccount(_currentServerStore.CurrentServer,newAccount));
 
         _closeModalNavigationServices.Close();
         

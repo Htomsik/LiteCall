@@ -2,5 +2,5 @@
 
     public class RegistrationModel : RecoveryModel
     {
-        public string? Captcha { get; set; }
+        public string Captcha { get; set; }
     }

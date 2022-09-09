@@ -20,10 +20,10 @@ public class SavedServersStoreUnitTests
         };
         
         //Act
-        savedServersStore.Add(addingServer);
+        savedServersStore.AddIntoEnumerable(addingServer);
         
         //Act+Assert
-        Assert.ThrowsException<Exception>(() => savedServersStore.Add(addingServer));
+        Assert.ThrowsException<Exception>(() => savedServersStore.AddIntoEnumerable(addingServer));
 
     }
 
@@ -39,6 +39,6 @@ public class SavedServersStoreUnitTests
         };
         
         //Act+Assert
-        Assert.ThrowsException<Exception>(() => savedServersStore.Remove(removedServer));
+        Assert.ThrowsException<Exception>(() => savedServersStore.RemoveFromEnumerable(removedServer));
     }
 }

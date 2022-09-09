@@ -43,7 +43,7 @@ public static class ServicesRegistration
             new HttpDataSc(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),
                 configuration, s.GetRequiredService<HttpClientStore>()));
         
-        services.AddTransient<ISyncDataOnServerSc, SynchronizeDataOnServerSc>();
+     //   services.AddTransient<ISyncDataOnServerSc, SynchronizeDataOnServerSc>();
 
         services.AddTransient<IChatServerSc, ChatServerSc>();
 

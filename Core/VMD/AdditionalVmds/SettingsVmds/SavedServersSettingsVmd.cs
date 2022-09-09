@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Core.Models.Saved;
 using Core.Models.Users;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -35,7 +36,7 @@ public class SavedServersSettingsVmd : BaseSettingsVmd
     /// <summary>
     ///     Saved servers in current main Account
     /// </summary>
-    public AppSavedServers? SavedServers => _savedServersStore.CurrentValue;
+    public ObservableCollection<ServerAccount>? SavedServers => _savedServersStore.CurrentValue;
     
     /// <summary>
     ///     Ip of Authorized Api server
@@ -122,7 +123,7 @@ public class SavedServersSettingsVmd : BaseSettingsVmd
 
             try
             {
-                _savedServersStore!.Add(newSavedSeverAccount);
+                _savedServersStore!.AddIntoEnumerable(newSavedSeverAccount);
             }
             catch (Exception)
             {

@@ -1,88 +1,41 @@
 ﻿using System.Collections.ObjectModel;
-using AppInfrastructure.Stores.DefaultStore;
+using AppInfrastructure.Stores.Repositories.Collection;
 using Core.Models.Saved;
 using Core.Models.Servers;
-using Core.Models.Users;
-using Core.Stores.Base;
-using Core.VMD.Base;
-using ReactiveUI;
+
 
 namespace Core.Stores.TemporaryInfo;
 
-public sealed class SavedServersStore : BaseReactiveDateStore<AppSavedServers>
+public sealed class SavedServersStore : BaseLazyCollectionRepository<ObservableCollection<ServerAccount>,ServerAccount>
 {
     
-    public void Add(ServerAccount newServerAccount)
+    public bool Replace(ServerAccount? serverAccount)
     {
-        ServerAccount? findAccount = null;
-
-        try
-        {
-            findAccount =
-                CurrentValue?.ServersAccounts?.First(x =>
-                    x.SavedServer!.ApiIp == newServerAccount.SavedServer!.ApiIp);
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
+        if (serverAccount is null || serverAccount.Account is null || serverAccount.SavedServer is null)
+            throw new ArgumentNullException(nameof(serverAccount));
+       
+        var  isReplaced = false;
         
-       // if (findAccount != null) throw new Exception("Server already added");
-
-       if (findAccount != null) return;
+        var foundAcc = FIndByServerApiIp(serverAccount.SavedServer);
         
-        if (CurrentValue?.ServersAccounts is null)
-            CurrentValue.ServersAccounts = new ObservableCollection<ServerAccount>();
-
-        CurrentValue?.ServersAccounts.Add(newServerAccount);
+        if (Contains(foundAcc) && removeFromEnumerable(foundAcc))
+        {
+            addIntoEnumerable(serverAccount);
+            isReplaced = true;
+        }
         
         OnCurrentValueChanged();
+        return isReplaced;
     }
+    
+    public ServerAccount FIndByServerApiIp(Server server) => 
+        server is null  
+        ? default
+        : CurrentValue?.FirstOrDefault(item=>item.SavedServer.ApiIp == server.ApiIp,default);
 
-    public void Remove(ServerAccount? deletedServer)
-    {
-        try
-        {
-            var findAccount = CurrentValue?.ServersAccounts?.First(x =>
-                x.SavedServer!.ApiIp == deletedServer!.SavedServer!.ApiIp)!;
-            
-            CurrentValue?.ServersAccounts?.Remove(findAccount);
-            OnCurrentValueChanged();
-        }
-        catch
-        {
-            throw new Exception("Saved server doesn't exist");
-        }
-        
-    }
+    public bool ContainsByServerApiIp(Server server) => 
+        server is null 
+            ? false
+            : !FIndByServerApiIp(server).Equals(default);
 
-    public void Replace(Server? replacedServer, Account? newAccount)
-    {
-        ServerAccount? findAccount = null;
-        
-        try
-        {
-            findAccount =
-                CurrentValue?.ServersAccounts?.First(x => x.SavedServer!.ApiIp == replacedServer!.ApiIp);
-
-            CurrentValue.ServersAccounts?.Remove(findAccount!);
-
-            findAccount!.Account = newAccount;
-
-            CurrentValue.ServersAccounts?.Add(findAccount);
-        }
-        catch
-        {
-            findAccount = new ServerAccount
-            {
-                Account = newAccount,
-                SavedServer = replacedServer
-            };
-
-            CurrentValue?.ServersAccounts?.Add(findAccount);
-        }
-
-
-        OnCurrentValueChanged();
-    }
 }

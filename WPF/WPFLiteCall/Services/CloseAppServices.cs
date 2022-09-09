@@ -5,13 +5,15 @@ namespace LiteCall.Services;
 
 internal sealed class CloseAppSc : ICloseAppSc
 {
-    private readonly ISyncDataOnServerSc _synchronizeDataOnServerSc;
+    // private readonly ISyncDataOnServerSc _synchronizeDataOnServerSc;
+    //
+    // public CloseAppSc(ISyncDataOnServerSc synchronizeDataOnServerSc)
+    // {
+    //     _synchronizeDataOnServerSc = synchronizeDataOnServerSc;
+    // }
 
-    public CloseAppSc(ISyncDataOnServerSc synchronizeDataOnServerSc)
-    {
-        _synchronizeDataOnServerSc = synchronizeDataOnServerSc;
-    }
-
+    public CloseAppSc(){}
+    
     public async void Close()
     {
         Application.Current.Shutdown();

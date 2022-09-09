@@ -39,12 +39,12 @@ public sealed class SavedServersFileSc : IFileSc
                 s.MainServerAccount!.IsAuthorized! == _accountStore!.CurrentValue!.IsAuthorized! &&
                 s!.MainServerAccount!.Login! == _accountStore!.CurrentValue!.Login!);
 
-            _savedServersStore.CurrentValue!.ServersAccounts = currentUserServerStore?.ServersAccounts ??
+            _savedServersStore.CurrentValue = currentUserServerStore?.ServersAccounts ??
                                                                       new ObservableCollection<ServerAccount>();
         }
         catch
         {
-            _savedServersStore.CurrentValue = new AppSavedServers();
+            _savedServersStore.CurrentValue = new ();
         }
     }
 
@@ -76,15 +76,15 @@ public sealed class SavedServersFileSc : IFileSc
             }
 
 
-            if (_savedServersStore.CurrentValue!.ServersAccounts?.Count != 0 &&
-                _savedServersStore.CurrentValue.ServersAccounts is not null)
+            if (_savedServersStore.CurrentValue!.Count != 0 &&
+                _savedServersStore.CurrentValue is not null)
             {
                 
                 var newSavedServers = new CurrentAccountSavedServers
                 {
                     LastUpdated = DateTime.Now,
                     MainServerAccount = _accountStore.CurrentValue,
-                    ServersAccounts = _savedServersStore.CurrentValue.ServersAccounts
+                    ServersAccounts = _savedServersStore.CurrentValue
                 };
 
                 allUsers!.Add(newSavedServers);

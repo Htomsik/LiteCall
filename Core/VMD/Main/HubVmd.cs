@@ -135,17 +135,13 @@ public sealed class HubVmd : BaseHubVmd
 
     private IObservable<bool> CanSaveServerCommandExecute()
     {
-        return this.WhenAnyValue(x => x._savedServersStore,
-            savedServersStore =>
-            {
-                return savedServersStore?.CurrentValue?.ServersAccounts?.FirstOrDefault(x =>
-                    x.SavedServer?.ApiIp == CurrentServerStore?.CurrentServer?.ApiIp) is null;
-            });
+        return this.WhenAnyValue(x => x._savedServersStore, x=> x.CurrentServerStore,
+            (savedServersStore, currentServerStore) => savedServersStore.ContainsByServerApiIp(currentServerStore.CurrentServer) );
     }
 
     private Task OnSaveServerCommandExecuted()
     {
-        _savedServersStore.Add(new ServerAccount
+        _savedServersStore.AddIntoEnumerable(new ServerAccount
             { Account = _currentServerAccountStore!.CurrentValue, SavedServer = CurrentServerStore!.CurrentServer });
 
         return Task.CompletedTask;

@@ -13,12 +13,8 @@ public class MainAccountStore:BaseLazyCustomDefaultStore<Account>
     public void Logout() => CurrentValue = null;
 
     #region Constructors
+    public MainAccountStore() : base(null,new Account { Login = "LC_User" }) {}
     
-    public MainAccountStore() : base(null,new Account { Login = "LC_User" })
-    {
-        
-    }
-
     #endregion
    
 }
