@@ -81,20 +81,39 @@ public static class VmdRegistration
                 CreateApiRecoveryPasswordServices(s), s.GetRequiredService<IEncryptSc>()));
 
         #endregion
-
-        #region Остальные VMD
+        
+        #region Hub vmds
 
         services.AddTransient(
             s => new HubVmd(s.GetRequiredService<MainAccountStore>(),
                 s.GetRequiredService<CurrentServerAccountStore>(),
                 s.GetRequiredService<CurrentServerStore>(),
                 s.GetRequiredService<CurrentServerVmdNavigationStore>(),
-                s.GetRequiredService<SavedServersStore>(),
                 CreateSettingPageNavigationService(s),
+                s.GetRequiredService<IRetranslor<Type,BaseVmd>>())
+            );
+        
+        services.AddTransient(
+            s=> new CurrentServerManagerVmd(
                 CreateModalAuthorizationPageNavigationService(s),
                 CreateModalServerConnectionNavigationService(s),
-                s.GetRequiredService<IRetranslor<Type,BaseVmd>>()));
+                s.GetRequiredService<SavedServersStore>(),
+                s.GetRequiredService<CurrentServerStore>(),
+                s.GetRequiredService<CurrentServerAccountStore>())
+            );
+        
+        services.AddTransient(s => new SavedServersManagerVmd(
+            s.GetRequiredService<SavedServersStore>(),
+            s.GetRequiredService<CurrentServerStore>(),
+            s.GetRequiredService<IHttpDataSc>(),
+            CreateServerPageNavigationService(s),
+            CreateAuthCheckApiServerServices(s)
+        ));
 
+        #endregion
+        
+        #region Остальные VMD
+        
         services.AddTransient<SettingsVmd>();
 
         services.AddTransient<AboutProgramSettingsVmd>();
@@ -130,17 +149,7 @@ public static class VmdRegistration
             s.GetRequiredService<ICloseAppSc>()));
 
 
-
-        services.AddTransient<SavedServersVmd>(s => new SavedServersVmd(
-            s.GetRequiredService<SavedServersStore>(),
-            s.GetRequiredService<CurrentServerStore>(),
-            s.GetRequiredService<IHttpDataSc>(),
-            CreateServerPageNavigationService(s),
-            CreateAuthCheckApiServerServices(s)
-            ));
         
-        
-
         #endregion
 
         return services;

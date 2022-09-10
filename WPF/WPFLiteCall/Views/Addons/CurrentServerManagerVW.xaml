@@ -1,0 +1,67 @@
+﻿<UserControl
+    d:DataContext="{d:DesignInstance {x:Type Vmds:CurrentServerManagerVmd},
+                                     IsDesignTimeCreatable=True}"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d"
+    x:Class="LiteCall.Views.Addons.CurrentServerManagerVW"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Vmds="clr-namespace:Core.VMD.Main.HubVmds;assembly=Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+            <system:Double x:Key="PlusScale">1</system:Double>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <!--  Current server  -->
+        <Border
+            Background="Transparent"
+            BorderBrush="{StaticResource Important(Solid)}"
+            BorderThickness="1"
+            CornerRadius="25"
+            Height="45"
+            Visibility="{Binding CurrentServerIsNull, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}"
+            Width="45">
+
+            <TextBlock
+                FontSize="20"
+                Foreground="{DynamicResource Important(Solid)}"
+                HorizontalAlignment="Center"
+                Text="{Binding CurrentServer.Title[0], TargetNullValue=Invalid operations}"
+                VerticalAlignment="Center" />
+
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding DisconnectServerCommand}" Header="Server Disconnect" />
+
+                    <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
+
+                    <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorization in current server" />
+                </ContextMenu>
+            </Border.ContextMenu>
+
+        </Border>
+
+        <!--  Server connection button  -->
+        <Button
+            Command="{Binding ModalServerConnectionCommand}"
+            Height="35"
+            Style="{StaticResource ImgButton}"
+            Visibility="{Binding CurrentServerIsNull, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
+            Width="35">
+            <Button.Resources>
+                <StaticResource ResourceKey="PlusPath" x:Key="Img" />
+                <StaticResource ResourceKey="PlusScale" x:Key="Scale" />
+            </Button.Resources>
+        </Button>
+
+    </Grid>
+</UserControl>

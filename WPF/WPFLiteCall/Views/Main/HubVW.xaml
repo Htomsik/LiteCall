@@ -26,10 +26,6 @@
 
             <system:Double x:Key="PlusScale">1</system:Double>
 
-            <system:Boolean x:Key="True">True</system:Boolean>
-
-            <system:Boolean x:Key="False">False</system:Boolean>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -80,54 +76,25 @@
             </Grid.RowDefinitions>
 
 
-            <!--  Current server  -->
-            <Border
-                Background="Transparent"
-                BorderBrush="{StaticResource Important(Solid)}"
-                BorderThickness="1"
-                CornerRadius="25"
-                Height="45"
-                Visibility="{Binding CurrentServerIsNull, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityInverter}}"
-                Width="45">
-
-                <TextBlock
-                    FontSize="20"
-                    Foreground="{DynamicResource Important(Solid)}"
-                    HorizontalAlignment="Center"
-                    Text="{Binding CurrentServerStore.CurrentServer.Title[0]}"
-                    VerticalAlignment="Center" />
-
-                <Border.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="{Binding DisconnectServerCommand}" Header="Server Disconnect" />
-
-                        <MenuItem Command="{Binding SaveServerCommand}" Header="Save Server" />
-
-                        <MenuItem Command="{Binding ModalRegistrationOpenCommand}" Header="Authorization in current server" />
-                    </ContextMenu>
-                </Border.ContextMenu>
-
-            </Border>
-
-            <!--  Server connection button  -->
-            <Button
-                Command="{Binding ModalServerConnectionCommand}"
-                Height="35"
-                Style="{StaticResource ImgButton}"
-                Visibility="{Binding CurrentServerIsNull, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"
-                Width="35">
-                <Button.Resources>
-                    <StaticResource ResourceKey="PlusPath" x:Key="Img" />
-                    <StaticResource ResourceKey="PlusScale" x:Key="Scale" />
-                </Button.Resources>
-            </Button>
-
-            <!--  Current SavedServersVmd  -->
-            <ContentControl Content="{Binding CurrentSavedServersVmd}" Grid.Row="1">
+            <!--  Current CurrentServerManagerVmd  -->
+            <ContentControl Content="{Binding CurrentServerManagerVmd}" Grid.Row="0">
 
                 <ContentControl.Resources>
 
-                    <DataTemplate DataType="{x:Type hubVmds:SavedServersVmd}">
+                    <DataTemplate DataType="{x:Type hubVmds:CurrentServerManagerVmd}">
+                        <addons:CurrentServerManagerVW />
+                    </DataTemplate>
+
+                </ContentControl.Resources>
+            </ContentControl>
+
+
+            <!--  Current SavedServersManagerVmd  -->
+            <ContentControl Content="{Binding CurrentSavedServersManagerVmd}" Grid.Row="1">
+
+                <ContentControl.Resources>
+
+                    <DataTemplate DataType="{x:Type hubVmds:SavedServersManagerVmd}">
                         <addons:SavedServersVW />
                     </DataTemplate>
 

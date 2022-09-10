@@ -1,5 +1,5 @@
 ﻿<UserControl
-    d:DataContext="{d:DesignInstance {x:Type Vmds:SavedServersVmd},
+    d:DataContext="{d:DesignInstance {x:Type Vmds:SavedServersManagerVmd},
                                      IsDesignTimeCreatable=True}"
     d:DesignHeight="300"
     d:DesignWidth="300"

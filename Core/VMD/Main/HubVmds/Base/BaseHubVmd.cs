@@ -21,10 +21,11 @@ public abstract class BaseHubVmd : BaseVmd, IHubVmd
     
     #region Properties and Fields
 
-    public BaseVmd CurrentSavedServersVmd { get; }
+    public BaseVmd CurrentSavedServersManagerVmd { get; }
+    
+    public BaseVmd CurrentServerManagerVmd { get; }
 
     public BaseVmd CurrentServerVmd => _currentServerVmdNavigationStore.CurrentValue;
-    
     
     
     #endregion
@@ -53,8 +54,11 @@ public abstract class BaseHubVmd : BaseVmd, IHubVmd
         #endregion
         
         //Dummy code. Think how refactor this. Maybe use local navigation store?
-        CurrentSavedServersVmd = iocRetranslator.Retranslate(typeof(SavedServersVmd));
-        
+        CurrentSavedServersManagerVmd = iocRetranslator.Retranslate(typeof(SavedServersManagerVmd));
+
+        //Dummy code. Think how refactor this. Maybe use local navigation store?
+        CurrentServerManagerVmd = iocRetranslator.Retranslate(typeof(CurrentServerManagerVmd));
+
     }
 
     #endregion

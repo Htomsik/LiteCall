@@ -21,7 +21,7 @@ public interface IHubVmd : INotifyPropertyChanged
     /// <summary>
     ///     Current saved servers management vmd
     /// </summary>
-    public BaseVmd CurrentSavedServersVmd { get;}
+    public BaseVmd CurrentSavedServersManagerVmd { get;}
     
     
     /// <summary>

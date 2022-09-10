@@ -14,9 +14,9 @@ using ReactiveUI.Fody.Helpers;
 namespace Core.VMD.Main.HubVmds;
 
 /// <summary>
-///     SavedServersManageVmd
+///     Saved Servers Manage Vmd (Hub)
 /// </summary>
-public class SavedServersVmd : BaseVmd
+public class SavedServersManagerVmd : BaseVmd
 {
     #region Stores
 
@@ -53,7 +53,7 @@ public class SavedServersVmd : BaseVmd
     
     #region Constructors
 
-    public SavedServersVmd(SavedServersStore savedServersStore,
+    public SavedServersManagerVmd(SavedServersStore savedServersStore,
         CurrentServerStore currentServerStore,
         IHttpDataSc httpDataService,
         INavigationServices serverPageNavigationServices,
