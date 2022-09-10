@@ -8,11 +8,11 @@ namespace Core.VMD.AppInfrastructure.Windows.Base;
 /// <summary>
 ///     Base realize for IBaseWindowVmd
 /// </summary>
-public abstract class BaseWindowVmdVmd : BaseVmd,IBaseWindowVmd
+public abstract class BaseWindowVmd : BaseVmd,IBaseWindowVmd
 {
     #region Constructors
     /// <param name="closeWindowService">Close current window service</param>
-    public BaseWindowVmdVmd(ICloseServices closeWindowService)
+    public BaseWindowVmd(ICloseServices closeWindowService)
     {
         CloseWindowCommand = ReactiveCommand.Create(()=> closeWindowService?.Close());
     }

@@ -8,46 +8,44 @@ using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.VMD.AppInfrastructure.Windows.Base;
 using Core.VMD.Base;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.AppInfrastructure.Windows.MainWindow;
 
-public sealed class MainWindowVmd : BaseWindowVmdVmd
+public sealed class MainWindowVmd : BaseWindowVmd
 {
     #region Properties and Fields
     
     #region CurrentStatusMessage
-    public AppExecutionState CurrentStatusMessage => _statusMessageStore.CurrentValue;
     
-    private readonly AppExecutionStateStore _statusMessageStore;
+    [Reactive]
+    public AppExecutionState CurrentStatusMessage { get; private set; }
     
-    public bool StatusMessageIsOpen =>  !string.IsNullOrEmpty(_statusMessageStore?.CurrentValue?.Message);
+    [Reactive]
+    public bool StatusMessageIsOpen { get; private set; }
 
     #endregion
-
-    #region MainPageCurrentViewModel
-
-    public BaseVmd? MainPageCurrentVmd => _mainWindowVmdNavigationStore.CurrentValue;
     
-    private readonly IStore<BaseVmd> _mainWindowVmdNavigationStore;
-
-    #endregion
+    [Reactive]
+    public BaseVmd? MainPageCurrentVmd { get; private set; }
 
     #region ModalCurrentVmd
 
-    public BaseVmd? ModalCurrentVmd => _modalVmdNavigationStore.CurrentValue;
+    [Reactive]
+    public BaseVmd? ModalCurrentVmd { get; private set; }
     
-    private readonly ModalVmdNavigationStore _modalVmdNavigationStore;
-    public bool ModalIsOpen => _modalVmdNavigationStore.CurrentValue is not null;
+    [Reactive]
+    public bool ModalIsOpen { get; private set; }
 
     #endregion
 
     #region CurrentAdditionalVmd
     
-    public BaseVmd? CurrentAdditionalVmd => _additionalVmdsNavigationStore.CurrentValue;
-
-    private readonly AdditionalVmdsNavigationStore _additionalVmdsNavigationStore;
+    [Reactive]
+    public BaseVmd? CurrentAdditionalVmd { get; private set; }
     
-    public bool AdditionalIsOpen => _additionalVmdsNavigationStore.CurrentValue is not null;
+    [Reactive]
+    public bool AdditionalIsOpen { get; private set; }
 
     #endregion
     
@@ -60,45 +58,59 @@ public sealed class MainWindowVmd : BaseWindowVmdVmd
         ICloseServices closeModalNavigationService,
         ICloseServices closeAppSc) : base(closeAppSc)
     {
-        #region Stores and services Initializing
-
-        _mainWindowVmdNavigationStore = mainWindowVmdNavigationStore;
-
-        _additionalVmdsNavigationStore = additionalVmdsNavigationStore;
-
-        _modalVmdNavigationStore = modalVmdNavigationStore;
-
-        _statusMessageStore = statusMessageStore;
-
-     
-        
-        #endregion
         
         #region Subscripptions
 
-        _mainWindowVmdNavigationStore.CurrentValueChangedNotifier += ()=> this.RaisePropertyChanged(nameof(MainPageCurrentVmd));
+        mainWindowVmdNavigationStore.CurrentValueChangedNotifier += ()=>
+            MainPageCurrentVmd = mainWindowVmdNavigationStore.CurrentValue;
         
-        _additionalVmdsNavigationStore.CurrentValueChangedNotifier += ()=> 
-        { 
-            this.RaisePropertyChanged(nameof(CurrentAdditionalVmd));
-
-            this.RaisePropertyChanged(nameof(AdditionalIsOpen));
-        };
-        
-        _modalVmdNavigationStore.CurrentValueChangedNotifier += () =>
+        additionalVmdsNavigationStore.CurrentValueChangedNotifier += ()=>
         {
-            this.RaisePropertyChanged(nameof(ModalCurrentVmd));
+            CurrentAdditionalVmd = additionalVmdsNavigationStore.CurrentValue;
 
-            this.RaisePropertyChanged(nameof(ModalIsOpen));
+            AdditionalIsOpen = additionalVmdsNavigationStore.CurrentValue is not null;
         };
         
-        
-        _statusMessageStore.CurrentValueChangedNotifier += () =>
+        modalVmdNavigationStore.CurrentValueChangedNotifier += () =>
         {
-            this.RaisePropertyChanged(nameof(CurrentStatusMessage));
+            ModalCurrentVmd = modalVmdNavigationStore.CurrentValue;
 
-            this.RaisePropertyChanged(nameof(StatusMessageIsOpen));
+            ModalIsOpen = modalVmdNavigationStore.CurrentValue is not null;
         };
+        
+        
+        statusMessageStore.CurrentValueChangedNotifier += () =>
+        {
+            CurrentStatusMessage = statusMessageStore.CurrentValue;
+
+            StatusMessageIsOpen = !string.IsNullOrEmpty(statusMessageStore?.CurrentValue?.Message);
+        };
+
+        #endregion
+
+        #region Properties Initializing
+
+        //Mainpage
+        
+        MainPageCurrentVmd = mainWindowVmdNavigationStore.CurrentValue;
+        
+        //Additional
+        
+        CurrentAdditionalVmd = additionalVmdsNavigationStore.CurrentValue;
+
+        AdditionalIsOpen = additionalVmdsNavigationStore.CurrentValue is not null;
+        
+        //Modal
+        
+        ModalCurrentVmd = modalVmdNavigationStore.CurrentValue;
+
+        ModalIsOpen = modalVmdNavigationStore.CurrentValue is not null;
+        
+        //StatusMessage
+        
+        CurrentStatusMessage = statusMessageStore.CurrentValue;
+
+        StatusMessageIsOpen = !string.IsNullOrEmpty(statusMessageStore?.CurrentValue?.Message);
 
         #endregion
 
