@@ -21,7 +21,7 @@ public class SavedServersVmd : BaseVmd
     #region Stores
 
     private readonly SavedServersStore _savedServersStore;
-
+    
     private readonly CurrentServerStore _currentServerStore;
 
     #endregion
@@ -41,19 +41,13 @@ public class SavedServersVmd : BaseVmd
     /// <summary>
     ///     Saved servers in current main account
     /// </summary>
-    public ObservableCollection<ServerAccount> SavedServes => _savedServersStore?.CurrentValue;
+    public ObservableCollection<ServerAccount>? SavedServes { get; private set; }
     
     /// <summary>
     ///     Current selected saved server account
     /// </summary>
     [Reactive]
     public ServerAccount SelectedServerAccount { get; set; }
-
-    #endregion
-
-    #region Fields
-
-    private Server? _currentServer => _currentServerStore.CurrentServer;
 
     #endregion
     
@@ -84,15 +78,11 @@ public class SavedServersVmd : BaseVmd
         #endregion
 
         #region Subsriptions
-
-        _savedServersStore.CurrentValueChangedNotifier += () => this.RaisePropertyChanged(nameof(SavedServes));
         
-        // Refactoring this later. Then add repositories support in LiteApp
-        _currentServerStore.CurrentServerChanged += () => this.RaisePropertyChanged(nameof(_currentServer));
-        
-        // Refactoring this later. Then add repositories support in LiteApp
-        _currentServerStore.CurrentServerDeleted += () => this.RaisePropertyChanged(nameof(_currentServer));
-        
+         // _savedServersStore.WhenAnyValue(x => x.CurrentValue).Subscribe(x=> SavedServes = x);
+         
+         savedServersStore.CurrentValueChangedNotifier += () => SavedServes = savedServersStore?.CurrentValue;
+         
         #endregion
 
         #region Commands Initializing
@@ -120,9 +110,19 @@ public class SavedServersVmd : BaseVmd
     {
         return this.WhenAnyValue(x =>
                 x.SelectedServerAccount, 
-            x => x._currentServer, 
-            (selectedAccount, currentServer) =>
-                selectedAccount?.SavedServer?.ApiIp != currentServer?.ApiIp);
+            x => x._currentServerStore.CurrentServer,
+            (selectedServerAccount, currentServer) =>
+            {
+                try
+                {
+                  return  selectedServerAccount?.SavedServer?.ApiIp != currentServer?.ApiIp;
+                }
+                catch 
+                {
+                    return false;
+                }
+            
+            });
     }
     
     private async Task OnConnectServerSavedExecuted()
@@ -179,13 +179,23 @@ public class SavedServersVmd : BaseVmd
 
         return Task.CompletedTask;
     }
-
+    
     private IObservable<bool> CanDeleteServerExecute() => 
         this.WhenAnyValue(
-            x => x.SavedServes,
             x => x.SelectedServerAccount,
-        (savedServes, selectedServerAccount)=> 
-            savedServes?.FirstOrDefault(x => x.SavedServer?.ApiIp == selectedServerAccount?.SavedServer?.ApiIp) is not null);
+            (serverAccount) =>
+            {
+                try
+                {
+                  return  _savedServersStore.Contains(serverAccount);
+                }
+                catch 
+                {
+
+                    return false;
+                }
+            }
+        );
 
 
     #endregion

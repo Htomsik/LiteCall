@@ -41,13 +41,21 @@ public sealed class HubVmd : BaseHubVmd
         
         #endregion
 
+        #region Subscriptions
+
+        _savedServersStore.CurrentValueChangedNotifier += () => this.RaisePropertyChanged(nameof(_savedServersStore));
+
+        this.CurrentServerStore.CurrentServerChanged += () => this.RaisePropertyChanged(nameof(CurrentServerStore));
+
+        #endregion
+
         #region Commands Initializing
 
         ModalRegistrationOpenCommand = new NavigationCommand(openModalServerAuthorizationNavigationServices,()=> !_currentServerAccountStore.CurrentValue.IsAuthorized);
 
         ModalServerConnectionCommand = new NavigationCommand(openModalServerConnectionNavigationServices);
         
-        DisconnectServerCommand = ReactiveCommand.CreateFromTask(_ => CurrentServerStore?.Delete()!);
+        DisconnectServerCommand = ReactiveCommand.CreateFromTask(_ => CurrentServerStore?.Delete());
 
         SaveServerCommand = ReactiveCommand.CreateFromTask(OnSaveServerCommandExecuted, CanSaveServerCommandExecute());
         
@@ -83,6 +91,7 @@ public sealed class HubVmd : BaseHubVmd
     [Reactive] 
     public CurrentServerStore? CurrentServerStore { get; set; }
 
+    
     /// <summary>
     ///     Saved servers for current main account
     /// </summary>
@@ -136,7 +145,7 @@ public sealed class HubVmd : BaseHubVmd
     private IObservable<bool> CanSaveServerCommandExecute()
     {
         return this.WhenAnyValue(x => x._savedServersStore, x=> x.CurrentServerStore,
-            (savedServersStore, currentServerStore) => savedServersStore.ContainsByServerApiIp(currentServerStore.CurrentServer) );
+            (savedServersStore, currentServerStore) => !savedServersStore.ContainsByServerApiIp(currentServerStore.CurrentServer) );
     }
 
     private Task OnSaveServerCommandExecuted()
