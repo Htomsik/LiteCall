@@ -23,11 +23,11 @@ public static class ServicesRegistration
         #region Сервисы
 
         services.AddSingleton(s =>
-            new SavedServersFileSc(s.GetRequiredService<SavedServersStore>(),
+            new SavedServersFileService(s.GetRequiredService<SavedServersStore>(),
                 s.GetRequiredService<MainAccountStore>()));
 
         services.AddSingleton(s =>
-            new SavedMainAccountFileSc(s.GetRequiredService<MainAccountStore>(), s.GetRequiredService<AppSettingsStore>()));
+            new SavedMainAccountFileService(s.GetRequiredService<MainAccountStore>(), s.GetRequiredService<AppSettingsStore>()));
 
         services.AddTransient<CloseAdditionalNavigationServices>();
 

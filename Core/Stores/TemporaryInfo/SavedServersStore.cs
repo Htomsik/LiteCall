@@ -7,6 +7,11 @@ namespace Core.Stores.TemporaryInfo;
 
 public sealed class SavedServersStore : BaseLazyCollectionRepository<ObservableCollection<ServerAccount>, ServerAccount>
 {
+
+    public SavedServersStore()
+    {
+        CurrentValue = new ();
+    }
     
     public bool Replace(ServerAccount? serverAccount)
     {

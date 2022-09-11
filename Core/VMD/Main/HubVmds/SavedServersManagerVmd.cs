@@ -41,6 +41,7 @@ public class SavedServersManagerVmd : BaseVmd
     /// <summary>
     ///     Saved servers in current main account
     /// </summary>
+    [Reactive]
     public ObservableCollection<ServerAccount>? SavedServes { get; private set; }
     
     /// <summary>
@@ -79,8 +80,6 @@ public class SavedServersManagerVmd : BaseVmd
 
         #region Subsriptions
         
-         // _savedServersStore.WhenAnyValue(x => x.CurrentValue).Subscribe(x=> SavedServes = x);
-         
          savedServersStore.CurrentValueChangedNotifier += () => SavedServes = savedServersStore?.CurrentValue;
          
         #endregion

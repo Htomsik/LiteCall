@@ -43,9 +43,9 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         
-     //   Services.GetRequiredService<SavedMainAccountFileSc>().GetDataFromFile();
+        Services.GetRequiredService<SavedMainAccountFileService>().GetDataFromFile();
 
-     //   Services.GetRequiredService<SavedServersFileSc>().GetDataFromFile();
+       Services.GetRequiredService<SavedServersFileService>().GetDataFromFile();
 
       //  await host.Services.GetRequiredService<ISyncDataOnServerSc>().GetFromServer();
 

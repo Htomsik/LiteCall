@@ -1,4 +1,5 @@
 ﻿using Core.Models.Saved;
+using Core.Services.AppInfrastructure.FileServices.Base;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.TemporaryInfo;
@@ -6,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Core.Services.AppInfrastructure.FileServices;
 
-public sealed class SavedMainAccountFileSc : IFileSc
+public sealed class SavedMainAccountFileService : IFileService
 {
     private const string FilePath = @"MainAccount.json";
 
@@ -15,7 +16,7 @@ public sealed class SavedMainAccountFileSc : IFileSc
     private readonly AppSettingsStore _settingsStore;
 
 
-    public SavedMainAccountFileSc(MainAccountStore accountStore, AppSettingsStore settingsStore)
+    public SavedMainAccountFileService(MainAccountStore accountStore, AppSettingsStore settingsStore)
     {
         _accountStore = accountStore;
 
