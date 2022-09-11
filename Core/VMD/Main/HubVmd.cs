@@ -41,8 +41,7 @@ public sealed class HubVmd : BaseHubVmd
         CurrentAccountInfo = mainAccountStore.CurrentValue;
 
         #endregion
-
-
+        
     }
     
     #region Properties and Fields
@@ -52,15 +51,20 @@ public sealed class HubVmd : BaseHubVmd
     [Reactive]
     public Account? CurrentAccountInfo { get; private set; }
     
-    private void CurrentAccountInofoChanger(Account mainAccount, Account currentServeAccount) =>
-        CurrentAccountInfo = currentServeAccount is null
+    private void CurrentAccountInofoChanger(Account mainAccount, Account? currentServerAccount)
+    {
+        CurrentAccountInfo = currentServerAccount?.CurrentServerLogin is null
             ? mainAccount
             : new Account
             {
-                Login = currentServeAccount.Login,
-                IsAuthorized = currentServeAccount.IsAuthorized
-            }
-    ;
+                Login = currentServerAccount.CurrentServerLogin,
+                IsAuthorized = currentServerAccount.IsAuthorized
+            };
+        
+ 
+    }
+       
+    
     
     
     #endregion
