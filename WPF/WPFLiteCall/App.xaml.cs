@@ -15,55 +15,67 @@ namespace LiteCall;
 
 public partial class App : Application
 {
+
+    #region Properies and Fields
+
+    #region Host
+
     private static IHost? _host;
 
-    public static  IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
-    
+    private static  IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+
+    #endregion
+
     public static IServiceProvider Services => Host.Services;
 
+    #region StartupWindow
+
+    private static StartupWindow _startupWindow;
+
+    private static StartupWindow StartupWindow => _startupWindow ??= new ();
+
+    #endregion
+
+    #endregion
+
    
+    
     protected override async void OnStartup(StartupEventArgs e)
     {
-        var host = Host;
+        
+     //   Services.GetRequiredService<SavedMainAccountFileSc>().GetDataFromFile();
 
-        host.Services.GetRequiredService<SavedMainAccountFileSc>().GetDataFromFile();
-
-        host.Services.GetRequiredService<SavedServersFileSc>().GetDataFromFile();
+     //   Services.GetRequiredService<SavedServersFileSc>().GetDataFromFile();
 
       //  await host.Services.GetRequiredService<ISyncDataOnServerSc>().GetFromServer();
 
-        var initialNavigationService = host.Services.GetRequiredService<INavigationServices>();
-
-        initialNavigationService.Navigate();
-
-        var startupWindow = new StartupWindow();
-
-        startupWindow.Show();
+        Services.GetRequiredService<INavigationServices>().Navigate();
+          
+        StartupWindow.Show();
 
         Task.WaitAll();
+        
+        await Task.Delay(600);
 
-        await Task.Delay(2000);
-
-        MainWindow = host.Services.GetRequiredService<MainWindow>();
+        MainWindow = Services.GetRequiredService<MainWindow>();
 
         MainWindow.Show();
-
-        startupWindow.Close();
-
+        
+        StartupWindow.Close();
+        
         base.OnStartup(e);
         
-        await host.StartAsync().ConfigureAwait(false);
+        await Host.StartAsync().ConfigureAwait(false);
     }
-
+    
+    
     protected override async void OnExit(ExitEventArgs e)
     {
-        var host = Host;
-
         base.OnExit(e);
 
-        await host.StopAsync().ConfigureAwait(false);
+        await Host.StopAsync().ConfigureAwait(false);
 
-        host.Dispose();
+        Host.Dispose();
 
         _host = null;
     }
