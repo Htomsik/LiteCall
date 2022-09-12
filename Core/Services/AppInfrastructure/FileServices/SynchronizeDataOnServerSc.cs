@@ -1,9 +1,4 @@
-﻿using Core.Services.Interfaces.AppInfrastructure;
-using Core.Services.Interfaces.Connections;
-using Core.Services.Interfaces.Extra;
-using Core.Stores.TemporaryInfo;
-
-namespace Core.Services.AppInfrastructure.FileServices;
+﻿namespace Core.Services.AppInfrastructure.FileServices;
 
 // public sealed class SynchronizeDataOnServerSc : ISyncDataOnServerSc
 // {

@@ -5,7 +5,6 @@ using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
 using Core.VMD.Main.HubVmds.Base;
-using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.Main;
@@ -63,10 +62,6 @@ public sealed class HubVmd : BaseHubVmd
         
  
     }
-       
-    
-    
-    
     #endregion
     
     #endregion

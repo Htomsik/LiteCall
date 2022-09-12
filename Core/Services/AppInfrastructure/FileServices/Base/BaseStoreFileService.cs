@@ -98,9 +98,8 @@ public abstract class BaseStoreFileService<TValue> : IFileService
 
     public async void SaveDataInFile()
     {
-        if (!FileExtensions.IsDirectoryExist(DirectoryPath) || !FileExtensions.RestoreDirectories(DirectoryPath))
-            // Add logger later
-            return;
+        if (!FileExtensions.IsFileExist(FileName, DirectoryPath))
+            FileExtensions.RestoreFile(FileName, DirectoryPath);
         
         TValue? valueIntoFile = Store.CurrentValue;
 
@@ -111,7 +110,12 @@ public abstract class BaseStoreFileService<TValue> : IFileService
         
         try
         {
-            seriaLizedValue = JsonConvert.SerializeObject(valueIntoFile);
+            seriaLizedValue = JsonConvert.SerializeObject(valueIntoFile,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    Formatting = Formatting.Indented
+                } );
         }
         catch (Exception e)
         {
@@ -121,10 +125,7 @@ public abstract class BaseStoreFileService<TValue> : IFileService
         using (StreamWriter writer = new StreamWriter($"{DirectoryPath}/{FileName}", false))
         {
             await writer.WriteLineAsync(seriaLizedValue);
-            Task.WaitAll();
         }
-
-       
     }
 
     #endregion

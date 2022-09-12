@@ -8,7 +8,7 @@ namespace Core.Stores.TemporaryInfo;
 /// </summary>
 public class MainAccountStore:BaseLazyCustomDefaultStore<Account>
 {
-    public bool IsDefaultAccount => CurrentValue == DefaultValue;
+    public bool IsDefaultAccount => CurrentValue.Equals(DefaultValue);
     
     public void Logout() => CurrentValue = null;
 

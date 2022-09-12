@@ -2,7 +2,6 @@
 using System.Windows.Input;
 using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Models.Saved;
-using Core.Models.Servers;
 using Core.Models.Users;
 using Core.Services.Interfaces.AccountManagement;
 using Core.Services.Interfaces.Connections;
@@ -90,6 +89,12 @@ public class SavedServersManagerVmd : BaseVmd
 
         ConnectToServerCommand =
             ReactiveCommand.CreateFromTask(OnConnectServerSavedExecuted, CanConnectServerSavedExecute());
+
+        #endregion
+
+        #region Properties and Fields Initializing
+
+        SavedServes = savedServersStore?.CurrentValue;
 
         #endregion
     }

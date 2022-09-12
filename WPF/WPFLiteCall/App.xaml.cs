@@ -4,8 +4,6 @@ using System.Windows;
 using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.IOC;
 using Core.Services.AppInfrastructure.FileServices;
-using Core.Services.AppInfrastructure.FileServices.Base;
-using Core.Services.Interfaces.AppInfrastructure;
 using Core.VMD.AppInfrastructure.Windows.MainWindow;
 using LiteCall.IOC;
 using LiteCall.Views.Windows;
@@ -37,15 +35,17 @@ public partial class App : Application
 
     #endregion
     
-    private void InitializeDataFromFiles()
+    private async Task InitializeDataFromFiles()
     {
         Services.GetRequiredService<MainAccountFileService>().GetDataFromFile();
+        
+        Services.GetRequiredService<SavedServersFIleService>().GetDataFromFile();
     }
     
     protected override async void OnStartup(StartupEventArgs e)
     {
 
-        InitializeDataFromFiles();
+         await   InitializeDataFromFiles();
         
         Services.GetRequiredService<INavigationServices>().Navigate();
           

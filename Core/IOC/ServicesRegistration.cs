@@ -1,6 +1,5 @@
 ﻿using Core.Services.AppInfrastructure;
 using Core.Services.AppInfrastructure.FileServices;
-using Core.Services.AppInfrastructure.FileServices.Base;
 using Core.Services.AppInfrastructure.NavigationServices.CloseServices;
 using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie;
 using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie.Base;
@@ -9,9 +8,7 @@ using Core.Services.Extra;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
-using Core.Stores.AppInfrastructure;
 using Core.Stores.Connections;
-using Core.Stores.TemporaryInfo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,15 +19,13 @@ public static class ServicesRegistration
     public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         #region Сервисы
-
-        // services.AddSingleton(s =>
-        //     new SavedServersFileService(s.GetRequiredService<SavedServersStore>(),
-        //         s.GetRequiredService<MainAccountStore>()));
-        //
-        // services.AddSingleton(s =>
-        //     new SavedMainAccountFileService(s.GetRequiredService<MainAccountStore>(), s.GetRequiredService<AppSettingsStore>()));
+        #region FileServices
 
         services.AddSingleton<MainAccountFileService>();
+
+        services.AddSingleton<SavedServersFIleService>();
+        
+        #endregion
 
         services.AddTransient<CloseAdditionalNavigationServices>();
 
