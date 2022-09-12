@@ -4,11 +4,15 @@ using Newtonsoft.Json;
 
 namespace Core.Services.AppInfrastructure.FileServices.Base;
 
+/// <summary>
+///     Base realiizing for IFileService. Saving on Json format
+/// </summary>
+/// <typeparam name="TValue">Some generic value</typeparam>
 public abstract class BaseStoreFileService<TValue> : IFileService
 {
     #region Stores
 
-    protected readonly IStore<TValue?> _store;
+    protected readonly IStore<TValue?> Store;
 
     #endregion
     
@@ -17,10 +21,13 @@ public abstract class BaseStoreFileService<TValue> : IFileService
     #region DirectoryPath
     
     /// <summary>
-    ///     File filePath for child
+    ///     Path to directory with file
     /// </summary>
     protected abstract string DirectoryPath { get; set; }
     
+    /// <summary>
+    ///     Json file name.
+    /// </summary>
     protected abstract string FileName { get; }
 
     #endregion
@@ -31,9 +38,9 @@ public abstract class BaseStoreFileService<TValue> : IFileService
 
     public BaseStoreFileService(IStore<TValue?> store)
     {
-        _store = store ?? throw new ArgumentNullException(nameof(store));
+        Store = store ?? throw new ArgumentNullException(nameof(store));
 
-        _store.CurrentValueChangedNotifier += SaveDataInFile;
+        Store.CurrentValueChangedNotifier += SaveDataInFile;
         
     } 
     
@@ -82,7 +89,7 @@ public abstract class BaseStoreFileService<TValue> : IFileService
             //Add logger later
             return;
         
-        _store.CurrentValue = deserializedValue;
+        Store.CurrentValue = deserializedValue;
     }
 
     #endregion
@@ -95,7 +102,7 @@ public abstract class BaseStoreFileService<TValue> : IFileService
             // Add logger later
             return;
         
-        TValue? valueIntoFile = _store.CurrentValue;
+        TValue? valueIntoFile = Store.CurrentValue;
 
         if (valueIntoFile is null)
             return;
