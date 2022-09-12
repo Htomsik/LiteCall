@@ -4,6 +4,7 @@ using System.Windows;
 using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.IOC;
 using Core.Services.AppInfrastructure.FileServices;
+using Core.Services.AppInfrastructure.FileServices.Base;
 using Core.Services.Interfaces.AppInfrastructure;
 using Core.VMD.AppInfrastructure.Windows.MainWindow;
 using LiteCall.IOC;
@@ -15,7 +16,6 @@ namespace LiteCall;
 
 public partial class App : Application
 {
-
     #region Properies and Fields
 
     #region Host
@@ -25,7 +25,6 @@ public partial class App : Application
     private static  IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
     #endregion
-
     public static IServiceProvider Services => Host.Services;
 
     #region StartupWindow
@@ -37,18 +36,17 @@ public partial class App : Application
     #endregion
 
     #endregion
-
-   
+    
+    private void InitializeDataFromFiles()
+    {
+        Services.GetRequiredService<MainAccountFileService>().GetDataFromFile();
+    }
     
     protected override async void OnStartup(StartupEventArgs e)
     {
+
+        InitializeDataFromFiles();
         
-        Services.GetRequiredService<SavedMainAccountFileService>().GetDataFromFile();
-
-       Services.GetRequiredService<SavedServersFileService>().GetDataFromFile();
-
-      //  await host.Services.GetRequiredService<ISyncDataOnServerSc>().GetFromServer();
-
         Services.GetRequiredService<INavigationServices>().Navigate();
           
         StartupWindow.Show();

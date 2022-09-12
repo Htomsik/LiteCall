@@ -1,5 +1,6 @@
 ﻿using Core.Services.AppInfrastructure;
 using Core.Services.AppInfrastructure.FileServices;
+using Core.Services.AppInfrastructure.FileServices.Base;
 using Core.Services.AppInfrastructure.NavigationServices.CloseServices;
 using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie;
 using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie.Base;
@@ -22,12 +23,14 @@ public static class ServicesRegistration
     {
         #region Сервисы
 
-        services.AddSingleton(s =>
-            new SavedServersFileService(s.GetRequiredService<SavedServersStore>(),
-                s.GetRequiredService<MainAccountStore>()));
+        // services.AddSingleton(s =>
+        //     new SavedServersFileService(s.GetRequiredService<SavedServersStore>(),
+        //         s.GetRequiredService<MainAccountStore>()));
+        //
+        // services.AddSingleton(s =>
+        //     new SavedMainAccountFileService(s.GetRequiredService<MainAccountStore>(), s.GetRequiredService<AppSettingsStore>()));
 
-        services.AddSingleton(s =>
-            new SavedMainAccountFileService(s.GetRequiredService<MainAccountStore>(), s.GetRequiredService<AppSettingsStore>()));
+        services.AddSingleton<MainAccountFileService>();
 
         services.AddTransient<CloseAdditionalNavigationServices>();
 

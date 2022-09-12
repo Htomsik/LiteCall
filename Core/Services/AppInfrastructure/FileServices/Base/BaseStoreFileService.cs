@@ -1,4 +1,5 @@
 ﻿using AppInfrastructure.Stores.DefaultStore;
+using Core.Services.Extensions;
 using Newtonsoft.Json;
 
 namespace Core.Services.AppInfrastructure.FileServices.Base;
@@ -7,14 +8,23 @@ public abstract class BaseStoreFileService<TValue> : IFileService
 {
     #region Stores
 
-    private readonly IStore<TValue?> _store;
+    protected readonly IStore<TValue?> _store;
 
     #endregion
     
     #region Properties and Fields
 
-    protected abstract string Path { get; set; }
+    #region DirectoryPath
+    
+    /// <summary>
+    ///     File filePath for child
+    /// </summary>
+    protected abstract string DirectoryPath { get; set; }
+    
+    protected abstract string FileName { get; }
 
+    #endregion
+    
     #endregion
     
     #region Constructors
@@ -24,6 +34,7 @@ public abstract class BaseStoreFileService<TValue> : IFileService
         _store = store ?? throw new ArgumentNullException(nameof(store));
 
         _store.CurrentValueChangedNotifier += SaveDataInFile;
+        
     } 
     
     #endregion
@@ -31,19 +42,30 @@ public abstract class BaseStoreFileService<TValue> : IFileService
     #region Methods
     
     #region GetDataFromFile
-
-    public async void GetDataFromFile()
+    public void GetDataFromFile()
     {
-        string textFromFile;
-
-        using (StreamReader reader = new StreamReader(Path))
+        if (!FileExtensions.IsFileExist(FileName, DirectoryPath))
         {
-            textFromFile = await reader.ReadToEndAsync();
+            FileExtensions.RestoreFile(FileName, DirectoryPath);
+            SaveDataInFile();
+            return;
         }
         
+        string textFromFile;
+        
+        using (StreamReader reader = new StreamReader($"{DirectoryPath}/{FileName}"))
+        {
+            textFromFile = reader.ReadToEnd();
+            Task.WaitAll();
+        }
+
         if (string.IsNullOrEmpty(textFromFile))
-            //Add loger later
+        {
+            SaveDataInFile();
+            //Add logger later
             return;
+        }
+        
         
         TValue? deserializedValue = default;
         
@@ -64,11 +86,15 @@ public abstract class BaseStoreFileService<TValue> : IFileService
     }
 
     #endregion
-
+    
     #region SaveDataInFile
 
     public async void SaveDataInFile()
     {
+        if (!FileExtensions.IsDirectoryExist(DirectoryPath) || !FileExtensions.RestoreDirectories(DirectoryPath))
+            // Add logger later
+            return;
+        
         TValue? valueIntoFile = _store.CurrentValue;
 
         if (valueIntoFile is null)
@@ -85,14 +111,17 @@ public abstract class BaseStoreFileService<TValue> : IFileService
             // Add logger later
         }
         
-        using (StreamWriter writer = new StreamWriter(Path, false))
+        using (StreamWriter writer = new StreamWriter($"{DirectoryPath}/{FileName}", false))
         {
             await writer.WriteLineAsync(seriaLizedValue);
+            Task.WaitAll();
         }
+
+       
     }
 
     #endregion
     
     #endregion
-    
+
 }

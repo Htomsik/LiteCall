@@ -12,6 +12,8 @@ public class Account : RegistrationUser, IEquatable<Account>
     [Reactive] [JsonIgnore] public string? Token { get; set; }
 
     [Reactive] [JsonProperty] public bool IsAuthorized { get; set; }
+    
+    [Reactive] [JsonProperty] public Guid GuidId { get; set; }
 
     #region IEquatable
 
