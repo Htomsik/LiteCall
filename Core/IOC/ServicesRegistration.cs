@@ -19,36 +19,29 @@ public static class ServicesRegistration
     public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         #region Сервисы
+        
         #region FileServices
 
-        services.AddSingleton<MainAccountFileService>();
-
-        services.AddSingleton<SavedServersFIleService>();
+        services.AddSingleton<MainAccountFileService>()
+            .AddSingleton<SavedServersFIleService>();
         
         #endregion
 
-        services.AddTransient<CloseAdditionalNavigationServices>();
-
-        services.AddTransient<CloseModalNavigationServices>();
-
-        services.AddSingleton<IStatusSc, AppExecutionStateSc>();
-
-        services.AddTransient<IEncryptSc, EncryptSc>();
-
-        services.AddTransient<IImageServices, ImageSc>();
+        services.AddTransient<CloseAdditionalNavigationServices>()
+            .AddTransient<CloseModalNavigationServices>()
+            .AddSingleton<IStatusSc, AppExecutionStateSc>()
+            .AddTransient<IEncryptSc, EncryptSc>()
+            .AddTransient<IImageServices, ImageSc>()
+            .AddTransient<IChatServerSc, ChatServerSc>()
+            .AddTransient<BaseIocTypeNavigationService>()
+            .AddTransient<SettingsVmdsIocTypeNavigationService>();
 
         services.AddSingleton<IHttpDataSc, HttpDataSc>(s =>
             new HttpDataSc(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),
                 configuration, s.GetRequiredService<HttpClientStore>()));
         
      //   services.AddTransient<ISyncDataOnServerSc, SynchronizeDataOnServerSc>();
-
-        services.AddTransient<IChatServerSc, ChatServerSc>();
-
-        services.AddTransient<BaseIocTypeNavigationService>();
-
-        services.AddTransient<SettingsVmdsIocTypeNavigationService>();
-        
+     
         #endregion
 
         return services;

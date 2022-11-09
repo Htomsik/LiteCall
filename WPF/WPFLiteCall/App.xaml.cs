@@ -45,7 +45,7 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
 
-         await   InitializeDataFromFiles();
+         await  InitializeDataFromFiles();
         
         Services.GetRequiredService<INavigationServices>().Navigate();
           

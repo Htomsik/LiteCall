@@ -10,41 +10,29 @@ public static class StoresRegistration
 {
     public static IServiceCollection RegisterStores(this IServiceCollection services)
     {
-        #region Хранилища
+        #region Stores
 
-        services.AddSingleton<MainAccountStore>();
-
-        services.AddSingleton<AppSettingsStore>();
-
-        services.AddSingleton<CurrentServerAccountStore>();
-
-        services.AddSingleton<SavedServersStore>();
-
-        services.AddSingleton<CurrentServerStore>();
-
-        services.AddSingleton<AppExecutionStateStore>();
-
-        services.AddSingleton<HttpClientStore>();
-
-        services.AddSingleton<HubConnectionStore>();
-
-        services.AddSingleton<SettingsVmdsNavigationStore>();
-
-        services.AddSingleton<SettingsAccountManagementVmdNavigationStore>();
-
+        services
+            .AddSingleton<MainAccountStore>()
+            .AddSingleton<AppSettingsStore>()
+            .AddSingleton<CurrentServerAccountStore>()
+            .AddSingleton<SavedServersStore>()
+            .AddSingleton<CurrentServerStore>()
+            .AddSingleton<AppExecutionStateStore>()
+            .AddSingleton<HttpClientStore>()
+            .AddSingleton<HubConnectionStore>()
+            .AddSingleton<SettingsVmdsNavigationStore>()
+            .AddSingleton<SettingsAccountManagementVmdNavigationStore>();
         #endregion
 
         #region NavigationStores
 
-        services.AddSingleton<MainWindowVmdNavigationStore>();
-
-        services.AddSingleton<AdditionalVmdsNavigationStore>();
-
-        services.AddSingleton<ModalVmdNavigationStore>();
-
-        services.AddSingleton<SettingsAccountManagementVmdNavigationStore>();
-
-        services.AddSingleton<CurrentServerVmdNavigationStore>();
+        services
+            .AddSingleton<MainWindowVmdNavigationStore>()
+            .AddSingleton<AdditionalVmdsNavigationStore>()
+            .AddSingleton<ModalVmdNavigationStore>()
+            .AddSingleton<SettingsAccountManagementVmdNavigationStore>()
+            .AddSingleton<CurrentServerVmdNavigationStore>();
 
         #endregion
 
