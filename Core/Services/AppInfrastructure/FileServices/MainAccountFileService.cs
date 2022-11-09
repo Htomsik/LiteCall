@@ -9,7 +9,7 @@ namespace Core.Services.AppInfrastructure.FileServices;
 /// </summary>
 public sealed class MainAccountFileService : DataFileService<Account>
 {
-    public MainAccountFileService(MainAccountStore mainAccount) : base(mainAccount, mainAccount)
+    public MainAccountFileService(MainAccountStore mainAccountStore) : base(mainAccountStore, mainAccountStore)
     {
     }
 

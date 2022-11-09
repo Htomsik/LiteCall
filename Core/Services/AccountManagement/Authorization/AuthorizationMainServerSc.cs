@@ -28,7 +28,9 @@ public sealed class AuthorizationMainServerSc : IAuthorizationSc
     {
         newAccount!.IsAuthorized = isNotAnonymousAuthorize;
         
-        newAccount.Password = isNotAnonymousAuthorize ? string.Empty : newAccount.Password;
+        newAccount.Password = isNotAnonymousAuthorize ? newAccount.Password : string.Empty;
+
+        newAccount.GuidId = Guid.NewGuid();
 
         try
         {

@@ -10,7 +10,7 @@ namespace Core.Services.AppInfrastructure.FileServices;
 /// </summary>
 public class SavedServersFIleService : DataFileService<ObservableCollection<ServerAccount>>
 {
-    public SavedServersFIleService(MainAccountStore mainAccount, SavedServersStore store) : base(mainAccount, store)
+    public SavedServersFIleService(MainAccountStore mainAccountStore, SavedServersStore store) : base(mainAccountStore, store)
     {
     }
 

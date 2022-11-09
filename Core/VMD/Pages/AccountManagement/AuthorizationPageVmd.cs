@@ -27,8 +27,7 @@ public class AuthorizationPageVmd : BaseVmd
 
         OpenRecoveryPasswordPageCommand = new NavigationCommand(passwordRecoveryNavigationServices);
     }
-
-
+    
     #region Команды
 
     public ICommand AuthCommand { get; }
@@ -50,11 +49,14 @@ public class AuthorizationPageVmd : BaseVmd
         
         try
         {
-            var base64ShaPassword = await _encryptSc.ShaEncrypt(Password);
+            if (!_checkStatus)
+            {
+                var base64ShaPassword = await _encryptSc.ShaEncrypt(Password);
 
-            base64ShaPassword = await _encryptSc.Base64Encrypt(base64ShaPassword);
+                base64ShaPassword = await _encryptSc.Base64Encrypt(base64ShaPassword);
 
-            newAccount.Password = base64ShaPassword;
+                newAccount.Password = base64ShaPassword;
+            }
             
             await _authorizationSc.Login(!CheckStatus, newAccount);
                 

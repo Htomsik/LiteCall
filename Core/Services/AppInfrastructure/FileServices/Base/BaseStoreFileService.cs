@@ -40,13 +40,25 @@ public abstract class BaseStoreFileService<TValue> : IFileService
     {
         Store = store ?? throw new ArgumentNullException(nameof(store));
 
-        Store.CurrentValueChangedNotifier += SaveDataInFile;
+        Store.CurrentValueChangedNotifier += ()=>
+        {
+            BeforeSaving();
+            SaveDataInFile();
+        };
         
     } 
     
     #endregion
     
     #region Methods
+
+  
+    /// <summary>
+    ///     Actions for child before saving data
+    /// </summary>
+    protected virtual void BeforeSaving()
+    {}
+    
     
     #region GetDataFromFile
     public void GetDataFromFile()
