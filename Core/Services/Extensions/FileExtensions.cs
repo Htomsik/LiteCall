@@ -69,7 +69,8 @@ public static class FileExtensions
 
         try
         {
-            File.Create($"{directoryPath}/{fileName}");
+            File.Create($"{directoryPath}/{fileName}").Close();
+            
         }
         catch (Exception e)
         {
