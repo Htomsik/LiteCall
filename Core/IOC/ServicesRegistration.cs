@@ -18,7 +18,7 @@ public static class ServicesRegistration
 {
     public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
-        #region Сервисы
+        #region Services
         
         #region FileServices
 
@@ -27,15 +27,17 @@ public static class ServicesRegistration
         
         #endregion
 
-        services.AddTransient<CloseAdditionalNavigationServices>()
+        services
+            .AddTransient<CloseAdditionalNavigationServices>()
             .AddTransient<CloseModalNavigationServices>()
-            .AddSingleton<IStatusSc, AppExecutionStateSc>()
             .AddTransient<IEncryptSc, EncryptSc>()
             .AddTransient<IImageServices, ImageSc>()
             .AddTransient<IChatServerSc, ChatServerSc>()
             .AddTransient<BaseIocTypeNavigationService>()
-            .AddTransient<SettingsVmdsIocTypeNavigationService>();
-
+            .AddTransient<SettingsVmdsIocTypeNavigationService>()
+            .AddSingleton<IStatusSc, AppExecutionStateSc>()
+            .AddSingleton<IObserver<Exception>, GlobalExceptionHandler>();
+            
         services.AddSingleton<IHttpDataSc, HttpDataSc>(s =>
             new HttpDataSc(s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IEncryptSc>(),
                 configuration, s.GetRequiredService<HttpClientStore>()));

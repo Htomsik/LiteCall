@@ -9,6 +9,7 @@ using LiteCall.IOC;
 using LiteCall.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ReactiveUI;
 
 namespace LiteCall;
 
@@ -34,6 +35,11 @@ public partial class App : Application
     #endregion
 
     #endregion
+
+    #region Methods
+    
+    private void SetupGlobalExceptionHandler() =>
+        RxApp.DefaultExceptionHandler = Services.GetRequiredService<IObserver<Exception>>();
     
     private async Task InitializeDataFromFiles()
     {
@@ -45,7 +51,9 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
 
-         await  InitializeDataFromFiles();
+        SetupGlobalExceptionHandler();
+        
+        await  InitializeDataFromFiles();
         
         Services.GetRequiredService<INavigationServices>().Navigate();
           
@@ -78,17 +86,8 @@ public partial class App : Application
         _host = null;
     }
 
-    public static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
-    {
-        services.AddSingleton(s => new MainWindow
-        {
-            DataContext = s.GetRequiredService<MainWindowVmd>()
-        });
-
-        services
-            .RegisterServices(host.Configuration)
-            .RegisterWpfServices()
-            .RegisterStores()
-            .RegisterVmd(host.Configuration);
-    }
+    
+    #endregion
+    
+    
 }
