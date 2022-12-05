@@ -27,7 +27,7 @@
             <!--  Name  -->
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Current account: " />
-                <TextBlock Text="{Binding AccountLogin}" />
+                <TextBlock Text="{Binding AcсountInfo.Login}" />
             </StackPanel>
 
             <!--  Type  -->
@@ -36,7 +36,7 @@
                 <TextBlock Text="Account type: " />
 
                 <!--  Account type detect (Authorized/Not Authorized)  -->
-                <TextBlock Text="{Binding IsAuthorizedAccount, Converter={StaticResource IsAuthorizeBoolToStringConverter}, UpdateSourceTrigger=PropertyChanged}">
+                <TextBlock Text="{Binding AcсountInfo.IsAuthorized, Converter={StaticResource IsAuthorizeBoolToStringConverter}, UpdateSourceTrigger=PropertyChanged}">
 
                     <TextBlock.Style>
 
@@ -45,11 +45,13 @@
                             <Setter Property="Foreground" Value="{DynamicResource Dangerous(Solid)}" />
 
                             <Style.Triggers>
+
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="Authorized">
 
                                     <Setter Property="Foreground" Value="{DynamicResource Green(Solid)}" />
 
                                 </DataTrigger>
+
                             </Style.Triggers>
 
                         </Style>
@@ -82,13 +84,11 @@
 
         </StackPanel>
 
-
-
         <!--  Current Account management vmd  -->
         <ContentControl
             Content="{Binding CurrentAccountManagmentVmd, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="2"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Center"
             Margin="5"
             VerticalAlignment="Center">
 

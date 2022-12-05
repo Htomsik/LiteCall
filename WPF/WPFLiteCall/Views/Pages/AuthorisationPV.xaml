@@ -9,14 +9,13 @@
     xmlns:validationRule="clr-namespace:LiteCall.Infrastructure.ValidationRule"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Grid Background="Transparent" MaxWidth="250">
-
+    <Grid Background="Transparent" MaxWidth="300">
 
         <Grid.ColumnDefinitions>
 
             <ColumnDefinition Width="1*" />
 
-            <ColumnDefinition MaxWidth="250" Width="Auto" />
+            <ColumnDefinition MaxWidth="300" Width="Auto" />
 
             <ColumnDefinition Width="1*" />
 

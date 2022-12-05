@@ -1,11 +1,13 @@
 ﻿using System.Windows.Input;
 using AppInfrastructure.Services.NavigationServices.Navigation;
+using Core.Models.Users;
 using Core.Stores.AppInfrastructure;
 using Core.Stores.AppInfrastructure.NavigationStores;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.AdditionalVmds.SettingsVmds.Base;
 using Core.VMD.Base;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Core.VMD.AdditionalVmds.SettingsVmds;
 
@@ -32,19 +34,17 @@ public class AccountSettingsVmd : BaseSettingsVmd
     #region Properties and Fields
 
     #region AccountData
+    
+    [Reactive]
+    public bool IsDefaultAccount { get; private set; }
 
-    public bool IsDefaultAccount => _mainAccountStore.IsDefaultAccount;
-
-    public string AccountLogin => _mainAccountStore.CurrentValue.Login;
-
-    public bool IsAuthorizedAccount => _mainAccountStore.CurrentValue.IsAuthorized;
-
+    [Reactive]
+    public Account AcсountInfo { get; private set; }
+    
     #endregion
 
-    /// <summary>
-    ///         Current account namagement vmd
-    /// </summary>
-    public BaseVmd CurrentAccountManagmentVmd => _accountManagementVmdNavigationStore.CurrentValue;
+    [Reactive]
+    public BaseVmd CurrentAccountManagmentVmd { get; private set; }
 
     #endregion
     
@@ -71,6 +71,9 @@ public class AccountSettingsVmd : BaseSettingsVmd
         #region Subscriptions
 
         _mainAccountStore.CurrentValueChangedNotifier += () => OnMainAccountChanged();
+
+        _accountManagementVmdNavigationStore.CurrentValueChangedNotifier += () =>
+            CurrentAccountManagmentVmd = _accountManagementVmdNavigationStore.CurrentValue;
         
         #endregion
 
@@ -96,8 +99,10 @@ public class AccountSettingsVmd : BaseSettingsVmd
 
     private void OnMainAccountChanged()
     {
-        this.RaisePropertyChanged(nameof(IsDefaultAccount));
-            
+        AcсountInfo = _mainAccountStore?.CurrentValue;
+
+        IsDefaultAccount = _mainAccountStore.IsDefaultAccount;
+        
         if (IsDefaultAccount)
             _accountManagementNavigationService.Navigate();
         else
