@@ -36,8 +36,7 @@ public class NAudioService : IAudioSc, IDisposable
     /// Capture microphone sound 
     private void OnDataAvailable(object? sender, WaveInEventArgs e)
     {
-        if (VAD(e))
-            InputDataGenerated?.Invoke(e.Buffer);
+        InputDataGenerated?.Invoke(e.Buffer);
     }
 
     public void StartRecording()
@@ -58,7 +57,12 @@ public class NAudioService : IAudioSc, IDisposable
 
         var bufferUser = _bufferUsers.GetOrAdd(audioMessage.UserName, _ =>
         {
-            var newBuffer = new BufferedWaveProvider(_waveFormat);
+            var newBuffer = new BufferedWaveProvider(_waveFormat)
+            {
+                DiscardOnBufferOverflow = true,
+                BufferDuration = TimeSpan.FromSeconds(1),
+                ReadFully = true
+            };
             _mixer.AddMixerInput(newBuffer);
             return newBuffer;
         });
@@ -76,24 +80,6 @@ public class NAudioService : IAudioSc, IDisposable
         _bufferUsers.Clear();
     }
     
-    /// Sound detection, noise reduce 
-    private bool VAD(WaveInEventArgs e)
-    {
-        const double porog = 0.005;
-        var tr = false;
-        double sum2 = 0;
-        var count = e.BytesRecorded / 2;
-
-        for (var index = 0; index < e.BytesRecorded; index += 2)
-        {
-            double Tmp = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
-            Tmp /= 32768.0;
-            sum2 += Tmp * Tmp;
-            if (Tmp > porog) tr = true;
-        }
-        sum2 /= count;
-        return tr || sum2 > porog;
-    }
     
     public void Dispose()
     {
