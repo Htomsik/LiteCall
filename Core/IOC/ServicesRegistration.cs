@@ -3,6 +3,7 @@ using Core.Services.AppInfrastructure.FileServices;
 using Core.Services.AppInfrastructure.NavigationServices.CloseServices;
 using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie;
 using Core.Services.AppInfrastructure.NavigationServices.ParamsNavigationServie.Base;
+using Core.Services.Audio;
 using Core.Services.Connections;
 using Core.Services.Extra;
 using Core.Services.Interfaces.AppInfrastructure;
@@ -33,6 +34,7 @@ public static class ServicesRegistration
             .AddTransient<IEncryptSc, EncryptSc>()
             .AddTransient<IImageServices, ImageSc>()
             .AddTransient<IChatServerSc, ChatServerSc>()
+            .AddTransient<IAudioSc, NAudioService>()
             .AddTransient<BaseIocTypeNavigationService>()
             .AddTransient<SettingsVmdsIocTypeNavigationService>()
             .AddSingleton<IStatusSc, AppExecutionStateSc>()

@@ -132,7 +132,9 @@ public static class VmdRegistration
         services.AddTransient(s =>
             new ServerVmd(s.GetRequiredService<CurrentServerAccountStore>(), 
                 s.GetRequiredService<CurrentServerStore>(),
-                s.GetRequiredService<IStatusSc>(), s.GetRequiredService<IChatServerSc>()));
+                s.GetRequiredService<IStatusSc>(), 
+                s.GetRequiredService<IChatServerSc>(),
+                s.GetRequiredService<IAudioSc>()));
 
 
         services.AddTransient(s=> new ServerConnectionVmd(CreateAuthCheckApiServerServices(s),

@@ -9,8 +9,6 @@ using Core.Services.Interfaces.AppInfrastructure;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -18,49 +16,40 @@ namespace Core.VMD.ServerPages;
 
 public sealed class ServerVmd : BaseVmd
 {
-    public ServerVmd(CurrentServerAccountStore currentServerAccountStore, CurrentServerStore currentServerStore,
-        IStatusSc statusSc, IChatServerSc chatServerSc)
+    public ServerVmd(CurrentServerAccountStore currentServerAccountStore, 
+        CurrentServerStore currentServerStore,
+        IStatusSc statusSc, 
+        IChatServerSc chatServerSc,
+        IAudioSc audioSc)
     {
         CurrentServerAccountStore = currentServerAccountStore;
-        
-        MessagesColCollection = new ObservableCollection<TextMessage>();
-
         CurrentServerStore = currentServerStore;
-
         _statusSc = statusSc;
-
         _chatServerSc = chatServerSc;
+        _audioSc = audioSc;
 
-        currentServerStore.CurrentServerDeleted += Dispose;
+        _audioSc.InputDataGenerated += OnAudioDataGenerated;
         
+        currentServerStore.CurrentServerDeleted += Dispose;
         TextMessageBus.Bus += AsyncGetMessageBus;
-
         AudioMessageBus.Bus += AsyncGetAudioBus;
-
         KickFromRoomNotifier.Notificator += GroupDisconnected;
 
         CurrentServerStore.CurrentServerRoomsChanged += CurrentServerRoomsChanged;
         
-        
         #region команды
-
         
         DisconnectGroupCommand = ReactiveCommand.CreateFromTask(OnDisconnectGroupExecuted);
-
         OpenPasswordModalCommand = ReactiveCommand.CreateFromTask<object>(OnOpenPasswordModalCommandCommandExecuted);
-
         OpenCreateRoomModalCommand = ReactiveCommand.CreateFromTask<object>(OnOpenCreateRoomModalCommandExecuted);
 
         ConnectWithPasswordCommand =
             ReactiveCommand.CreateFromTask<object>(OnConnectWithPasswordCommandExecuted, CanConnectWithPasswordExecute());
 
         ConnectCommand = ReactiveCommand.CreateFromTask(OnConnectExecuted, CanConnectExecute());
-
         CreateNewRoomCommand = ReactiveCommand.CreateFromTask(OnCreateNewRoomExecuted,CanCreateNewRoomExecute());
-
         SendMessageCommand = ReactiveCommand.CreateFromTask(OnSendMessageExecuted,CanSendMessageExecuted());
-
-
+        
         #region Админ команды
 
         AdminDeleteRoomCommand = new AsyncLambdaCmd(OnAdminDeleteRoomExecuted,
@@ -70,41 +59,16 @@ public sealed class ServerVmd : BaseVmd
         AdminDisconnectUserFromRoomCommand = new AsyncLambdaCmd(OnAdminKickUserFromRoomExecuted,
             ex => statusSc.ChangeStatus(ex.Message),
             CanAdminDisconnectUserFromRoomExecute);
-
-        
         
         #endregion
-
-        #endregion
-
-        #region Naudio Settings
-
-        _input = new WaveInEvent();
-
-        _input.DataAvailable += InputDataAvailable!;
-
-        _input.BufferMilliseconds = 25;
-
-        _input.WaveFormat = _waveFormat;
-
-        _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(8000, 1))
-        {
-            ReadFully = true
-        };
-
-        _waveOut = new WaveOutEvent();
-
-        _waveOut.DeviceNumber = 0;
-
-        _waveOut.Init(_mixer);
-
-        _waveOut.Play();
 
         #endregion
         
         this.WhenAny(x => x.CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin, x => x.Value)
             .Subscribe(x => CurrentServerAccountStoreChanged());
         
+        this.WhenAnyValue(x => x.CurrentGroup)
+            .Subscribe(group => { MicrophoneMute = group == null; });
     }
 
     
@@ -123,13 +87,13 @@ public sealed class ServerVmd : BaseVmd
     private readonly IStatusSc _statusSc;
 
     private readonly IChatServerSc _chatServerSc;
+    private readonly IAudioSc _audioSc;
 
     #endregion
 
     #region Stores
 
     public CurrentServerStore CurrentServerStore { get; set; }
-    
     
     private CurrentServerAccountStore? _currentServerAccountStore;
 
@@ -140,19 +104,7 @@ public sealed class ServerVmd : BaseVmd
     }
 
     #endregion
-
-    #region NAudio
-
-    private readonly WaveFormat _waveFormat = new(8000, 16, 1);
-
-    private readonly WaveOutEvent _waveOut;
-
-    private readonly WaveInEvent _input;
-
-    private readonly MixingSampleProvider _mixer;
-
-    #endregion
-
+    
     #region Commands
 
     #region DiconnecFromGroup
@@ -252,14 +204,13 @@ public sealed class ServerVmd : BaseVmd
     private async Task OnConnectExecuted()
     {
         var connectedGroup = SelRooms;
-
         if (connectedGroup!.WithPassword)
         {
             RoomPasswordModalStatus = true;
             return;
         }
 
-        await _chatServerSc.GroupConnect(SelRooms!.RoomName!, RoomPassword!);
+       await _chatServerSc.GroupConnect(SelRooms!.RoomName!, RoomPassword!);
     }
 
     #endregion
@@ -390,96 +341,34 @@ public sealed class ServerVmd : BaseVmd
 
     private void GroupDisconnected()
     {
-        _mixer.RemoveAllMixerInputs();
-
-        _bufferUsers.Clear();
-
+        _audioSc.ClearAudio();
         MessagesColCollection = new ObservableCollection<TextMessage>();
-
-        _waveOut.Stop();
-
-        MicrophoneMute = false;
-
-        _mixer.RemoveAllMixerInputs();
-
-        _bufferUsers.Clear();
     }
 
     #endregion
 
     #region Audio
 
-    private async void InputDataAvailable(object sender, WaveInEventArgs e)
+    private async void OnAudioDataGenerated(byte[] audioBuffer)
     {
         if (CurrentGroup != null)
         {
-            if (VAD(e))
-                await _chatServerSc.SendAudioMessage(e.Buffer);
+            await _chatServerSc.SendAudioMessage(audioBuffer);
         }
         else
         {
             MicrophoneMute = true;
         }
     }
-
-    private bool VAD(WaveInEventArgs e)
-    {
-        const double porog = 0.005;
-
-        var tr = false;
-
-        double sum2 = 0;
-
-        var count = e.BytesRecorded / 2;
-
-
-        for (var index = 0; index < e.BytesRecorded; index += 2)
-        {
-            double Tmp = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
-
-            Tmp /= 32768.0;
-
-            sum2 += Tmp * Tmp;
-
-            if (Tmp > porog)
-
-                tr = true;
-        }
-
-        sum2 /= count;
-
-        return tr || sum2 > porog;
-    }
+    
+    
 
     public void AsyncGetAudioBus(AudioMessage newVoiceMes)
     {
-        if (HeadphoneMute) return;
-
-        try
-        {
-            var bufferUser = _bufferUsers[newVoiceMes.UserName!];
-
-            bufferUser.AddSamples(newVoiceMes.Audio, 0, newVoiceMes.Audio!.Length);
-        }
-        catch
-        {
-            try
-            {
-                _bufferUsers.Add(newVoiceMes.UserName!, new BufferedWaveProvider(_waveFormat));
-
-                var bufferUser = _bufferUsers[newVoiceMes.UserName!];
-
-                _mixer.AddMixerInput(bufferUser);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-        finally
-        {
-            if (_waveOut.PlaybackState == PlaybackState.Stopped) _waveOut.Play();
-        }
+        if (HeadphoneMute) 
+            return;
+        
+        _audioSc.PlayMessage(newVoiceMes);
     }
 
     #endregion
@@ -498,23 +387,13 @@ public sealed class ServerVmd : BaseVmd
     private void OnMicrophoneMuteChanged()
     {
         if (MicrophoneMute)
-            try
-            {
-                _input.StopRecording();
-            }
-            catch
-            {
-                // ignored
-            }
+        {
+            try { _audioSc.StopRecording(); } catch { /* ignored */ }
+        }
         else
-            try
-            {
-                _input.StartRecording();
-            }
-            catch
-            {
-                // ignored
-            }
+        {
+            try { _audioSc.StartRecording(); } catch { /* ignored */ }
+        }
     }
 
     #endregion
@@ -523,31 +402,24 @@ public sealed class ServerVmd : BaseVmd
     {
         _chatServerSc.ConnectionStop();
 
+        _audioSc.InputDataGenerated -= OnAudioDataGenerated;
+        
         TextMessageBus.Bus -= AsyncGetMessageBus;
-
         AudioMessageBus.Bus -= AsyncGetAudioBus;
-
         KickFromRoomNotifier.Notificator -= GroupDisconnected;
-
-        _input.StopRecording();
-
-        _waveOut.Stop();
-
+        
         CurrentServerAccountStore.CurrentValue = null;
-
     }
 
     #endregion
 
     #region Data
-
-    private readonly Dictionary<string, BufferedWaveProvider> _bufferUsers = new();
-
+    
     private ObservableCollection<TextMessage>? _messagesColCollection;
 
     public ObservableCollection<TextMessage>? MessagesColCollection
     {
-        get => _messagesColCollection;
+        get => _messagesColCollection ??= new ObservableCollection<TextMessage>();
         set => this.RaiseAndSetIfChanged(ref _messagesColCollection, value);
     }
 
