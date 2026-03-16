@@ -24,7 +24,7 @@ namespace Core.Services.Connections;
 public sealed class HttpDataSc : IHttpDataSc
 {
     private static readonly Guid ProgramCaptchaId = Guid.NewGuid();
-    
+
     private readonly IConfiguration _configuration;
 
     private readonly IEncryptSc _encryptSc;
@@ -52,12 +52,14 @@ public sealed class HttpDataSc : IHttpDataSc
     public async Task<string> GetAuthorizeToken(RegistrationUser? newAcc, string? apiServerIp = null)
     {
         apiServerIp ??= DefaultMainIp;
-        
+
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
-   
+
         var authModel = new
         {
-            newAcc!.Login, Password = !string.IsNullOrEmpty(newAcc.Password) ? await _encryptSc.Base64Decrypt(newAcc.Password): null, Guid = ProgramCaptchaId
+            newAcc!.Login,
+            Password = !string.IsNullOrEmpty(newAcc.Password) ? await _encryptSc.Base64Decrypt(newAcc.Password) : null,
+            Guid = ProgramCaptchaId
         };
 
         var json = JsonSerializer.Serialize(authModel);
@@ -95,9 +97,6 @@ public sealed class HttpDataSc : IHttpDataSc
     }
 
 
-    
-
-    
     public async Task<string> Registration(RegistrationModel? registrationModel, string? apiServerIp = null)
     {
         apiServerIp ??= DefaultMainIp;
@@ -168,14 +167,14 @@ public sealed class HttpDataSc : IHttpDataSc
 
             throw new Exception("ApiIp getting from main server failed | MainServerGetApiIp");
         }
-        
+
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _statusSc.DeleteStatus();
 
             return response.Content.ReadAsStringAsync().Result;
         }
-        
+
         _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerNameOrIp);
 
         throw new Exception("ApiIp getting from main server failed | MainServerGetApiIp");
@@ -199,12 +198,12 @@ public sealed class HttpDataSc : IHttpDataSc
 
             throw new Exception("Getting info about server failed | ApiServerGetInfo");
         }
-        
+
         if (response.StatusCode == HttpStatusCode.OK)
         {
             _statusSc.DeleteStatus();
 
-            var deserializeServerInfo =  JsonSerializer.Deserialize<Server>(await response.Content.ReadAsStringAsync());
+            var deserializeServerInfo = JsonSerializer.Deserialize<Server>(await response.Content.ReadAsStringAsync());
 
             if (deserializeServerInfo is null)
             {
@@ -212,15 +211,13 @@ public sealed class HttpDataSc : IHttpDataSc
             }
 
             deserializeServerInfo.ApiIp = apiServerIp;
-            
-            return deserializeServerInfo;
 
+            return deserializeServerInfo;
         }
 
         _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerNameOrIp);
 
         throw new Exception("Getting info about server failed | ApiServerGetInfo");
-        
     }
 
     public async Task<ImagePacket?> GetCaptcha(string? apiServerIp = null)
@@ -254,7 +251,7 @@ public sealed class HttpDataSc : IHttpDataSc
             _statusSc.DeleteStatus();
 
             var test = JsonSerializer.Deserialize<ImagePacket>(await httpResponseMessage.Content.ReadAsStringAsync());
-            
+
             return test;
         }
 
@@ -263,33 +260,46 @@ public sealed class HttpDataSc : IHttpDataSc
         return null;
     }
 
-    public Task<bool> CheckServerStatus(string? serverAddress)
+    public async Task<bool> CheckServerStatus(string? serverAddress)
     {
         _statusSc.ChangeStatus(ExecutionActionStates.ServerConnection);
+        
+        if (string.IsNullOrEmpty(serverAddress))
+        {
+            _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerIp);
+            return false;
+        }
+        
+        var serverAddressArray = serverAddress.Split(':');
+        var isDirectAddress = serverAddress.Contains(":") || 
+                              serverAddress == "localhost" || 
+                              IPAddress.TryParse(serverAddress.Split(':')[0], out _);
+        
+        if (!isDirectAddress || serverAddressArray?.Length != 2)
+        {
+            _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerIp);
+            return false;
+        }
+        
+        var host = serverAddressArray[0];
+        var port = Convert.ToInt32(serverAddressArray[1]);
 
-        var serverAddressArray = serverAddress!.Split(':');
+        try
+        {
+            using var client = new TcpClient();
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-        if (serverAddressArray.Length == 2)
-            try
-            {
-                using (new TcpClient(serverAddressArray[0], Convert.ToInt32(serverAddressArray[1])))
-                {
-                }
-
-                _statusSc.DeleteStatus();
-
-                return Task.FromResult(true);
-            }
-            catch
-            {
-                _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
-
-                return Task.FromResult(false);
-            }
-
-        _statusSc.ChangeStatus(ExecutionErrorStates.IncorrectServerIp);
-
-        return Task.FromResult(false);
+            await client.ConnectAsync(host, port, cts.Token);
+            
+            _statusSc.DeleteStatus();
+        }
+        catch (Exception e)
+        {
+            _statusSc.ChangeStatus(ExecutionErrorStates.ServerConnectionFailed);
+            return false;
+        }
+        
+        return true;
     }
 
     public async Task<List<Question>?> GetPasswordRecoveryQuestions(string? apiServerIp = null)

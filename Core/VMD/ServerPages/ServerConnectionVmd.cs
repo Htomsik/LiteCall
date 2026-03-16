@@ -1,4 +1,5 @@
-﻿using AppInfrastructure.Services.NavigationServices.Close;
+﻿using System.Net;
+using AppInfrastructure.Services.NavigationServices.Close;
 using AppInfrastructure.Services.NavigationServices.Navigation;
 using Core.Models.Servers;
 using Core.Models.Users;
@@ -15,15 +16,11 @@ public class ServerConnectionVmd:BaseVmd
     private readonly IAuthorizationSc? _authorizationServices;
 
     private readonly SavedServersStore _savedServersStore;
-
     private readonly MainAccountStore? _accountStore;
 
     private readonly IHttpDataSc _httpDataSc;
-
     private readonly CurrentServerStore _currentServerStore;
-    
     private readonly INavigationServices _serverPageNavigationServices;
-    
     private readonly ICloseServices _closeModalNavigationServices;
 
     public ServerConnectionVmd(
@@ -35,17 +32,11 @@ public class ServerConnectionVmd:BaseVmd
         INavigationServices serverPageNavigationServices,ICloseServices closeModalNavigationServices)
     {
         _authorizationServices = authorizationServices;
-        
         _savedServersStore = savedServersStore;
-        
         _accountStore = accountStore;
-        
         _httpDataSc = httpDataSc;
-        
         _currentServerStore = currentServerStore;
-        
         _serverPageNavigationServices = serverPageNavigationServices;
-        
         _closeModalNavigationServices = closeModalNavigationServices;
 
         ServerConnectCommand = ReactiveCommand.CreateFromTask(OnServerConnect,CanServerConnect);
@@ -56,17 +47,25 @@ public class ServerConnectionVmd:BaseVmd
 
     public async Task OnServerConnect()
     {
+        if (string.IsNullOrEmpty(ServerNameOrIp))
+        {
+            return;
+        }
+        
         var serverAccount = new Account
         {
             Login = _accountStore!.CurrentValue!.Login
         };
 
         Server? newServer;
+        
+        bool isDirectAddress = ServerNameOrIp.Contains(":") || 
+                               ServerNameOrIp == "localhost" || 
+                               IPAddress.TryParse(ServerNameOrIp.Split(':')[0], out _);
 
         try
         {
-            var apiIp = !CheckStatus ? await _httpDataSc.MainServerGetApiIp(ServerNameOrIp) : ServerNameOrIp;
-
+            var apiIp = isDirectAddress ? ServerNameOrIp : await _httpDataSc.MainServerGetApiIp(ServerNameOrIp) ;
             newServer = await _httpDataSc.ApiServerGetInfo(apiIp);
         }
         catch (Exception)
@@ -91,41 +90,22 @@ public class ServerConnectionVmd:BaseVmd
         }
 
         var serverStatus = await Task.Run(() => _httpDataSc.CheckServerStatus(newServer.Ip));
-
         if (serverStatus)
         {
             _currentServerStore!.CurrentServer = newServer;
-            
             _closeModalNavigationServices.Close();
-            
             _serverPageNavigationServices.Navigate();
-
         }
     }
 
     private IObservable<bool> CanServerConnect => this.WhenAnyValue(x=>x.ServerNameOrIp,(serverNameOrIp)=> !String.IsNullOrEmpty(serverNameOrIp));
-
-
-
+    
     #region Data
-
-        private bool _checkStatus;
-
-        public bool CheckStatus
-        {
-            get => _checkStatus;
-            set => this.RaiseAndSetIfChanged(ref _checkStatus, value);
-        }
-        
         private string? _serverNameOrIp;
-
         public string? ServerNameOrIp
         {
             get => _serverNameOrIp;
             set => this.RaiseAndSetIfChanged(ref _serverNameOrIp, value);
         }
-
-
-     #endregion
-      
-    }
+    #endregion
+}
