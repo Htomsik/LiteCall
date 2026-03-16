@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using Core.Models.Audio;
+using Core.Services.Interfaces.Audio;
 using Core.Stores.AppInfrastructure;
 using Core.VMD.AdditionalVmds.SettingsVmds.Base;
 using ReactiveUI;
@@ -11,46 +13,37 @@ namespace Core.VMD.AdditionalVmds.SettingsVmds;
 /// </summary>
 public class AudioSettingsVmd : BaseSettingsVmd
 {
-    #region Properties and Fields
-
     [Reactive]
-    public ObservableCollection<string>? InputDevices { get; set; }
+    public ObservableCollection<AudioDevice> InputDevices { get; set; }
     
     [Reactive]
-    public ObservableCollection<string>? OutputDevices { get; set; }
-
-    /// <summary>
-    ///     Current capture device
-    /// </summary>
-    public int CaptureDeviceId
-    {
-        get => _lazyAppSettingsStore.Value.CurrentValue.CaptureDeviceId;
-        set =>  _lazyAppSettingsStore.Value.CurrentValue.CaptureDeviceId = value;
-       
-    }
-
-    /// <summary>
-    ///     Current output device
-    /// </summary>
-    public int OutputDeviceId
-    {
-        get => _lazyAppSettingsStore.Value.CurrentValue.OutputDeviceId;
-        set => _lazyAppSettingsStore.Value.CurrentValue.OutputDeviceId = value;
-    }
-
-    #endregion
+    public ObservableCollection<AudioDevice> OutputDevices { get; set; }
     
-    public AudioSettingsVmd(AppSettingsStore appSettingsStore) : base(appSettingsStore)
+    public AudioDevice? CaptureDevice
     {
-        #region Subscription
+        get => InputDevices.FirstOrDefault(x => x.Id == _lazyAppSettingsStore.Value.CurrentValue.CaptureDeviceId);
+        set => _lazyAppSettingsStore.Value.CurrentValue.CaptureDeviceId = value?.Id ?? 0;
+    }
+    
+    public AudioDevice? OutputDevice
+    {
+        get => OutputDevices.FirstOrDefault(x => x.Id == _lazyAppSettingsStore.Value.CurrentValue.OutputDeviceId);
+        set => _lazyAppSettingsStore.Value.CurrentValue.OutputDeviceId = value?.Id ?? 0;
+    }
 
-        _lazyAppSettingsStore.Value.CurrentValueChangedNotifier +=
-            () =>
-            {
-                this.RaisePropertyChanged(nameof(CaptureDeviceId));
-                this.RaisePropertyChanged(nameof(OutputDeviceId));
-            };
+    private readonly IAudioDeviceSc _audioDeviceSc;
+    
+    public AudioSettingsVmd(AppSettingsStore appSettingsStore, 
+        IAudioDeviceSc audioDeviceSc) : base(appSettingsStore)
+    {
+        _audioDeviceSc = audioDeviceSc;
 
-        #endregion
+        LoadDevices();
+    }
+
+    private void LoadDevices()
+    {
+        InputDevices = new ObservableCollection<AudioDevice>(_audioDeviceSc.GetInputDevices());
+        OutputDevices = new ObservableCollection<AudioDevice>(_audioDeviceSc.GetOutputDevices());
     }
 }

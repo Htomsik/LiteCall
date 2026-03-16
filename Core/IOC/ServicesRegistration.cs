@@ -36,6 +36,7 @@ public static class ServicesRegistration
             .AddTransient<IImageServices, ImageSc>()
             .AddTransient<IChatServerSc, ChatServerSc>()
             .AddTransient<IAudioSc, NAudioSc>()
+            .AddTransient<IAudioDeviceSc, NAudioDeviceSc>()
             .AddTransient<BaseIocTypeNavigationService>()
             .AddTransient<SettingsVmdsIocTypeNavigationService>()
             .AddSingleton<IStatusSc, AppExecutionStateSc>()

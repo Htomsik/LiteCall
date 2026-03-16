@@ -2,8 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
-
-
+        
         <Path
             x:Name="Path"
             RenderTransformOrigin="0.5,0.5"
@@ -13,10 +12,8 @@
                 <RotateTransform Angle="180" />
             </Path.RenderTransform>
         </Path>
-
-
+        
         <ControlTemplate.Triggers>
-
             <Trigger Property="ToggleButton.IsChecked" Value="False">
                 <Setter TargetName="Path" Property="RenderTransform">
                     <Setter.Value>
@@ -43,7 +40,6 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
-
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="20" />
@@ -69,6 +65,7 @@
                                 Visibility="Collapsed" />
 
                             <Border
+                                Margin="0,5,0,0"
                                 VerticalAlignment="Bottom"
                                 Background="Transparent"
                                 BorderBrush="{DynamicResource Fonts(Solid)}"
@@ -78,6 +75,7 @@
                         </Grid>
 
                         <ToggleButton
+                            Margin="5,0,0,0"
                             Name="ToggleButton"
                             Grid.Column="1"
                             ClickMode="Press"
@@ -220,4 +218,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    
+    
+    
 </ResourceDictionary>
