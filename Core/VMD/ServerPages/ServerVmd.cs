@@ -6,6 +6,7 @@ using Core.Infrastructure.Notifiers;
 using Core.Models.Servers;
 using Core.Models.Servers.Messages;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Audio;
 using Core.Services.Interfaces.Connections;
 using Core.Stores.TemporaryInfo;
 using Core.VMD.Base;

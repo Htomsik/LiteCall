@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -12,7 +12,7 @@
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.6" />
       <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0-preview.5.22301.12" />
-      <PackageReference Include="NAudio" Version="2.1.0" />
+      <PackageReference Include="NAudio" Version="2.3.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="ReactiveUI" Version="18.2.5" />
       <PackageReference Include="ReactiveUI.Fody" Version="18.2.5" />

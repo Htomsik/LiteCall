@@ -1,6 +1,6 @@
 ﻿using Core.Models.Servers.Messages;
 
-namespace Core.Services.Interfaces.AppInfrastructure;
+namespace Core.Services.Interfaces.Audio;
 
 /// <summary>
 ///     Voice chat audio service

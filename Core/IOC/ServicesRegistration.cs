@@ -7,6 +7,7 @@ using Core.Services.Audio;
 using Core.Services.Connections;
 using Core.Services.Extra;
 using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Audio;
 using Core.Services.Interfaces.Connections;
 using Core.Services.Interfaces.Extra;
 using Core.Stores.Connections;
@@ -34,7 +35,7 @@ public static class ServicesRegistration
             .AddTransient<IEncryptSc, EncryptSc>()
             .AddTransient<IImageServices, ImageSc>()
             .AddTransient<IChatServerSc, ChatServerSc>()
-            .AddTransient<IAudioSc, NAudioService>()
+            .AddTransient<IAudioSc, NAudioSc>()
             .AddTransient<BaseIocTypeNavigationService>()
             .AddTransient<SettingsVmdsIocTypeNavigationService>()
             .AddSingleton<IStatusSc, AppExecutionStateSc>()

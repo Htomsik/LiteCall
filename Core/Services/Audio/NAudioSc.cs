@@ -1,12 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using Core.Models.Servers.Messages;
-using Core.Services.Interfaces.AppInfrastructure;
+using Core.Services.Interfaces.Audio;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
 namespace Core.Services.Audio;
 
-public class NAudioService : IAudioSc, IDisposable
+public class NAudioSc : IAudioSc, IDisposable
 {
     private readonly WaveFormat _waveFormat = new(16000, 16, 1);
     
@@ -20,7 +20,7 @@ public class NAudioService : IAudioSc, IDisposable
     /// Send input data to outer sources 
     public event Action<byte[]>? InputDataGenerated;
 
-    public NAudioService()
+    public NAudioSc()
     {
         // input settings
         _input = new WaveInEvent { BufferMilliseconds = 25, WaveFormat = _waveFormat };
