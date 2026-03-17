@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
 using System.Windows.Input;
 using Core.Infrastructure.Buses;
 using Core.Infrastructure.CMD.Lambda;
@@ -17,6 +18,66 @@ namespace Core.VMD.ServerPages;
 
 public sealed class ServerVmd : BaseVmd
 {
+    #region Data
+    
+    private ObservableCollection<TextMessage>? _messagesColCollection;
+
+    public ObservableCollection<TextMessage>? MessagesColCollection
+    {
+        get => _messagesColCollection ??= new ObservableCollection<TextMessage>();
+        set => this.RaiseAndSetIfChanged(ref _messagesColCollection, value);
+    }
+    
+    [Reactive]
+    public string? CurrentMessage { get; set; }
+
+    [Reactive]
+    public bool CreateRoomModalStatus { get; set; }
+
+    [Reactive]
+    public string? NewRoomName { get; set; }
+
+    [Reactive]
+    public string? NewRoomPassword { get; set; }
+
+    [Reactive]
+    public bool RoomPasswordModalStatus { get; set; }
+
+    [Reactive]
+    public string? RoomPassword { get; set; }
+    
+    /// <summary>
+    ///  Selected  Room
+    /// </summary>
+    [Reactive]
+    public ServerRooms? SelRooms {get; set;}
+    
+    [Reactive] 
+    public bool CanServerConnect { get; set; }
+    
+    [Reactive] 
+    public bool HeadphoneMute { get; set; }
+    
+    [Reactive] 
+    public bool MicrophoneMute { get; set; }
+    
+    public ServerRooms? CurrentGroup => SetCurrentGroup();
+
+    private ServerRooms SetCurrentGroup()
+    {
+        return (from rooms in CurrentServerStore.CurrentServerRooms!
+            from users in rooms.Users!
+            where users.Login == CurrentServerAccountStore?.CurrentValue!.CurrentServerLogin
+            select rooms).FirstOrDefault()!;
+    }
+   
+    /// <summary>
+    ///     Reactive subscribes
+    /// </summary>
+    private readonly CompositeDisposable _subscribes = new(); 
+
+    #endregion
+    
     public ServerVmd(CurrentServerAccountStore currentServerAccountStore, 
         CurrentServerStore currentServerStore,
         IStatusSc statusSc, 
@@ -30,13 +91,11 @@ public sealed class ServerVmd : BaseVmd
         _audioSc = audioSc;
 
         _audioSc.InputDataGenerated += OnAudioDataGenerated;
-        
-        currentServerStore.CurrentServerDeleted += Dispose;
-        TextMessageBus.Bus += AsyncGetMessageBus;
-        AudioMessageBus.Bus += AsyncGetAudioBus;
-        KickFromRoomNotifier.Notificator += GroupDisconnected;
+        TextMessageBus.Bus += OnGetMessageBus;
+        AudioMessageBus.Bus += OnGetAudioBus;
+        KickFromRoomNotifier.Notificator += OnGroupDisconnected;
 
-        CurrentServerStore.CurrentServerRoomsChanged += CurrentServerRoomsChanged;
+        CurrentServerStore.CurrentServerRoomsChanged += OnCurrentServerRoomsChanged;
         
         #region команды
         
@@ -66,21 +125,16 @@ public sealed class ServerVmd : BaseVmd
         #endregion
         
         this.WhenAny(x => x.CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin, x => x.Value)
-            .Subscribe(x => CurrentServerAccountStoreChanged());
+            .Subscribe(x => OnCurrentServerAccountStoreChanged())
+            .DisposeWith(_subscribes);
         
         this.WhenAnyValue(x => x.CurrentGroup)
-            .Subscribe(group => { MicrophoneMute = group == null; });
-    }
+            .Subscribe(group => { MicrophoneMute = group == null; })
+            .DisposeWith(_subscribes);
 
-    
-    private void CurrentServerRoomsChanged()
-    {
-        this.RaisePropertyChanged(nameof(CurrentGroup));
-    }
-
-    private void CurrentServerAccountStoreChanged()
-    {
-        CanServerConnect = !string.IsNullOrEmpty(CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin);
+        this.WhenAnyValue(x => x.MicrophoneMute)
+            .Subscribe(_ => OnMicrophoneMuteChanged())
+            .DisposeWith(_subscribes);
     }
     
     #region Services
@@ -296,58 +350,7 @@ public sealed class ServerVmd : BaseVmd
     #endregion
 
     #region Methods
-
-    #region ControlMethods
-
-    //private async Task AsyncRoomConnect(ServerRooms? ConnectedGroup, string? RoomPassword = "")
-    //{
-    //    try
-    //    {
-    //        var connectRoomStatus = await ServerService.HubConnection!.InvokeAsync<bool>("GroupConnect",
-    //            $"{ConnectedGroup!.RoomName}", RoomPassword);
-
-    //        if (connectRoomStatus)
-    //        {
-    //            _mixer.RemoveAllMixerInputs();
-
-    //            _bufferUsers.Clear();
-
-    //            CurrentGroup = ConnectedGroup;
-
-    //            MicrophoneMute = false;
-
-    //            _waveOut.Play();
-
-    //            try
-    //            {
-    //                _input.StartRecording();
-    //            }
-    //            catch
-    //            {
-    //                // ignored
-    //            }
-    //        }
-    //        else
-    //        {
-    //            _statusServices.ChangeStatus(new StatusMessage
-    //                { Message = "Failed connect to the room", IsError = true });
-    //        }
-    //    }
-    //    catch
-    //    {
-    //        _statusServices.ChangeStatus(new StatusMessage { Message = "Failed connect to the room", IsError = true });
-    //    }
-    //}
-
-
-    private void GroupDisconnected()
-    {
-        _audioSc.ClearAudio();
-        MessagesColCollection = new ObservableCollection<TextMessage>();
-    }
-
-    #endregion
-
+    
     #region Audio
 
     private async void OnAudioDataGenerated(byte[] audioBuffer)
@@ -362,29 +365,14 @@ public sealed class ServerVmd : BaseVmd
         }
     }
     
-    
-
-    public void AsyncGetAudioBus(AudioMessage newVoiceMes)
+    public void OnGetAudioBus(AudioMessage newVoiceMes)
     {
         if (HeadphoneMute) 
             return;
         
         _audioSc.PlayMessage(newVoiceMes);
     }
-
-    #endregion
-
-    #region Subscriptions
-
-    private void AsyncGetMessageBus(TextMessage newMessage)
-    {
-        MessagesColCollection!.Add(newMessage);
-    }
-
-    #endregion
-
-    #region Changed
-
+    
     private void OnMicrophoneMuteChanged()
     {
         if (MicrophoneMute)
@@ -398,138 +386,47 @@ public sealed class ServerVmd : BaseVmd
     }
 
     #endregion
+    
+    private void OnCurrentServerRoomsChanged()
+    {
+        this.RaisePropertyChanged(nameof(CurrentGroup));
+    }
 
+    private void OnCurrentServerAccountStoreChanged()
+    {
+        CanServerConnect = !string.IsNullOrEmpty(CurrentServerAccountStore!.CurrentValue!.CurrentServerLogin);
+    }
+    
+    private void OnGroupDisconnected()
+    {
+        _audioSc.ClearAudio();
+        MessagesColCollection = new ObservableCollection<TextMessage>();
+        CurrentMessage = string.Empty;
+    }
+    
+    private void OnGetMessageBus(TextMessage newMessage)
+    {
+        MessagesColCollection!.Add(newMessage);
+    }
+    
     public override void Dispose()
     {
-        _chatServerSc.ConnectionStop();
-
+        // Stores and Bus
+        CurrentServerStore.CurrentServerRoomsChanged -= OnCurrentServerRoomsChanged;
+        TextMessageBus.Bus -= OnGetMessageBus;
+        AudioMessageBus.Bus -= OnGetAudioBus;
+        KickFromRoomNotifier.Notificator -= OnGroupDisconnected;
+        
+        // Audio
         _audioSc.InputDataGenerated -= OnAudioDataGenerated;
+        _audioSc.StopRecording(); 
+        _audioSc.ClearAudio();    
         
-        TextMessageBus.Bus -= AsyncGetMessageBus;
-        AudioMessageBus.Bus -= AsyncGetAudioBus;
-        KickFromRoomNotifier.Notificator -= GroupDisconnected;
-        
-        CurrentServerAccountStore.CurrentValue = null;
-    }
-
-    #endregion
-
-    #region Data
-    
-    private ObservableCollection<TextMessage>? _messagesColCollection;
-
-    public ObservableCollection<TextMessage>? MessagesColCollection
-    {
-        get => _messagesColCollection ??= new ObservableCollection<TextMessage>();
-        set => this.RaiseAndSetIfChanged(ref _messagesColCollection, value);
-    }
-
-
-    private string? _currentMessage;
-
-    public string? CurrentMessage
-    {
-        get => _currentMessage;
-        set => this.RaiseAndSetIfChanged(ref _currentMessage, value);
-    }
-
-
-    private bool _createRoomModalStatus;
-
-    public bool CreateRoomModalStatus
-    {
-        get => _createRoomModalStatus;
-        set => this.RaiseAndSetIfChanged(ref _createRoomModalStatus, value);
-    }
-
-
-    private string? _newRoomName;
-
-    public string? NewRoomName
-    {
-        get => _newRoomName;
-        set => this.RaiseAndSetIfChanged(ref _newRoomName, value);
-    }
-
-
-    private string? _newRoomPassword;
-
-    public string? NewRoomPassword
-    {
-        get => _newRoomPassword;
-        set => this.RaiseAndSetIfChanged(ref _newRoomPassword, value);
-    }
-
-
-    private bool _roomPasswordModalStatus;
-
-    public bool RoomPasswordModalStatus
-    {
-        get => _roomPasswordModalStatus;
-        set => this.RaiseAndSetIfChanged(ref _roomPasswordModalStatus, value);
-    }
-
-
-    private string? _roomPassword;
-
-    public string? RoomPassword
-    {
-        get => _roomPassword;
-        set => this.RaiseAndSetIfChanged(ref _roomPassword, value);
-    }
-
-    private ServerRooms? _selRooms;
-
-    public ServerRooms? SelRooms
-    {
-        get => _selRooms;
-        set => this.RaiseAndSetIfChanged(ref _selRooms, value);
-    }
-
-
-    private ServerUser? _selServerUser;
-
-    public ServerUser? SelServerUser
-    {
-        get => _selServerUser;
-        set => this.RaiseAndSetIfChanged(ref _selServerUser, value);
-    }
-
-
-    public ServerRooms? CurrentGroup => SetCurrentGroup();
-
-    private ServerRooms SetCurrentGroup()
-    {
-        return (from rooms in CurrentServerStore.CurrentServerRooms!
-            from users in rooms.Users!
-            where users.Login == CurrentServerAccountStore.CurrentValue!.CurrentServerLogin
-            select rooms).FirstOrDefault()!;
-    }
-
-
-
-
-    [Reactive] public bool CanServerConnect { get; set; }
-    
-    private bool _headphoneMute;
-
-    public bool HeadphoneMute
-    {
-        get => _headphoneMute;
-        set => this.RaiseAndSetIfChanged(ref _headphoneMute, value);
-    }
-
-
-    private bool _microphoneMute;
-
-    public bool MicrophoneMute
-    {
-        get => _microphoneMute;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _microphoneMute, value);
-            OnMicrophoneMuteChanged();
-        }
+       // Network 
+       _chatServerSc.ConnectionStop();
+       
+       // Subs
+       _subscribes.Dispose();
     }
 
     #endregion

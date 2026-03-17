@@ -145,13 +145,16 @@ public sealed class ChatServerSc : IChatServerSc
         await _hubConnectionStore!.StopConnection();
 
         await _currentServerStore.Delete();
+        
+        _currentServerAccountStore.CurrentValue =  null;
     }
 
     public async Task SendAudioMessage(byte[] audioBuffer)
     {
+        
         try
         {
-            await _hubConnectionStore!.CurrentHubConnection!.InvokeAsync("SendAudio", audioBuffer);
+            await _hubConnectionStore.CurrentHubConnection.InvokeAsync("SendAudio", audioBuffer);
         }
         catch
         {

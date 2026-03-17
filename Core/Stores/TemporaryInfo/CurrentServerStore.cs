@@ -61,11 +61,11 @@ public sealed class CurrentServerStore : BaseVmd
     {
         CurrentServerDeleted?.Invoke();
     }
-
-
+    
     public Task Delete()
     {
         CurrentServer = null;
+        CurrentServerRooms?.Clear();
         return Task.CompletedTask;
     }
 }

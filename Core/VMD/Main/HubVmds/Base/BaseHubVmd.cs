@@ -76,10 +76,9 @@ public abstract class BaseHubVmd : BaseVmd, IHubVmd
     /// </summary>
     protected void DisconnectFromServer()
     {
-        if (CurrentServerVmd == null) return;
-
-        CurrentServerVmd.Dispose();
-
+        if (CurrentServerVmd == null) 
+            return;
+        
         _currentServerVmdNavigationStore.CurrentValue = null;
     }
 
